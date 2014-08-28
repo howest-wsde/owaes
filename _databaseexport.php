@@ -18,7 +18,7 @@
     </head>
     <body>
     	<textarea style="width: 100%; height: 100%; border: 0; " ><?
-			$arFullExport = array("tblBadges", "tblCategories", "tblCertificates", "tblMarketTags", "tblMarketTypes"); 
+			$arFullExport = array("tblBadges", "tblCategories", "tblCertificates", "tblMarketTypes"); 
 		
 			$oDB = new database(); 
 			
