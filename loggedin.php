@@ -12,28 +12,33 @@
 	$openid = new LightOpenID($strID); 
 	if ($openid->mode) {
 		if($openid->validate()) {  
+			$data = $openid->getAttributes();
 			switch( $openid->data["openid_op_endpoint"] ) {
 				case "https://www.google.com/accounts/o8/ud": 
 					$arLogin["site"] = "google"; 
+					$arLogin["naam"] = $data['namePerson/last'];
+					$arLogin["voornaam"] = $data['namePerson/first'];
+					$arLogin["id"] = $data['contact/email']; 
+					$arLogin["email"] = $data['contact/email']; 
 					break; 
 				case "https://me.yahoo.com": 
 					$arLogin["site"] = "yahoo"; 
+					$arLogin["naam"] = $data['namePerson/last'];
+					$arLogin["voornaam"] = $data['namePerson/first'];
+					$arLogin["id"] = $data['contact/email']; 
+					$arLogin["email"] = $data['contact/email']; 
 					break;  
-				case "https://www.owaes.org/v3":  
+				case "http://www.owaes.org/v3/openid/provider":  
 					$arLogin["site"] = "owaes"; 
+					$arLogin["naam"] = $data['namePerson/friendly'];
+					$arLogin["voornaam"] = "";
+					$arLogin["id"] = $data['contact/email']; 
+					$arLogin["email"] = $data['contact/email']; 
 					break;  
-			}
-			$data = $openid->getAttributes();
-
-# echo "<hr>data: "; 
-# vardump($data); 
-
-			$arLogin["naam"] = $data['namePerson/last'];
-			$arLogin["voornaam"] = $data['namePerson/first'];
-			$arLogin["id"] = $data['contact/email']; 
-			$arLogin["email"] = $data['contact/email']; 
+			} 
 		}  
 	} 
+	
 	
 # echo "<hr>arLogin: "; 
 # 	vardump($arLogin); 
@@ -47,10 +52,7 @@
 	$user = $facebook->getUser();  
 	if ($user) { 
 		try {
-			$user_profile = $facebook->api('/me');   
-			
-# echo "<hr>user_profile: "; 
-# vardump($user_profile); 
+			$user_profile = $facebook->api('/me'); 
 			
 			$arLogin["site"] = "facebook"; 
 			$arLogin["id"] = $user_profile["id"];
