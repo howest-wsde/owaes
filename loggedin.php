@@ -19,6 +19,9 @@
 				case "https://me.yahoo.com": 
 					$arLogin["site"] = "yahoo"; 
 					break;  
+				case "https://www.owaes.org/v3":  
+					$arLogin["site"] = "owaes"; 
+					break;  
 			}
 			$data = $openid->getAttributes();
 
@@ -29,7 +32,7 @@
 			$arLogin["voornaam"] = $data['namePerson/first'];
 			$arLogin["id"] = $data['contact/email']; 
 			$arLogin["email"] = $data['contact/email']; 
-		} 
+		}  
 	} 
 	
 # echo "<hr>arLogin: "; 
@@ -84,6 +87,7 @@
 
 	} 
 	//var_dump($arLogin); 
+	
 ?><script>
 	window.opener.location.replace("<? echo $strRedirect; ?>");
 	window.close();

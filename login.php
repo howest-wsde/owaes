@@ -192,6 +192,19 @@
 						$oOpenid->returnUrl = $strReturnURL;   
 						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/google.png\" alt=\"Google\"/></a></li>";  
 						
+
+						// OWAES:  
+						$oOpenid = new LightOpenID($strID); 
+						$oOpenid->identity = 'http://www.owaes.org/v3';
+						$oOpenid->required = array(
+							'namePerson/first',
+							'namePerson/last',
+							'contact/email',
+						);
+						$oOpenid->returnUrl = $strReturnURL;   
+						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/owaes.png\" alt=\"OWAES\"/></a></li>";  
+						
+						
 						// YAHOO:  
 						$oOpenid = new LightOpenID($strID); 
 						$oOpenid->identity = 'https://me.yahoo.com';
