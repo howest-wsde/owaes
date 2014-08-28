@@ -12,7 +12,7 @@
 		private $arResult; 
 		private $iRecord = 0; 
 		private $iInsertedID = 0; 
-		private $arFieldNames = NULL; 
+		private $arFieldNames = NULL;  
 
 		public function database($strSQL = NULL, $bExecute = false) {   /*
 			optional parameters: $strSQL : Query direct setten (sql("..") ); 
@@ -32,11 +32,12 @@
 		public function execute($strSQL = NULL){ /* executes DB-query, returns number of records (length)
 			optional parameter $strSQL: eerst SQL-aanpassen, anders wordt deze gebruikt die geset werd met sql("..")
 		*/
-			$this->iRecord = -1; 
+			$this->iRecord = -1;  
 			if (!is_null($strSQL)) $this->sql($strSQL);
 			$strSQL = $this->sql(); 
 			$iStartQuery = time();  
 			$arFieldNames = array(); 
+			$oResult = NULL; 
 			$oResult = mysql_query($strSQL) or die ('<div style="border: 2px solid red; padding: 10px; margin: 10px 0; "><div style="color: red; font-weight: bold; ">Error: </div><div style="margin: 10px 0; color: gray; font-style: italic; ">' . $this->sql() . '</div><div>' . mysql_error () . '</div></div>');
 			$this->iQueryTime = time() - $iStartQuery; 
 			$this->arResult = array(); 
@@ -126,6 +127,10 @@
 			//echo ($strTekst); 
 			//echo "<br />" . mysql_real_escape_string($strTekst); 	
 			return mysql_real_escape_string($strTekst); 	
+		}
+		
+		public function fields() {
+			return $this->arFieldNames; 
 		}
 	  
 	}
