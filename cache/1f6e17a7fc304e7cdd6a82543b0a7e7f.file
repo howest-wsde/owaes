@@ -1,0 +1,123 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "Zum Free",
+               "short_name" : "Zum Free",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "Gersten",
+               "short_name" : "Gersten",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Lower Saxony",
+               "short_name" : "NDS",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Germany",
+               "short_name" : "DE",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "49838",
+               "short_name" : "49838",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Zum Free, 49838 Gersten, Germany",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 52.5966874,
+                  "lng" : 7.503970199999999
+               },
+               "southwest" : {
+                  "lat" : 52.5868579,
+                  "lng" : 7.4954736
+               }
+            },
+            "location" : {
+               "lat" : 52.591677,
+               "lng" : 7.502703500000001
+            },
+            "location_type" : "GEOMETRIC_CENTER",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 52.5966874,
+                  "lng" : 7.503970199999999
+               },
+               "southwest" : {
+                  "lat" : 52.5868579,
+                  "lng" : 7.4954736
+               }
+            }
+         },
+         "partial_match" : true,
+         "types" : [ "route" ]
+      },
+      {
+         "address_components" : [
+            {
+               "long_name" : "Zum Free",
+               "short_name" : "Zum Free",
+               "types" : [ "route" ]
+            },
+            {
+               "long_name" : "Nordhorn",
+               "short_name" : "Nordhorn",
+               "types" : [ "locality", "political" ]
+            },
+            {
+               "long_name" : "Lower Saxony",
+               "short_name" : "NDS",
+               "types" : [ "administrative_area_level_1", "political" ]
+            },
+            {
+               "long_name" : "Germany",
+               "short_name" : "DE",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "48527",
+               "short_name" : "48527",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Zum Free, 48527 Nordhorn, Germany",
+         "geometry" : {
+            "bounds" : {
+               "northeast" : {
+                  "lat" : 52.5054554,
+                  "lng" : 7.026464199999999
+               },
+               "southwest" : {
+                  "lat" : 52.5029557,
+                  "lng" : 7.0263485
+               }
+            },
+            "location" : {
+               "lat" : 52.5039147,
+               "lng" : 7.026438799999999
+            },
+            "location_type" : "GEOMETRIC_CENTER",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : 52.5055545302915,
+                  "lng" : 7.027755330291502
+               },
+               "southwest" : {
+                  "lat" : 52.5028565697085,
+                  "lng" : 7.025057369708497
+               }
+            }
+         },
+         "partial_match" : true,
+         "types" : [ "route" ]
+      }
+   ],
+   "status" : "OK"
+}

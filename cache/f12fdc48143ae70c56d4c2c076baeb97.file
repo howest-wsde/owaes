@@ -1,0 +1,44 @@
+{
+   "results" : [
+      {
+         "address_components" : [
+            {
+               "long_name" : "Fixed Head",
+               "short_name" : "Fixed Head",
+               "types" : [ "natural_feature", "establishment" ]
+            },
+            {
+               "long_name" : "New Zealand",
+               "short_name" : "NZ",
+               "types" : [ "country", "political" ]
+            },
+            {
+               "long_name" : "9691",
+               "short_name" : "9691",
+               "types" : [ "postal_code" ]
+            }
+         ],
+         "formatted_address" : "Fixed Head, 9691, New Zealand",
+         "geometry" : {
+            "location" : {
+               "lat" : -45.76666669999999,
+               "lng" : 166.5833333
+            },
+            "location_type" : "APPROXIMATE",
+            "viewport" : {
+               "northeast" : {
+                  "lat" : -45.7510973,
+                  "lng" : 166.6153481
+               },
+               "southwest" : {
+                  "lat" : -45.7822318,
+                  "lng" : 166.5513185
+               }
+            }
+         },
+         "partial_match" : true,
+         "types" : [ "natural_feature", "establishment" ]
+      }
+   ],
+   "status" : "OK"
+}

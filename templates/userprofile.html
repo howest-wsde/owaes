@@ -1,0 +1,512 @@
+<div class="row">
+    <div class="col-md-12">
+        <div class="well well-profile">
+            <div class="row">
+                <div class="col-sm-2 profielafbeelding">
+                    <img src="[profileimg:155x155]" width="155" class="mainprofile img-responsive" />
+                </div>
+                <div class="[me]col-sm-10[/me] [notme]col-sm-8[/notme] basisgegevens">
+                    <h2 class="naam">
+                    	[firstname] [lastname] 
+                    	[me]<span data-toggle="modal" data-target="#editBasisgegevens" class="icon icon-settings"></span>[/me]
+                    </h2>
+                    <h3 class="level-stars"><span class="level">Level [level]</span><span class="stars">[stars]</span></h3>
+
+                    <ul class="socialmedia">
+                        [?data:facebook]<li><a href="[data:facebook]" target="_blank"><span class="icon-facebook"></span></a></li>[/?data:facebook] 
+                        [?data:twitter]<li><a href="[data:twitter]" target="_blank"><span class="icon-twitter"></span></a></li>[/?data:twitter] 
+                        [?data:linkedin]<li><a href="[data:linkedin]" target="_blank"><span class="icon-linkedin"></span></a></li>[/?data:linkedin] 
+                        [?data:plus]<li><a href="[data:plus]" target="_blank"><span class="icon-googleplus"></span></a></li>[/?data:plus] 
+                    </ul>
+                </div>
+                [notme]
+               	 <div class="col-sm-2">
+                    <div class="btn-group-vertical pull-right">
+                        <a href="#" class="btn btn-default btn-sm"><span class="icon icon-volgen"></span><span class="title">Volgen</span></a>
+                        
+                    [friend]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Ontvrienden</span></a>[/friend]
+                    [nofriend:requested]<a href="#" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap aangevraagd</span></a>[/nofriend:requested]
+                    [nofriend:asked]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap bevestigen</span></a>[/nofriend:asked]
+                    [nofriend:noconnection]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriend toevoegen</span></a>[/nofriend:noconnection]
+  
+                        <a href="[link:contact]" class="btn btn-default btn-sm"><span class="icon icon-berichtsturen"></span><span class="title">Bericht sturen</span></a>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
+                                Meer ... 
+                                <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a href="[link:credits]"  class='transactie'><span class="icon icon-credits"></span><span class="title">Credits versturen</span></a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Rapporteren</a></li>
+                                <li><a href="#">Blokkeren</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                [/notme]
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-4"> 
+        <div class="well well-vrienden">
+            <h3>Vrienden <span class="badge">xx</span></h3>
+
+            <div class="list-group">
+                <a href="#" class="list-group-item">
+                    <div class="media">
+                        <img class="media-object pull-left" src="upload/profiles/frederik70.jpg">
+                        <div class="media-body">
+                            <h4 class="media-heading">Maurice Elbers</h4>level 8
+                        </div>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item">
+                    <div class="media">
+                        <img class="media-object pull-left" src="upload/profiles/els70.jpg">
+                        <div class="media-body">
+                            <h4 class="media-heading">Natalie Littink</h4>level 4
+                        </div>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item">
+                    <div class="media">
+                        <img class="media-object pull-left" src="upload/profiles/mark70.jpg">
+                        <div class="media-body">
+                            <h4 class="media-heading">Fabian Vanden Bussche</h4>level 15
+                        </div>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item">
+                    <div class="media">
+                        <img class="media-object pull-left" src="upload/profiles/noprofileimg.png">
+                        <div class="media-body">
+                            <h4 class="media-heading">Dirk Huizen</h4>level 2
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <p class="meer"><a href="#">meer...</a></p>
+        </div>
+
+        <div class="well well-volgend">
+            <h3>Volgend <span class="badge">xx</span></h3>
+
+            <div class="list-group">
+                <a href="#" class="list-group-item">
+                    <div class="media">
+                        <img class="media-object pull-left" src="upload/profiles/a968da0c59bf39309b47ca1d284a511e.png">
+                        <div class="media-body">
+                            <h4 class="media-heading">Katrien Janssens</h4>level 3
+                        </div>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item">
+                    <div class="media">
+                        <img class="media-object pull-left" src="upload/profiles/4d04dacc91b21440b0c9713d55880374.jpg">
+                        <div class="media-body">
+                            <h4 class="media-heading">Lucas Nijkerke</h4>level 11
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <p class="meer"><a href="#">meer...</a></p>
+        </div>
+
+        <div class="well well-volgers">
+            <h3>Volgers <span class="badge">xx</span></h3>
+
+            <div class="list-group">
+                <a href="#" class="list-group-item">
+                    <div class="media">
+                        <img class="media-object pull-left" src="upload/profiles/janne.jpg">
+                        <div class="media-body">
+                            <h4 class="media-heading">Moniek Hoenders</h4>level 2
+                        </div>
+                    </div>
+                </a>
+                <a href="#" class="list-group-item">
+                    <div class="media">
+                        <img class="media-object pull-left" src="upload/profiles/fa33f5eb68e16912f13c885923c987d6.jpg">
+                        <div class="media-body">
+                            <h4 class="media-heading">Donald Hinderiks</h4>level 3
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <p class="meer"><a href="#">meer...</a></p>
+        </div>
+    </div>
+    <div class="col-md-8">
+            <div class="well well-intro">
+                <h3>
+                    Intro
+                    [me]<span data-toggle="modal" data-target="#editIntro" class="icon icon-settings"></span>[/me]
+                </h3>
+                <p>[description]</p>
+                <h3>Varia</h3>
+                <ul class="varia">
+                    <li><img src="img/placeholder.png" /> <a href="#">CV</a></li>
+                    <li><img src="img/placeholder.png" /> <a href="#">Iets anders...</a></li>
+                    <li><img src="img/placeholder.png" /> <a href="#">Nog iets anders...</a></li>
+                </ul>
+            </div>
+            <div class="well well-bedrijven">
+                <h3>Bedrijven <span class="badge">xx</span></h3>
+            </div>
+            <div class="well well-badges">
+                <h3>Badges <span class="badge">[badges:count]</span></h3>
+                [badges]
+                <!--<ul class="badges">
+                    <li>
+                        <img class="" title="Profielfoto" data-original-title="Profielfoto" data-content="Deze gebruiker heeft een profielfoto ingesteld. Way to go!" src="img/badges/photo.png" alt="Profielfoto" width="57" height="57">
+                    </li>
+                </ul>-->
+            </div>
+            <div class="well well-certificaten">
+                <h3>Certificaten <span class="badge">[certificates:count]</span></h3>
+                [certificates]
+            </div>
+            <div class="well well-recenteactiviteit">
+                <h3>Recente Activiteit <span class="badge">xx</span></h3>
+
+                <div class="list-group">
+                    <a href="#" class="list-group-item">
+                        <div class="media">
+                            <img class="media-object pull-left" src="img/placeholder.png">
+                            <div class="media-body">
+                                <h4 class="media-heading">Vestibulum fermentum tortor in dui mattis</h4>
+
+                                <div class="development odd">
+                                    <ul>
+                                        <li class="physical first"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
+                                        <li class="physical"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
+                                        <li class="physical"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
+                                        <li class="mental last"><img src="img/mental.png" title="Kennis" alt="Kennis: 25%"></li>
+                                    </ul>
+                                </div>
+
+                                <span class="icon icon-opleiding icon-lg"></span>
+                            </div>
+                        </div>
+                    </a>
+                    <a href="#" class="list-group-item">
+                        <div class="media">
+                            <img class="media-object pull-left" src="img/placeholder.png">
+                            <div class="media-body">
+                                <h4 class="media-heading">Morbi tempor lorem rhoncus</h4>
+
+                                <div class="development odd">
+                                    <ul>
+                                        <li class="physical first"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
+                                        <li class="physical"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
+                                        <li class="physical"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
+                                        <li class="mental last"><img src="img/mental.png" title="Kennis" alt="Kennis: 25%"></li>
+                                    </ul>
+                                </div>
+
+                                <span class="icon icon-werkervaring icon-lg"></span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <p class="meer"><a href="#">meer...</a></p>
+
+            </div>
+        </div>
+    </div>
+    
+[me]
+    <!-- Edit Modals -->
+    <!--editBasisgegevens-->
+    <div class="modal fade" id="editBasisgegevens" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="form-horizontal" method="post">
+                	[editprofile-key]
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Basisgegevens aanpassen</h4>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset>
+                            <h4>Gegevens</h4>
+                            <div class="form-group">
+                                <label for="firstname" class="control-label col-lg-2">Voornaam:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="firstname" class="firstname form-control" id="firstname" placeholder="Voornaam" value="[firstname]" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="lastname" class="control-label col-lg-2">Familienaam:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="lastname" class="lastname form-control" id="lastname" placeholder="Familienaam" value="[lastname]" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="profielfoto" class="control-label col-lg-2">Profielfoto:</label>
+                                <div class="col-lg-6">
+                                    <input type="file" class="form-control" id="profielfoto">
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!--<div class="form-group">
+                                <label for="socialmedia" class="control-label col-lg-3">Social Media:</label>
+                            </div>-->
+                            <h4>Social Media</h4>
+    
+                            <div class="form-group">
+                                <label for="" class="control-label col-lg-2">Facebook:</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon icon icon-facebook"></span>
+                                        <input type="text" name="facebook" value="[data:facebook]" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="control-label col-lg-2">Twitter:</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon icon icon-twitter"></span>
+                                        <input type="text" name="twitter" value="[data:twitter]" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="control-label col-lg-2">LinkedIn:</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon icon icon-linkedin"></span>
+                                        <input type="text" name="linkedin" value="[data:linkedin]" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="" class="control-label col-lg-2">Google Plus:</label>
+                                <div class="col-lg-6">
+                                    <div class="input-group">
+                                        <span class="input-group-addon icon icon-googleplus"></span>
+                                        <input type="text" name="plus" value="[data:plus]" class="form-control">
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white btn-cancel" data-dismiss="modal">Sluiten</button>
+                        <input type="submit" class="btn btn-default btn-save" value="Opslaan" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!--editPersoonlijkeInformatie-->
+    <div class="modal fade" id="editPersoonlijkeInformatie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="form-horizontal" method="post">
+                	[editprofile-key]
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Persoonlijke informatie aanpassen</h4>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset>
+                            <div class="form-group">
+                                <label for="geslacht" class="control-label col-lg-2">Geslacht:</label>
+                                <div class="col-lg-6">
+                                    <select class="form-control">
+                                        <option>Man</option>
+                                        <option>Vrouw</option>
+                                        <option>Onbepaald</option>
+                                    </select>
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="geboortedatum" class="control-label col-lg-2">Geboortedatum:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="geboortedatum" class="geboortedatum form-control" id="geboortedatum" placeholder="Geboortedatum" value="" />
+                                    <!--<div class="input-group date test">
+                                        <input type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                    </div>-->
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="alias" class="control-label col-lg-2">Alias:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="alias" class="alias form-control" id="alias" placeholder="Alias" value="[key]" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control" disabled>
+                                        <option>Zichtbaar voor iedereen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="telefoonnummer" class="control-label col-lg-2">Telefoonnummer:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="telefoonnummer" class="telefoonnummer form-control" id="telefoonnummer" placeholder="Telefoonnummer" value="" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="control-label col-lg-2">Email:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="email" class="email form-control" id="email" placeholder="Email" value="[email]" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="woonplaats" class="control-label col-lg-2">Woonplaats:</label>
+                                <div class="col-lg-6">
+                                    <input type="text" name="woonplaats" class="woonplaats form-control" id="woonplaats" placeholder="Woonplaats" value="[location]" />
+                                </div>
+                                <div class="col-lg-4">
+                                    <select class="form-control">
+                                        <option>Zichtbaar voor iedereen</option>
+                                        <option>Zichtbaar voor vrienden</option>
+                                        <option>Verborgen</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white btn-cancel" data-dismiss="modal">Sluiten</button>
+                        <input type="submit" class="btn btn-default btn-save" value="Opslaan" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!--editIntro-->
+    <div class="modal fade" id="editIntro" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <form class="form-horizontal" method="post">
+                	[editprofile-key]
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">Intro &amp; Varia aanpassen</h4>
+                    </div>
+                    <div class="modal-body">
+                        <fieldset>
+                            <h4>Intro</h4>
+                            <div class="form-group col-lg-12">
+                                <textarea class="form-control" placeholder="Plaats hier een introductie over jezelf.">[description]</textarea>
+                            </div>
+                            <h4>Varia</h4>
+                            <div class="files">
+                                <div class="form-group file-uploaden">
+                                    <div class="col-lg-3">
+                                        <input type="text" class="form-control filetitle" placeholder="Titel voor bestand">
+                                    </div>
+                                    <div class="col-lg-5">
+                                        <input type="file" class="form-control filedata">
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <select class="form-control">
+                                            <option>Zichtbaar voor iedereen</option>
+                                            <option>Zichtbaar voor vrienden</option>
+                                            <option>Verborgen</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <a class="bestand-toevoegen"><span class="add">+</span><span class="title">Nog een bestand toevoegen...</span></a>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-white btn-cancel" data-dismiss="modal">Sluiten</button>
+                        <input type="submit" class="btn btn-default btn-save" value="Opslaan" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+[/me]

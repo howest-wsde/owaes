@@ -1,0 +1,101 @@
+﻿@import url("//fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700");
+.btn {
+  border: none;
+}
+.text-primary,
+.text-primary:hover {
+  color: #ffcc00;
+}
+.text-success,
+.text-success:hover {
+  color: #3fb618;
+}
+.text-danger,
+.text-danger:hover {
+  color: #ff0039;
+}
+.text-warning,
+.text-warning:hover {
+  color: #ff7518;
+}
+.text-info,
+.text-info:hover {
+  color: #9954bb;
+}
+table a,
+.table a {
+  text-decoration: underline;
+}
+table .success,
+.table .success,
+table .warning,
+.table .warning,
+table .danger,
+.table .danger,
+table .info,
+.table .info {
+  color: #fff;
+}
+table .success a,
+.table .success a,
+table .warning a,
+.table .warning a,
+table .danger a,
+.table .danger a,
+table .info a,
+.table .info a {
+  color: #fff;
+}
+.has-warning .help-block,
+.has-warning .control-label {
+  color: #ff7518;
+}
+.has-warning .form-control,
+.has-warning .form-control:focus {
+  border: 1px solid #ff7518;
+}
+.has-error .help-block,
+.has-error .control-label {
+  color: #ff0039;
+}
+.has-error .form-control,
+.has-error .form-control:focus {
+  border: 1px solid #ff0039;
+}
+.has-success .help-block,
+.has-success .control-label {
+  color: #3fb618;
+}
+.has-success .form-control,
+.has-success .form-control:focus {
+  border: 1px solid #3fb618;
+}
+.nav-pills > li > a {
+  border-radius: 0;
+}
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  background-image: none;
+}
+.alert {
+  border: none;
+}
+.alert .alert-link {
+  text-decoration: underline;
+  color: #fff;
+}
+.label {
+  border-radius: 0;
+}
+.close {
+  opacity: 1;
+}
+.progress {
+  height: 8px;
+}
+.panel-heading,
+.panel-footer {
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+/*# sourceMappingURL=bootswatch.css.map */

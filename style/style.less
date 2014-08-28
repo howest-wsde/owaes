@@ -1,0 +1,3419 @@
+﻿// --- Variables --- //
+/*#region Variables*/
+
+//c : color
+@cDefault: #ffcc00;
+@cHighlight: #ffdd55;
+@cWhite: #f9f9f9;
+@cSecundary: #00005b;
+@cSecundaryHover: #44449f;
+
+//ci : color indicator
+@ciSociaal: #8dc63f;
+@ciSociaalBg: #deecca;
+@ciFysiek: #ff3131;
+@ciFysiekBg: #fadbdb;
+@ciMentaal: #0072bc;
+@ciMentaalBg: #d4e5f0;
+@ciWelzijn: #ffcc00;
+@ciWelzijnBg: #fbeebb;
+
+//font
+@fontextralarge: 28px;
+@fontlarge: 24px;
+@fontsmall: 18px;
+@fontextrasmall: 14px;
+
+/*#endregion*/
+
+
+
+// --- GENERAL --- //
+/*#region GENERAL*/
+
+// --- Fonts --- //
+/*#region Fonts*/
+
+@font-face {
+    font-family: 'icomoon';
+    src: url('fonts/icomoon.eot?-mmzquo');
+    src: url('../fonts/icomoon.eot?#iefix-mmzquo') format('embedded-opentype'), url('../fonts/icomoon.woff?-mmzquo') format('woff'), url('../fonts/icomoon.ttf?-mmzquo') format('truetype'), url('../fonts/icomoon.svg?-mmzquo#icomoon') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Raleway'), url(https://themes.googleusercontent.com/static/fonts/raleway/v7/IczWvq5y_Cwwv_rBjOtT0w.woff) format('woff');
+}
+
+@font-face {
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Raleway Bold'), local('Raleway-Bold'), url(https://themes.googleusercontent.com/static/fonts/raleway/v7/JbtMzqLaYbbbCL9X6EvaIxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
+}
+
+/*#endregion*/
+
+// --- Icons --- //
+/*#region Icons*/
+span[class^="icon-"], span[class*="icon-"] {
+    font-family: 'icomoon';
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    /* Better Font Rendering =========== */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+span.icon-home:before {
+    content: "\e601";
+}
+
+span.icon-werkervaring:before {
+    content: "\e604";
+}
+
+span.icon-opleiding:before {
+    content: "\e620";
+}
+
+span.icon-delen:before {
+    content: "\e71e";
+}
+
+span.icon-lijsten:before {
+    content: "\e623";
+}
+
+span.icon-account:before {
+    content: "\e675";
+}
+
+span.icon-gebruikers:before {
+    content: "\e672";
+}
+
+span.icon-friends:before {
+    content: "\e674";
+}
+
+span.icon-badges:before {
+    content: "\e6d0";
+}
+
+span.icon-activiteit:before {
+    content: "\e6c3";
+}
+
+span.icon-berichten:before {
+    content: "\e762";
+}
+
+span.icon-profiel:before {
+    content: "\e624";
+}
+
+span.icon-instellingen:before {
+    content: "\e68f";
+}
+
+span.icon-afmelden:before {
+    content: "\e6b2";
+}
+
+span.icon-user:before {
+    content: "\e671";
+    //font-size: @fontextralarge;
+}
+
+span.icon-position:before {
+    content: "\e643";
+    //font-size: @fontextralarge;
+}
+
+span.icon-calendar:before {
+    content: "\e64f";
+    //font-size: @fontextralarge;
+}
+
+span.icon-timing:before {
+    content: "\e649";
+    //font-size: @fontextralarge;
+}
+
+span.icon-credits:before {
+    content: "\eb5a"; //icon: "database"
+    //font-size: @fontextralarge;
+}
+
+span.icon-inschrijvingen:before {
+    content: "\e609";
+    //font-size: @fontextralarge;
+}
+
+span.icon-inschrijven:before {
+    content: "\e60a";
+    //font-size: @fontextralarge;
+}
+
+span.icon-check:before {
+    content: "\e700";
+    //font-size: @fontextralarge;
+}
+
+span.icon-close:before {
+    content: "\e6ff";
+    //font-size: @fontextralarge;
+}
+
+span.icon-volgen:before {
+    content: "\e672";
+}
+
+span.icon-vriendtoevoegen:before {
+    content: "\e704";
+}
+
+span.icon-berichtsturen:before {
+    content: "\e641";
+}
+
+span.icon-genderboth:before {
+    content: "\eaf0";
+}
+
+span.icon-tag:before {
+    content: "\e631";
+}
+
+span.icon-phone:before {
+    content: "\e63d";
+}
+
+span.icon-settings:before {
+    content: "\e68f";
+}
+
+span.icon-facebook:before {
+    content: "\e76c";
+    color: #3b5998;
+    font-size: @fontextralarge;
+}
+
+span.icon-twitter:before {
+    content: "\e770";
+    color: #55acee;
+    font-size: @fontextralarge;
+}
+
+span.icon-linkedin:before {
+    content: "\e7a1";
+    color: #007bb6;
+    font-size: @fontextralarge;
+}
+
+span.icon-googleplus:before {
+    content: "\e768";
+    color: #dd4b39;
+    font-size: @fontextralarge;
+}
+
+span.icon-plus:before {
+    content: "\e704";
+}
+
+span.icon-trophy:before {
+    content: "\e69b";
+}
+
+span.icon-admin:before {
+    content: "\e676";
+}
+
+span.icon-minus:before {
+    content: "\e703";
+}
+
+/*#endregion*/
+
+// --- Menu --- //
+/*#region Menu*/
+
+.navbar-default {
+    background-color: @cWhite;
+    border-bottom-color: @cWhite;
+    border-top: none;
+
+    [class^="icon-"], [class*="icon-"] {
+        display: block;
+        text-align: center;
+        vertical-align: top;
+        font-size: 24px;
+    }
+
+    .dropdown-menu {
+        [class^="icon-"], [class*="icon-"] {
+            display: inline;
+            font-size: 16px;
+            margin: 0 15px 0 0;
+        }
+    }
+
+    .navbar-brand {
+        color: @cWhite;
+        margin: 0 0 -50px 0 !important;
+
+        &:hover, &:focus {
+            color: @cSecundary;
+        }
+    }
+
+    .navbar-nav {
+        background-color: @cDefault;
+        border-bottom-color: @cDefault;
+
+        > li {
+            > a {
+                font-size: 16px;
+                color: @cSecundary;
+                width: 120px;
+                text-align: center;
+                text-transform: capitalize;
+
+                &:hover, &:focus {
+                    color: @cWhite;
+                    background-color: @cHighlight;
+                }
+
+                &.menu-active {
+                    background-color: @cHighlight;
+                    color: @cWhite;
+                }
+
+                > .title {
+                    text-align: center;
+                    margin: auto;
+                    //display: block;
+                }
+
+                &.active, &.active:hover, &.active:focus {
+                    color: @cWhite !important;
+                    background-color: @cHighlight;
+
+                    > .caret {
+                        border-top-color: @cWhite;
+                    }
+                }
+            }
+        }
+
+        .open {
+            > a, > a:hover, > a:focus {
+                color: @cWhite;
+                background-color: @cHighlight;
+
+                .caret {
+                    border-top-color: @cWhite;
+                    border-bottom-color: @cWhite;
+                }
+            }
+        }
+
+        > .dropdown {
+            > a {
+                .caret {
+                    border-top-color: @cSecundary;
+                    border-bottom-color: @cSecundary;
+                }
+
+                &:hover, &:focus {
+                    .caret {
+                        border-top-color: @cWhite;
+                        border-bottom-color: @cWhite;
+                    }
+                }
+            }
+
+            > .dropdown-menu {
+                > li {
+                    > a {
+                        text-transform: capitalize;
+
+                        &:hover, &:focus {
+                            background-color: @cHighlight;
+                            color: @cSecundary;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .navbar-toggle {
+        border-color: @cHighlight;
+
+        &:hover, &:focus {
+            background-color: @cHighlight;
+            border-color: @cHighlight;
+
+            .icon-bar {
+                background-color: @cWhite;
+            }
+        }
+
+        .icon-bar {
+            background-color: @cDefault;
+        }
+    }
+}
+
+.menu-item {
+    .menu-item {
+        icon-home {
+            content: "";
+            background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEwAAABMCAYAAADHl1ErAAAB/klEQVR4Xu3XMWgTYRyG8UsIggYKmqndDE46CEVKJJOLdVIHK0InpUWo0kwJZOlqNegkdKiCS4aoiIhSdHNICaEUETp5ECgUCh06JUMDPZ9BiGD8X6n18l36PvDbPkj69vjCeYdMKaWUUkoppZRSSimllFLqBJbwGmkYqVHUEfyygWyfc9exgHfwEVkJuNJlvMUYfm8X01jxegWD+juScKEZfAVj/dFpfELZhe+bcOC+eo5ZHKQvmMbOcXzCsmhiFgftKpowGs7BJtHEReNMgH6dPW6DFbGCDPrVxR3cRAdGwz1YGjU8Me6cbVxBDR8wgRbCGh22wbJo4LZx5hvGUfd6beASVmG1jvyw/EpO4QVGjDNvcBftf/g17eIBluM6WBKPUDQ+J0AZFewjrPtYCvneLzGHvTgNdgZVXDPOdHAPtUP8wlaRMc40cAtbcbjDLmAtZKwWcsZYVp8xgR/GmRzWkHf9CZvCK5yK4L9vPMXGvebYYO9xA39rGQ+P8H5J4hkKIa9Tk64Odg7fcTLiOzMwnrDz8F29w3wswpUW4bt+6T9FC+RVEHUlkLeJx3H4lWxjHhWUEG29zy2gjSMthf/RR2BgVRx5l1QpuFAwuDcTPWEaTINpMA2mNJgG02AaTIOplHOvQHbB4J8wpcGUUkoppZRSSimllFJKKaV+Ahz0XQmr/+KUAAAAAElFTkSuQmCC') /*/assets/general/appbar.home.png*/ no-repeat;
+            *background: url(/assets/general/appbar.home.png) no-repeat; /* For IE 6 and 7 */
+            height: 76px;
+            width: 76px;
+            padding: 20px 20px 20px 20px;
+            z-index: 9999;
+        }
+    }
+}
+
+/*#endregion*/
+
+// --- Search Small --- //
+/*#region Search Small*/
+.search-sm {
+    margin: 7px -50px 0 -10px;
+    width: 450px;
+
+    input {
+        //border:solid 2px @cSecundary;
+        height: 38px;
+        padding: 5px 14px;
+
+        &:focus {
+            outline: none;
+            border: 1px solid @cWhite;
+            box-shadow: 0 0 5px @cDefault;
+        }
+    }
+    //fix: google "skew input without text"
+}
+
+/*#endregion*/
+
+// --- Profile Small --- //
+/*#region Profile Small*/
+
+.panel-profile-sm {
+    -moz-transform: skewX(40deg);
+    -ms-transform: skewX(40deg);
+    -o-transform: skewX(40deg);
+    -webkit-transform: skewX(40deg);
+    transform: skewX(40deg);
+    margin: -23px 0 0 -44px;
+    width: 2000px;
+    height: 68px;
+    border: 2px solid @cSecundary;
+
+    .icon-credits:before {
+        margin: 0 0 0 5px;
+        font-size: @fontsmall;
+    }
+
+    .icon-credits-green:before {
+        color: mediumseagreen;
+    }
+
+    .icon-credits-orange:before {
+        color: orange;
+    }
+
+    .icon-credits-red:before {
+        color: red;
+    }
+
+    .icon-credits-black:before {
+        color: black;
+    }
+
+    .col-sm-5:first-child {
+        margin: 0 0 0 -3px;
+
+        .gebruikers-naam {
+            margin: 0 0 5px 10px;
+
+            > a {
+                //font-weight: 600;
+                color: @cSecundary;
+                text-decoration: none;
+                font-size: @fontsmall;
+
+                &:hover {
+                    color: @cSecundaryHover;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    .panel-body {
+        clear: both;
+        width: 800px;
+        padding: 10px 0;
+        margin: 0 0 0 -10px;
+        -moz-transform: skewX(-40deg);
+        -ms-transform: skewX(-40deg);
+        -o-transform: skewX(-40deg);
+        -webkit-transform: skewX(-40deg);
+        transform: skewX(-40deg);
+    }
+
+    .progress-experience {
+        height: 16px;
+        //margin: 5px 0 0 5px;
+        -moz-transform: skewX(40deg);
+        -ms-transform: skewX(40deg);
+        -o-transform: skewX(40deg);
+        -webkit-transform: skewX(40deg);
+        transform: skewX(40deg);
+
+        > .progress-bar {
+            background-color: @cDefault;
+        }
+    }
+
+    .credits {
+        margin: 0 0 5px 0;
+    }
+
+    .indicatoren {
+        .progress {
+            height: 6px;
+            margin: 0 0 6px 0;
+        }
+
+        .progress-sociaal {
+            background-color: @ciSociaalBg;
+
+            > .progress-bar {
+                background-color: @ciSociaal;
+            }
+        }
+
+        .progress-fysiek {
+            background-color: @ciFysiekBg;
+
+            > .progress-bar {
+                background-color: @ciFysiek;
+            }
+        }
+
+        .progress-mentaal {
+            background-color: @ciMentaalBg;
+
+            > .progress-bar {
+                background-color: @ciMentaal;
+            }
+        }
+
+        .progress-welzijn {
+            background-color: @ciWelzijnBg;
+
+            > .progress-bar {
+                background-color: @ciWelzijn;
+            }
+        }
+    }
+}
+/*#endregion*/
+
+// --- Pages (General) --- //
+/*#region Pages (General)*/
+
+.progress-bar-experience {
+    -moz-transition: width 1s ease-in-out !important;
+    -o-transition: width 1s ease-in-out !important;
+    -webkit-transition: width 1s ease-in-out !important;
+    transition: width 1s ease-in-out !important;
+}
+
+.collapsing {
+    -moz-transition: height 0.02s;
+    -o-transition: height 0.02s;
+    -webkit-transition: height 0.02s;
+    transition: height 0.02s;
+}
+
+h1, h2, h3, h4, h5, p, strong, a {
+    font-family: Raleway;
+}
+
+h2 {
+    font-size: @fontlarge;
+    margin: 0 auto auto auto;
+}
+
+html, body {
+    background-color: @cWhite;
+}
+
+body {
+    //overflow-y: scroll;
+    overflow-x: hidden;
+}
+
+.btn-default {
+    background-color: @cDefault;
+    color: @cSecundary;
+    border: 1px solid @cSecundary;
+    z-index: 100;
+
+    &:hover, &:active, &:focus {
+        background-color: @cHighlight !important;
+    }
+}
+
+.btn-group, .btn-group:focus, .btn-group:active {
+    background-color: @cDefault;
+
+    &.open > .dropdown-toggle.btn-default {
+        background-color: @cHighlight;
+    }
+}
+
+.btn-group > ul > li > a:hover {
+    background-color: @cHighlight;
+}
+
+.container {
+    input:not([type="radio"]):not([type="checkbox"]):focus, textarea:focus, select:focus {
+        outline: none;
+        border: 1px solid @cWhite;
+        box-shadow: 0 0 5px @cDefault;
+    }
+}
+
+.container .form-horizontal .row {
+    .radio {
+        padding: 0 0 0 20px;
+    }
+
+    h4 {
+        margin: 0 0 10px 0;
+    }
+}
+
+
+input.error {
+    border: 1px solid @ciFysiek;
+}
+
+.badge {
+    background-color: @cDefault;
+}
+
+textarea {
+    resize: none;
+    height: 200px;
+}
+
+input[type="number"] {
+    width: 50px;
+}
+
+.notifications {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;	
+	z-index: 999; 
+}
+
+.notification {
+    border: 1px solid #dddddd;
+    background-color: @cWhite;
+    max-width: 350px; 
+    padding: 5px;
+	margin-top: 10px; 
+
+    h4 {
+        font-size: 14px;
+        margin: 5px 0;
+    }
+
+    p {
+        font-size: 11px;
+        margin: 0 0 0 0;
+    }
+
+    img {
+        max-height: 70px;
+        width: auto;
+    }
+
+    &:hover {
+        background-color: #f5f5f5;
+        cursor: pointer;
+    }
+}
+
+.tab-content {
+    border: 1px solid #dddddd;
+    border-top: none;
+    background-color: #fbfbfb;
+    padding: 30px 20px 20px 20px;
+}
+
+.nav-tabs li.active a {
+    background-color: #fbfbfb;
+}
+
+.socialmedia {
+    list-style-type: none;
+
+    > li {
+        float: left;
+        margin: 0 2px 0 2px;
+
+        > a:hover {
+            text-decoration: none;
+            //color: lighten()
+            > span.icon-facebook:before {
+                color: #4869ce;
+            }
+
+            > span.icon-twitter:before {
+                color: #66bdff;
+            }
+
+            > span.icon-linkedin:before {
+                color: #419cca;
+            }
+
+            > span.icon-googleplus:before {
+                color: #ef6b5a;
+            }
+        }
+
+        span {
+            margin: 0 !important;
+        }
+    }
+}
+
+.popover {
+    h3.popover-title {
+        margin: 0;
+        background-color: @cHighlight;
+        border-radius: 0;
+    }
+}
+
+.btn-save {
+    border: 0;
+}
+
+.btn-cancel:hover {
+    background-color: #e5e5e5;
+}
+
+.selected {
+    background-color: @cHighlight;
+}
+
+
+.userpopup {
+    width: 400px;
+    border: 1px solid #8c8c8c;
+    background: white;
+
+    a {
+        margin-right: 10px;
+    }
+
+    .top {
+        overflow: auto;
+        padding: 10px;
+
+        img {
+            float: left;
+            margin-right: 10px;
+        }
+    }
+
+    .bottom {
+        background: #f2f2f2;
+        border-top: 1px solid #cccccc;
+        padding: 8px;
+
+        ul {
+            display: inline;
+        }
+    }
+}
+
+.popwindow {
+    position: fixed;
+    width: 425px;
+    height: 300px;
+    overflow: auto;
+    margin-left: -200px;
+    margin-top: -150px;
+    left: 50%;
+    top: 50%;
+    background: white;
+    border: 5px solid black;
+    z-index: 101;
+    padding: 10px;
+
+    h3 {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    textarea {
+        width: 374px;
+        height: 90px;
+        margin-bottom: 10px;
+    }
+
+    input[type="submit"] {
+        float: right;
+        margin-right: 20px;
+    }
+}
+
+.popbackground {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 100;
+}
+
+.popclose {
+    position: fixed;
+    width: 23px;
+    height: 23px;
+    margin-left: 195px;
+    margin-top: -186px;
+    left: 50%;
+    top: 50%;
+    z-index: 102;
+    padding: 10px;
+}
+
+
+
+/*#endregion*/
+
+// --- Footer --- //
+/*#region Footer*/
+.footer {
+    margin: 50px 0 0 0;
+    padding: 0 0 0 0;
+    width: 100%;
+
+    h2 {
+        display: none;
+    }
+
+    .container .yellowPart {
+        background-color: @cDefault;
+        float: left;
+        min-width: 600px;
+        margin-left: -700px;
+        height: 72px;
+        width: 1300px;
+
+        span {
+            max-width: 420px;
+            margin: 10px 0 0 700px;
+            display: table;
+            font-weight: 300;
+
+            a {
+                color: @cSecundary;
+                text-decoration: none;
+                font-weight: 800;
+
+                &:hover {
+                    color: #44449f;
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+
+    .container .whitePart {
+        background-color: @cWhite;
+        float: right;
+
+        span {
+            float: left;
+            margin: 10px 50px 0 0;
+            color: @cSecundary;
+            width: 200px;
+
+            a {
+                color: @cSecundary;
+                text-decoration: none;
+                font-weight: 800;
+
+                &:hover {
+                    color: #44449f;
+                    text-decoration: none;
+                }
+            }
+        }
+    }
+
+    .container .whitePart img {
+        float: right;
+        margin-top: 10px;
+        margin-right: 20px;
+    }
+
+    .container .whitePart .esfLogoFooter {
+        margin-top: -51px;
+        margin-right: -20px;
+    }
+
+    .block {
+        height: 72px;
+        border-top: 3px solid @cSecundary;
+    }
+}
+/*#endregion*/
+
+/*#endregion*/
+
+// --- PAGES --- //
+/*#region PAGES*/
+
+// --- Login --- //
+/*#region Login*/
+
+.content-login {
+    margin: 30px auto auto auto;
+
+    .openid {
+        min-height: 50px;
+        margin: -30px 0 0 0;
+
+        .socialmedia > li {
+            float: left;
+            margin: 0 5px 0 0;
+        }
+    }
+
+    label.longlabel {
+        margin-top: -10px;
+    }
+
+    form .btn-default {
+        border: 0;
+
+        &.btn-login {
+            //margin: -30px 0 0 0;
+        }
+    }
+}
+
+
+/*#endregion*/
+
+// --- Home --- //
+/*#region Home*/
+.content-home {
+    .creditmetermeter {
+        position: absolute;
+    }
+
+    .creditmeterpointer {
+        position: relative;
+        top: 0;
+        left: 0;
+        -moz-transform: rotate(0deg);
+        -ms-transform: rotate(0deg);
+        -o-transform: rotate(0deg);
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+}
+
+.border {
+    margin: 5px 0 5px 0;
+    border: 1px solid #E3E3E3;
+    border-radius: 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+}
+
+.home {
+    .col-md-2, .col-md-4, .col-md-1, .col-md-5 {
+        padding: 15px;
+    }
+
+    .col-md-5 {
+        .gebruikers-naam {
+            > a {
+                color: @cSecundary;
+                text-decoration: none;
+                font-size: @fontsmall;
+
+                &:hover {
+                    color: @cSecundaryHover;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    .pull-right {
+        a {
+            text-decoration: underline;
+        }
+    }
+
+    .iconExpand {
+        float: right;
+        margin: 11px -5px 0px 0;
+    }
+
+    #accordionGraphs {
+        margin: 0;
+    }
+	
+	#map-item {
+		float: right;
+		position: absolute;
+		right: 10px;
+		border: 1px solid #ffdd55;
+		bottom: 10px;
+		background-color: white;
+		padding: 10px;
+		font-family: Raleway;
+		z-index: 1000;
+	}
+
+    #map-info {
+        float: right;
+        position: absolute;
+        right: 10px;
+        border: 1px solid @cHighlight;
+        top: 10px;
+        background-color: white;
+        padding: 10px;
+        font-family: Raleway;
+        z-index: 1000;
+
+        .mapPin {
+            height: 30px;
+            margin-right: 5px;
+        }
+
+        ul {
+            margin-bottom: 0px;
+
+            .first {
+                margin-top: 0px;
+            }
+
+            li {
+                margin-top: 5px;
+            }
+        }
+    }
+
+    .size {
+        width: auto;
+        max-height: 205px;
+        margin: 0 auto 0 auto;
+    }
+
+    .grafiekenHome {
+        .col-md-4.creditmeter {
+            padding: 0 75px;
+        }
+
+        .col-md-4 {
+            padding: 5px;
+
+            h3 {
+                text-align: center;
+            }
+        }
+    }
+
+
+    .level {
+        margin-bottom: 5px;
+    }
+    //map
+    .mapPopup {
+        min-width: 200px;
+
+        .development {
+            ul {
+                li {
+                    float: left;
+                }
+            }
+        }
+
+        .col-md-8 {
+            margin-top: 10px;
+        }
+    }
+
+    .detailUser {
+        padding-left: 20px;
+    }
+
+    .layoutBlocks {
+        padding: 10px;
+        min-height: 20px;
+        margin: 10px;
+        background-color: #F5F5F5;
+        max-width: 1120px;
+
+        .btn {
+            color: white;
+            border: none;
+        }
+    }
+
+    .HomeUser {
+        padding-bottom: 0;
+    }
+
+    .map {
+        padding: 0;
+        position: relative;
+    }
+
+    .col-md-6 {
+        padding: 0;
+        color: @cSecundary;
+
+        h2 {
+            margin-bottom: 10px;
+        }
+
+        span.icon-plus:before, span.icon-minus:before {
+            margin-right: 10px;
+            color: @cDefault;
+            font-size: 12px;
+        }
+
+        .icon-plus, .icon-minus, .hoverQuestLink {
+            cursor: pointer;
+        }
+
+        input[type="button"] {
+            margin-top: 5px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        .panel-title {
+            margin-top: 10px;
+        }
+
+        .icon:hover + .hoverQuestLink, .hoverQuestLink:hover {
+            color: #44449F;
+            text-decoration: underline;
+        }
+
+        .list-group-item {
+            margin: 5px 0 0 -5px;
+            padding: 5px;
+            background-color: transparent;
+            border: none;
+        }
+
+        .meer {
+            float: right;
+            margin: -15px 0 0 0;
+        }
+
+        .list-group-item:hover {
+            background-color: @cHighlight;
+        }
+
+        .icon-lg {
+            font-size: 36px;
+            float: right;
+            color: @cSecundary;
+        }
+
+        .iconPos {
+            margin-top: 5px;
+        }
+
+        .development ul {
+            margin: 3px 0 0 0;
+
+            > li {
+                float: left;
+
+                > img {
+                    height: 30px;
+                    width: auto;
+                }
+            }
+        }
+    }
+
+    .masonry {
+        clear: both;
+    }
+}
+
+.HomeUser {
+    .progress-experience {
+        height: 16px;
+        margin-bottom: 5px;
+
+        > .progress-bar {
+            background-color: @cDefault;
+        }
+    }
+
+    .gebruikers-naam {
+        margin-bottom: 5px;
+    }
+
+    .triangleDown {
+        border-left: 10px solid transparent;
+        border-right: 10px solid transparent;
+        border-top: 15px solid @cSecundary;
+    }
+
+    .credits {
+        margin: 0 0 5px 0;
+        float: left;
+        font-size: @fontlarge;
+    }
+
+    .containerCredits {
+        margin: 20px 0 20px 0;
+    }
+
+    .indicatoren {
+        .progress {
+            height: 20px;
+            margin: 0 0 6px 0;
+            width: 90%;
+            float: right;
+        }
+
+        .progressIndicator {
+            float: right;
+            font-size: 12px;
+            margin: 0 5px 0 0;
+        }
+
+        .indicator {
+            clear: right;
+
+            img {
+                margin: -2px;
+            }
+        }
+
+        .progress-sociaal {
+            background-color: @ciSociaalBg;
+
+            > .progress-bar {
+                background-color: @ciSociaal;
+            }
+        }
+
+        .progress-fysiek {
+            background-color: @ciFysiekBg;
+
+            > .progress-bar {
+                background-color: @ciFysiek;
+            }
+        }
+
+        .progress-mentaal {
+            background-color: @ciMentaalBg;
+
+            > .progress-bar {
+                background-color: @ciMentaal;
+            }
+        }
+
+        .progress-welzijn {
+            background-color: @ciWelzijnBg;
+
+            > .progress-bar {
+                background-color: @ciWelzijn;
+            }
+        }
+    }
+
+    .icon-credits:before {
+        margin: 0 0 0 5px;
+        font-size: 30px;
+    }
+
+    .icon-credits-green:before {
+        color: mediumseagreen;
+    }
+
+    .icon-credits-orange:before {
+        color: orange;
+    }
+
+    .icon-credits-red:before {
+        color: red;
+    }
+
+    .icon-credits-black:before {
+        color: black;
+    }
+}
+/*#endregion*/
+
+// --- Market: Werkervaring, Opleiding, Delen --- //
+/*#region Market*/
+.content-market {
+    span[class^="icon-"], span[class*="icon-"] {
+        font-size: @fontextralarge;
+    }
+
+    span.icon-plus {
+        font-size: 14px;
+        margin-right: 10px;
+    }
+}
+
+.authorimg {
+    img {
+        width: 90px;
+        height: 90px;
+    }
+}
+
+.owaeslisstyle {
+    width: 100%;
+    margin: 60px 0 0 0;
+
+    span.moreA {
+        cursor: pointer;
+    }
+
+    span.moreA span {
+        font-size: 12px;
+    }
+
+    span.moreB {
+        display: none;
+    }
+
+    h2 {
+        display: inline-block;
+        margin: 10px 0 0 10px;
+        width: 100%;
+    }
+
+    .col-md-1 {
+        padding: 0;
+    }
+
+    .info {
+        border: 1px solid @cSecundary;
+
+        .col-md-8 {
+            h2 {
+                text-decoration: none;
+            }
+        }
+    }
+
+    .actions {
+        img {
+            margin: -33px 0 0 0;
+        }
+
+        .edit {
+            margin-right: 5px;
+        }
+    }
+
+    .col-md-3 {
+        padding-right: 0px;
+    }
+
+    .subscribe {
+        a {
+            font-size: @fontsmall;
+
+            span {
+                margin: 0 10px 0 0;
+            }
+        }
+
+        .btn-default {
+            margin: -44px 0 0 0;
+        }
+    }
+
+    .subscribe:before {
+        content: "";
+        background: black;
+        width: 50px;
+        -webkit-transform: skew(-20deg);
+        -moz-transform: skew(-20deg);
+        -ms-transform: skew(-20deg);
+        transform: skew(-20deg);
+    }
+
+    .short {
+        margin: 5px 0 0 10px;
+        min-height: 55px;
+    }
+
+    .locationbox {
+        width: 80%;
+        float: right;
+        max-width: 204px;
+        margin: 0 0 0 0;
+    }
+
+    .location {
+        span {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-bottom: 1px solid #D3D6DB;
+            color: #444444;
+            display: block;
+            font-weight: bold;
+            padding: 3px 8px;
+            position: absolute;
+            width: 72%;
+            right: 0px;
+            max-width: 204px;
+        }
+    }
+
+    .detailInfoItem {
+        margin: 15px 0 0 0;
+
+        span {
+            margin: 0 10px 0 0;
+        }
+		
+		.veld {
+			margin: 6px 0;  
+			display: inline-block; 
+			float: none; 
+			width: 32%; 
+		}
+    }
+
+    .waardenfilter {
+        width: 90px;
+        margin: 15px 0 0 5px;
+
+        li {
+            margin: 0 10px 15px 0;
+        }
+
+        li:nth-child(even) {
+            margin-right: 0;
+        }
+    }
+
+    .development {
+
+        ul {
+            width: 90px;
+            margin: 15px 0 0 5px;
+        }
+
+        li {
+            float: left;
+            margin: 0 10px 15px 0;
+        }
+
+        li:nth-child(even) {
+            margin-right: 0;
+        }
+    }
+
+    .col-md-4 {
+        .even {
+            margin: 15px 0 0 0;
+        }
+
+        span {
+            float: left;
+        }
+		
+		
+
+        .data, .naam, .credits, .timing, .adres, .inschrijvingen {
+            overflow: hidden;
+        }
+
+        .adresDetails {
+            float: right;
+            margin: 0;
+            width: 170px;
+        }
+    }
+
+    .tags {
+        min-height: 20px;
+        margin: 0 0 0 5px;
+
+        span {
+            background: none repeat scroll 0 0 #EFEFEF;
+            border-radius: 2px;
+            color: #808080;
+            font-size: 10px;
+            margin: 0 5px 0 0px;
+            padding: 3px 5px;
+        }
+    }
+
+    .right {
+        .info {
+            .tagsRow {
+                margin-top: 10px;
+            }
+        }
+    }
+
+    .soortIcon {
+        float: right;
+        color: @cSecundary;
+    }
+}
+
+.col-md-4, .col-md-8 {
+    .icon {
+        cursor: default;
+    }
+}
+
+.owaeshead {
+    margin: 0 0 0 0;
+    clear: both;
+
+    .authorimg {
+        float: left;
+        margin: 0 20px 0 0;
+    }
+
+    .add {
+        float: left;
+        margin: 0px 20px 0 0;
+    }
+
+    .waardenfilter {
+        float: left;
+        margin: 10px 20px 0 0;
+        width: 100px;
+
+        li {
+            float: left;
+            margin: 0 15px 10px 0;
+
+            :hover {
+                background: #ddd;
+            }
+        }
+
+        li.show {
+            background: @cHighlight;
+        }
+    }
+
+    .info {
+        overflow: auto;
+    }
+}
+
+.userid {
+    display: inline;
+    margin: 0 0 0 0;
+    float: left;
+}
+
+.row {
+    margin: 0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+}
+
+//Detail owaes-items (eigenaar is iemand anders)
+.message {
+    overflow: hidden;
+    margin: 15px 10px 0 10px;
+
+    .user {
+        .img {
+            float: left;
+        }
+
+        .name {
+            float: left;
+            margin-left: 10px;
+            font-size: 15px;
+        }
+    }
+
+    .date {
+        float: right;
+    }
+
+    .msg {
+        clear: right;
+        float: left;
+        margin: 10px 10px 0 15px;
+        width: 80%;
+    }
+
+    textarea {
+        float: left;
+        resize: none;
+        width: 99%;
+        min-height: 150px;
+        margin: 0 0 10px 10px;
+        border: 2px solid @cDefault;
+        padding: 10px;
+    }
+
+    form {
+        float: left;
+        width: 99%;
+        margin-top: 5px;
+    }
+
+    input[type='submit'] {
+        clear: both;
+        margin: 0 0 10px 0;
+    }
+}
+
+
+.messages {
+    margin: 20px 0 20px 0;
+    border: 1px solid @cSecundary;
+
+    hr {
+        width: 90%;
+        height: 2px;
+        background-color: @cDefault;
+    }
+
+    .bericht {
+        margin-bottom: 30px;
+
+        .message {
+            .msg:nth-of-type(2) {
+                margin-left: 108px;
+            }
+        }
+    }
+}
+
+//Detail owaes-items (jij bent de eigenaar)
+.ownerDetail {
+    .geweigerd {
+        border: 1px solid red;
+        min-height: 95px;
+
+        #geweigerd {
+            width: 100%;
+        }
+    }
+
+    .geselecteerd {
+        border: 1px solid green;
+        min-height: 95px;
+        margin-top: 10px;
+
+        #geselecteerd {
+            width: 100%;
+        }
+    }
+
+    .nieuwInschrijvingen {
+        border: 1px solid @cDefault;
+        min-height: 200px;
+        padding-left: 0;
+
+        #nieuw {
+            width: 100%;
+        }
+    }
+
+    form {
+        margin: 15px 0 0 0;
+
+        .btn {
+            margin: 5px 0 5px 5px;
+        }
+    }
+
+    .col-md-6 {
+        padding-right: 0px;
+    }
+
+    h2 {
+        font-size: @fontlarge;
+        color: @cDefault;
+        margin: 10px 0 10px 0;
+        text-decoration: underline;
+    }
+
+    .userid {
+        clear: left;
+
+        .mainprofile {
+            float: left;
+            margin: 5px;
+        }
+
+        p {
+            float: left;
+            margin: 12px 0 12px 0;
+        }
+    }
+
+    .goedkeuren, .afkeuren {
+        margin-left: 10px;
+
+        span {
+            margin-right: 5px;
+        }
+    }
+
+    .goedkeuren {
+        color: green;
+    }
+
+    .afkeuren {
+        color: red;
+    }
+
+    .cursor {
+        :hover {
+            cursor: pointer;
+        }
+    }
+
+    .toestemming {
+        float: right;
+
+        a.goedkeuren:hover {
+            color: #5bd904;
+        }
+
+        a.afkeuren:hover {
+            color: #fc5858;
+        }
+    }
+
+    .icon-close:before {
+        font-size: 18px;
+        margin-right: 5px;
+    }
+
+    .icon-check:before {
+        font-size: 20px;
+        margin-right: 3px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    .popwindow {
+        position: fixed;
+        width: 500px;
+        height: 400px;
+        overflow: auto;
+        margin-left: -300px;
+        margin-top: -250px;
+        left: 50%;
+        top: 50%;
+        background: white;
+        border: 5px solid #929292;
+        z-index: 101;
+        padding: 10px;
+    }
+
+    .popbackground {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 100;
+    }
+
+    .popwindow h3 {
+        font-size: 14px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+
+    .popwindow textarea {
+        width: 474px;
+        height: 190px;
+        margin-bottom: 10px;
+        resize: none;
+    }
+
+    a.popclose {
+        position: fixed;
+        width: 23px;
+        height: 23px;
+        margin-left: 195px;
+        margin-top: -286px;
+        left: 50%;
+        top: 50%;
+        z-index: 102;
+        padding: 10px;
+    }
+}
+
+.owaesDetail {
+    .actions {
+        .subscribe {
+            .btn-default {
+                margin: -44px 0 0;
+            }
+        }
+    }
+}
+/*#endregion*/
+
+// --- Market: Detail --- //
+/*#region Market: Detail*/
+
+.content-owaes, .content-marktitem {
+    span[class^="icon-"], span[class*="icon-"] {
+        font-size: @fontextralarge;
+    }
+}
+
+//niet-eigen items
+.content-owaes {
+}
+
+//eigen items
+.content-marktitem {
+}
+/*#endregion*/
+
+// --- Market: Add --- //
+/*#region Market: Add*/
+.content-market-add {
+    legend {
+        strong {
+            text-transform: capitalize;
+            font-size: 36px;
+            font-weight: 600;
+        }
+
+        small {
+            font-size: 14px;
+        }
+    }
+
+    label.labelkernwoorden {
+        text-align: left;
+    }
+
+    .fixdatepicker {
+        top: 100px !important; //override inline styling from the library
+    }
+
+    .tot {
+        margin: 0 10px;
+    }
+
+    label.date {
+        margin: 3px;
+    }
+
+    input[type="number"] {
+        margin: 0 5px;
+    }
+
+    #map-canvas {
+        margin-bottom: 15px;
+    }
+
+    #tijdsduur {
+        #timingfreeslide {
+            margin: 10px;
+        }
+
+        .sliderref {
+            display: inline;
+        }
+    }
+
+    .form-group.default {
+        background-color: @cHighlight;
+        padding: 10px 0;
+    }
+
+    .tab-content .tab-pane .row h4.locatie {
+        margin-top: 20px;
+    }
+
+    #datesperiods {
+        .rangespan {
+            width: 50%;
+            margin: 0 10px 0 0;
+            display: inline;
+        }
+
+        .rangevalue {
+            width: 20%;
+            margin: 0 15px 0 0;
+            display: inline;
+        }
+    }
+
+    .row {
+        .slider {
+            background-image: none;
+            height: 10px;
+            margin: 7px 0 0 0;
+
+            a {
+                height: 18px;
+            }
+        }
+
+        &.row-credits {
+            margin: 0 0 30px 0;
+
+            #creditsfield {
+                margin: 10px;
+            }
+
+            .credits {
+                display: inline;
+            }
+        }
+
+        &.row-sociaal .slider {
+            background-color: @ciSociaal;
+        }
+
+        &.row-fysiek .slider {
+            background-color: @ciFysiek;
+        }
+
+        &.row-kennis .slider {
+            background-color: @ciMentaal;
+        }
+
+        &.row-welzijn .slider {
+            background-color: @ciWelzijn;
+        }
+
+        &.row-buttons {
+            margin: 20px 0 0 0;
+        }
+    }
+
+
+
+    #calendar {
+        .fc-day:hover {
+            cursor: pointer;
+        }
+
+        .fc-past {
+            background-color: lightgray;
+
+            &:hover {
+                cursor: default;
+            }
+        }
+    }
+
+    #dates {
+        .disabled {
+            cursor: not-allowed;
+
+            input {
+                background-color: lightgray;
+            }
+        }
+    }
+}
+/*#endregion*/
+
+// --- Lists - Users --- //
+/*#region Lists Users*/
+
+.content-lists-users .usersfromlist {
+    .userlistitem {
+        .btn-group span.title {
+            margin: 0 0 0 7px;
+        }
+    }
+
+    .socialmedia {
+        float: right;
+        margin: 25px 5px 0 -50px;
+    }
+
+    .well, .col-md-2, .col-sm-2 {
+        padding: 0;
+    }
+
+    .well {
+        border: 1px solid @cSecundary;
+    }
+
+    .col-md-8, .col-sm-8 {
+        width: 66.5%; //firefox issue <=> 66.6666%
+    }
+
+    h2 {
+        margin: 10px 0 5px 0;
+    }
+
+    p.level-stars, p.location {
+        margin: auto auto 0 auto;
+    }
+
+    span.stars {
+        margin: 0 0 0 5px;
+    }
+}
+
+/*#endregion*/
+
+// --- Lists - Badges --- //
+/*#region List Badges*/
+
+.content-lists-badges {
+    h2 {
+        font-size: @fontextralarge;
+    }
+
+    h3 {
+        font-size: @fontlarge;
+    }
+
+    .row {
+        .badgeslistitem {
+            margin: 10px 0 10px 0;
+        }
+
+        &.behaaldebadges {
+        }
+
+        &.resterendebadges {
+            img {
+                opacity: 0.2;
+            }
+        }
+    }
+}
+
+/*#endregion*/
+
+// --- Account - Profile --- //
+/*#region Account Profile*/
+.content-account-profile {
+    h3 {
+        margin: 5px 0 10px 0;
+    }
+    /*span[class^="icon-"], span[class*="icon-"] {
+        font-size: @fontlarge;
+        margin: 0 50px 0 0;
+    }*/
+    span.icon-settings:before {
+        margin: 0 20px;
+        padding: 0;
+        float: right;
+        font-size: @fontextralarge;
+        color: @cDefault;
+        -moz-transition: all 0.05s ease-in-out;
+        -o-transition: all 0.05s ease-in-out;
+        -webkit-transition: all 0.05s ease-in-out;
+        transition: all 0.05s ease-in-out;
+    }
+
+    span.icon-settings:hover:before {
+        color: @cHighlight;
+        -moz-transform: rotate(35deg) scale(1.2,1.2);
+        -ms-transform: rotate(35deg) scale(1.2,1.2);
+        -o-transform: rotate(35deg) scale(1.2,1.2);
+        -webkit-transform: rotate(35deg) scale(1.2,1.2);
+        transform: rotate(35deg) scale(1.2,1.2);
+    }
+
+    span.icon-settings:hover {
+        //mag niet op :before!
+        cursor: pointer;
+    }
+
+    ul.socialmedia {
+        margin: 25px 0 0 0;
+    }
+
+    .media-body {
+        padding: 8px;
+    }
+
+    a.list-group-item {
+        margin: 0 -5px;
+        padding: 5px;
+        background-color: transparent;
+        border: none;
+    }
+
+    a.list-group-item:hover {
+        background-color: @cHighlight;
+    }
+
+    .media img.media-object {
+        width: 64px;
+        height: 64px;
+    }
+
+    span {
+        -ms-word-wrap: break-word;
+        word-wrap: break-word;
+    }
+
+    h4 {
+        -ms-word-wrap: break-word;
+        word-wrap: break-word;
+    }
+
+    .well-profile {
+        padding: 0;
+
+        .profielafbeelding {
+            padding: 0;
+        }
+
+        .basisgegevens {
+            padding: 20px 0 0 0;
+
+            h2.naam {
+                font-size: 36px;
+            }
+
+            h3.level-stars {
+                font-size: 20px;
+            }
+
+            .stars {
+                margin: 0 0 0 10px;
+            }
+        }
+
+        .btn-group-vertical {
+            margin: 15px 0 0 0;
+
+            a {
+                text-align: left;
+
+                span {
+                    font-size: 14px;
+                }
+
+                span.icon {
+                    margin: 0 20px 0 0;
+                }
+            }
+        }
+    }
+
+    .well-informatie {
+
+        ul > li {
+            margin: 10px 0;
+        }
+
+        span.icon-settings:before {
+            margin: -27px -10px 0 0;
+        }
+
+        span[class^="icon-"], span[class*="icon-"] {
+            font-size: @fontlarge;
+            margin: 0 50px 0 0;
+        }
+    }
+
+    .well-intro {
+        ul.varia {
+            > li {
+                margin: 5px 0;
+
+                img {
+                    margin: 0 20px 0 0;
+                }
+            }
+        }
+    }
+
+    .well-vrienden, .well-volgers, .well-volgend {
+        .meer {
+            float: right;
+            margin: -15px 0 0 0;
+        }
+    }
+
+    .well-badges {
+        //min-height: 140px;
+        ul.badges > li {
+            display: inline;
+
+            > img {
+                margin: 5px;
+            }
+        }
+    }
+
+    .well-recenteactiviteit {
+        .icon-lg {
+            font-size: 36px;
+            float: right;
+            /* display: block; */
+            margin: -13px 0 0 0;
+            color: @cSecundary;
+        }
+
+        .media-body {
+            //padding: 8px 8px 8px 8px;
+            h4.media-heading {
+                margin: -5px 0 0 0;
+            }
+        }
+
+        .development ul {
+            margin: 3px 0 0 0;
+
+            > li {
+                float: left;
+
+                > img {
+                    height: 30px;
+                    width: auto;
+                }
+            }
+        }
+
+        .meer {
+            float: right;
+            margin: -15px 0 0 0;
+        }
+    }
+}
+
+.modal {
+    .input-group-addon {
+        &.icon {
+            margin: 0;
+            padding: 0 10px;
+        }
+    }
+
+    &#editIntro textarea {
+        height: 200px;
+    }
+
+    .bestand-toevoegen {
+        float: right;
+
+        .add {
+            //font-size: @fontlarge;
+            font-weight: 600;
+            color: @cDefault;
+            margin: 10px;
+        }
+
+        &:hover {
+            cursor: pointer;
+            text-decoration: none;
+        }
+    }
+}
+/*#endregion*/
+
+// --- Account - Instellingen --- //
+/*#region Account Instellingen*/
+.content-account-settings {
+    .showprofile {
+        text-align: left !important;
+    }
+
+    textarea#description {
+        height: 150px;
+    }
+}
+
+
+/*#endregion*/
+
+// --- Conversation --- //
+/*#region Conversation*/
+.conversation {
+    margin-top: 10px;
+
+    h1 {
+        text-align: center;
+        color: @cDefault;
+    }
+
+    .date {
+        font-size: 12px;
+        color: #808080;
+        margin-top: 10px;
+    }
+
+    .bericht.even {
+        margin-top: 30px;
+
+        .user {
+            .img {
+                float: right;
+            }
+
+            .name {
+                float: right;
+                margin-right: 10px;
+            }
+        }
+
+        .date {
+            float: left;
+            margin-left: 20px;
+        }
+
+        .msg {
+            float: left;
+            width: 80%;
+            margin-left: 20px;
+            clear: left;
+        }
+    }
+
+    .bericht.odd {
+        margin-bottom: 30px;
+
+        .message {
+            .msg:nth-of-type(2) {
+                margin-left: 108px;
+            }
+        }
+
+        .date, .msg {
+            margin-right: 20px;
+        }
+
+        .msg {
+            width: 80%;
+        }
+    }
+}
+
+.convoCollection {
+    border-right: 1px solid @cSecundary;
+    height: 100%;
+    overflow: auto;
+
+    a.list-group-item {
+        background-color: rgba(0, 0, 0, 0);
+        border: medium none;
+        padding: 5px;
+        width: 100%;
+    }
+
+    a.list-group-item:hover {
+        background-color: @cHighlight;
+    }
+
+    .media-body {
+        text-align: center;
+    }
+
+    .media {
+        margin: 15px 0 15px 0;
+    }
+
+    .hrConvoCollection {
+        width: 80%;
+        color: @cSecundary;
+        margin: 0px auto 0 auto;
+    }
+
+    a.conversationActive {
+        color: @cSecundary;
+        margin: 0;
+        background-color: @cHighlight;
+    }
+}
+
+.conversationPage {
+    height: 67vh;
+    border: 1px solid @cSecundary;
+
+    ::-webkit-scrollbar {
+        width: 15px;
+    }
+
+    ::-webkit-scrollbar-track {
+        background-color: #eaeaea;
+        border-left: 1px solid #ccc;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background-color: @cDefault;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+        background-color: #e2b605;
+    }
+
+    .col-md-4 {
+        padding: 0;
+    }
+}
+
+.convoColumn {
+    height: 65vh;
+    overflow: auto;
+}
+
+.berichtGeenGesprekken {
+    margin: 10px;
+    display: block;
+}
+/*#endregion*/
+
+// --- Admin --- //
+/*#region Admin*/
+.admin, .admin-users, .admin-groepen, .admin-groepusers {
+    table {
+        width: 100%;
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    ul {
+        border: 1px solid @cDefault;
+        background-color: #f6f6f6;
+        overflow: hidden;
+
+        li {
+            a {
+                margin: 10px;
+                float: left;
+            }
+        }
+    }
+
+    td {
+        padding: 5px;
+        border-bottom: solid 1px white;
+        border-right: solid 1px white;
+        max-width: 135px;
+        height: 50px;
+    }
+
+    th {
+        padding: 10px 5px;
+        border-bottom: solid 2px @cSecundary;
+        background-color: #febf00;
+        text-align: center;
+
+        a {
+            color: black;
+        }
+    }
+
+    .lowValue {
+        background-color: #ee4848;
+        color: white;
+        height: 90%;
+    }
+
+    .orangeValue {
+        background-color: #ffbc03;
+        color: white;
+        height: 90%;
+    }
+
+    tr:nth-child(even) {
+        background-color: #ffe49b;
+    }
+
+    tr:nth-child(odd) {
+        background-color: #fdf2d4;
+    }
+
+    .adminFilter {
+        background-color: @cHighlight;
+    }
+
+    .pages {
+        float: right;
+
+        a {
+            margin: 10px;
+        }
+
+        .prev {
+            margin-left: 0;
+            margin-right: 20px;
+        }
+
+        .next {
+            margin-left: 20px;
+            margin-right: 0px;
+        }
+    }
+}
+
+
+.admin-user {
+    ul {
+        border: 1px solid @cDefault;
+        background-color: #f6f6f6;
+        overflow: hidden;
+
+        li {
+            a {
+                margin: 10px;
+                float: left;
+            }
+        }
+    }
+
+    #chart {
+        height: 600px;
+        padding: 0;
+        position: relative;
+        width: 100%;
+    }
+
+    .filterOption {
+        float: left;
+        margin-right: 20px;
+
+        input {
+            margin-right: 10px;
+        }
+
+        .filterCredits {
+            color: #9440ed;
+        }
+
+        .filterSociaal {
+            color: #4da74d;
+        }
+
+        .filterWelzijn {
+            color: #edc240;
+        }
+
+        .filterFysiek {
+            color: #cb4b4b;
+        }
+
+        .filterKennis {
+            color: #afd8f8;
+        }
+    }
+
+    .aanradenContainer {
+        .aanradenPopup {
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .aanraden {
+            margin-top: 25px;
+            float: left;
+            clear: both;
+            font-size: @fontlarge;
+        }
+    }
+}
+
+.admin-users {
+    textArea {
+        border: 0px;
+        width: 100%;
+        padding: 5px;
+        height: 35px;
+    }
+
+    input[type="submit"] {
+        float: right;
+    }
+
+    .links {
+        a, span {
+            margin-right: 10px;
+        }
+    }
+}
+
+.admin-groepen {
+    h1 {
+        clear: both;
+    }
+
+    form {
+        input, textarea, select {
+            float: left;
+            padding: 5px;
+            margin-right: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+        }
+    }
+
+    .groepToevoegenForm {
+        width: 100%;
+        margin-bottom: 15px;
+
+        textarea {
+            width: 450px;
+            height: 150px;
+        }
+    }
+
+    .save {
+        float: right;
+        margin-right: 0px;
+        width: 75px;
+    }
+
+    .links {
+        a, span {
+            margin-right: 10px;
+        }
+    }
+}
+
+.admin-groepusers {
+
+    select {
+        height: 44px;
+        margin: 0;
+        padding-top: 10px;
+        text-align: center;
+    }
+
+    textarea {
+        width: 100%;
+        height: 35px;
+        padding: 5px;
+    }
+
+    .save {
+        float: right;
+        margin-right: 0px;
+        width: 75px;
+    }
+
+    .links {
+        a, span {
+            margin-right: 10px;
+        }
+    }
+}
+
+#popupOpleiding, #popupWerkervaring, #popupQuest {
+    ul li {
+        float: left;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 5px;
+        float: left;
+        cursor: pointer;
+    }
+
+    .media {
+        margin: 0px;
+    }
+
+    .icon {
+        float: right;
+        cursor: default;
+    }
+
+    h5 {
+        text-decoration: underline;
+        margin-bottom: 5px;
+    }
+}
+
+/*#endregion*/
+
+//--- Search ---//
+/*#region Search*/
+.search {
+    .owaeslisstyle:not(:first-child) {
+        margin-top: 55px;
+    }
+
+    .userlistitem {
+        .col-sm-8 {
+            width: 195px;
+            margin-left: 40px;
+        }
+    }
+
+    h1 {
+        margin-bottom: 0px;
+        margin-top: 0px;
+    }
+
+    h1:not(:first-child) {
+        margin-bottom: 20px;
+        margin-top: 20px;
+    }
+
+    .sidebar {
+        background-color: #F5F5F5;
+
+        h2 {
+            margin: 15px 0 10px 0;
+            text-decoration: underline;
+        }
+
+        .weergevenPersonen {
+            label {
+                display: block;
+                padding-left: 15px;
+                text-indent: -15px;
+            }
+
+            input[type="checkbox"] {
+                width: 13px;
+                height: 13px;
+                margin: 0 10px 0 0;
+                vertical-align: bottom;
+                position: relative;
+                top: -1px;
+                *overflow: hidden;
+            }
+        }
+
+        .locatie, .tijd, .indicatoren, .tags {
+            clear: both;
+        }
+
+        .locatie, .tags {
+            label {
+                margin-top: 10px;
+            }
+        }
+
+        #Locatie, #Tags {
+            width: 100%;
+            padding-left: 5px;
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+
+        .activiteiten {
+            .col-md-6 {
+                padding: 0;
+            }
+
+            select {
+                margin: 5px 5px 5px 5px;
+                min-width: 30px;
+            }
+
+            input[type="checkbox"] {
+                margin: 0 10px 0 0;
+            }
+
+            input[type="text"] {
+                margin: 10px 5px 10px 5px;
+            }
+        }
+    }
+}
+/*#endregion*/
+
+/*#endregion*/
+
+// --- MediaQueries --- //
+/*#region MediaQueries*/
+@media (max-width: 1200px) {
+    .owaeslisstyle {
+        .info {
+            .col-md-4 {
+                .adresDetails {
+                    width: 130px;
+                }
+            }
+        }
+    }
+
+    .container {
+        width: auto;
+    }
+
+    .indicatoren {
+        max-width: 250px;
+    }
+
+    .navbar-default {
+        border-right: 0;
+
+        .navbar-nav {
+            //margin: 0 -650px 0 0 !important;
+            li.first {
+                //display: none;
+            }
+
+            li > a {
+                //width: auto;
+            }
+        }
+    }
+
+    .content-account-profile {
+        .well-profile {
+            div[class^="col-"] {
+                padding: 10px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1150px) {
+    .search {
+        .info {
+            .col-md-11 {
+                width: 90%;
+                margin-left: 10px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1135px) {
+    .content-account-profile .well-informatie span.icon-settings:before {
+        margin: -50px -18px 0 0;
+    }
+
+    .content-account-profile span.icon-settings:before {
+        margin: 0 45px;
+    }
+}
+
+@media (max-width: 1100px) {
+
+    .owaeslisstyle {
+        .actions {
+            margin: 0 45px 0 0;
+        }
+
+        .sub {
+            margin-right: -45px;
+        }
+    }
+
+    .panel-profile-sm {
+        .panel-body {
+            width: 650px;
+        }
+    }
+
+    .navbar-default {
+        .navbar-nav {
+            margin: 0 -650px 0 0 !important;
+
+            li > a {
+                width: auto;
+            }
+        }
+    }
+    /*.navbar-default {
+        margin-bottom: 0;
+        border: 0;
+        background-color: @cDefault;
+        height: 73px;
+
+        .row {
+            background-color: @cDefault;
+        }
+
+        .navbar-nav li.first{
+            display: none;
+        }
+    }*/
+}
+
+@media (max-width: 1060px) {
+    //gebruikerslijst responsive
+    .content-lists-users {
+        .usersfromlist {
+            .userlistitem {
+                .col-sm-8 {
+                    margin-left: 35px;
+                    padding: 0;
+                    width: 190px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1005px) {
+    .footer .container .whitePart .esfLogoFooter {
+        margin: 0;
+    }
+}
+
+@media (max-width: 991px) {
+    .content-account-profile .well-informatie span.icon-settings:before {
+        margin: 0;
+    }
+
+    .owaeslisstyle {
+        .info {
+            .col-md-8 {
+                margin-left: 0px;
+                margin-right: 0px;
+                padding: 0 0 0 0;
+            }
+
+            .col-md-4 {
+                margin-top: 15px;
+
+                .adresDetails {
+                    float: none;
+                    margin: 0 0 0 38px;
+                    width: 170px;
+                }
+            }
+        }
+
+        .short {
+            min-height: 20px;
+        }
+
+        .location {
+            margin: 10px 0 0 0;
+
+            span {
+                max-width: 224px;
+                right: auto;
+                left: 15px;
+            }
+        }
+
+        .locationbox {
+            float: left;
+            margin: 0 0 0 0;
+            max-width: 224px;
+            width: 100%;
+        }
+    }
+
+    .message {
+        textarea {
+            margin-top: 10px;
+            margin-left: 0px;
+            width: 101%;
+        }
+
+        form {
+            width: 99%;
+        }
+    }
+
+    .ownerDetail {
+        form {
+            .col-md-6 {
+                padding-left: 0;
+
+                .geweigerd {
+                    width: 100%;
+                    margin-top: 10px;
+                }
+            }
+        }
+    }
+
+    .owaeslisstyle .soortIcon {
+        margin: 0 20px 0 0;
+    }
+
+    .conversationPage {
+        border: 1px solid #00005B;
+        height: 100%;
+    }
+
+    .convoColumn {
+        border-top: 1px solid #00005B;
+    }
+
+    .search {
+        .info {
+            .col-md-11 {
+                width: 100%;
+                margin-left: 0px;
+                padding-left: 5px;
+            }
+        }
+    }
+}
+
+@media (max-width: 940px) {
+    .indicatoren {
+        max-width: 145px;
+    }
+}
+
+@media (max-width: 924px) {
+
+    .navbar-header {
+        z-index: 1000;
+        position: relative;
+    }
+
+    .navbar-right {
+        z-index: 500;
+        position: relative;
+    }
+}
+
+@media (max-width: 800px) {
+    .indicatoren {
+        max-width: 125px;
+    }
+}
+
+@media (max-width: 767px) {
+
+    .footer .container .whitePart .esfLogoFooter {
+        margin: 0 0 0 0;
+        width: 100px;
+        height: auto;
+        margin-top: 0px;
+    }
+
+    .footer .container .whitePart img {
+        width: 40px;
+        height: auto;
+    }
+
+    .footer .container .yellowPart span {
+        margin: 15px auto;
+        text-align: center;
+    }
+
+    .footer .container .yellowPart {
+        margin-left: 0;
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .footer .container {
+        padding: 0 0 0 0;
+        margin: 0 0 0 0;
+        min-width: 100%;
+    }
+
+    //gebruikerslijst responsive
+    .content-lists-users {
+        .usersfromlist {
+            .userlistitem {
+                .col-sm-8 {
+                    margin-left: auto;
+                    padding: 10px;
+                    width: auto;
+                }
+            }
+        }
+    }
+
+    .content-account-profile {
+
+        .well-profile .basisgegevens {
+            .btn-group-vertical {
+                margin: 0 0 10px 0;
+            }
+
+            .stars {
+                display: block;
+            }
+        }
+    }
+
+    .icon-bar {
+        margin: 0;
+        color: @cDefault;
+    }
+
+    .navbar-collapse.in, .navbar-collapse.collapsing {
+        overflow-y: visible;
+        margin: 0 0 0 0;
+        padding: 0;
+    }
+
+    .navbar-default {
+        background-color: transparent;
+        border: none;
+
+        .container {
+            padding: 0;
+        }
+
+        .navbar-collapse, .navbar-collapse.collapsing {
+            height: auto !important;
+
+            .navbar-nav {
+                margin: 0 !important;
+
+                li > a {
+                    text-align: left;
+
+                    > span[class^="icon-"], span[class*="icon-"] {
+                        margin: 0 15px 0 0;
+                        display: inline;
+                    }
+                }
+            }
+        }
+
+        .navbar-header {
+            margin: -50px 0 0 0;
+
+            button {
+                margin: 60px 15px 10px 0;
+            }
+
+            .navbar-brand {
+                color: white;
+                height: 0;
+                margin: 0;
+                padding: 0;
+                /*#region img replacement*/
+                /*new method of img replacement*/
+                text-indent: 150%;
+                white-space: nowrap;
+                overflow: hidden;
+                background-image: url(../img/owaeslogo.png);
+                width: 220px;
+                height: 100px;
+                background-repeat: no-repeat;
+                /*#endregion*/
+                //margin:0 0 -70px 0;
+                > a {
+                    &:hover, &:focus {
+                        color: @cSecundary;
+                    }
+                }
+            }
+        }
+    }
+
+    .search-sm {
+        margin: 0;
+        width: auto;
+        display: none;
+    }
+
+    .col-user {
+        //padding: 0;
+        /*margin: -20px -20px 10px -20px;
+        padding: 20px 20px 10px 20px;*/
+        .panel-profile-sm {
+            -moz-transform: none;
+            -ms-transform: none;
+            -o-transform: none;
+            -webkit-transform: none;
+            transform: none;
+            width: auto;
+            height: auto;
+            border: 1px solid @cSecundary;
+            margin: -23px -40px 10px -40px;
+            padding: 10px 15px 0 15px;
+
+            .panel-body {
+                -moz-transform: none;
+                -ms-transform: none;
+                -o-transform: none;
+                -webkit-transform: none;
+                transform: none;
+                width: auto;
+
+                .progress-experience {
+                    -moz-transform: skewX(0);
+                    -ms-transform: skewX(0);
+                    -o-transform: skewX(0);
+                    -webkit-transform: skewX(0);
+                    transform: skewX(0);
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 640px) {
+    .footer .container .whitePart .esfLogoFooter {
+        margin-top: 0px;
+    }
+}
+
+@media (max-width: 500px) {
+    .footer .container .whitePart span {
+        margin: 10px 60px 0 0;
+        float: none;
+    }
+}
+
+@media (max-width: 435px) {
+    .footer .region .container .whitePart span {
+        margin: 0px;
+    }
+}
+
+@media (max-width: 420px) {
+    .badgeslistitem img {
+        margin: 0 0 0 -30px;
+    }
+
+    .notification {
+        position: fixed;
+        bottom: 2px;
+        right: 2px;
+    }
+
+    .indicatoren {
+        margin-left: 20px;
+    }
+    //deze important moet weg, als we de docs samenvoegen zal het normaal werken zonder important
+    .footer .container .yellowPart {
+        height: 95px !important;
+        //display:none;
+    }
+}
+
+@media (max-width: 345px) {
+    .footer .yellowPart {
+        height: 100px;
+    }
+
+    .footer .container .yellowPart span {
+        margin: 10px auto;
+        text-align: center;
+    }
+}
+
+@media (max-width: 328px) {
+    .footer .container .yellowPart {
+        border-top: 3px solid @cSecundary;
+        min-height: 105px;
+    }
+
+    .footer .block {
+        border: none;
+    }
+}
+
+@media (max-width: 260px) {
+    .indicatoren {
+        margin-left: 30px;
+    }
+}
+
+@media (max-width: 236px) {
+    .footer .container .yellowPart {
+        min-height: 125px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 835px) {
+    .navbar-default .navbar-nav {
+        margin: 0 -740px 0 0 !important;
+
+        > li.first {
+            display: none;
+        }
+    }
+}
+
+@media (min-width: 768px) {
+    .navbar-default {
+        background-color: transparent;
+        border-bottom: solid 3px @cSecundary;
+        //position:fixed; //hack voor geen horiz. scroll => gele zijkant menu
+        .navbar-header {
+            margin: 2px 0 -50px 0;
+
+            .navbar-brand {
+                color: white;
+                height: 0;
+                margin: 0;
+                padding: 0;
+                /*#region img replacement*/
+                /*new method of img replacement*/
+                text-indent: 150%;
+                white-space: nowrap;
+                overflow: hidden;
+                background-image: url(../img/owaeslogo.png);
+                width: 220px;
+                height: 100px;
+                background-repeat: no-repeat;
+                /*#endregion*/
+                //margin:0 0 -70px 0;
+                > a {
+                    &:hover, &:focus {
+                        color: @cSecundary;
+                    }
+                }
+            }
+        }
+
+        .navbar-nav.navbar-right {
+            background-color: @cDefault;
+            float: right;
+            width: 1300px;
+            margin: 0 -500px 0 0;
+
+            &:before {
+                background-color: @cWhite;
+                float: left;
+                width: 0;
+                height: 0;
+                border-style: solid;
+                border-width: 0 0 74px 74px;
+                border-color: transparent transparent @cDefault transparent;
+                line-height: 0;
+                padding: 0 10px;
+                _border-color: #000000 #000000 @cDefault #000000;
+                _filter: progid:DXImageTransform.Microsoft.Chroma(color='#000000');
+            }
+        }
+    }
+
+    //footer
+    .yellowPart:after {
+        background-color: @cWhite;
+        border-color: @cDefault rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+        border-style: solid;
+        border-width: 72px 72px 0 0;
+        content: "";
+        float: right;
+        height: 0;
+        line-height: 0;
+        width: 0;
+        margin-top: -52px;
+    }
+}
+
+//mozilla only
+@-moz-document url-prefix() {
+    .admin-groepusers {
+
+        .toevoegen {
+            margin-top: -3px;
+        }
+    }
+
+    .owaeslisstyle {
+
+        .subscribe {
+            .btn-default {
+                margin: -45px 0 0 0;
+            }
+        }
+    }
+
+    .owaesDetail {
+        .actions {
+            .subscribe {
+                .btn-default {
+                    margin: -45px 0 0;
+                }
+            }
+        }
+    }
+
+    .panel-profile-sm {
+        .progress-experience {
+            margin: 5px 0 0 4px;
+        }
+    }
+
+
+    .owaeslisstyle {
+        .subscribe {
+            .btn-default {
+                margin: -45px 0 0 0;
+            }
+        }
+    }
+
+    .well-informatie {
+        span.icon-settings:before {
+            margin: 0 -10px 0 0 !important;
+        }
+    }
+
+    .form-control {
+        height: auto;
+		
+		
+    }
+	.form-control.gepasseerd.fout {
+		border: 1px solid red; 
+	}
+	
+    /*@media (max-width: 924px) {
+
+        .navbar-header {
+            z-index: 1000;
+            position:relative;
+        }
+
+        .navbar-right {
+            z-index: 500;
+            position:relative;
+        }
+    }*/
+}
+/*#endregion*/

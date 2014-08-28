@@ -1,0 +1,61 @@
+Version history for query-simple-datetimepicker
+https://github.com/mugifly/jquery-simple-datetimepicker/
+
+1.6.0  2013-09-04
+  - [Add] "closeOnSelected" option for close the picker when selected date & time (Idea by: MacDknife).
+  - [Add] "timelistScroll" option for disable automatic scroll of timelist (Idea by: deviso).
+  - [Add] Change the months by scroll of mouse-wheel on the calendar (Idea by: deviso).
+  - [Add] "calendarMouseScroll" option for scroll calendar with mouse wheel (default: true).
+  - [Add] Today button for calendar (Idea by: Tanver186).
+  - [Add] "todayButton" option (default: true).
+  - [Change] Improve design (header, container).
+  - [Fix] Malfunction of "animation" option (Can't disable animation).
+
+1.5.0  2013-08-28
+  - [Add] Turkish locale (Thanks to: myfell).
+  - [Add] Spanish locale (Thanks to: maw).
+  - [Add] Swedish locale (Thanks to: MacDknife).
+  - [Fix] Be more robust when receiving clearly bogus date strings (Thanks to: maw).
+
+1.4.0  2013-08-02
+  - [Add] Indonesia locale (Thanks to: robzlabz).
+  - [Fix] "firstDayOfWeek" option and others (Thanks to: thisispiers).
+  - [Fix] should now gets format mysql-datetime (Thanks to: Orlac).
+
+1.3.0  2013-06-29
+  - [Add] Chinese locale (Thanks to: jasonslyvia).
+  - [Add] Initial first day of the week (Thanks to: concept1hundred).
+  - [Add] German locale (Thanks to: rtakeda).
+  - [Change] Option name: "minute_interval" -> "minuteInterval"
+  - [Fix] misplaced when located in nested elements (Thanks to: insonifi).
+
+1.2.0  2013-06-17
+  - [Add] Change the interval of minute (Thanks to: AndAniCalik).
+
+1.1.4  2013-06-02
+  - [Add] Brasil locale (Thanks to: Mauricio).
+
+1.1.3  2013-05-22
+  - [Add] Russian locale (Thanks to: rdolgushin).
+
+1.1.2  2013-05-09
+  - [Fixed] IE8 compatibility (Thanks to: mackeian).
+
+1.1.1  2013-03-12
+  - [Fixed] Fixed width of timelist for bug in ie9 (Thanks to: jjsgro).
+
+1.1.0  2013-03-02
+   - [Implement] Option to disable the animation.
+   - [Improve] Animation and parts.
+   - [Fixed] Support dateFormat and fix bug (Thanks to: LeandroSe).
+   - [Fixed] Support Firefox in current date (Thanks: LeandroSe).
+   - [Improve] Show the month name instead of number in header (Thanks to: dsims).
+   - [Fixed] appendDtpicker is not overriding the default date with the input's value (Thanks: dsims).
+   - [Fixed] default month (Thanks: dsims).
+
+1.0.0  2012-11-02
+   - Initial release.
+
+----
+
+Thanks to contributors!

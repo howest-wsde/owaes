@@ -1,0 +1,1745 @@
+// --- Variables --- //
+/*#region Variables*/
+//c : color
+@cDefault: #ffcc00;
+@cHighlight: #ffdd55;
+@cWhite: #f9f9f9;
+@cSecundary: #00005b;
+@cSecundaryHover: #44449f;
+
+//ci : color indicator
+@ciSociaal: #8dc63f;
+@ciSociaalBg: #deecca;
+@ciFysiek: #ff3131;
+@ciFysiekBg: #fadbdb;
+@ciMentaal: #0072bc;
+@ciMentaalBg: #d4e5f0;
+@ciWelzijn: #ffcc00;
+@ciWelzijnBg: #fbeebb;
+
+//font
+@fontlarge: 24px;
+@fontsmall: 18px;
+@fontextrasmall: 14px;
+/*#endregion*/
+
+span.icon-admin:before {
+    content: "\e676";
+}
+span.icon-minus:before{
+    content: "\e703";
+}
+
+// --- Footer --- //
+/*#region Footer*/
+.footer {
+    margin: 50px 0 0 0;
+    padding: 0 0 0 0;
+    width: 100%;
+    
+    h2 {
+        display: none;
+    }
+     
+        .container .yellowPart {
+            background-color: @cDefault;
+            float: left;
+            min-width: 600px;
+            margin-left: -700px;
+            height: 72px;
+            width: 1300px;
+
+            span {
+                max-width: 420px;
+                margin: 10px 0 0 700px;
+                display: table;
+                font-weight: 300;
+
+                a {
+                    color: @cSecundary;
+                    text-decoration: none;
+                    font-weight: 800;
+
+                    &:hover {
+                        color: #44449f;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+
+        .container .whitePart {
+            background-color: @cWhite;
+            float: right;
+
+            span{
+                float: left;
+                margin: 10px 50px 0 0;
+                color: @cSecundary;
+                width: 200px;
+
+                 a {
+                    color: @cSecundary;
+                    text-decoration: none;
+                    font-weight: 800;
+
+                    &:hover {
+                        color: #44449f;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+
+            .container .whitePart img {
+                float: right;
+                margin-top: 10px;
+                margin-right: 20px;
+            }
+
+            .container .whitePart .esfLogoFooter {
+                margin-top: -51px;
+                margin-right: -20px;
+            }
+
+        .block {
+            height: 72px;
+            border-top: 3px solid @cSecundary;
+        }
+}
+/*#endregion*/
+
+// --- owaes-items --- //
+/*#region owaes-items*/
+.authorimg {
+    img{
+        width: 90px;
+        height:90px;
+    }
+}
+
+.owaeslisstyle {
+    width: 100%;
+    margin: 60px 0 0 0;
+
+   span.moreA {
+       cursor: pointer; 
+   }
+   span.moreA span {
+       font-size: 12px; 
+   }
+   span.moreB {display: none; }
+
+    h2 {
+        display: inline-block;
+        margin: 10px 0 0 10px;
+        width: 100%;
+    }
+
+    .col-md-1{
+        padding:0;
+    }
+    .info {
+        border: 1px solid @cSecundary;
+        .col-md-8{
+            h2{
+                text-decoration:none;
+            }
+        }
+    }
+
+    .actions{
+        img{
+            margin: -33px 0 0 0;
+        }
+
+        .edit{
+            margin-right: 5px;
+        }      
+    }
+
+    .col-md-3{
+        padding-right:0px;
+    }
+
+     .subscribe{
+        a{
+            font-size:@fontsmall;
+            span{
+                margin: 0 10px 0 0;
+            }
+        }
+
+         .btn-default{
+            margin: -44px 0 0 0;
+        }
+    }
+
+     .subscribe:before{
+            content:"";
+            background: black;
+            width: 50px;
+            -webkit-transform: skew(-20deg);
+            -moz-transform: skew(-20deg);
+            -ms-transform: skew(-20deg);
+            transform: skew(-20deg);
+        }
+
+    .short {
+        margin: 5px 0 0 10px;
+        min-height: 55px;
+    }
+
+    .locationbox {
+        width: 80%;
+        float: right;
+        max-width: 204px;
+        margin:0 0 0 0;
+    }
+
+    .location {
+        span {
+            background-color: rgba(255, 255, 255, 0.7);
+            border-bottom: 1px solid #D3D6DB;
+            color: #444444;
+            display: block;
+            font-weight: bold;
+            padding: 3px 8px;
+            position: absolute;
+            width: 72%;
+            right: 0px;
+            max-width: 204px;
+        }
+    }
+
+    .detailInfoItem {
+        margin: 15px 0 0 0;
+        span{
+            margin: 0 10px 0 0;
+        }    
+    }
+
+    .waardenfilter{
+        width: 90px;
+        margin:15px 0 0 5px;
+        
+       li {
+            margin: 0 10px 15px 0;
+       }
+
+      li:nth-child(even) {
+            margin-right: 0;
+      }
+    }
+
+    .development {
+
+        ul {
+            width: 90px;
+            margin: 15px 0 0 5px;
+        }
+
+        li {
+            float: left;
+            margin: 0 10px 15px 0;
+        }
+
+        li:nth-child(even) {
+            margin-right: 0;
+        }
+    }
+
+    .col-md-4 {
+        .even {
+           margin: 15px 0 0 0;
+        }
+
+        span{
+            float:left;
+        }
+
+        .data, .naam, .credits, .timing, .adres, .inschrijvingen{
+            overflow:hidden;
+        }
+
+        .adresDetails{
+          float: right;
+          margin: 0;
+          width: 170px
+        }
+    }
+
+    .tags {
+        min-height:20px;
+        margin: 0 0 0 5px;
+        span {
+            background: none repeat scroll 0 0 #EFEFEF;
+            border-radius: 2px;
+            color: #808080;
+            font-size: 10px;
+            margin:0 5px 0 0px;
+            padding: 3px 5px;
+        }
+    }
+
+    .right{
+        .info{
+            .tagsRow{
+                margin-top:10px;
+            }
+        }
+    }
+
+    .soortIcon{
+        float:right;
+        color:@cSecundary;
+    }
+
+}
+
+.col-md-4, .col-md-8{
+    .icon{
+        cursor:default;    
+    }
+}
+
+.owaeshead{
+        margin: 0 0 0 0;
+        clear:both;
+
+        .authorimg{
+            float:left;
+            margin: 0 20px 0 0;
+        }
+        
+        .add{
+            float: left;
+            margin: 0px 20px 0 0;
+        }
+
+        .waardenfilter{
+            float:left;
+            margin: 10px 20px 0 0;
+            width: 100px;
+
+               li{
+                   float:left;
+                   margin: 0 15px 10px 0;
+
+                   :hover{
+                       background:#ddd;
+                   }
+               }
+
+               li.show{
+                   background:@cHighlight;
+               }
+        }  
+        
+        .info{
+            overflow:auto;
+        }      
+}
+
+.userid {
+    display:inline;
+    margin: 0 0 0 0;
+    float:left;
+}
+
+.row{
+    margin:0px 0px 0px 0px;
+    padding: 0px 0px 0px 0px;
+}
+
+//Detail owaes-items (eigenaar is iemand anders)
+.message {
+    overflow: hidden;
+    margin: 15px 10px 0 10px;
+    .user {
+        .img {
+            float: left;
+        }
+
+        .name {
+            float: left;
+            margin-left: 10px;
+            font-size:15px;
+        }
+    }
+
+    .date{
+       float:right;
+    }
+
+    .msg{
+        clear:right;
+        float:left;
+        margin: 10px 10px 0 15px;
+        width:80%;
+    }
+
+    textarea{
+        float:left;
+        resize:none;
+        width:99%;
+        min-height: 150px;
+        margin: 0 0 10px 10px;
+        border: 2px solid @cDefault;
+        padding:10px;
+    }
+
+    form{
+        float:left;
+        width:99%;
+        margin-top:5px;
+    }
+
+    input[type='submit']{
+        clear:both;
+        margin: 0 0 10px 0 ;
+    }
+}
+
+
+.messages{
+    margin: 20px 0 20px 0; 
+    border: 1px solid @cSecundary;
+
+    hr{
+        width:90%;
+        height:2px;
+        background-color:@cDefault;
+    }
+
+       .bericht {
+        margin-bottom: 30px;
+
+        .message {
+           .msg:nth-of-type(2)  {
+                margin-left:108px;
+            }
+        }
+    }
+}
+
+//Detail owaes-items (jij bent de eigenaar)
+.ownerDetail{
+    .geweigerd{
+         border: 1px solid red;
+         min-height: 95px; 
+
+         #geweigerd{
+             width:100%;
+         }
+    }
+
+    .geselecteerd{
+         border: 1px solid green;
+         min-height: 95px;
+         margin-top: 10px;
+
+         #geselecteerd{
+             width:100%;
+         }
+    }
+
+    .nieuwInschrijvingen{
+         border: 1px solid @cDefault;
+         min-height: 200px;
+         padding-left: 0;
+         #nieuw{
+             width:100%;
+         }
+    }
+
+    form{
+        margin: 15px 0 0 0;
+
+        .btn{
+            margin: 5px 0 5px 5px;
+        }
+    }
+
+    .col-md-6{
+        padding-right: 0px;
+    }
+
+    h2{
+        font-size:@fontlarge;
+        color:@cDefault;
+        margin: 10px 0 10px 0;
+        text-decoration:underline;
+    }
+
+    .userid{
+     clear:left;
+         .mainprofile{
+             float:left;
+             margin: 5px;
+         }
+
+         p{
+            float:left;
+            margin:12px  0 12px 0;
+         }
+    }
+    .goedkeuren, .afkeuren{
+        margin-left: 10px;
+
+        span{
+            margin-right: 5px;
+        }
+    }
+
+    .goedkeuren{
+        color:green;
+    }
+
+    .afkeuren{
+        color:red;
+    }
+    .cursor{
+       :hover{
+           cursor:pointer;
+       }
+    }
+
+    .toestemming{
+         float:right;
+        a.goedkeuren:hover{
+            color: #5bd904;
+        }
+
+        a.afkeuren:hover{
+            color:#fc5858;
+        }
+}
+
+    .icon-close:before{
+        font-size:18px;
+        margin-right: 5px;
+    }
+
+    .icon-check:before{
+        font-size: 20px;
+        margin-right: 3px;
+    }
+
+    a{
+        text-decoration:none;
+    }
+
+    .popwindow {
+        position: fixed; 
+        width: 500px; 
+        height: 400px; 
+        overflow: auto; 
+        margin-left: -300px; 
+        margin-top: -250px; 
+        left: 50%; top: 50%; 
+        background: white; 
+        border: 5px solid #929292; 
+        z-index: 101; 
+        padding: 10px; 
+    }
+    .popbackground {
+        position: fixed; 
+        top: 0; left: 0; 
+        right: 0; 
+        bottom: 0; 
+        background-color:rgba(0,0,0,0.5); 
+        z-index: 100;
+    }
+    .popwindow h3 {
+        font-size: 14px; 
+        font-weight: bold; 
+        margin-bottom: 5px; 
+    }
+    .popwindow textarea {
+        width: 474px; 
+        height: 190px;  
+        margin-bottom: 10px;
+        resize:none;
+    }
+    a.popclose {
+        position: fixed;
+         width: 23px; 
+         height: 23px; 
+         margin-left: 195px; 
+         margin-top: -286px; 
+         left: 50%; top: 50%; 
+         z-index: 102; 
+         padding: 10px; 
+    }
+}
+
+.owaesDetail{
+    .actions{
+        .subscribe{
+            .btn-default{
+                margin: -44px 0 0;
+            }
+        }
+    }
+}
+
+
+
+/*#endregion*/
+
+// --- Conversation --- //
+/*#region Conversation*/
+.conversation {
+    margin-top: 10px;
+    h1 {
+        text-align: center;
+        color: @cDefault;
+    }
+
+    .date {
+        font-size: 12px;
+        color: #808080;
+        margin-top: 10px;
+    }
+
+    .bericht.even {
+        margin-top: 30px;
+        .user {
+            .img {
+                float: right;
+            }
+
+            .name {
+                float: right;
+                margin-right: 10px;
+            }
+        }
+
+        .date {
+            float: left;
+            margin-left: 20px;
+        }
+
+        .msg {
+            float: left;
+            width: 80%;
+            margin-left: 20px;
+            clear: left;
+        }
+    }
+
+    .bericht.odd {
+        margin-bottom: 30px;
+
+        .message {
+           .msg:nth-of-type(2)  {
+                margin-left:108px;
+            }
+        }
+
+        .date, .msg {
+            margin-right: 20px;
+        }
+
+        .msg {
+            width: 80%;
+        }
+    }
+}
+
+.convoCollection{
+    border-right: 1px solid @cSecundary;
+    height:100%;
+    overflow:auto;
+
+    a.list-group-item{
+        background-color: rgba(0, 0, 0, 0);
+        border: medium none;
+        padding: 5px;
+        width:100%;
+    }
+
+    a.list-group-item:hover{
+        background-color: @cHighlight;
+    }
+
+    .media-body{
+        text-align:center;
+    }
+
+    .media{
+        margin: 15px 0 15px 0;
+    }
+    .hrConvoCollection{
+        width:80%;
+        color:@cSecundary;
+        margin: 0px auto 0 auto;
+    }
+
+    a.conversationActive{
+        color:@cSecundary;
+        margin:0;
+        background-color:@cHighlight;
+    }
+}
+
+.conversationPage{
+        height:67vh;
+        border: 1px solid @cSecundary;
+        
+        ::-webkit-scrollbar {  
+            width: 15px;  
+        }  
+        ::-webkit-scrollbar-track {  
+            background-color: #eaeaea;  
+            border-left: 1px solid #ccc;  
+        }  
+        ::-webkit-scrollbar-thumb {  
+            background-color: @cDefault;  
+        }  
+        ::-webkit-scrollbar-thumb:hover {  
+            background-color: #e2b605;  
+        }
+
+        .col-md-4{
+            padding:0;
+        }
+}
+.convoColumn{
+     height:65vh;
+     overflow:auto;
+}
+
+.berichtGeenGesprekken{
+    margin: 10px;
+    display:block;
+}
+/*#endregion*/
+
+// --- Admin --- //
+/*#region Admin*/
+.admin, .admin-users, .admin-groepen, .admin-groepusers{
+    table{
+        width: 100%;
+        text-align:left;
+        margin-bottom: 15px;
+    }
+    ul{
+        border: 1px solid @cDefault;
+        background-color: #f6f6f6;
+        overflow:hidden;
+        li{
+            a{
+                margin: 10px;
+                float:left;
+            }
+        }
+    }
+    td{
+        padding: 5px;
+        border-bottom: solid 1px white;
+        border-right: solid 1px white;
+        max-width:135px;
+        height:50px;
+    }
+
+    th{
+        padding: 10px 5px;
+        border-bottom: solid 2px @cSecundary;
+        background-color:#febf00;
+        text-align:center;
+        
+        a{
+            color:black;
+        }
+    }
+
+    .lowValue{
+        background-color:#ee4848;
+        color:white;
+        height:90%;
+    }
+
+    .orangeValue{
+        background-color:#ffbc03;
+        color:white;
+        height:90%;
+    }
+
+    tr:nth-child(even) {background-color: #ffe49b}
+    tr:nth-child(odd) {background-color: #fdf2d4}
+    .adminFilter{
+        background-color:@cHighlight;
+    }
+
+    .pages{
+        float:right;
+        a{
+            margin: 10px;
+        }
+
+        .prev{
+            margin-left:0;
+            margin-right: 20px;
+        }
+
+        .next{
+            margin-left: 20px;
+            margin-right: 0px;
+        }
+    }
+}
+
+
+.admin-user {
+     ul{
+        border: 1px solid @cDefault;
+        background-color: #f6f6f6;
+        overflow:hidden;
+        li{
+            a{
+                margin: 10px;
+                float:left;
+            }
+        }
+    }
+
+    #chart {
+      height: 600px;
+      padding: 0;
+      position: relative;
+      width: 100%;
+    }
+
+    .filterOption{
+        float:left;
+        margin-right: 20px;
+        input{
+            margin-right: 10px;
+        }
+
+        .filterCredits{
+            color: #9440ed;
+        }
+
+        .filterSociaal{
+            color: #4da74d;
+        }
+
+        .filterWelzijn{
+            color:#edc240;
+        }
+
+        .filterFysiek{
+            color: #cb4b4b;
+        }
+
+        .filterKennis{
+            color:#afd8f8;
+        }
+    }
+
+    .aanradenContainer{
+        .aanradenPopup{
+            cursor:pointer;
+            margin-right:10px;
+        }
+
+        .aanraden{
+            margin-top: 25px;
+            float:left;
+            clear:both;
+            font-size:@fontlarge;
+        }
+    }
+}
+
+.admin-users{
+    textArea{
+        border: 0px; 
+        width: 100%; 
+        padding: 5px;
+        height: 35px;
+    }
+
+    input[type="submit"]{
+        float:right;
+    }
+
+    .links{
+        a, span{
+            margin-right: 10px;
+        }
+    }
+}
+
+.admin-groepen{
+    h1{
+        clear:both;
+    }
+
+    form{
+        input, textarea,select{
+            float:left;
+            padding:5px;
+            margin-right:20px;
+        }
+
+        textarea{
+            width: 100%;
+            height:150px;
+        }
+    }
+
+    .groepToevoegenForm{
+        width: 100%;
+        margin-bottom: 15px;
+
+        textarea{
+            width: 450px;
+            height:150px;
+        }
+    }
+
+    .save{
+        float:right;
+        margin-right:0px;
+        width: 75px;
+    }
+
+    .links{
+        a, span{
+            margin-right: 10px;
+        }
+    }
+}
+
+.admin-groepusers{
+
+    select{
+        height:44px;
+        margin:0;
+        padding-top:10px;
+        text-align:center;
+    }
+    textarea{
+        width:100%;
+        height:35px;
+        padding:5px;
+    }
+  
+    .save{
+        float:right;
+        margin-right:0px;
+        width: 75px;
+    }
+
+    .links{
+        a, span{
+            margin-right: 10px;
+        }
+    }
+
+}
+#popupOpleiding, #popupWerkervaring, #popupQuest {
+    ul li {
+        float: left;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 5px;
+        float: left;
+        cursor:pointer;
+    }
+
+    .media {
+        margin: 0px;
+    }
+
+    .icon {
+        float: right;
+        cursor:default;
+    }
+
+    h5{
+        text-decoration:underline;
+        margin-bottom:5px;
+    }
+}
+
+/*#endregion*/
+
+// --- Index --- //
+/*#region Index*/
+.border{
+    margin: 5px 0 5px 0;
+    border: 1px solid #E3E3E3;
+    border-radius: 0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
+}
+
+.home {
+    .col-md-2, .col-md-4, .col-md-1, .col-md-5 {
+        padding: 15px;
+    }
+
+    .col-md-5 {
+        .gebruikers-naam {
+            > a {
+                color: @cSecundary;
+                text-decoration: none;
+                font-size: @fontsmall;
+
+                &:hover {
+                    color: @cSecundaryHover;
+                    text-decoration: underline;
+                }
+            }
+        }
+    }
+
+    .pull-right{
+        a{
+            text-decoration:underline;
+        }
+    }
+
+    .iconExpand{
+        float:right;
+        margin: 11px -5px 0px 0;
+    }
+
+     #accordionGraphs{
+         margin:0;
+     }
+
+     #map-info{
+         float:right;
+         position:absolute;
+         right: 10px;
+         border: 1px solid @cHighlight;
+         top: 10px;
+         background-color: white;
+         padding: 10px;
+         font-family:Raleway;
+         z-index:1000;
+
+         .mapPin{
+             height:30px;
+             margin-right: 5px; 
+         }
+
+         ul{
+             margin-bottom: 0px;
+             .first{
+                 margin-top: 0px;
+             }
+             li{
+                 margin-top: 5px;
+             }
+         }
+     }
+
+     .size{
+         width:auto;
+         max-height:205px;
+         margin: 0 auto 0 auto;
+     }
+
+     .grafiekenHome{
+         .col-md-4.creditmeter{
+             padding: 0 75px;
+         }
+
+         .col-md-4{
+             padding: 5px;
+
+             h3{
+                 text-align:center;
+             }
+         }
+     }
+
+   
+    .level{
+       margin-bottom: 5px;
+    }
+
+    //map
+   .mapPopup{
+       min-width: 200px;
+       .development{
+           ul{
+               li{
+                   float:left;
+               }
+           }
+       }
+
+       .col-md-8{
+           margin-top:10px;
+       }
+   }
+
+    .detailUser{
+        padding-left:20px;
+    }
+
+    .layoutBlocks{
+            padding:10px;
+            min-height: 20px;
+            margin: 10px;
+            background-color: #F5F5F5;
+            max-width: 1120px;
+
+            .btn{
+                color:white;
+                border:none;
+            }
+     }
+
+      .HomeUser{
+         padding-bottom:0;
+     }
+
+    .map{
+        padding:0;
+        position:relative;
+    }
+
+    .col-md-6{
+        padding:0;
+        color:@cSecundary;
+    
+        h2{
+            margin-bottom:10px;
+        }
+        span.icon-plus:before, span.icon-minus:before{
+            margin-right:10px;
+            color:@cDefault;
+            font-size: 12px;
+        }
+
+        .icon-plus, .icon-minus, .hoverQuestLink{
+            cursor:pointer;
+        }
+
+         input[type="button"]{
+           margin-top:5px;
+        }
+
+         a{
+            text-decoration:none;
+        }
+
+         .panel-title{
+             margin-top:10px;
+         }
+
+        .icon:hover + .hoverQuestLink, .hoverQuestLink:hover {
+           color:#44449F;
+           text-decoration:underline;
+        }
+
+        .list-group-item {
+                margin: 5px 0 0 -5px;
+                padding: 5px;
+                background-color: transparent;
+                border: none;
+        }
+
+        .meer {
+            float: right;
+            margin: -15px 0 0 0;
+        }
+        .list-group-item:hover {
+                background-color: @cHighlight;
+        }
+
+        .icon-lg {
+            font-size: 36px;
+            float: right;
+            color: @cSecundary;
+        }
+
+        .iconPos{
+            margin-top: 5px;
+        }
+
+        .development ul {
+            margin: 3px 0 0 0;
+
+            > li {
+                float: left;
+
+                > img {
+                    height: 30px;
+                    width: auto;
+                }
+            }
+        }
+    }
+    .masonry{
+        clear:both;
+    }
+}
+
+.HomeUser {
+    .progress-experience {
+        height: 16px;
+        margin-bottom:5px;
+        > .progress-bar {
+            background-color: @cDefault;
+        }
+    }
+
+    .gebruikers-naam{
+        margin-bottom:5px;
+    }
+
+    .triangleDown{
+        border-left:10px solid transparent;
+        border-right:10px solid transparent;
+        border-top:15px solid @cSecundary;
+    }
+    .credits {
+        margin: 0 0 5px 0;
+        float: left;
+        font-size: @fontlarge;
+    }
+   
+    .containerCredits{
+        margin: 20px 0 20px 0;
+    }
+
+    .indicatoren {
+        .progress {
+            height: 20px;
+            margin: 0 0 6px 0;
+            width: 90%;
+            float: right;
+        }
+
+        .progressIndicator {
+            float: right;
+            font-size: 12px;
+            margin: 0 5px 0 0;
+        }
+
+        .indicator {
+            clear: right;
+
+            img{
+                margin: -2px;
+            }
+        }
+
+        .progress-sociaal {
+            background-color: @ciSociaalBg;
+
+            > .progress-bar {
+                background-color: @ciSociaal;
+            }
+        }
+
+        .progress-fysiek {
+            background-color: @ciFysiekBg;
+
+            > .progress-bar {
+                background-color: @ciFysiek;
+            }
+        }
+
+        .progress-mentaal {
+            background-color: @ciMentaalBg;
+
+            > .progress-bar {
+                background-color: @ciMentaal;
+            }
+        }
+
+        .progress-welzijn {
+            background-color: @ciWelzijnBg;
+
+            > .progress-bar {
+                background-color: @ciWelzijn;
+            }
+        }
+    }
+
+    .icon-credits:before {
+        margin: 0 0 0 5px;
+        font-size: 30px;
+    }
+
+    .icon-credits-green:before {
+        color: mediumseagreen;
+    }
+
+    .icon-credits-orange:before {
+        color: orange;
+    }
+
+    .icon-credits-red:before {
+        color: red;
+    }
+
+    .icon-credits-black:before {
+        color: black;
+    }
+}
+
+/*#endregion*/
+
+//--- Search ---//
+/*#region Search*/
+.search {
+    .owaeslisstyle:not(:first-child) {
+        margin-top: 55px;
+    }
+
+    .userlistitem {
+        .col-sm-8 {
+            width: 195px;
+            margin-left: 40px;
+        }
+    }
+
+    h1 {
+        margin-bottom: 0px;
+        margin-top:0px;
+    }
+    
+    h1:not(:first-child){
+        margin-bottom: 20px;
+        margin-top:20px; 
+    }
+
+    .sidebar{     
+        background-color:#F5F5F5;
+
+        h2{
+            margin: 15px 0 10px 0;
+            text-decoration:underline;
+        }
+
+            .weergevenPersonen{
+                label {
+                    display: block;
+                    padding-left: 15px;
+                    text-indent: -15px;
+                }
+
+                input[type="checkbox"] {
+                    width: 13px;
+                    height: 13px;
+                    margin: 0 10px 0 0;
+                    vertical-align: bottom;
+                    position: relative;
+                    top: -1px;
+                    *overflow: hidden;
+                }
+            }
+
+            .locatie, .tijd, .indicatoren, .tags{
+               clear:both;
+            }
+
+            .locatie, .tags{
+                label{
+                    margin-top:10px;
+                }
+            }
+
+            #Locatie, #Tags{
+                width:100%;
+                padding-left:5px;
+                margin-left:0px;
+                margin-right:0px;
+            }
+
+      .activiteiten{
+            .col-md-6{
+                padding: 0;
+            }
+
+            select{
+                margin: 5px 5px 5px 5px;
+                min-width:30px;
+            }
+
+            input[type="checkbox"]{
+                margin: 0 10px 0 0;
+            }
+
+            input[type="text"]{
+                margin: 10px 5px 10px 5px;
+            }
+       }
+    }
+
+}
+/*#endregion*/
+
+.userpopup{
+    width: 400px; 
+    border: 1px solid #8c8c8c; 
+    background: white;
+    
+    a{
+        margin-right:10px;
+    }
+
+    .top{
+       overflow: auto; 
+       padding: 10px;
+
+       img{
+           float: left; 
+           margin-right: 10px;
+       }
+    }
+
+    .bottom{
+        background: #f2f2f2; 
+        border-top: 1px solid #cccccc; 
+        padding: 8px;
+
+        ul{
+            display:inline;
+        }
+    }
+}
+
+.popwindow {
+    position: fixed; 
+    width: 425px; 
+    height: 300px; 
+    overflow: auto; 
+    margin-left: -200px; 
+    margin-top: -150px; 
+    left: 50%; top: 50%; 
+    background: white; 
+    border: 5px solid black; 
+    z-index: 101; 
+    padding: 10px;  
+
+    h3 {
+        font-size: 14px; 
+        font-weight: bold; 
+        margin-bottom: 5px; 
+    }
+
+    textarea {
+        width: 374px; 
+        height: 90px;  
+        margin-bottom: 10px; 
+    }
+
+     input[type="submit"]{
+        float:right;
+        margin-right:20px;
+     }
+}
+
+.popbackground {
+    position: fixed; 
+    top: 0; left: 0; 
+    right: 0; 
+    bottom: 0; 
+    background-color:rgba(0,0,0,0.5); 
+    z-index: 100;  
+}
+
+.popclose {
+    position: fixed; 
+    width: 23px; 
+    height: 23px; 
+    margin-left: 195px; 
+    margin-top: -186px; 
+    left: 50%; 
+    top: 50%; 
+    z-index: 102; 
+    padding: 10px; 
+}
+
+
+
+
+
+@media (min-width: 767px) {
+    .yellowPart:after {
+        background-color: @cWhite;
+        border-color: @cDefault rgba(0, 0, 0, 0) rgba(0, 0, 0, 0);
+        border-style: solid;
+        border-width: 72px 72px 0 0;
+        content: "";
+        float: right;
+        height: 0;
+        line-height: 0;
+        width: 0;
+        margin-top: -52px;
+    }
+}
+
+@media (max-width: 1200px){
+    .owaeslisstyle {
+        .info {
+            .col-md-4 {
+                .adresDetails {
+                    width: 130px;
+                }
+            }
+        }
+    }
+}
+
+@media (max-width: 1150px){
+    .search{
+        .info{
+            .col-md-11{
+                width: 90%;
+                margin-left:10px;
+            }
+        }
+    }
+}
+
+@media (max-width: 1100px){
+     .owaeslisstyle {
+         .actions{
+           margin: 0 45px 0 0;
+        }
+
+          .sub{
+             margin-right: -45px;
+         }
+    }
+
+}
+
+@media (max-width: 1060px){
+    //gebruikerslijst responsive
+.content-lists-users{
+    .usersfromlist {
+        .userlistitem{
+            .col-sm-8{
+                margin-left: 35px;
+                padding: 0;
+                width: 190px;
+            }
+        }
+    }
+}
+
+}
+
+
+
+@media (max-width: 1005px){
+    .footer .container .whitePart .esfLogoFooter{
+        margin:0;
+    }
+}
+
+@media (max-width: 991px){
+    .owaeslisstyle{
+        .info{
+             .col-md-8{
+                margin-left: 0px;
+                margin-right: 0px;
+                padding: 0 0 0 0
+            }
+
+             .col-md-4{
+                 margin-top: 15px;
+
+                 .adresDetails{
+                     float: none;
+                     margin: 0 0 0 38px;
+                     width: 170px
+                 }
+             }
+        }
+
+        .short{
+            min-height: 20px;
+        }
+
+        .location{
+            margin: 10px 0 0 0; 
+            span{
+                max-width:224px;
+                right:auto;
+                left:15px;
+            }
+        }
+       
+        .locationbox{
+            float:left;
+            margin:0 0 0 0;
+            max-width:224px;
+            width:100%;
+        }
+    }
+
+    .message{
+        textarea{
+            margin-top: 10px;
+            margin-left: 0px;
+            width:101%;
+        }
+
+        form{
+            width: 99%;
+        }
+    }
+
+    .ownerDetail{
+        form{
+            .col-md-6{
+                padding-left:0;
+                
+                .geweigerd {
+                    width: 100%;
+                    margin-top: 10px;
+                }
+            }
+
+        }
+    }
+
+    .owaeslisstyle .soortIcon{
+        margin: 0 20px 0 0; 
+    }
+
+    .conversationPage {
+       border: 1px solid #00005B;
+       height: 100%;
+    }
+
+    .convoColumn {
+        border-top: 1px solid #00005B;
+    }
+
+    .search{
+        .info{
+            .col-md-11{
+                width: 100%;
+                margin-left:0px;
+                padding-left: 5px;
+            }
+        }
+    }
+}
+
+@media (max-width: 767px) {
+
+   .footer .container .whitePart .esfLogoFooter {
+        margin: 0 0 0 0;
+        width: 100px;
+        height: auto;
+        margin-top: 0px;
+    }
+
+    .footer .container .whitePart img {
+        width: 40px;
+        height: auto;
+    }
+
+    .footer .container .yellowPart span{
+        margin: 15px auto;
+        text-align:center;
+
+    }
+    .footer .container .yellowPart {
+        margin-left: 0;
+        min-width: 100%;
+        max-width: 100%;
+    }
+
+    .footer .container {
+        padding: 0 0 0 0;
+        margin: 0 0 0 0;
+        min-width: 100%;
+    }
+    
+        //gebruikerslijst responsive
+        .content-lists-users{
+            .usersfromlist {
+                .userlistitem{
+                    .col-sm-8{
+                        margin-left:auto;
+                        padding:10px;
+                        width: auto;
+                    }
+                }
+            }
+        }
+}
+
+@media (max-width: 640px) {
+    .footer .container .whitePart .esfLogoFooter {
+        margin-top: 0px;
+    }
+}
+
+@media (max-width: 500px){
+    .footer .container .whitePart span{
+           margin: 10px 60px 0 0;
+           float:none;
+    }
+ 
+}
+@media (max-width: 435px) {
+    .footer .region .container .whitePart span {
+        margin: 0px;
+    }
+}
+
+@media (max-width: 345px) {
+    .footer .yellowPart {
+        height: 100px;
+    }
+   .footer .container .yellowPart span{
+        margin: 10px auto;
+        text-align:center;
+    }
+}
+@media (max-width: 328px) {
+    .footer .container .yellowPart {
+        border-top: 3px solid @cSecundary;
+    }
+
+    .footer .block {
+        border: none;
+    }
+}
+
+@-moz-document url-prefix() {
+
+    .admin-groepusers{
+
+        .toevoegen{
+            margin-top:-3px;
+        }
+    }
+    .owaeslisstyle {
+
+        .subscribe {
+            .btn-default {
+                margin: -45px 0 0 0;
+            }
+        }
+    }
+    .owaesDetail{
+        .actions{
+            .subscribe{
+                .btn-default{
+                    margin: -45px 0 0;
+                }
+            }
+        }
+    }
+}

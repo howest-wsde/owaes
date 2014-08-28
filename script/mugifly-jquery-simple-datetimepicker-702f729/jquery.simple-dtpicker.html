@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Demo - jquery-simple-datetimepicker</title>
+	
+	<!--Requirement jQuery-->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<!--Load Script and Stylesheet -->
+	<script type="text/javascript" src="jquery.simple-dtpicker.js"></script>
+	<link type="text/css" href="jquery.simple-dtpicker.css" rel="stylesheet" />
+	<!---->
+	
+	<style type="text/css">
+		body { background-color: #ffffff; padding-left: 1%; padding-bottom: 100px; }
+		footer{font-size:small;position:fixed;right:5px;bottom:5px;}
+	</style>
+</head>
+<body>
+	<header>
+		<h2>Demo - jquery-simple-datetimepicker</h2>
+	</header>
+	
+	<h3>Inline</h3>
+	<div id="date_picker"> </div>
+	<script type="text/javascript">
+		$(function(){
+			$('#date_picker').dtpicker();
+		});
+	</script>
+	
+	<h3>Append to Input-field</h3>
+	<input type="text" name="date" value="">
+	<script type="text/javascript">
+		$(function(){
+			$('*[name=date]').appendDtpicker();
+		});
+	</script>
+	
+	<h3>Append to Input-field (Inline)</h3>
+	<input type="text" name="date2" value="2012/01/01 10:00">
+	<script type="text/javascript">
+		$(function(){
+			$('*[name=date2]').appendDtpicker({"inline": true});
+		});
+	</script>
+	<small>In addition, this default date has specified by the input's value ("2012-01-01 10:00").</small>
+	
+	<hr />
+
+	<h3>Avaiable options</h3>
+		About details for these options, please see: <a href="https://github.com/mugifly/jquery-simple-datetimepicker/wiki/Options">Wiki</a>.
+	
+		<h4>Current date ("current": "2012-3-4 12:30")</h4>
+		<input type="text" name="date3" value="">
+		<script type="text/javascript">
+			$(function(){
+				$('*[name=date3]').appendDtpicker({
+					"inline": true,
+					"current": "2012-3-4 12:30"
+				});
+			});
+		</script>
+
+		<h4>dateFormat ("dateFormat": "YY/MM/DD h:m")</h4>
+		<input type="text" name="date4" value="">
+		<script type="text/javascript">
+			$(function(){
+				$('*[name=date4]').appendDtpicker({
+					"inline": true,
+					"dateFormat": "YY/MM/DD h:m"
+				});
+			});
+		</script>
+		
+
+		<h4>locale ("locale": "ja")</h4>
+		<input type="text" name="date5" value="">
+		<script type="text/javascript">
+			$(function(){
+				$('*[name=date5]').appendDtpicker({
+					"inline": true,
+					"locale": "ja"
+				});
+			});
+		</script>
+		<h5>Available locales:</h5>
+		<ul style="font-size: 0.8em;">
+			<li>"en" : English (default)</li>
+			<li>"ja" : Japanese</li>
+			<li>"ru" : Russian - Thanks to: <a href="https://github.com/rdolgushin">rdolgushin</a></li>
+			<li>"br" : Brazil - Thanks to: <a href="http://www.mauricioprof.com/site/principal.php">Mauricio</a></li>
+			<li>"cn" : Chinese - Thanks to: <a href="https://github.com/jasonslyvia">jasonslyvia</a></li>
+			<li>"de" : German - Thanks to: <a href="https://github.com/rtakeda">rtakeda</a></li>
+			<li>"sv" : Swedish - Thanks to: <a href="https://github.com/MacDknife">MacDknife</a></li>
+			<li>"id" : Bahasa Indonesia - Thanks to: <a href="https://github.com/robzlabz">robzlabz</a></li>
+			<li>"tr" : Turkish - Thanks to: <a href="https://github.com/myfell">myfell</a></li>
+			<li>"es" : Spanish - Thanks to: <a href="https://github.com/maw">maw</a></li>
+		</ul>
+
+		<h4>Change the interval of minute ("minuteInterval": 15)</h4>
+		<input type="text" name="date6" value="">
+		<script type="text/javascript">
+			$(function(){
+				$('*[name=date6]').appendDtpicker({
+					"inline": true,
+					"minuteInterval": 15
+				});
+			});
+		</script>
+		<h5>Avaiable value:</h5>
+		<small>min: 5, max: 30. (default: 30 minute. it means interval of each 30 minute.)</small><br />
+
+		<h4>Change the first day of the week ("firstDayOfWeek": 1)</h4>
+		<input type="text" name="date8" value="">
+		<script type="text/javascript">
+			$(function(){
+				$('*[name=date8]').appendDtpicker({
+					"inline": true,
+					"firstDayOfWeek": 1
+				});
+			});
+		</script>
+		<h5>Avaiable value:</h5>
+		<small>min: 0 (sunday), max: 6 (satday), default: 0 (sunday). </small><br />
+		<small>Thanks to: <a href="https://github.com/concept1hundred">concept1hundred</a>.</small>
+
+		<h4>Close when selected date &amp; time ("closeOnSelected": true) with append to Input-field mode</h4>
+		<p>
+			<input type="text" name="date9" value="">
+			<script type="text/javascript">
+				$(function(){
+					$('*[name=date9]').appendDtpicker({
+						"closeOnSelected": true
+					});
+				});
+			</script>
+		</p>
+
+		<p>
+			It's will also useful for use with two input-fields.<br />
+			<input type="text" name="date10" value=""> 
+			- 
+			<input type="text" name="date11" value="">
+			<script type="text/javascript">
+				$(function(){
+					$('*[name=date10]').appendDtpicker({
+						"closeOnSelected": true
+					});
+				});
+				$(function(){
+					$('*[name=date11]').appendDtpicker({
+						"closeOnSelected": true
+					});
+				});
+			</script>
+		</p>
+
+		<h4>Disable the automatic scroll of time-list ("timelistScroll": false)</h4>
+		<input type="text" name="date12" value="">
+		<script type="text/javascript">
+			$(function(){
+				$('*[name=date12]').appendDtpicker({
+					"inline": true,
+					"timelistScroll": false
+				});
+			});
+		</script>
+
+		<h4>Disable the fade animation ("animation": false)</h4>
+		<input type="text" name="date7" value="">
+		<script type="text/javascript">
+			$(function(){
+				$('*[name=date7]').appendDtpicker({
+					"inline": true,
+					"animation": false
+				});
+			});
+		</script>
+
+		<h4>Disable the calendar scroll with mouse wheel ("calendarMouseScroll": false)</h4>
+		<input type="text" name="date13" value="">
+		<script type="text/javascript">
+			$(function(){
+				$('*[name=date13]').appendDtpicker({
+					"inline": true,
+					"calendarMouseScroll": false
+				});
+			});
+		</script>
+
+		<h4>Disable the Today button ("todayButton": false)</h4>
+		<input type="text" name="date14" value="">
+		<script type="text/javascript">
+			$(function(){
+				$('*[name=date14]').appendDtpicker({
+					"inline": true,
+					"todayButton": false
+				});
+			});
+		</script>
+		
+	<footer>
+		<a href="https://github.com/mugifly/jquery-simple-datetimepicker">jquery.simple-dtpicker.js (jquery-simple-datetimepicker)</a><br>
+		 - Your feedback is highly appreciated :) 
+	</footer>
+</body>
+</html>
