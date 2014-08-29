@@ -1011,8 +1011,18 @@
 		}
          
 	
-		public function HTML($strTemplate = "") { // vraagt pad van template en returns de html met replaced [tags] 
-			$strHTML = content($strTemplate);  
+		public function HTML($strTemplate = "", $bFile = TRUE) { // vraagt pad van template (of HTML if bFile==FALSE) en returns de html met replaced [tags] 
+			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
+			
+			preg_match_all("/\[friends\]([\s\S]*?)\[\/friends\]/", $strHTML, $arResult);   // bv. [friends]loop[/friends]   
+			for ($i=0;$i<count($arResult[1]);$i++) { 
+				$strFriends = ""; 
+				foreach ($this->friends() as $oFriend) { 
+					$strFriends .= $oFriend->html($arResult[1][$i], FALSE);
+				}
+				$strHTML = str_replace($arResult[0][$i], $strFriends, $strHTML); 
+			}  
+			
 			$strHTML = str_replace("[id]", $this->id(), $strHTML);
 			$strHTML = str_replace("[firstname]", $this->firstname(), $strHTML);
 			$strHTML = str_replace("[lastname]", $this->lastname(), $strHTML);
@@ -1022,7 +1032,9 @@
 			$strHTML = str_replace("[email]", $this->email(), $strHTML);
 			$strHTML = str_replace("[description]", $this->description(), $strHTML);
 			$strHTML = str_replace("[link]", $this->getURL(), $strHTML);
+			$strHTML = str_replace("[url]", $this->getURL(), $strHTML);
 			$strHTML = str_replace("[img]", $this->getImage("profile"), $strHTML); 
+			$strHTML = str_replace("[img:src:70x70]", $this->getImage("70x70", FALSE), $strHTML); 
 			$strHTML = str_replace("[userbadge]", $this->userbadge(), $strHTML); 
 			$strHTML = str_replace("[development]", $this->developmentBoxes(), $strHTML);  
 			if ($this->id() == me()) {   
@@ -1081,6 +1093,8 @@
 				}
 			} 
 			
+			if (instr("[friends:count]", $strHTML)) $strHTML = str_replace("[friends:count]", count($this->friends()), $strHTML);  
+			if (instr("[friends:url]", $strHTML)) $strHTML = str_replace("[friends:url]", fixPath("friends.php?u=" . $this->id()), $strHTML);   
 			if (instr("[badges]", $strHTML)) $strHTML = str_replace("[badges]", $this->badgelist($this->getBadges()), $strHTML);  
             if (instr("[badges:count]", $strHTML)) $strHTML = str_replace("[badges:count]", count($this->getBadges()), $strHTML);  
 			if (instr("[certificates]", $strHTML)) $strHTML = str_replace("[certificates]", $this->badgelist($this->getCertificates()), $strHTML);  
@@ -1143,6 +1157,12 @@
 				foreach ($this->arGroups as $oGroup) if ($oGroup->id() == $iGroup) return $oGroup; 
 				return FALSE; 
 			}
+		}
+		
+		public function friends() {
+			$oList = new userlist(); 
+			$oList->filter("friends", $this->id()); 
+			return $oList->getList(); 	
 		}
 		
 

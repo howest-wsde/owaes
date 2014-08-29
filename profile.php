@@ -33,6 +33,9 @@
  
 
 					<?  
+					
+					//vardump($oProfile->friends()); 
+					
                         //echo "<div class=\"masonry\">";
 						echo $oProfile->html("templates/userprofile.html"); 
 						//echo "</div>";

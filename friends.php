@@ -3,9 +3,15 @@
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
  
+ 	$iUser = isset($_GET["u"]) ? intval($_GET["u"]) : 0; 
+ 
 	$oUserList = new userlist();   
 	$oUserList->filter("visible"); 
-	$oUserList->filter("friends"); 
+	if ($iUser != 0) {
+		$oUserList->filter("friends", $iUser); 
+	} else {
+		$oUserList->filter("friends"); 
+	}
     
     $oPage->tab("lijsten");
 	

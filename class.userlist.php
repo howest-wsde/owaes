@@ -11,13 +11,14 @@
 			$this->arOrder[] = "u.lastname"; 
 		}
 		
-		public function filter($strType) {
+		public function filter($strType, $value = NULL) {
 			switch(strtolower($strType)) {
 				case "visible":
 					$this->arSQLwhere["visible"] = " visible = 1 "; 
 					break; 
 				case "friends":
-					$this->arSQLjoin["friends"] = " inner join tblFriends f on (f.user = " . me() . " and friend = u.id and confirmed = 1) "; 
+					$iSource = is_null($value) ? me() : $value; 
+					$this->arSQLjoin["friends"] = " inner join tblFriends f on (f.user = " . $iSource . " and friend = u.id and confirmed = 1) "; 
 					break; 
 			}
 		}

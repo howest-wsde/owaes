@@ -28,7 +28,7 @@
 					$arLogin["id"] = $data['contact/email']; 
 					$arLogin["email"] = $data['contact/email']; 
 					break;  
-				case "http://www.owaes.org/v3/openid/provider":  
+				case "http://www.owaes.org/v2/openid/provider":  
 					$arLogin["site"] = "owaes"; 
 					$arLogin["naam"] = $data['namePerson/friendly'];
 					$arLogin["voornaam"] = "";

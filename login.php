@@ -195,7 +195,7 @@
 
 						// OWAES:  
 						$oOpenid = new LightOpenID($strID); 
-						$oOpenid->identity = 'http://www.owaes.org/v3';
+						$oOpenid->identity = 'http://www.owaes.org/v2';
 						$oOpenid->required = array(
 							'namePerson/first',
 							'namePerson/last',
