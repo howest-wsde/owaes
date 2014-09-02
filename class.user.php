@@ -1014,14 +1014,25 @@
 		public function HTML($strTemplate = "", $bFile = TRUE) { // vraagt pad van template (of HTML if bFile==FALSE) en returns de html met replaced [tags] 
 			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
 			
-			preg_match_all("/\[friends\]([\s\S]*?)\[\/friends\]/", $strHTML, $arResult);   // bv. [friends]loop[/friends]   
+			
+			preg_match_all("/\[if:friends\]([\s\S]*?)\[\/if:friends\]/", $strHTML, $arResult);   // bv. [?data:facebook]heeft FB[/?data:facebook]   
+			for ($i=0;$i<count($arResult[0]);$i++) {
+				if (count($this->friends())>0) {
+					$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
+				} else {
+					$strHTML = str_replace($arResult[0][$i], "", $strHTML);
+				} 
+			} 
+			preg_match_all("/\[friends((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/friends\\1\]/", $strHTML, $arResult);   // bv. [friends]loop[/friends] 
 			for ($i=0;$i<count($arResult[1]);$i++) { 
 				$strFriends = ""; 
-				foreach ($this->friends() as $oFriend) { 
-					$strFriends .= $oFriend->html($arResult[1][$i], FALSE);
+				$iTeller = 0; 
+				$iMax = intval($arResult[2][$i]); 
+				foreach ($this->friends() as $oFriend) {  
+					if ($iMax == 0 || ++$iTeller <= $iMax) $strFriends .= $oFriend->html($arResult[3][$i], FALSE);
 				}
 				$strHTML = str_replace($arResult[0][$i], $strFriends, $strHTML); 
-			}  
+			} 
 			
 			$strHTML = str_replace("[id]", $this->id(), $strHTML);
 			$strHTML = str_replace("[firstname]", $this->firstname(), $strHTML);
@@ -1084,7 +1095,7 @@
 			if (isset($arResult[1])) foreach ($arResult[1] as $strK){
 				$strHTML = str_replace("[data:$strK]", $this->data($strK), $strHTML); 
 			} 
-			preg_match_all("/\[\?data:([a-zA-Z0-9-]+)\]([\s\S]*?)\[\/\?data:\\1\]/", $strHTML, $arResult);   // bv. [?data:facebook]heeft FB[/?data:facebook]  
+			preg_match_all("/\[if:data:([a-zA-Z0-9-]+)\]([\s\S]*?)\[\/if:data:\\1\]/", $strHTML, $arResult);   // bv. [?data:facebook]heeft FB[/?data:facebook]  
 			for ($i=0;$i<count($arResult[0]);$i++) {
 				if ($this->data($arResult[1][$i]) != "") {
 					$strHTML = str_replace($arResult[0][$i],$arResult[2][$i], $strHTML); 					

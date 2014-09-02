@@ -68,9 +68,15 @@
 			$oDB->execute($strSQL); 
 		}
 		
-		public function getList() {
+		public function getList($iLimit = NULL) {
 			$arMessages = array(); 
-			$oDB = new database("select * from tblNotifications where readdate = 0 and receiver = " . $this->iUser . " order by datum;", TRUE); 
+			$strLimit = ""; 
+			$arWhere = array(
+				"receiver =" . $this->iUser, 
+			); 
+			if (is_null($iLimit)) $arWhere[] = "readdate = 0"; 
+			if (is_numeric($iLimit)) $strLimit = " limit $iLimit "; 
+			$oDB = new database("select * from tblNotifications where " . implode(" and ", $arWhere) . " order by datum  $strLimit ;", TRUE); 
 			while ($oDB->nextRecord()) {
 				$arMessage =array(
 					"title" => "", 

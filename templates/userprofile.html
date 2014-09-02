@@ -13,10 +13,10 @@
                     <h3 class="level-stars"><span class="level">Level [level]</span><span class="stars">[stars]</span></h3>
 
                     <ul class="socialmedia">
-                        [?data:facebook]<li><a href="[data:facebook]" target="_blank"><span class="icon-facebook"></span></a></li>[/?data:facebook] 
-                        [?data:twitter]<li><a href="[data:twitter]" target="_blank"><span class="icon-twitter"></span></a></li>[/?data:twitter] 
-                        [?data:linkedin]<li><a href="[data:linkedin]" target="_blank"><span class="icon-linkedin"></span></a></li>[/?data:linkedin] 
-                        [?data:plus]<li><a href="[data:plus]" target="_blank"><span class="icon-googleplus"></span></a></li>[/?data:plus] 
+                        [if:data:facebook]<li><a href="[data:facebook]" target="_blank"><span class="icon-facebook"></span></a></li>[/if:data:facebook] 
+                        [if:data:twitter]<li><a href="[data:twitter]" target="_blank"><span class="icon-twitter"></span></a></li>[/if:data:twitter] 
+                        [if:data:linkedin]<li><a href="[data:linkedin]" target="_blank"><span class="icon-linkedin"></span></a></li>[/if:data:linkedin] 
+                        [if:data:plus]<li><a href="[data:plus]" target="_blank"><span class="icon-googleplus"></span></a></li>[/if:data:plus] 
                     </ul>
                 </div>
                 [notme]
@@ -53,26 +53,28 @@
 </div>
 <div class="row">
     <div class="col-md-4"> 
-        <div class="well well-vrienden">
-            <h3>Vrienden <span class="badge">[friends:count]</span></h3>
-
-            <div class="list-group">
-                [friends]
-                    <a href="[url]" class="list-group-item">
-                        <div class="media">
-                            <img class="media-object pull-left" src="[img:src:70x70]"> 
-                            <div class="media-body">
-                                <h4 class="media-heading">[name]</h4>
-                                level [level]
+    	[if:friends]
+            <div class="well well-vrienden">
+                <h3>Vrienden <span class="badge">[friends:count]</span></h3>
+    
+                <div class="list-group">
+                    [friends:3]
+                        <a href="[url]" class="list-group-item">
+                            <div class="media">
+                                <img class="media-object pull-left" src="[img:src:70x70]"> 
+                                <div class="media-body">
+                                    <h4 class="media-heading">[name]</h4>
+                                    level [level]
+                                </div>
                             </div>
-                        </div>
-                    </a>
-               	[/friends] 
+                        </a>
+                    [/friends:3]  
+                </div>
+    
+                <p class="meer"><a href="[friends:url]">meer...</a></p>
             </div>
-
-            <p class="meer"><a href="[friends:url]">meer...</a></p>
-        </div>
-
+		[/if:friends]
+        
         <div class="well well-volgend">
             <h3>Volgend <span class="badge">xx</span></h3>
 

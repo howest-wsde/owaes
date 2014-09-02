@@ -3,7 +3,7 @@
 	$oSecurity = new security(TRUE);  
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
-	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
+	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"); 
     
     $oPage->tab("home");
 	
@@ -236,6 +236,37 @@
         </div>
                
                 <div class="row masonry">
+                
+
+                <!-- Berichten -->  
+                		<div class="col-md-6 clearfix" style="z-index: 980;">
+                        	<div class="layoutBlocks border">
+                                <h2>Recente berichten</h2>
+                                 
+								<?
+									$oNotification = new notification(me()); 
+									$arMessages = $oNotification->getList(5); 
+									vardump($arMessages); 
+									foreach ($arMessages as $arMessage) {
+										?><div class="list-group">
+                                            <a href="<? echo $arMessage["link"]; ?>" class="list-group-item">
+                                                <div class="media"> 
+                                                    <img class="media-object pull-left" src="<? echo $arMessage["icon"]; ?>" style="width: 64px; height: 64px; " />
+                                                    <div class="media-body">
+                                                        <h4 class="media-heading"><? echo $arMessage["title"]; ?></h4>
+                                            
+                                                        <div class="development"><? echo $arMessage["message"]; ?></div>
+                                             
+                                                    </div>
+                                                </div>
+                                            </a>
+                                        </div><?
+									}
+								?>
+                        	</div>
+                       </div>
+                
+                
                 <!-- Quests -->  
                 		<div class="col-md-6 clearfix" style="z-index: 980;">
                         	<div class="layoutBlocks border">
@@ -414,6 +445,8 @@
                                 <!-- <p class="meer"><a href="#">meer...</a></p> -->
                             </div>
                          </div>
+                         
+                         
                 <!-- Recent aangemaakte activiteiten --> 
                          <div class="col-md-6 clearfix" style="z-index: 950;">
                         	<div class="layoutBlocks border">
@@ -437,6 +470,8 @@
                                 <!-- <p class="meer"><a href="#">meer...</a></p> -->
                             </div>
                          </div>
+                         
+                         
                          
                 <!-- notificaties -->
                  <div class="col-md-6 clearfix" style="z-index: 940;">
