@@ -70,13 +70,24 @@
 		
 		public function getList($iLimit = NULL) {
 			$arMessages = array(); 
+			$arJoin = array(); 
 			$strLimit = ""; 
+			$arOrder = array(); 
 			$arWhere = array(
-				"receiver =" . $this->iUser, 
+				"n.receiver = " . $this->iUser, 
 			); 
-			if (is_null($iLimit)) $arWhere[] = "readdate = 0"; 
-			if (is_numeric($iLimit)) $strLimit = " limit $iLimit "; 
-			$oDB = new database("select * from tblNotifications where " . implode(" and ", $arWhere) . " order by datum  $strLimit ;", TRUE); 
+			if (is_null($iLimit)) $arWhere[] = "n.readdate = 0"; 
+			if (is_numeric($iLimit)) {
+				$strLimit = " limit $iLimit ";  
+				$arJoin[] = " LEFT OUTER JOIN tblNotifications n2 ON n2.sleutel = n.sleutel AND n2.id > n.id "; 
+	 			$arWhere[] = " n2.id IS NULL"; 
+				$arWhere[] = "n.datum > " . (time()-60*60*24*14); 
+				$arOrder[] = "n.datum desc"; 
+			} else {
+				$arOrder[] = "n.datum"; 
+			}
+			
+			$oDB = new database("select n.* from tblNotifications n " . implode(" ", $arJoin) . " where " . implode(" and ", $arWhere) . " order by " . implode(",", $arOrder) . " $strLimit ;", TRUE); 
 			while ($oDB->nextRecord()) {
 				$arMessage =array(
 					"title" => "", 

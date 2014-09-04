@@ -5,7 +5,7 @@
 		if (!is_null($iID)) $i_GLOBAL_userid = $iID; 
 		return $i_GLOBAL_userid; 
 	}
-	
+	 
 	function owaesTime() {
 		$iSpeed = settings("date", "speed"); 
 		$iStart = settings("date", "start");

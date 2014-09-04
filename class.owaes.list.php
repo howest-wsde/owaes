@@ -147,8 +147,8 @@ group by
 					$this->arDetails["indicatoren"][$strField] = $value; 
 					switch(count($this->arDetails["indicatoren"])) {
 						case 1:  
-							if (intval($value) > 70) $this->arScore["indic." . $strField] = "(m.$strField / 111)+0.10"; 
-							if (intval($value) < 40) $this->arScore["indic." . $strField] = "1-(m.$strField / 111)";  
+							if (intval($value) < 40) $this->arScore["indic." . $strField] = "(m.$strField / 111)+0.10"; 
+							if (intval($value) > 70) $this->arScore["indic." . $strField] = "1-(m.$strField / 111)";  
 						default: 
 							$iTotal = 0; 
 							$iMax = 0;
@@ -162,8 +162,8 @@ group by
 							foreach ($this->arDetails["indicatoren"] as $strKey=>$iVal) {
 								unset($this->arScore["indic." . $strField]); 
 								if ($iMax - $iMin > 10) {
-									if (intval($iVal)-$iAVG > 0) $this->arScore["indic." . $strField] = "1-(m.$strField / 111)+0.10"; 
-									if ($iAVG-intval($iVal) > 0) $this->arScore["indic." . $strField] = "(m.$strField / 111)"; 
+									if (intval($iVal) > $iAVG) $this->arScore["indic." . $strField] = "1-(m.$strField / 111)"; 
+									if (intval($iVal) < $iAVG) $this->arScore["indic." . $strField] = "(m.$strField / 111)+0.10"; 
 								} 
 							}
 							break; 	

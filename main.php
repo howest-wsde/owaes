@@ -3,7 +3,8 @@
 	$oSecurity = new security(TRUE);  
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
-	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true"); 
+	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
+	$oPage->addJS("script/masonry.js"); 
     
     $oPage->tab("home");
 	
@@ -16,6 +17,15 @@
         	echo $oPage->getHeader(); 
 		?>
         <script>
+		
+					
+			$(document).ready(function(e) {
+				$('div.masonry').masonry({
+				  itemSelector: '.masonrybox'
+				}); 
+            });
+			
+
 
 			// GOOGLE MAP
 			var map; 
@@ -113,7 +123,7 @@
                 <div class="panel-group" id="accordionGraphs">
                    <div class="row">
                     <div class="col-md-1">
-                        <div rel="thomas_buffel" class="">
+                        <div rel="<? echo $oMe->alias(); ?>" class="">
                             <a href="<? echo $oMe->getURL(); ?>"><? echo $oMe->getImage("90x90"); ?></a>
                         </div>
                     </div>
@@ -132,7 +142,7 @@
 								$iPercent2 = $iPercent1;  
 							}
 						?>
-                        <p class="gebruikers-naam"><a href="http://quq.be/owaes/thomas_buffel"><? echo $oMe->getName(); ?></a></p>
+                        <p class="gebruikers-naam"><a href="<? echo $oMe->getURL(); ?>"><? echo $oMe->getName(); ?></a></p>
                         <p class="level">Level <? echo $oMe->level(); ?></p>
                         <div class="progress progress-experience" title="Vooruitgang: <? echo $iPercent2; ?>%" >
                             <div class="progress-bar progress-bar-experience" role="progressbar" aria-valuenow="<? echo $oMe->experience()->total(); ?>" aria-valuemin="0" aria-valuemax="<? echo $oMe->experience()->leveltreshold(); ?>" style="width: <? echo $iPercent1; ?>%;">
@@ -237,38 +247,38 @@
                
                 <div class="row masonry">
                 
-
-                <!-- Berichten -->  
-                		<div class="col-md-6 clearfix" style="z-index: 980;">
-                        	<div class="layoutBlocks border">
-                                <h2>Recente berichten</h2>
-                                 
-								<?
-									$oNotification = new notification(me()); 
-									$arMessages = $oNotification->getList(5); 
-									vardump($arMessages); 
-									foreach ($arMessages as $arMessage) {
-										?><div class="list-group">
-                                            <a href="<? echo $arMessage["link"]; ?>" class="list-group-item">
-                                                <div class="media"> 
-                                                    <img class="media-object pull-left" src="<? echo $arMessage["icon"]; ?>" style="width: 64px; height: 64px; " />
-                                                    <div class="media-body">
-                                                        <h4 class="media-heading"><? echo $arMessage["title"]; ?></h4>
-                                            
-                                                        <div class="development"><? echo $arMessage["message"]; ?></div>
-                                             
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </div><?
-									}
-								?>
-                        	</div>
-                       </div>
+				<? 
+					$oNotification = new notification(me()); 
+					$arMessages = $oNotification->getList(5);  
+					if (count($arMessages)>0) {
+						?>
+						<!-- Berichten -->  
+							<div class="col-md-6 clearfix masonrybox" style="z-index: 980;">
+								<div class="layoutBlocks border">
+									<h2>Recente berichten</h2>
+									 
+									<?
+										foreach ($arMessages as $arMessage) {
+											?><div class="notific">
+												<a href="<? echo isset($arMessage["link"]) ? $arMessage["link"] : "#"; ?>">
+									   
+															<h4 class="not-heading"><? echo $arMessage["title"]; ?></h4> 
+															<div class="not-time"><? echo str_date($arMessage["time"]); ?></div> 
+															<div class="not-msg"><? echo $arMessage["message"]; ?></div> 
+													  
+												</a>
+											</div><?
+										}
+									?>
+								</div>
+						   </div>
+						<?
+                	}
+				?>
                 
                 
                 <!-- Quests -->  
-                		<div class="col-md-6 clearfix" style="z-index: 980;">
+                		<div class="col-md-6 clearfix masonrybox" style="z-index: 980;">
                         	<div class="layoutBlocks border">
                                 <h2>Uitdagingen</h2>
                                  <div class="panel-group" id="accordion">
@@ -326,7 +336,7 @@
                         </div>
                         
                 <!-- Tutorial quests -->  
-                        <div class="col-md-6 clearfix" style="z-index: 970;">
+                        <div class="col-md-6 clearfix masonrybox" style="z-index: 970;">
                             <div class="layoutBlocks border">
                                 <h2>Platform-uitdagingen</h2>
                                  <div class="panel-group" id="accordion">
@@ -419,261 +429,179 @@
                             </div>
                          </div>
                          
-                <!-- Zijn deze activiteiten iets voor jou? --> 
-                         <div class="col-md-6 clearfix" style="z-index: 960;">
-                        	<div class="layoutBlocks border">
-                                <h2>Zijn deze items iets voor jou?</h2>
 
-                                <div class="list-group">
-                                	<?
-										$oOwaesList = new owaeslist(); 
-										$oOwaesList->filterByState(STATE_RECRUTE);  
-										$oOwaesList->filterPassedDate(owaesTime());  
-										$oOwaesList->filterByUser(me(), FALSE); 
-										$oOwaesList->enkalkuli("social", $oMe->social());
-										$oOwaesList->enkalkuli("physical", $oMe->physical());
-										$oOwaesList->enkalkuli("mental", $oMe->mental());
-										$oOwaesList->enkalkuli("emotional", $oMe->emotional());
-										$oOwaesList->limit(2);  
-										if (count($oOwaesList->getList()) > 0) { 				
-											foreach ($oOwaesList->getList() as $oItem) {  
-												echo $oItem->HTML("templates/owaes.main-full.html");  
-											} 
-										}
-									?> 
-                                </div>
-                                <!-- <p class="meer"><a href="#">meer...</a></p> -->
-                            </div>
-                         </div>
-                         
-                         
-                <!-- Recent aangemaakte activiteiten --> 
-                         <div class="col-md-6 clearfix" style="z-index: 950;">
-                        	<div class="layoutBlocks border">
-                                <h2>Recent aangemaakte activiteiten</h2>
+                        <?
+                            $oOwaesList = new owaeslist(); 
+                            $oOwaesList->filterByState(STATE_RECRUTE);  
+                            $oOwaesList->filterPassedDate(owaesTime());  
+                            $oOwaesList->filterByUser(me(), FALSE); 
+                            $oOwaesList->enkalkuli("social", $oMe->social());
+                            $oOwaesList->enkalkuli("physical", $oMe->physical());
+                            $oOwaesList->enkalkuli("mental", $oMe->mental());
+                            $oOwaesList->enkalkuli("emotional", $oMe->emotional());
+                            $oOwaesList->limit(2);  
+                            if (count($oOwaesList->getList()) > 0) { 
+                                ?>
+                                    <!-- Zijn deze activiteiten iets voor jou? --> 
+                                 <div class="col-md-6 clearfix masonrybox" style="z-index: 960;">
+                                    <div class="layoutBlocks border">
+                                        <h2>Zijn deze items iets voor jou?</h2>
+        
+                                        <div class="list-group">
+                                        <?		
+                                        foreach ($oOwaesList->getList() as $oItem) {  
+                                            echo $oItem->HTML("templates/owaes.main-full.html");  
+                                        } 
+                                        ?>
 
-                                <div class="list-group">
-                            	    <?
-										$oOwaesList = new owaeslist(); 
-										$oOwaesList->filterByState(STATE_RECRUTE);  
-										$oOwaesList->filterPassedDate(owaesTime());  
-										$oOwaesList->limit(2);  
-										$oOwaesList->order("lastupdate desc");  
-										if (count($oOwaesList->getList()) > 0) { 				
-											foreach ($oOwaesList->getList() as $oItem) {  
-												echo $oItem->HTML("templates/owaes.main-full.html");  
-											} 
-										}
-									?>  
-                                </div>
-
-                                <!-- <p class="meer"><a href="#">meer...</a></p> -->
-                            </div>
-                         </div>
-                         
-                         
-                         
-                <!-- notificaties -->
-                 <div class="col-md-6 clearfix" style="z-index: 940;">
-                        	<div class="layoutBlocks border">
-                            
-                             
+                                        </div>
+                                        <!-- <p class="meer"><a href="#">meer...</a></p> -->
+                                    </div>
+                                 </div>											
                                 <?
-		
-									$oOwaesList = new owaeslist(); 
-									$oOwaesList->filterByCreator(me());
-									$oOwaesList->filterByState(array(STATE_RECRUTE, STATE_SELECTED));
-									if (count($oOwaesList->getList()) > 0) {
-										echo ("<h2>Openstaande items</h2>"); 
-										echo (" <div class=\"list-group\">");						
-										foreach ($oOwaesList->getList() as $oItem) {  
-											echo $oItem->HTML("templates/owaes.main.html");  
-										}
-										echo "</div>"; 
-									}
-
- 
-									$oOwaesList = new owaeslist(); 
-									$oOwaesList->payment(me(), "yes");
-									$oOwaesList->rated(me(), "no"); 
-									if (count($oOwaesList->getList()) > 0) {
-										echo ("<h2>Vergeet niet feedback te geven</h2>"); 
-										echo (" <div class=\"list-group\">");						
-										foreach ($oOwaesList->getList() as $oItem) {  
-											echo $oItem->HTML("templates/owaes.main.html");  
-										}
-										echo "</div>"; 
-									}
-									
-									
-									$oOwaesList = new owaeslist(); 
-									$oOwaesList->subscribed(me(), "confirmed");
-									$oOwaesList->payment(me(), "no");
-									if (count($oOwaesList->getList()) > 0) {
-										echo ("<h2>Nog te betalen</h2>"); 
-										echo (" <div class=\"list-group\">");						
-										foreach ($oOwaesList->getList() as $oItem) {  
-											echo $oItem->HTML("templates/owaes.main.html");  
-										}
-										echo "</div>"; 
-									}
-								?>
-                                <!-- 
-                                <h2>Nog te betalen</h2>
-
-                                <div class="list-group">
-                                
-                                        <div class="media "> 
-                                            <span class="icon icon-opleiding icon-lg pull-left iconPos"></span>
-                                            <div class="media-body">
-                                                <h4 >Ik zoek iemand om gras af te rijden</h4>
-
-                                                 <p class="meer"><a href="/owaes/owaes.php?owaes=71">Tonen</a></p>
+                            }
+                        ?> 
+                         
+             
+                        <?
+                            $oOwaesList = new owaeslist(); 
+                            $oOwaesList->filterByState(STATE_RECRUTE);  
+                            $oOwaesList->filterPassedDate(owaesTime());  
+                            $oOwaesList->limit(2);  
+                            $oOwaesList->order("lastupdate desc");  
+                            if (count($oOwaesList->getList()) > 0) { 
+                                ?>
+                                    <!-- Recent aangemaakte activiteiten --> 
+                                     <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
+                                        <div class="layoutBlocks border">
+                                            <h2>Recent aangemaakte activiteiten</h2>
+            
+                                            <div class="list-group">
+                                                
+                                                <?				
+                                                foreach ($oOwaesList->getList() as $oItem) {  
+                                                    echo $oItem->HTML("templates/owaes.main-full.html");  
+                                                } 
+                                                ?> 
                                             </div>
+            
+                                            <!-- <p class="meer"><a href="#">meer...</a></p> -->
                                         </div>
-                     
-                                        <div class="media "> 
-                                            <span class="icon icon-opleiding icon-lg pull-left iconPos"></span>
-                                            <div class="media-body">
-                                                <h4>Installatie Pc-klassen</h4>
-
-                                                 <p class="meer"><a href="/owaes/owaes.php?owaes=71">Tonen</a></p>
-                                            </div>
-                                        </div>
-                                </div>
-                                
-                                <h2>Vergeet niet feedback te geven</h2>
-
-                                <div class="list-group">
-
-                                        <div class="media "> 
-                                            <span class="icon icon-werkervaring icon-lg pull-left iconPos"></span>
-                                            <div class="media-body">
-                                                <h4 >Check verwarming</h4>
-
-                                                 <p class="meer"><a href="/owaes/owaes.php?owaes=71">Tonen</a></p>
-                                            </div>
-                                        </div>
-                     
-                                        <div class="media "> 
-                                            <span class="icon icon-opleiding icon-lg pull-left iconPos"></span>
-                                            <div class="media-body">
-                                                <h4 >Hulp met administratie</h4>
-
-                                                 <p class="meer"><a href="/owaes/owaes.php?owaes=71">Tonen</a></p>
-                                            </div>
-                                        </div>
-                                </div>
-                                
-                                -->
-                            </div>
-                         </div>
-                          
-                     
-                   <!--  <div class="main market">  -->
-                     
-                       
-                        
-                
-                        <?  
-							/*
-							foreach ($oOwaesList->getList() as $oItem) {  
-								list($iLat, $iLong) = $oItem->LatLong();  
-								vardump($oItem); 
-								if ($iLat * $iLong != 0) {
-									echo ("setMarker(new google.maps.LatLng($iLat, $iLong)); \n"); 
-								} 
-							}
-							*/
-							
-/* ***** DEMO 20140527 **** 
-							
-							$oNotification = new notification(me()); 
-							$arMessages = $oNotification->getList(); 
-							if (count($arMessages)>0) {
-								echo ("<div>"); 
-								echo ("<h1>Meldingen</h1>"); 
-								var_dump($arMessages); 
-								echo ("</div>"); 
-							}
-						
-							$oOwaesList = new owaeslist(); 
+                                     </div>
+                                <?
+                            }
+                        ?>  
+                         
+                         
+						<?
+                            $oOwaesList = new owaeslist(); 
 							$oOwaesList->filterByCreator(me());
 							$oOwaesList->filterByState(array(STATE_RECRUTE, STATE_SELECTED));
-							if (count($oOwaesList->getList()) > 0) {
-								echo ("<h1>Aangeboden door mij, nog niet gesloten: " . count($oOwaesList->getList()) . "</h1>"); 
-								echo ("<div id=\"aangeboden\"><a href=\"get/htm/owaes/owaesmini.html?author=" . me() . "&status=open\" class=\"ajax\" rel=\"aangeboden\">tonen</a></div>");						
-								foreach ($oOwaesList->getList() as $oItem) { 
-									// echo "<a href='" . $oItem->getLink() . "'>" . $oItem->title() . "</a><br>"; 
-									echo $oItem->HTML("templates/owaesmini.html"); 
-								}
-								
-							}
-
-							
-							
-							 $oOwaesList = new owaeslist(); 
-							//$oOwaesList->filterByExecutor(me());
-							$oOwaesList->payment(me(), "no");
-							//$oOwaesList->filterByUnpayed(me());
-							if (count($oOwaesList->getList()) > 0) {
-								echo ("<h1>" . count($oOwaesList->getList()) . " items waarvan betaling nog niet is afgewerkt: </h1>"); 
-								echo ("<div id=\"nietafgewerkt\"><a href=\"get/htm/owaes/owaesmini.html?payed=false\" class=\"ajax\" rel=\"nietafgewerkt\">tonen</a>"); 
-								
-								
-								foreach ($oOwaesList->getList() as $oItem) { 
-									// echo "<a href='" . $oItem->getLink() . "'>" . $oItem->title() . "</a><br>"; 
-							// 		echo $oItem->HTML("templates/owaesmini.html"); 
-								}
-								
-								echo ("</div>");
-								/*
-								*/
-/* ***** DEMO 20140527 **** 
-							} 
-							 
-							
-							$oOwaesList = new owaeslist();  
+                            if (count($oOwaesList->getList()) > 0) { 
+                                ?>
+                                    <!-- Recent aangemaakte activiteiten --> 
+                                     <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
+                                        <div class="layoutBlocks border">
+                                            <h2>Openstaande items</h2>
+            
+                                            <div class="list-group">
+                                                
+                                                <?				
+                                                foreach ($oOwaesList->getList() as $oItem) {  
+                                                    echo $oItem->HTML("templates/owaes.main-full.html");  
+                                                } 
+                                                ?> 
+                                            </div>
+            
+                                            <!-- <p class="meer"><a href="#">meer...</a></p> -->
+                                        </div>
+                                     </div>
+                                <?
+                            }
+                        ?>  
+                         
+						<?
+                            $oOwaesList = new owaeslist(); 
 							$oOwaesList->payment(me(), "yes");
 							$oOwaesList->rated(me(), "no"); 
-							if (count($oOwaesList->getList()) > 0) {
-								echo ("<h1>" . count($oOwaesList->getList()) . " betaalde items waar nog geen rating gegeven: </h1>"); 
-								echo ("<div id=\"nietrated\"><a href=\"get/htm/owaes/owaesmini.html?payed=true&rating=false\" class=\"ajax\" rel=\"nietrated\">tonen</a>");  
-								echo ("</div>"); 
-							} 
-							 
-							$oOwaesList = new owaeslist(); 
+                            if (count($oOwaesList->getList()) > 0) { 
+                                ?>
+                                    <!-- Recent aangemaakte activiteiten --> 
+                                     <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
+                                        <div class="layoutBlocks border">
+                                            <h2>Vergeet niet feedback te geven</h2>
+            
+                                            <div class="list-group">
+                                                
+                                                <?				
+                                                foreach ($oOwaesList->getList() as $oItem) {  
+                                                    echo $oItem->HTML("templates/owaes.main-full.html");  
+                                                } 
+                                                ?> 
+                                            </div>
+            
+                                            <!-- <p class="meer"><a href="#">meer...</a></p> -->
+                                        </div>
+                                     </div>
+                                <?
+                            }
+                        ?>  
+                         
+						<?
+                            $oOwaesList = new owaeslist(); 
 							$oOwaesList->subscribed(me(), "confirmed");
 							$oOwaesList->payment(me(), "no");
-							
-							if (count($oOwaesList->getList()) > 0) {
-								echo ("<h1>" . count($oOwaesList->getList()) . " items waar inschrijving bevestigd: </h1>"); 
-								echo ("<div id=\"ingeschreven\"><a href=\"get/htm/owaes/owaesmini.html?subscribed=confirmed&payed=false\" class=\"ajax\" rel=\"ingeschreven\">tonen</a>"); 
-								 
-								
-								echo ("</div>");
-								/*
-								*/
-/* ***** DEMO 20140527 **** 
-							}
-							
+                            if (count($oOwaesList->getList()) > 0) { 
+                                ?>
+                                    <!-- Recent aangemaakte activiteiten --> 
+                                     <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
+                                        <div class="layoutBlocks border">
+                                            <h2>Nog te betalen</h2>
+            
+                                            <div class="list-group">
+                                                
+                                                <?				
+                                                foreach ($oOwaesList->getList() as $oItem) {  
+                                                    echo $oItem->HTML("templates/owaes.main-full.html");  
+                                                } 
+                                                ?> 
+                                            </div>
+            
+                                            <!-- <p class="meer"><a href="#">meer...</a></p> -->
+                                        </div>
+                                     </div>
+                                <?
+                            }
+                        ?>  
+                          
+                          
+						<?
 							$oSubscriptions = new subscriptions(); 
 							$oSubscriptions->filter("user", me()); 
 							$oSubscriptions->filter("state", array(SUBSCRIBE_NEGOTIATE, SUBSCRIBE_SUBSCRIBE));  
-							if (count($oSubscriptions->result()) > 0) {
-								echo ("<h1>Items waar ingeschreven en nog niet bevestigd: </h1>"); 
-								echo ("<div id=\"nietbevestigd\"><a href=\"get/htm/owaes/owaesmini.html?subscribed=notconfirmed\" class=\"ajax\" rel=\"nietbevestigd\">tonen</a>"); 
-								
-								foreach ($oSubscriptions->result() as $oItem) { 
-									// echo "<a href='" . $oItem->market()->getLink() . "'>" . $oItem->market()->title() . "</a><br>"; 
-							// 		echo $oItem->market()->HTML("templates/owaesmini.html"); 
-								}  
-								
-								echo ("</div>");
-								
-							}
-/* ***** DEMO 20140527 **** */
-                        ?>
+                            if (count($oSubscriptions->result()) > 0) { 
+                                ?>
+                                    <!-- Recent aangemaakte activiteiten --> 
+                                     <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
+                                        <div class="layoutBlocks border">
+                                            <h2>Wachtend op bevestiging:</h2>
+            
+                                            <div class="list-group">
+                                                
+                                                <?				
+                                                foreach ($oSubscriptions->result() as $oItem) { 
+                                                    echo $oItem->market()->HTML("templates/owaes.main-full.html"); 
+                                                } 
+                                                ?> 
+                                            </div>
+            
+                                            <!-- <p class="meer"><a href="#">meer...</a></p> -->
+                                        </div>
+                                     </div>
+                                <?
+                            }
+                        ?>  
+                        
                     <!-- </div> -->
                 </div> 
         	<? echo $oPage->endTabs(); ?>

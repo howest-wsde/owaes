@@ -102,6 +102,24 @@
 					case "lastname": 
 						$this->lastname($strVal); 
 						break; 	
+					case "email": 
+						$this->email($strVal); 
+						break; 	
+					case "description": 
+						$this->description($strVal); 
+						break; 	
+					case "telephone": 
+						$this->telephone($strVal); 
+						break; 	
+					case "gender": 
+						$this->gender($strVal); 
+						break; 	
+					case "birthdate":  
+						$this->birthdate(ddmmyyyyTOdate($strVal));  
+						break; 	
+					case "location": 
+						$this->location($strVal, 0, 0); 
+						break; 	
 					default: 
 						$this->data($strKey, $strVal); 
 				}
@@ -1034,20 +1052,6 @@
 				$strHTML = str_replace($arResult[0][$i], $strFriends, $strHTML); 
 			} 
 			
-			$strHTML = str_replace("[id]", $this->id(), $strHTML);
-			$strHTML = str_replace("[firstname]", $this->firstname(), $strHTML);
-			$strHTML = str_replace("[lastname]", $this->lastname(), $strHTML);
-			$strHTML = str_replace("[name]", $this->getName(), $strHTML);
-			$strHTML = str_replace("[username]", $this->login(), $strHTML);
-			$strHTML = str_replace("[key]", (($this->alias() == "")?$this->iID:$this->alias()), $strHTML); // of id als er geen username is
-			$strHTML = str_replace("[email]", $this->email(), $strHTML);
-			$strHTML = str_replace("[description]", $this->description(), $strHTML);
-			$strHTML = str_replace("[link]", $this->getURL(), $strHTML);
-			$strHTML = str_replace("[url]", $this->getURL(), $strHTML);
-			$strHTML = str_replace("[img]", $this->getImage("profile"), $strHTML); 
-			$strHTML = str_replace("[img:src:70x70]", $this->getImage("70x70", FALSE), $strHTML); 
-			$strHTML = str_replace("[userbadge]", $this->userbadge(), $strHTML); 
-			$strHTML = str_replace("[development]", $this->developmentBoxes(), $strHTML);  
 			if ($this->id() == me()) {   
 				$strHTML = filterTag("me", $strHTML, TRUE); 
 				$strHTML = filterTag("notme", $strHTML, FALSE);  
@@ -1104,49 +1108,144 @@
 				}
 			} 
 			
-			if (instr("[friends:count]", $strHTML)) $strHTML = str_replace("[friends:count]", count($this->friends()), $strHTML);  
-			if (instr("[friends:url]", $strHTML)) $strHTML = str_replace("[friends:url]", fixPath("friends.php?u=" . $this->id()), $strHTML);   
-			if (instr("[badges]", $strHTML)) $strHTML = str_replace("[badges]", $this->badgelist($this->getBadges()), $strHTML);  
-            if (instr("[badges:count]", $strHTML)) $strHTML = str_replace("[badges:count]", count($this->getBadges()), $strHTML);  
-			if (instr("[certificates]", $strHTML)) $strHTML = str_replace("[certificates]", $this->badgelist($this->getCertificates()), $strHTML);  
-			if (instr("[certificates:count]", $strHTML)) $strHTML = str_replace("[certificates:count]", count($this->getCertificates()), $strHTML); 
-			if (instr("[badges:30]", $strHTML)) $strHTML = str_replace("[badges:30]", $this->badgelist($this->getBadges(), 30), $strHTML);  
-			if (instr("[certificates:30]", $strHTML)) $strHTML = str_replace("[certificates:30]", $this->badgelist($this->getCertificates(), 30), $strHTML);  
-			if (instr("[badges:20]", $strHTML)) $strHTML = str_replace("[badges:20]", $this->badgelist($this->getBadges(), 20), $strHTML);  
-			if (instr("[certificates:20]", $strHTML)) $strHTML = str_replace("[certificates:20]", $this->badgelist($this->getCertificates(), 20), $strHTML);  
-			if (instr("[transactions]", $strHTML)) $strHTML = str_replace("[transactions]", $this->creditsBox(), $strHTML);  
-            if (instr("[#credits]", $strHTML)) $strHTML = str_replace("[#credits]", $this->credits(), $strHTML);   
-            if (instr("[credits]", $strHTML)) $strHTML = str_replace("[credits]", $this->userCredits(), $strHTML);   
-            if (instr("[level]", $strHTML)) $strHTML = str_replace("[level]", $this->level(), $strHTML); 
-            if (instr("[experience]", $strHTML)) $strHTML = str_replace("[experience]", $this->experience()->total(FALSE), $strHTML); 
-            if (instr("[experience:confirmed]", $strHTML)) $strHTML = str_replace("[experience:confirmed]", $this->experience()->total(FALSE), $strHTML); 
-            if (instr("[experience:all]", $strHTML)) $strHTML = str_replace("[experience:all]", $this->experience()->total(TRUE), $strHTML); 
-            if (instr("[leveltreshold]", $strHTML)) $strHTML = str_replace("[leveltreshold]", $this->experience()->leveltreshold(), $strHTML); 
-            if (instr("[levelpercentage]", $strHTML)) $strHTML = str_replace("[levelpercentage]", floor(100 * $this->experience()->total() / $this->experience()->leveltreshold()), $strHTML); 
-            if (instr("[social]", $strHTML)) $strHTML = str_replace("[social]", $this->social(), $strHTML); 
-            if (instr("[physical]", $strHTML)) $strHTML = str_replace("[physical]", $this->physical(), $strHTML); 
-            if (instr("[mental]", $strHTML)) $strHTML = str_replace("[mental]", $this->mental(), $strHTML); 
-            if (instr("[emotional]", $strHTML)) $strHTML = str_replace("[emotional]", $this->emotional(), $strHTML); 
-            if (instr("[location]", $strHTML)) $strHTML = str_replace("[location]", $this->location(), $strHTML); 
-            if (instr("[stars]", $strHTML)) $strHTML = str_replace("[stars]", $this->userStars(), $strHTML);   
-			
-			
-            if (instr("[editprofile-key]", $strHTML)) $strHTML = str_replace("[editprofile-key]", "<input type=\"hidden\" name=\"edit-profile\" value=\"" . $this->editkey() . "\" />", $strHTML);  
-			 
-			$strHTML = str_replace("[contact]", $this->isCurrentUser() ? "" : $this->messageLink() , $strHTML);
-			$strHTML = str_replace("[donate]", $this->isCurrentUser() ? "" : $this->donateLink() , $strHTML);
-			$strHTML = str_replace("[link:contact]", $this->isCurrentUser() ? "#" : $this->messageLink("", FALSE) , $strHTML);
-			$strHTML = str_replace("[link:credits]", $this->isCurrentUser() ?"Je kan geen credits aan jezelf schenken." : $this->donateLink("",true),$strHTML);
+			preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]/", $strHTML, $arResult);   // alle tags (zonder whitespace)
+			if (isset($arResult[1])) foreach ($arResult[1] as $strTag){ 
+				$strResult = $this->HTMLvalue($strTag);  
+				if (!is_null($strResult)) $strHTML = str_replace("[$strTag]", $strResult, $strHTML); 
+			} 
 
-		//	$strEXPid = "userexp" . $this->id() . "-" . rand(0,9999); 
-		//	$strHTML .= "<p id=\"$strEXPid\">Experience: <a href=\"experience-confirm.ajax.php\" class=\"ajax\" rel=\"$strEXPid\">" . $this->experience()->total(FALSE) . "/" . $this->experience()->total(TRUE) . "</a></p>"; 
-
+			if (instr("[userdetails]", $strHTML)) {
+				$arUserDetails = array();  
+				if ($this->email() != "") $arUserDetails[] = "<dt>E-mail</dt><dd><a href=\"mailto:" . $this->email() . "\">" . $this->email() . "</a></dd>"; 
+				if ($this->telephone() != "") $arUserDetails[] = "<dt>Telefoon</dt><dd>" . $this->telephone() . "</dd>"; 
+				if ($this->gender() != "") $arUserDetails[] = "<dt>Geslacht</dt><dd>" . $this->gender() . "</dd>"; 
+				if ($this->birthdate() != 0) $arUserDetails[] = "<dt>Geboortedatum</dt><dd>" . str_date($this->birthdate()) . "</dd>"; 
+				if ($this->location() != "") $arUserDetails[] = "<dt>Woonplaats</dt><dd>" .$this->location() . "</dd>"; 
+				$strHTML = str_replace("[userdetails]", "<dl class=\"userinfo\">" . implode("", $arUserDetails) . "</dl>", $strHTML);   
+			}
+	 
 
 			return $strHTML; 
 		} 
 		private function imageregreplace(&$matches) { 
 			return $this->getImage($matches[1], FALSE);  
 		} 
+		
+		private function HTMLvalue($strTag) {
+			switch($strTag) { 
+				case "id": 
+					return $this->id(); 
+				case "firstname": 
+					return $this->firstname(); 
+				case "lastname": 
+					return $this->lastname(); 
+				case "name": 
+					return $this->getName(); 
+				case "username": 
+					return $this->login(); 
+				case "key": 
+					return (($this->alias() == "")?$this->iID:$this->alias()); 
+                    break; 
+                case "email": 
+					return $this->email(); 
+				case "birthdate": 
+				case "birthday": 
+					return str_date($this->birthdate(), "d-m-Y");   
+				case "telephone": 
+					return $this->telephone(); 
+				case "description": 
+					return $this->description(); 
+				case "link": 
+					return $this->getURL(); 
+				case "url": 
+					return $this->getURL(); 
+				case "img": 
+					return $this->getImage("profile"); 
+                case "img:src:70x70": 
+					return $this->getImage("70x70", FALSE); 
+                case "userbadge": 
+					return $this->userbadge(); 
+                case "development": 
+					return $this->developmentBoxes(); 
+				case "friends:count": 
+					return count($this->friends()); 
+				case "friends:url": 
+					return fixPath("friends.php?u=" . $this->id()); 
+					
+				case "badges": 
+					return $this->badgelist($this->getBadges()); 
+				case "badges:count": 
+					return count($this->getBadges()); 
+					
+				case "certificates": 
+					return $this->badgelist($this->getCertificates()); 
+				case "certificates:count": 
+					return count($this->getCertificates()); 
+					
+				case "badges:30": 
+					return $this->badgelist($this->getBadges(), 30); 
+				case "certificates:30": 
+					return $this->badgelist($this->getCertificates(), 30); 
+				case "badges:20": 
+					return $this->badgelist($this->getBadges(), 20); 
+				case "certificates:20": 
+					return $this->badgelist($this->getCertificates(), 20); 
+				case "transactions": 
+					return $this->creditsBox(); 
+
+				case "#credits": 
+					return $this->credits(); 
+				case "credits": 
+					return $this->userCredits(); 
+				case "level": 
+					return $this->level(); 
+				case "experience": 
+					return $this->experience()->total(FALSE); 
+				case "experience:confirmed": 
+					return $this->experience()->total(FALSE); 	
+				case "experience:all": 
+					return $this->experience()->total(TRUE); 
+				case "leveltreshold": 
+					return $this->experience()->leveltreshold(); 
+				case "levelpercentage": 
+					return floor(100 * $this->experience()->total() / $this->experience()->leveltreshold()); 
+				case "social": 
+					return $this->social(); 
+				case "physical": 
+					return $this->physical(); 
+				case "mental": 
+					return $this->mental(); 
+				case "emotional": 
+					return $this->emotional(); 
+				case "location": 
+					return $this->location(); 
+				case "stars": 
+					return $this->userStars(); 	
+				case "editprofile-key": 
+					return "<input type=\"hidden\" name=\"edit-profile\" value=\"" . $this->editkey() . "\" />"; 
+				case "contact": 
+					return $this->isCurrentUser() ? "" : $this->messageLink(); 
+				case "donate": 
+					return $this->isCurrentUser() ? "" : $this->donateLink(); 
+				case "link:contact": 
+					return $this->isCurrentUser() ? "#" : $this->messageLink("", FALSE); 
+				case "link:credits": 
+					return $this->isCurrentUser() ?"Je kan geen credits aan jezelf schenken." : $this->donateLink("",true); 			
+				default: 
+					return NULL; 
+			}
+		}
+		
+		/* 
+				case "": 
+					return ; 
+					break; 
+		*/
+		
+		
+		private function test($str) {
+			echo $str; 	
+		}
 		
 		private function editkey() {
 			if ($this->id() == me()) { // indien rechten: vaste key
