@@ -32,61 +32,10 @@
 		
 		if (($_POST["password1"] == $_POST["password2"]) && (trim($_POST["password1"]) != "")) $oProfile->password($_POST["password1"]); 
 		$bImageUploaded = FALSE; 
-		if ($_FILES["img"]["error"] == 0){ 
-			$arIMG = getimagesize($_FILES["img"]["tmp_name"]); 
-			$strImage = uniqueKey() . "." . extentie($_FILES["img"]["name"]);  
-			switch($arIMG["mime"]) {
-				case "image/jpeg": 
-				case "image/gif": 
-				case "image/png": 
-					move_uploaded_file($_FILES["img"]["tmp_name"], "upload/profiles/" . $strImage); 
-					$oProfile->img($strImage); 
-					$bImageUploaded = TRUE;
-					switch($arIMG["mime"]) {
-						case "image/jpeg": 
-							$oProfileIMG = imagecreatefromjpeg("upload/profiles/" . $strImage);
-							break; 
-						case "image/gif": 
-							$oProfileIMG = imagecreatefromgif("upload/profiles/" . $strImage);
-							break; 
-						case "image/png": 
-							$oProfileIMG = imagecreatefrompng("upload/profiles/" . $strImage);
-							break; 
-					}
-					$iX = imagesx($oProfileIMG); 
-					$iY = imagesy($oProfileIMG); 
-					$iX2 = 0; 
-					if ($iX > $iY) {
-						if ($iX > 300) {
-							$iY2 = 300 / ($iX/$iY); 
-							$iX2 = 300; 
-						} 
-					} else {
-						if ($iY > 300) {
-							$iX2 = 300 / ($iY/$iX); 
-							$iY2 = 300; 
-						}	
-					}
-					if ($iX2 != 0) {
-						$oThumb = imagecreatetruecolor($iX2, $iY2);
-						imagecopyresampled($oThumb, $oProfileIMG, 0, 0, 0, 0, $iX2, $iY2, $iX, $iY);
-						imagepng($oThumb, "upload/profiles/id/" . $oProfile->id() . ".png");
-						imagedestroy($oThumb); 
-					} else {
-						imagepng($oProfileIMG, "upload/profiles/id/" . $oProfile->id() . ".png");
-					}
-					imagedestroy($oProfileIMG); 
-					break;  
-				default: 
- 					// echo $arIMG["mime"];   // niet ondersteund
-			} 
-			
-			
-			/*
-    $image = imagecreatefrompng($originalFile);
-    imagejpeg($image, $outputFile, $quality);
-    imagedestroy($image);
-	*/
+		if ($_FILES["img"]["error"] == 0){  
+			$strTmp = "upload/tmp/" . $_FILES["img"]["name"]; 
+			move_uploaded_file($_FILES["img"]["tmp_name"], $strTmp);
+			createProfilePicture($strTmp, $oProfile->id()); 
 		}
 
 		$oProfile->update(); 
@@ -99,14 +48,6 @@
     $oPage->tab("account");
 
 
-	function showDropdown($strName, $iValue) {
-		$strHTML = "<select name=\"$strName\" class=\"form-control\">"; 
-		$strHTML .= "<option value=\"" . VISIBILITY_VISIBLE . "\"" . (($iValue===VISIBILITY_VISIBLE) ? " selected=selected" : "") . ">Zichtbaar voor iedereen</option>"; 
-		$strHTML .= "<option value=\"" . VISIBILITY_FRIENDS . "\"" . (($iValue===VISIBILITY_FRIENDS) ? " selected=selected" : "") . ">Enkel zichtbaar voor vrienden</option>"; 
-		$strHTML .= "<option value=\"" . VISIBILITY_HIDDEN . "\"" . (($iValue===VISIBILITY_HIDDEN) ? " selected=selected" : "") . ">Verborgen</option>"; 
-		$strHTML .= "</select>"; 
-		return $strHTML; 
-	}
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

@@ -46,28 +46,82 @@ $(document).ready(function () {
     });
 	
 
-	$(document).on("change", "div.tijdstip input.startuur", function(){
-		var rxTime = new RegExp("[0-2]?[0-9][^0-9]+[0-5]?[0-9]"); 
-		if (rxTime.test($(this).val())) {
-			strVal = $(this).val(); 
-			$(this).parentsUntil("div.tijdstip").parent().nextAll().find("input.startuur").each(function(){
-				if ($(this).val() == "") $(this).val(strVal);
-			})
-		} 
-		saveTimers();
-	});  
-	$(document).on("change", "div.tijdstip input.tijdsduur", function(){
-		var rxTime = new RegExp("[0-9.,]+"); 
-		if (rxTime.test($(this).val())) {
-			strVal = $(this).val(); 
-			$(this).parentsUntil("div.tijdstip").parent().nextAll().find("input.tijdsduur").each(function(){
-				if ($(this).val() == "") $(this).val(strVal);
-			})
+	$(document).on("focus", "input.startuur", function(e){
+		$(this).select();  
+	}).on("blur", "input.startuur", function(e){
+		strVal = $(this).val(); 
+		arUur = strVal.split(/[^0-9]+/); 
+		$(this).removeClass("invalidtime"); 
+		if (strVal != "") {
+			switch(arUur.length) { 
+				case 0: 
+					$(this).addClass("invalidtime"); 
+					break; 
+				case 1: 
+					iUur = arUur[0];  
+					if (iUur <= 24) {
+						$(this).val(iUur + ":00"); 
+					} else {
+						$(this).addClass("invalidtime"); 
+					}
+					break; 
+				case 2: 
+				default: 
+					iUur = arUur[0]; 
+					iMin = arUur[1]; 
+					if ((iUur <=24)&&(iMin<60)){
+						$(this).val(iUur + ":" + iMin); 
+					} else {
+						$(this).addClass("invalidtime"); 
+					}
+					break;  
+			}  
 		}
+		strVal = $(this).val(); 
+		$(this).parentsUntil("div.tijdstip").parent().nextAll().find("input.startuur").each(function(){
+			if ($(this).val() == "") $(this).val(strVal);
+		})
 		saveTimers();
 	}); 
 	
-	 printDates(); 
+	$(document).on("focus", "input.tijdsduur", function(e){
+		$(this).select();  
+	}).on("blur", "input.tijdsduur", function(e){
+		strVal = $(this).val(); 
+		arUur = strVal.split(/[^0-9]+/); 
+		$(this).removeClass("invalidtime"); 
+		if (strVal != "") {
+			switch(arUur.length) { 
+				case 0: 
+					$(this).addClass("invalidtime"); 
+					break; 
+				case 1: 
+					iUur = arUur[0];  
+					if (iUur <= 8) {
+						$(this).val(iUur + ":00"); 
+					} else {
+						$(this).addClass("invalidtime"); 
+					}
+					break; 
+				case 2: 
+				default: 
+					iUur = arUur[0]; 
+					iMin = arUur[1]; 
+					if ((iUur <=8)&&(iMin<60)){
+						$(this).val(iUur + ":" + iMin); 
+					} else {
+						$(this).addClass("invalidtime"); 
+					}
+					break;  
+			}  
+		}
+		strVal = $(this).val(); 
+		$(this).parentsUntil("div.tijdstip").parent().nextAll().find("input.tijdsduur").each(function(){
+			if ($(this).val() == "") $(this).val(strVal);
+		})
+		saveTimers();
+	});  
+	printDates(); 
 	
 });
 
@@ -281,13 +335,13 @@ function printDates() {
 						$("<div />").addClass("col-lg-1").html("om")
 					).append(
 						$("<div />").addClass("col-lg-2").append( 
-							$("<input />").attr("name", "start-" + strKey).addClass("time").attr("placeholder", "__u__").addClass("startuur").attr("type", "text").val(arDatums[strDate].start)
+							$("<input />").attr("name", "start-" + strKey).addClass("time").attr("placeholder", "xx : xx").addClass("startuur").attr("type", "text").val(arDatums[strDate].start)
 						)
 					).append(
 						$("<div />").addClass("col-lg-2").html("gedurende")
 					).append(
 						$("<div />").addClass("col-lg-2").append( 
-							$("<input />").attr("name", "tijd-" + strKey).addClass("time").addClass("tijdsduur").attr("type", "number").attr("min", 1).attr("max", 8).val(arDatums[strDate].tijd)
+							$("<input />").attr("name", "tijd-" + strKey).addClass("time").addClass("tijdsduur").attr("type", "text").attr("min", 1).attr("max", 8).val(arDatums[strDate].tijd)
 						)
 					).append(
 						$("<div />").addClass("col-lg-1").html("uur")
@@ -474,7 +528,7 @@ function deleteMarker() {
 
 
 $(document).ready(function() {
-	
+	rxSplitTags = /[,;]/; 
 	$("input.tag").focus(function(){
 		$("div#tags").addClass("actief"); 
 	}).blur(function(){
@@ -483,7 +537,7 @@ $(document).ready(function() {
 		switch(e.keyCode){
 			case 13: 
 				strVal = $(this).val(); 
-				arVal = strVal.split(" ");  
+				arVal = strVal.split(rxSplitTags);  
 				while (arVal.length > 0) {
 					strVal = arVal.shift(); 
 					addTag(strVal); 
@@ -491,7 +545,8 @@ $(document).ready(function() {
 				$(this).val("");
 				return false; 
 				break; 	
-			case 8: 
+			case 44: 
+			case 59: 
 				if ($(this).val() == "") {
 					$(this).val($("div#tags span.tag:last input").val());
 					$("div#tags span.tag:last").remove(); 
@@ -501,7 +556,7 @@ $(document).ready(function() {
 		} 
 	}).keyup(function(){
 		strVal = $(this).val(); 
-		arVal = strVal.split(" ");  
+		arVal = strVal.split(rxSplitTags);  
 		while (arVal.length > 1) {
 			strVal = arVal.shift(); 
 			addTag(strVal); 
@@ -532,7 +587,7 @@ $(document).ready(function() {
 	}).change(function(){ 
 		setTimeout(function() {  
 			strVal = $("input.tag").val(); 
-			arVal = strVal.split(" ");  
+			arVal = strVal.split(rxSplitTags);  
 			while (arVal.length > 0) {
 				strVal = arVal.shift(); 
 				addTag(strVal); 
@@ -551,14 +606,14 @@ function addTag(strTag) {
 		strKey = "tag_" + ($("div#tags span.tag").length+1) + "_" + Math.floor(1000*Math.random()); 
 		$("input.tag").before(
 			$("<span />").addClass("tag").attr("id", strKey).append(
-				$("<span>").text(strTag)
+				$("<span>").text(strTag.trim())
 			).append(
 				$("<a />").attr("title", "verwijderen").text("x").attr("href", "#").attr("rel", strKey).click(function(){
 					$("#" + $(this).attr("rel")).remove(); 
 					return false; 
 				})
 			).append(
-				$("<input />").attr("name", "tag[]").attr("type", "hidden").val(strTag)
+				$("<input />").attr("name", "tag[]").attr("type", "hidden").val(strTag.trim())
 			)
 		)
 	}

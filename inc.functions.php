@@ -25,6 +25,138 @@
 		return $strHTML; 
 	}
 	
+	function createProfilePicture($strLocation, $iUserID, $bKeepOld = FALSE) {
+		$arLocation = explode(".", $strLocation); 
+		$strExt = strtolower($arLocation[count($arLocation)-1]);  
+		switch($strExt) {
+			case "jpg": 
+			case "jpeg": 
+			case "gif": 
+			case "png": 
+				switch($strExt) {
+					case "jpg": 
+					case "jpeg": 
+						$oProfileIMG = imagecreatefromjpeg($strLocation);
+						break; 
+					case "gif": 
+						$oProfileIMG = imagecreatefromgif($strLocation);
+						break; 
+					case "png": 
+						$oProfileIMG = imagecreatefrompng($strLocation);
+						break; 
+				}
+				$iX = imagesx($oProfileIMG); 
+				$iY = imagesy($oProfileIMG); 
+				$iX2 = 0; 
+				if ($iX > $iY) {
+					if ($iX > 300) {
+						$iY2 = 300 / ($iX/$iY); 
+						$iX2 = 300; 
+					} 
+				} else {
+					if ($iY > 300) {
+						$iX2 = 300 / ($iY/$iX); 
+						$iY2 = 300; 
+					}	
+				}
+				if ($iX2 != 0) {
+					$oThumb = imagecreatetruecolor($iX2, $iY2);
+					imagecopyresampled($oThumb, $oProfileIMG, 0, 0, 0, 0, $iX2, $iY2, $iX, $iY);
+					imagepng($oThumb, "upload/profiles/id/" . $iUserID . ".png");
+					imagedestroy($oThumb); 
+				} else {
+					imagepng($oProfileIMG, "upload/profiles/id/" . $iUserID . ".png");
+				}
+				imagedestroy($oProfileIMG); 
+				if (!$bKeepOld) unlink($strLocation); 	
+				return TRUE; 
+				break;  
+			default: 
+				return FALSE; 	
+		}
+	}
+	/*
+		
+
+			$arIMG = getimagesize($_FILES["img"]["tmp_name"]); 
+			$strImage = uniqueKey() . "." . extentie($_FILES["img"]["name"]);  
+			switch($arIMG["mime"]) {
+				case "image/jpeg": 
+				case "image/gif": 
+				case "image/png": 
+					move_uploaded_file($_FILES["img"]["tmp_name"], "upload/profiles/" . $strImage); 
+					$oProfile->img($strImage); 
+					$bImageUploaded = TRUE;
+					switch($arIMG["mime"]) {
+						case "image/jpeg": 
+							$oProfileIMG = imagecreatefromjpeg("upload/profiles/" . $strImage);
+							break; 
+						case "image/gif": 
+							$oProfileIMG = imagecreatefromgif("upload/profiles/" . $strImage);
+							break; 
+						case "image/png": 
+							$oProfileIMG = imagecreatefrompng("upload/profiles/" . $strImage);
+							break; 
+					}
+					$iX = imagesx($oProfileIMG); 
+					$iY = imagesy($oProfileIMG); 
+					$iX2 = 0; 
+					if ($iX > $iY) {
+						if ($iX > 300) {
+							$iY2 = 300 / ($iX/$iY); 
+							$iX2 = 300; 
+						} 
+					} else {
+						if ($iY > 300) {
+							$iX2 = 300 / ($iY/$iX); 
+							$iY2 = 300; 
+						}	
+					}
+					if ($iX2 != 0) {
+						$oThumb = imagecreatetruecolor($iX2, $iY2);
+						imagecopyresampled($oThumb, $oProfileIMG, 0, 0, 0, 0, $iX2, $iY2, $iX, $iY);
+						imagepng($oThumb, "upload/profiles/id/" . $oProfile->id() . ".png");
+						imagedestroy($oThumb); 
+					} else {
+						imagepng($oProfileIMG, "upload/profiles/id/" . $oProfile->id() . ".png");
+					}
+					imagedestroy($oProfileIMG); 
+					break;  
+				default: 
+ 					// echo $arIMG["mime"];   // niet ondersteund
+
+
+
+	}
+	*/
+	/*
+	function HTMLelement($strTag, $arAttributes = array(), $oContent = NULL) { // $oContent kan string zijn, of array met strings of andere HTMLelements
+		$strHTML = "<$strTag"; 	 
+		foreach ($arAttributes as $strAtt=>$strVal) {
+			$strHTML .= " $strAtt=\"" . str_replace('"', "&quot;", $strVal) . "\""; 
+		}
+		if (is_null($oContent)) {
+			$strHTML .= " />"; 
+		} else {
+			$strHTML .= ">"; 
+			if (is_array($oContent)) foreach ($oContent as $strChild) {
+				$strHTML .= $strChild; 
+			} else $strHTML .= $oContent;
+			$strHTML .= "</$strTag>"; 
+		}
+		return $strHTML; 
+	}
+	*/
+	
+	function showDropdown($strName, $iValue) { // de dropdown bij instellingen en profile-page waar kan ingesteld worden wie wat ziet
+		$strHTML = "<select name=\"$strName\" class=\"form-control\">"; 
+		$strHTML .= "<option value=\"" . VISIBILITY_VISIBLE . "\"" . ((intval($iValue)==VISIBILITY_VISIBLE) ? " selected=selected" : "") . ">Zichtbaar voor iedereen</option>"; 
+		$strHTML .= "<option value=\"" . VISIBILITY_FRIENDS . "\"" . ((intval($iValue)==VISIBILITY_FRIENDS) ? " selected=selected" : "") . ">Enkel zichtbaar voor vrienden</option>"; 
+		$strHTML .= "<option value=\"" . VISIBILITY_HIDDEN . "\"" . ((intval($iValue)==VISIBILITY_HIDDEN) ? " selected=selected" : "") . ">Verborgen</option>"; 
+		$strHTML .= "</select>"; 
+		return $strHTML; 
+	}
+	
 	function clock($iTime = NULL) {
 		if (is_null($iTime)) $iTime = owaesTime(); 
 		return str_date($iTime, "j M y H:i"); 

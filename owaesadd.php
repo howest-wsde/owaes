@@ -283,7 +283,7 @@ input.time {width: 100%; display: block; }
 										$strKey = "tag" . ++$iTagCount; 
 										echo ("<span class=\"tag\" id=\"$strKey\"><span>$strTag</span><a title=\"verwijderen\" href=\"#\" rel=\"$strKey\">x</a><input type=\"hidden\" name=\"tag[]\" value=\"$strTag\"></span>"); 	
 									}
-								?><input type="text" name="tag[]" id="tag" class="tag" /> 
+								?><input type="text" name="tag[]" id="tag" class="tag" placeholder="kernwoorden, gescheiden door komma's" /> 
                                 </div></div> 
                                 </div> 
                                 

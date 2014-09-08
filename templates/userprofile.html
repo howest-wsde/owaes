@@ -6,7 +6,7 @@
                     <img src="[profileimg:155x155]" width="155" class="mainprofile img-responsive" />
                 </div>
                 <div class="[me]col-sm-10[/me] [notme]col-sm-8[/notme] basisgegevens">
-                    <h2 class="naam">
+                    <h2 class="naam"> 
                     	[firstname] [lastname] 
                     	[me]<span data-toggle="modal" data-target="#editBasisgegevens" class="icon icon-settings"></span>[/me]
                     </h2>
@@ -219,7 +219,7 @@
     <div class="modal fade" id="editBasisgegevens" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form class="form-horizontal" method="post">
+                <form class="form-horizontal" method="post" enctype="multipart/form-data"> 
                 	[editprofile-key]
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -234,11 +234,7 @@
                                     <input type="text" name="firstname" class="firstname form-control" id="firstname" placeholder="Voornaam" value="[firstname]" />
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:firstname]
                                 </div>
                             </div>
                             <div class="form-group">
@@ -247,24 +243,16 @@
                                     <input type="text" name="lastname" class="lastname form-control" id="lastname" placeholder="Familienaam" value="[lastname]" />
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:lastname]
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="profielfoto" class="control-label col-lg-2">Profielfoto:</label>
                                 <div class="col-lg-6">
-                                    <input type="file" class="form-control" id="profielfoto">
+                                    <input type="file" name="img" id="img" class="form-control" id="profielfoto">
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:img]
                                 </div>
                             </div>
                             <!--<div class="form-group">
@@ -277,15 +265,11 @@
                                 <div class="col-lg-6">
                                     <div class="input-group">
                                         <span class="input-group-addon icon icon-facebook"></span>
-                                        <input type="text" name="facebook" value="[data:facebook]" class="form-control">
+                                        <input type="text" id="facebook" name="facebook" value="[data:facebook]" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:data:facebook]
                                 </div>
                             </div>
                             <div class="form-group">
@@ -293,15 +277,11 @@
                                 <div class="col-lg-6">
                                     <div class="input-group">
                                         <span class="input-group-addon icon icon-twitter"></span>
-                                        <input type="text" name="twitter" value="[data:twitter]" class="form-control">
+                                        <input type="text" id="twitter" name="twitter" value="[data:twitter]" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:data:twitter]
                                 </div>
                             </div>
                             <div class="form-group">
@@ -309,15 +289,11 @@
                                 <div class="col-lg-6">
                                     <div class="input-group">
                                         <span class="input-group-addon icon icon-linkedin"></span>
-                                        <input type="text" name="linkedin" value="[data:linkedin]" class="form-control">
+                                        <input type="text" id="linkedin" name="linkedin" value="[data:linkedin]" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:data:linkedin]
                                 </div>
                             </div>
                             <div class="form-group">
@@ -325,15 +301,11 @@
                                 <div class="col-lg-6">
                                     <div class="input-group">
                                         <span class="input-group-addon icon icon-googleplus"></span>
-                                        <input type="text" name="plus" value="[data:plus]" class="form-control">
+                                        <input type="text" id="plus" name="plus" value="[data:plus]" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:data:plus]
                                 </div>
                             </div>
                         </fieldset>
@@ -374,11 +346,7 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:gender]
                                 </div>
                             </div>
                             <div class="form-group">
@@ -390,11 +358,7 @@
                                     </div>-->
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:birthdate]
                                 </div>
                             </div> 
                             <div class="form-group">
@@ -403,11 +367,7 @@
                                     <input type="text" name="telephone" class="telefoonnummer form-control" id="telefoonnummer" placeholder="Telefoonnummer" value="[telephone]" />
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:telephone]
                                 </div>
                             </div>
                             <div class="form-group">
@@ -416,11 +376,7 @@
                                     <input type="text" name="email" class="email form-control" id="email" placeholder="Email" value="[email]" />
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:email]
                                 </div>
                             </div>
                             <div class="form-group">
@@ -429,11 +385,7 @@
                                     <input type="text" name="location" class="woonplaats form-control" id="woonplaats" placeholder="Woonplaats" value="[location]" />
                                 </div>
                                 <div class="col-lg-4">
-                                    <select class="form-control">
-                                        <option>Zichtbaar voor iedereen</option>
-                                        <option>Zichtbaar voor vrienden</option>
-                                        <option>Verborgen</option>
-                                    </select>
+                                    [select:visible:location]
                                 </div>
                             </div>
                         </fieldset>
@@ -468,7 +420,7 @@
                                     <div class="col-lg-5">
                                         <input type="file" class="form-control filedata">
                                     </div>
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-4"> 
                                         <select class="form-control">
                                             <option>Zichtbaar voor iedereen</option>
                                             <option>Zichtbaar voor vrienden</option>

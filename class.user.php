@@ -120,11 +120,52 @@
 					case "location": 
 						$this->location($strVal, 0, 0); 
 						break; 	
+					case "showlocation": 
+						$this->visible("location", $_POST["showlocation"]);
+						break; 	
+					case "showemail": 
+						$this->visible("email", $_POST["showemail"]);
+						break; 	
+					case "showtelephone": 
+						$this->visible("telephone", $_POST["showtelephone"]);
+						break; 	
+					case "showbirthdate": 
+						$this->visible("birthdate", $_POST["showbirthdate"]);
+						break; 	
+					case "showgender": 
+						$this->visible("gender", $_POST["showgender"]);
+						break; 	
+					case "showfirstname": 
+						$this->visible("firstname", $_POST["showfirstname"]);
+						break; 	
+					case "showlastname": 
+						$this->visible("lastname", $_POST["showlastname"]);
+						break; 	
+					case "showimg": 
+						$this->visible("img", $_POST["showimg"]);
+						break; 	
+						 
 					default: 
-						$this->data($strKey, $strVal); 
+						$arKey = explode("-", $strKey, 2);  
+						switch ($arKey[0]) {
+							case "showdata": 
+								$this->datavisible($arKey[1], $strVal); 
+								break; 
+							default: 
+								$this->data($strKey, $strVal); 
+						}
 				}
 				$this->update(); 
-			}	
+			}
+			foreach ($_FILES as $strKey=>$strVal) { 
+				switch($strKey) {
+					case "img":  
+						$strTmp = "upload/tmp/" . $_FILES["img"]["name"]; 
+						move_uploaded_file($_FILES["img"]["tmp_name"], $strTmp);
+						createProfilePicture($strTmp, $this->id()); 
+						break; 	
+				}
+			} 
 		}
 		
 		public function unlock($bValue = TRUE) { // als een user unlocked is kan ook een niet-aangemelde gebruiker bv. emailadres opvragen of aanpassingen doen (nodig voor "paswoord vergeten")
@@ -265,22 +306,41 @@
 				bv. $oUser->visible4me("firstname") => checkt of actieve gebruiker de voornaam van $oUser kan zien (afhankelijk van settings  en al dan niet friend zijn )
 			*/  
 			if ($this->bUnlocked) return TRUE; 
-			switch($this->visible($oSelector)) {
-				case VISIBILITY_HIDDEN:   
-					return ($this->id() == me()); 
+			$arParts = explode(":", $oSelector, 2);  
+			switch ($arParts[0]) {
+				case "data": 
+					switch($this->datavisible($arParts[1])) {
+						case VISIBILITY_HIDDEN:   
+							return ($this->id() == me()); 
+							break; 
+							
+						case VISIBILITY_VISIBLE:  
+							return TRUE; 
+							break; 
+							
+						case VISIBILITY_FRIENDS:   
+							return $this->isFriend(); 
+							break; 
+					}
 					break; 
-					
-				case VISIBILITY_VISIBLE:  
-					return TRUE; 
-					break; 
-					
-				case VISIBILITY_FRIENDS:   
-					return $this->isFriend(); 
-					break; 
-					
-				default: 
-					error("class.user.php line " . __LINE__ . ": '" . $this->visible($oSelector) . "' ongeldige waarde"); 
-			} 
+				default: 	
+					switch($this->visible($oSelector)) {
+						case VISIBILITY_HIDDEN:   
+							return ($this->id() == me()); 
+							break; 
+							
+						case VISIBILITY_VISIBLE:  
+							return TRUE; 
+							break; 
+							
+						case VISIBILITY_FRIENDS:   
+							return $this->isFriend(); 
+							break; 
+							
+						default: 
+							error("class.user.php line " . __LINE__ . ": '" . $this->visible($oSelector) . "' ongeldige waarde"); 
+					} 
+			}
 		}
 
 		public function visible($oSelector = NULL, $iValue = NULL) { /*
@@ -411,9 +471,19 @@
 				} else {
 					$this->arData[$strKey] = array("value" => $strValue); 
 				}
-			}
-			//vardump($this->arData[$strKey]); 
-			return (isset($this->arData[$strKey]["value"])) ? $this->arData[$strKey]["value"] : "";  
+			} 
+			$strVal = (isset($this->arData[$strKey]["value"])) ? $this->arData[$strKey]["value"] : "";  
+			return ($this->visible4me("data:$strKey"))? $strVal : ""; 
+		}
+		public function datavisible($strKey, $iValue = NULL) {
+			if (!is_null($iValue)) {
+				if (isset($this->arData[$strKey])) {
+					$this->arData[$strKey]["visible"] = $iValue; 
+				} else {
+					$this->arData[$strKey] = array("visible" => $iValue); 
+				}
+			}  
+			return (isset($this->arData[$strKey]["visible"])) ? $this->arData[$strKey]["visible"] : VISIBILITY_VISIBLE;  
 		}
 		
 		public function login($strLogin = NULL) { /*
@@ -522,7 +592,8 @@
 				if (is_null($this->strTelephone)) $this->telephone($oDBrecord["telephone"]);
 				if (is_null($this->strIMG)) $this->img($oDBrecord["img"]);
 				if (is_null($this->bVisible)) $this->visible($oDBrecord["visible"]);
-				if ($oDBrecord["data"] != "") foreach (json_decode($oDBrecord["data"], TRUE) as $strK=>$strV) $this->data($strK, $strV["value"]); 
+				if ($oDBrecord["data"] != "") $this->arData = json_decode($oDBrecord["data"], TRUE); 
+				// foreach (json_decode($oDBrecord["data"], TRUE) as $strK=>$strV) $this->data($strK, $strV["value"]); 
 				if (!isset($this->arVisible["firstname"])) $this->visible("firstname", $oDBrecord["showfirstname"]);
 				if (!isset($this->arVisible["lastname"])) $this->visible("lastname", $oDBrecord["showlastname"]);
 				if (!isset($this->arVisible["email"])) $this->visible("email", $oDBrecord["showemail"]);
@@ -1033,7 +1104,7 @@
 			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
 			
 			
-			preg_match_all("/\[if:friends\]([\s\S]*?)\[\/if:friends\]/", $strHTML, $arResult);   // bv. [?data:facebook]heeft FB[/?data:facebook]   
+			preg_match_all("/\[if:friends\]([\s\S]*?)\[\/if:friends\]/", $strHTML, $arResult);   // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]   
 			for ($i=0;$i<count($arResult[0]);$i++) {
 				if (count($this->friends())>0) {
 					$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
@@ -1107,23 +1178,21 @@
 					$strHTML = str_replace($arResult[0][$i], "", $strHTML); 
 				}
 			} 
+			preg_match_all("/\[select:visible:data:([a-zA-Z0-9-]+)\]/", $strHTML, $arResult);   // bv. [select:visible:data:facebook]
+			if (isset($arResult[1])) foreach ($arResult[1] as $strK){ 
+				$strHTML = str_replace("[select:visible:data:$strK]", showDropdown("showdata-$strK", $this->datavisible($strK)), $strHTML); 
+			}  
 			
+ 			preg_match_all("/\[if:([a-zA-Z0-9-_:#]+)\]([\s\S]*?)\[\/if:\\1\]/", $strHTML, $arResult);   // bv. [if:firstname]firstname ingevuld en zichtbaar[/if:firstname]  
+			for ($i=0;$i<count($arResult[0]);$i++) {
+				$strResult = $this->HTMLvalue($arResult[1][$i]);  
+				if (!is_null($strResult)) $strHTML = str_replace($arResult[0][$i], (($strResult == "") ? "" : $arResult[2][$i]), $strHTML); 	
+			} 
 			preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]/", $strHTML, $arResult);   // alle tags (zonder whitespace)
 			if (isset($arResult[1])) foreach ($arResult[1] as $strTag){ 
 				$strResult = $this->HTMLvalue($strTag);  
 				if (!is_null($strResult)) $strHTML = str_replace("[$strTag]", $strResult, $strHTML); 
 			} 
-
-			if (instr("[userdetails]", $strHTML)) {
-				$arUserDetails = array();  
-				if ($this->email() != "") $arUserDetails[] = "<dt>E-mail</dt><dd><a href=\"mailto:" . $this->email() . "\">" . $this->email() . "</a></dd>"; 
-				if ($this->telephone() != "") $arUserDetails[] = "<dt>Telefoon</dt><dd>" . $this->telephone() . "</dd>"; 
-				if ($this->gender() != "") $arUserDetails[] = "<dt>Geslacht</dt><dd>" . $this->gender() . "</dd>"; 
-				if ($this->birthdate() != 0) $arUserDetails[] = "<dt>Geboortedatum</dt><dd>" . str_date($this->birthdate()) . "</dd>"; 
-				if ($this->location() != "") $arUserDetails[] = "<dt>Woonplaats</dt><dd>" .$this->location() . "</dd>"; 
-				$strHTML = str_replace("[userdetails]", "<dl class=\"userinfo\">" . implode("", $arUserDetails) . "</dl>", $strHTML);   
-			}
-	 
 
 			return $strHTML; 
 		} 
@@ -1230,7 +1299,31 @@
 				case "link:contact": 
 					return $this->isCurrentUser() ? "#" : $this->messageLink("", FALSE); 
 				case "link:credits": 
-					return $this->isCurrentUser() ?"Je kan geen credits aan jezelf schenken." : $this->donateLink("",true); 			
+					return $this->isCurrentUser() ?"Je kan geen credits aan jezelf schenken." : $this->donateLink("",true); 	
+				case "userdetails":  
+					$arUserDetails = array();  
+					if ($this->email() != "") $arUserDetails[] = "<dt>E-mail</dt><dd><a href=\"mailto:" . $this->email() . "\">" . $this->email() . "</a></dd>"; 
+					if ($this->telephone() != "") $arUserDetails[] = "<dt>Telefoon</dt><dd>" . $this->telephone() . "</dd>"; 
+					if ($this->gender() != "") $arUserDetails[] = "<dt>Geslacht</dt><dd>" . $this->gender() . "</dd>"; 
+					if ($this->birthdate() != 0) $arUserDetails[] = "<dt>Geboortedatum</dt><dd>" . str_date($this->birthdate()) . "</dd>"; 
+					if ($this->location() != "") $arUserDetails[] = "<dt>Woonplaats</dt><dd>" .$this->location() . "</dd>"; 
+					return "<dl class=\"userinfo\">" . implode("", $arUserDetails) . "</dl>";
+				case "select:visible:location":  
+					return showDropdown("showlocation", $this->visible("location"));  
+				case "select:visible:email":  
+					return showDropdown("showemail", $this->visible("email"));  
+				case "select:visible:telephone":  
+					return showDropdown("showtelephone", $this->visible("telephone"));  
+				case "select:visible:birthdate":  
+					return showDropdown("showbirthdate", $this->visible("birthdate"));  
+				case "select:visible:gender":  
+					return showDropdown("showgender", $this->visible("gender"));  
+				case "select:visible:firstname":  
+					return showDropdown("showfirstname", $this->visible("firstname"));  
+				case "select:visible:lastname":  
+					return showDropdown("showlastname", $this->visible("lastname"));  
+				case "select:visible:img":  
+					return showDropdown("showimg", $this->visible("img"));  
 				default: 
 					return NULL; 
 			}
@@ -1277,5 +1370,5 @@
 		
 
 	}
-	
+	 
 ?>

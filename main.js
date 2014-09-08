@@ -362,7 +362,7 @@ function introOpslaan() {
 
     //alle lege rijen weghalen
     bestandenClear();
-
+	 
     if ($(".filetitle").val() == "") {
         $errors.push("U hebt een bestand opgeladen zonder deze een naam te geven. Gelieve een naam toe te kennen aan uw bestand.");
         $("#editIntro .filetitle").parent("div").addClass("has-error");
@@ -373,6 +373,7 @@ function introOpslaan() {
         $("#editIntro .filedata").parent("div").addClass("has-error");
         //no focus here
     }
+	
 
     $message = printErrors($errors);
 
@@ -380,10 +381,12 @@ function introOpslaan() {
         //errors printen
         console.log("JS: [introOpslaan] errors: " + $errors[0] + " " + $errors[1]);
         $($message).insertBefore("#editIntro .modal-body fieldset");
+		return false; 
     } else {
         //opslaan in de database
         console.log("JS: [introOpslaan] gegevens opslaan naar de database...");
     }
+	return false; 
 }
 
 /*
@@ -432,22 +435,23 @@ function persoonlijkeGegevensOpslaan() {
         $("#editPersoonlijkeInformatie #email").focus();
 
     }
-    if (!validatePhone($phone)) {
-        $errors.push("Het gegeven telefoonnummer is incorrect.");
-        $("#editPersoonlijkeInformatie #telefoonnummer").parent("div").addClass("has-error");
-        $("#editPersoonlijkeInformatie #telefoonnummer").focus();
-    }
+   // if (!validatePhone($phone)) {
+   //    $errors.push("Het gegeven telefoonnummer is incorrect.");
+   //     $("#editPersoonlijkeInformatie #telefoonnummer").parent("div").addClass("has-error");
+    //    $("#editPersoonlijkeInformatie #telefoonnummer").focus();
+    //}
 
     $message = printErrors($errors);
 
     if ($errors.length > 0) {
         //errors printen
-        console.log("JS: [basisGegevensOpslaan] errors: " + $errors[0] + " " + $errors[1]);
+        console.log("JS: [persoonlijkeGegevensOpslaan] errors: " + $errors[0] + " " + $errors[1]);
         $($message).insertBefore("#editPersoonlijkeInformatie .modal-body fieldset");
+		return false; 
     } else {
         //opslaan in de database
-        console.log("JS: [basisGegevensOpslaan] gegevens opslaan naar de database...");
-    }
+        console.log("JS: [persoonlijkeGegevensOpslaan] gegevens opslaan naar de database...");
+    } 
 
 }
 
@@ -472,7 +476,64 @@ function printErrors(errors) {
  * Slaat de basisgegevens op. Geen check nodig want alles mag leeg zijn en validatie is niet van toepassing
  */
 function basisGegevensOpslaan() {
-    console.log("JS: [basisGegevensOpslaan] opslaan naar de database...");
+    $errors = [];
+    $message = "";
+    $(".alert").remove();
+    $(".has-error").removeClass("has-error");
+ 
+ 
+	strFB = $("#facebook").val(); 
+    if (strFB != "") { 
+		if (strFB.indexOf("://") < 0) strFB = "http://" + strFB; 
+		if (( strFB.indexOf("facebook.com") + strFB.indexOf("fb.com") ) < 0) { // indien geen van beide: resultaat = -2, indien 1 > resultaat = 3 ofzo
+			$errors.push("De opgegeven facebook-link is ongeldig. Kopieer de volledige link van uw facebook-pagina. (bv. https://www.facebook.com/howestbe) ");
+        	$("#facebook").parent("div").addClass("has-error");
+		} else {
+			$("#facebook").val(strFB); 
+		}
+    }
+	strTwitter = $("#twitter").val(); 
+    if (strTwitter != "") { 
+		if (strTwitter.indexOf("://") < 0) strTwitter = "http://" + strTwitter; 
+		if (( strTwitter.indexOf("twitter.com") ) < 0) {  
+			$errors.push("De opgegeven Twitter-link is ongeldig. Kopieer de volledige link van uw Twitter-pagina. (bv. https://www.twitter.com/howestbe) ");
+        	$("#twitter").parent("div").addClass("has-error");
+		} else {
+			$("#twitter").val(strTwitter); 
+		}
+    }
+	strLinkedIn = $("#linkedin").val(); 
+    if (strLinkedIn != "") { 
+		if (strLinkedIn.indexOf("://") < 0) strLinkedIn = "http://" + strLinkedIn; 
+		if (( strLinkedIn.indexOf("linkedin.com") ) < 0) {  
+			$errors.push("De opgegeven LinkedIn-link is ongeldig. Kopieer de volledige link van uw LinkedIn-pagina. (bv. https://www.linkedin.com/profile/view?id=15032447) ");
+        	$("#linkedin").parent("div").addClass("has-error");
+		} else {
+			$("#linkedin").val(strLinkedIn); 
+		}
+    }
+	strPlus = $("#plus").val(); 
+    if (strPlus != "") { 
+		if (strPlus.indexOf("://") < 0) strPlus = "http://" + strPlus; 
+		if (( strPlus.indexOf("plus.google.com") ) < 0) {  
+			$errors.push("De opgegeven GooglePlus-link is ongeldig. Kopieer de volledige link van uw GooglePlus-pagina. (bv. https://plus.google.com/howestbe) ");
+        	$("#plus").parent("div").addClass("has-error");
+		} else {
+			$("#plus").val(strPlus); 
+		}
+    }
+	
+    $message = printErrors($errors);
+
+    if ($errors.length > 0) {
+        //errors printen
+        console.log("JS: [basisGegevensOpslaan] errors: " + $errors[0] + " " + $errors[1]);
+        $($message).insertBefore("#editBasisgegevens .modal-body fieldset");
+		return false; 
+    } else {
+        //opslaan in de database
+        console.log("JS: [basisGegevensOpslaan] gegevens opslaan naar de database...");
+    }  
 }
 
 

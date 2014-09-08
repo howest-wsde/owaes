@@ -44,56 +44,6 @@ $(document).ready(function() {
 		return false; 
 	}); 
 	
-	$(document).on("focus", "input.time", function(e){
-		if ($(this).val() == "") {
-			$(this).val("__u__"); 
-			setInputSelection(this, 0, 2); 	
-		} else { 
-			var rxTime = new RegExp("[0-2_]?[0-9_][^0-9]+[0-5_]?[0-9_]"); 
-			if (rxTime.test($(this).val())) {  
-				if (this.selectionStart > $(this).val().match(/[^0-9]+/).index) {
-					setInputSelection(this, $(this).val().match(/[^0-9]+/).index + $(this).val().match(/[^0-9]+/)[0].length, 100); 
-				} else {
-					setInputSelection(this, 0, $(this).val().match(/[^0-9]+/).index); 
-				}
-			} else $(this).select(); 
-		} 
-		return false; 
-	}).on("keyup", "input.time", function(e) {
-		var rxTime = new RegExp("[0-2_]?[0-9_][^0-9]+[0-5_]?[0-9_]"); 
-		var rxTime2 = new RegExp("[0-2][0-9][^0-9]+[0-5_]?[0-9_]"); 
-		strSpacer = $(this).val().match(/[^0-9_]+/);  
-		switch(e.keyCode) {
-			case 38: 
-			case 40: 
-			case 37: 
-			case 8:  
-			case 13:  
-				break; 
-			case 39: 
-			case 9:  
-				/*
-				if (rxTime.test($(this).val())) {   
-					if ((this.selectionStart == $(this).val().match(/[^0-9_]+/).index + 1) && (rxTime2.test($(this).val()))) {
-						iStart = $(this).val().match(/[^0-9_]+/).index + strSpacer[0].length; 
-						setInputSelection(this, iStart, 100); 
-					}
-				} 
-				*/
-				break; 
-			default:  
-				if (rxTime.test($(this).val())) {   
-					if ((this.selectionStart == $(this).val().match(/[^0-9_]+/).index) && (rxTime2.test($(this).val()))) {
-						iStart = $(this).val().match(/[^0-9_]+/).index + strSpacer[0].length; 
-						setInputSelection(this, iStart, 100); 
-					}
-				} 
-		}
-	}).on("blur", "input.time", function(e){
-		if ($(this).val() == "__u__") {
-			$(this).val(""); 
-		}
-	}); 
 	
 	$("span.moreA").click(function() {  // shorten-functie (in functions-php-file)
 		$(this).hide(); 
