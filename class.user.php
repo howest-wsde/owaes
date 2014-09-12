@@ -1304,7 +1304,16 @@
 					$arUserDetails = array();  
 					if ($this->email() != "") $arUserDetails[] = "<dt>E-mail</dt><dd><a href=\"mailto:" . $this->email() . "\">" . $this->email() . "</a></dd>"; 
 					if ($this->telephone() != "") $arUserDetails[] = "<dt>Telefoon</dt><dd>" . $this->telephone() . "</dd>"; 
-					if ($this->gender() != "") $arUserDetails[] = "<dt>Geslacht</dt><dd>" . $this->gender() . "</dd>"; 
+					if ($this->gender() != "") {
+						$strGender = "<dt>Geslacht</dt><dd>"; 
+						switch($this->gender()) {
+							case "male": $strGender .= "man"; break; 
+							case "female": $strGender .= "vrouw"; break; 
+							default: $strGender .= $strGender; 
+						}
+						$strGender .= "</dd>"; 
+						$arUserDetails[] = $strGender; 
+					}
 					if ($this->birthdate() != 0) $arUserDetails[] = "<dt>Geboortedatum</dt><dd>" . str_date($this->birthdate()) . "</dd>"; 
 					if ($this->location() != "") $arUserDetails[] = "<dt>Woonplaats</dt><dd>" .$this->location() . "</dd>"; 
 					return "<dl class=\"userinfo\">" . implode("", $arUserDetails) . "</dl>";
@@ -1323,7 +1332,16 @@
 				case "select:visible:lastname":  
 					return showDropdown("showlastname", $this->visible("lastname"));  
 				case "select:visible:img":  
-					return showDropdown("showimg", $this->visible("img"));  
+					return showDropdown("showimg", $this->visible("img"));
+				case "options:gender":  
+					$arGenderOptions = array(
+						"male" => "Man", 
+						"female" => "Vrouw", 
+						"" => "Onbepaald", 
+					); 
+					$strGender = ""; 
+					foreach ($arGenderOptions as $strG=>$strV) $strGender .= "<option value=\"$strG\" " . (($this->gender()==$strG)?"selected":"") . ">$strV</option>"; 
+					return $strGender;  
 				default: 
 					return NULL; 
 			}

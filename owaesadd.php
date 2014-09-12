@@ -137,7 +137,7 @@
 
 		</script> 
           <style>
-								
+.invalidtime {border: 1px solid red; }								
 .invoer {
   display: block;
   width: 100%; 

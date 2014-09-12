@@ -453,8 +453,8 @@
 	
 	function minutesTOhhmm($iTijd) { 
 		if ($iTijd > 0) {
-			$iUren = floor($iTijd/60); 
-			return $iUren . "u" . substr("00" . ($iTijd-($iUren*60)), -2); 
+			$iUren = floor($iTijd/60);  
+			return ($iUren%24) . "u" . substr("00" . ($iTijd-($iUren*60)), -2); 
 		} else return ""; 
 		return $iTijd; 
 	}

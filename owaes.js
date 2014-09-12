@@ -26,6 +26,7 @@ $(document).ready(function() {
 		$(this).addClass("aangepast");
 	}); 
 	 
+	 
 	
 	$(document).on("click", "a.addfriend", function(event){ // add as friend - links in overzicht gebruikers
 		strLink = $(this).attr("href");  

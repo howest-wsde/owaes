@@ -64,7 +64,7 @@
 							<?
                                 $oGroepen = new grouplist(); 
                                 
-                                $itemsPerPage = 5;
+                                $itemsPerPage = 20;
                                 $pages = array_chunk($oGroepen->getList(),$itemsPerPage);
                                 
                                 if(isset($_GET['showpage'])){

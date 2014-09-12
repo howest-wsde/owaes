@@ -48,4 +48,14 @@ $(document).ready(function(e) {
 		}
 		$(this).find(":input").focus(); 
 	})
+	
+	$(document).on("click", "a.userrights", function() { // admin.groepusers
+		$(this).parent().load($(this).attr("href")); 
+		return false; 	
+	});  
+	
+	$("a#personenzoeken").click(function(){
+		$("div#persoonzoekenresult").load("admin.groupusers.php", {"f": $("#persoonzoeken").val()}); 
+		return false; 
+	});
 });

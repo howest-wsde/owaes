@@ -104,10 +104,23 @@
 		}
 		
 		public function addUser($iUser) {
-			$this->arUsers = NULL; 
-			$oDB = new database(); 
-			$strSQL = "insert into tblGroupUsers (groep, user) values (" . $this->id() . ", " . $iUser . "); "; 
-			$oDB->execute($strSQL); 
+			if ($this->userrights(me())->useradd()) {
+				$this->arUsers = NULL; 
+				$oDB = new database(); 
+				$strSQL = "insert into tblGroupUsers (groep, user) values (" . $this->id() . ", " . $iUser . "); "; 
+				$oDB->execute($strSQL); 
+				return TRUE; 
+			} else return FALSE; 
+		}
+		
+		public function removeUser($iUser) {
+			if ($this->userrights(me())->userdel()) {
+				$this->arUsers = NULL; 
+				$oDB = new database(); 
+				$strSQL = "delete from tblGroupUsers where groep = " . $this->id() . " and user = " . $iUser . "; "; 
+				$oDB->execute($strSQL); 
+				return TRUE; 
+			} else return FALSE; 
 		}
 		
 		public function userrights($iUser = NULL) { 
@@ -236,45 +249,49 @@
 			}
 		} 
 		
+		public function admin() {
+			return ($this->iUser == $this->oGroup->admin()->id());
+		}
+		
 		public function useradd($bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights["useradd"] = $bVal; 
-			return $this->arRights["useradd"]; 
+			return $this->admin() || $this->arRights["useradd"]; 
 		}
 		public function userdel($bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights["userdel"] = $bVal; 
-			return $this->arRights["userdel"]; 
+			return $this->admin() || $this->arRights["userdel"]; 
 		}
 		public function userrights($bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights["userrights"] = $bVal; 
-			return $this->arRights["userrights"]; 
+			return $this->admin() || $this->arRights["userrights"]; 
 		}
 		public function owaesadd($bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights["owaesadd"] = $bVal; 
-			return $this->arRights["owaesadd"]; 
+			return $this->admin() || $this->arRights["owaesadd"]; 
 		}
 		public function owaesedit($bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights["owaesedit"] = $bVal; 
-			return $this->arRights["owaesedit"]; 
+			return $this->admin() || $this->arRights["owaesedit"]; 
 		}
 		public function owaesdel($bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights["owaesdel"] = $bVal; 
-			return $this->arRights["owaesdel"]; 
+			return $this->admin() || $this->arRights["owaesdel"]; 
 		}
 		public function owaesselect($bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights["owaesselect"] = $bVal; 
-			return $this->arRights["owaesselect"]; 
+			return $this->admin() || $this->arRights["owaesselect"]; 
 		}
 		public function owaespay($bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights["owaespay"] = $bVal; 
-			return $this->arRights["owaespay"]; 
+			return $this->admin() || $this->arRights["owaespay"]; 
 		}
 		public function groupinfo($bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights["groupinfo"] = $bVal; 
-			return $this->arRights["groupinfo"]; 
+			return $this->admin() || $this->arRights["groupinfo"]; 
 		}
 		public function right($strKey, $bVal = NULL) {
 			if (!is_null($bVal)) $this->arRights[$strKey] = $bVal; 
-			return $this->arRights[$strKey]; 
+			return $this->admin() || $this->arRights[$strKey]; 
 		}
 		
 		public function update() {

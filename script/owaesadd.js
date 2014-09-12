@@ -6,11 +6,11 @@ $(document).ready(function () {
 	$("form#frmowaesadd").submit(function(){
 		return  validateAddActivity(true); 
 	})
-	$("form#frmowaesadd :input").blur(function(){
+	$("form#frmowaesadd :input").on("blur", function(){
 		return  validateAddActivity(false); 
-	}).focus(function(){
+	}).on ("focus", function(){
 		$(this).removeClass("fout"); 	
-	}); 
+	});
 
 	$("#calendar").fullCalendar({
         firstDay: 1, //monday
@@ -49,77 +49,36 @@ $(document).ready(function () {
 	$(document).on("focus", "input.startuur", function(e){
 		$(this).select();  
 	}).on("blur", "input.startuur", function(e){
+		$(this).addClass("gepasseerd");
 		strVal = $(this).val(); 
-		arUur = strVal.split(/[^0-9]+/); 
+		strTijd = getTimeValue(strVal); 
 		$(this).removeClass("invalidtime"); 
-		if (strVal != "") {
-			switch(arUur.length) { 
-				case 0: 
-					$(this).addClass("invalidtime"); 
-					break; 
-				case 1: 
-					iUur = arUur[0];  
-					if (iUur <= 24) {
-						$(this).val(iUur + ":00"); 
-					} else {
-						$(this).addClass("invalidtime"); 
-					}
-					break; 
-				case 2: 
-				default: 
-					iUur = arUur[0]; 
-					iMin = arUur[1]; 
-					if ((iUur <=24)&&(iMin<60)){
-						$(this).val(iUur + ":" + iMin); 
-					} else {
-						$(this).addClass("invalidtime"); 
-					}
-					break;  
-			}  
-		}
-		strVal = $(this).val(); 
-		$(this).parentsUntil("div.tijdstip").parent().nextAll().find("input.startuur").each(function(){
-			if ($(this).val() == "") $(this).val(strVal);
-		})
-		saveTimers();
-	}); 
-	
+		if ((strVal != "") && (strTijd == "")) $(this).addClass("invalidtime"); 
+		if (strTijd != "") {
+			$(this).val(strTijd);  
+			$(this).parentsUntil("div.tijdstip").parent().nextAll().find("input.startuur").each(function(){
+				if ($(this).val() == "") $(this).val(strTijd);
+			})
+		} 
+		saveTimers(); 
+		validateAddActivity(); 
+	});  
 	$(document).on("focus", "input.tijdsduur", function(e){
 		$(this).select();  
 	}).on("blur", "input.tijdsduur", function(e){
+		$(this).addClass("gepasseerd");
 		strVal = $(this).val(); 
-		arUur = strVal.split(/[^0-9]+/); 
+		strTijd = getTimeValue(strVal); 
 		$(this).removeClass("invalidtime"); 
-		if (strVal != "") {
-			switch(arUur.length) { 
-				case 0: 
-					$(this).addClass("invalidtime"); 
-					break; 
-				case 1: 
-					iUur = arUur[0];  
-					if (iUur <= 8) {
-						$(this).val(iUur + ":00"); 
-					} else {
-						$(this).addClass("invalidtime"); 
-					}
-					break; 
-				case 2: 
-				default: 
-					iUur = arUur[0]; 
-					iMin = arUur[1]; 
-					if ((iUur <=8)&&(iMin<60)){
-						$(this).val(iUur + ":" + iMin); 
-					} else {
-						$(this).addClass("invalidtime"); 
-					}
-					break;  
-			}  
-		}
-		strVal = $(this).val(); 
-		$(this).parentsUntil("div.tijdstip").parent().nextAll().find("input.tijdsduur").each(function(){
-			if ($(this).val() == "") $(this).val(strVal);
-		})
+		if ((strVal != "") && (strTijd == "")) $(this).addClass("invalidtime"); 
+		if (strTijd != "") {
+			$(this).val(strTijd);  
+			$(this).parentsUntil("div.tijdstip").parent().nextAll().find("input.tijdsduur").each(function(){
+				if ($(this).val() == "") $(this).val(strTijd);
+			})
+		} 
 		saveTimers();
+		validateAddActivity(); 
 	});  
 	printDates(); 
 	
@@ -411,6 +370,7 @@ function aanbodAanpassen() {
  * Zo niet  => errormessage(s) weergeven
  */
 function validateAddActivity(bShowAlerts) {  
+	console.log("validateAddActivity"); 
 	arFouten = {}; 
 	arMessage = []; 
     var $message = "";
@@ -427,9 +387,18 @@ function validateAddActivity(bShowAlerts) {
     if ($omschrijving == "" || $omschrijving.length < 20) { 
 		arFouten["description"] = "Gelieve een volwaardige omschrijving in te geven."; 
 	} 
+	if ($(".invalidtime").length > 0) {
+		$(".invalidtime:not([id])").each(function(){
+			$(this).attr("id", "inpfield" + Math.floor(Math.random()*100000)); 
+		})
+		$(".invalidtime").each(function() {
+			arFouten[$(this).attr("id")] = "Gelieve geldige waarden in te vullen voor startuur en duurtijd"; 
+		}) 
+	}
     if (!($credits > 0)) {
 		arFouten["creditsfield"] = "Gelieve meer dan 0 credits te geven/vragen."; 
 	}
+
 
 	if (Object.keys(arFouten).length > 0) { 
 		$.each(arFouten, function(strID, strFout) { 
@@ -618,4 +587,27 @@ function addTag(strTag) {
 		)
 	}
 	$("input.tag").focus(); 
+}
+
+function getTimeValue(strVal) {
+	strTime = ""; 
+	arSplit = strVal.split(/[^0-9]+/); 
+	arUur = Array(); 
+	for (i=0; i<arSplit.length; i++) if (arSplit[i] != "") arUur[arUur.length]=arSplit[i];  
+	switch(arUur.length) { 
+		case 0:  
+			break; 
+		case 1: 
+			iUur = arUur[0];  
+			if (iUur <= 99) strTime = iUur + ":00"; 
+			break; 
+		case 2: 
+		default: 
+			iUur = arUur[0]; 
+			iMin = arUur[1]; 
+			if (iMin == "5") iMin = 30; 
+			if ((iUur <=99)&&(iMin<60)) strTime = iUur + ":" + iMin;  
+			break;  
+	}  
+	return strTime;  	
 }
