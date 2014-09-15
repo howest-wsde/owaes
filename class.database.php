@@ -2,6 +2,8 @@
 
 	mysql_connect($arConfig["database"]["host"], $arConfig["database"]["user"], $arConfig["database"]["password"]);
 	mysql_select_db($arConfig["database"]["name"]);
+	
+	$ar_GLOBAL_queries = array(); 
 
 	class database { // wordt gebruikt om SQL-queries uit te voeren, enkel gebruiken vanuit andere classes, niet in 'gewone' php-pages 
 			
@@ -32,6 +34,7 @@
 		public function execute($strSQL = NULL){ /* executes DB-query, returns number of records (length)
 			optional parameter $strSQL: eerst SQL-aanpassen, anders wordt deze gebruikt die geset werd met sql("..")
 		*/
+		
 			$this->iRecord = -1;  
 			if (!is_null($strSQL)) $this->sql($strSQL);
 			$strSQL = $this->sql(); 
@@ -59,11 +62,33 @@
 //			}
 			if ($this->getTime() > 2) { 
 				$oLog = new log("trage query", array(
-					"url" => $oPage->filename(), 
+					"url" => filename(), 
 					"sql" => $this->sql(), 
 					"tijd" => $this->getTime(), 
 				)); 
 			}
+			
+			/* START LOG DB */
+			$strDBlog = "cache/dbqueries.json";
+			$arQueries = json($strDBlog); 
+			if (isset($arQueries)) foreach ($arQueries as $strKey=>$arQRY) {
+				if ($arQRY["date"] < time()-60*60*3) unset ($arQueries[$strKey]); 
+			}
+			global $ar_GLOBAL_queries; 
+			if (!isset($ar_GLOBAL_queries[$this->sql()])) $ar_GLOBAL_queries[$this->sql()]=0; 
+			$arQueries[time() . "." . rand(0,9999)] = array(
+				"date" => time(), 
+				"url" => filename(), 
+				"sql" => $this->sql(), 
+				"tijd" => $this->getTime(), 
+				"ip" => $_SERVER['REMOTE_ADDR'],
+				"user" => me(),
+				"sessie" => session_id(), 
+				"count" => ++$ar_GLOBAL_queries[$this->sql()], 
+			); 
+			json($strDBlog, $arQueries); 
+			/* END LOG DB */
+			
 			return $this->iLength;
 		} 
 		
