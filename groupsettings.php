@@ -2,7 +2,7 @@
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
     $iID = intval($_GET["id"]); 
-	$oGroup = new group($iID); 
+	$oGroup = group($iID); 
 	$oRights = $oGroup->userrights();  
 	// if (!$oRights->groupinfo()) $oSecurity->doLogout(); 
 	

@@ -7,16 +7,16 @@
 	$oPage->addCSS("style/admin.css"); 
 
 	$iGroep = intval($_GET["group"]); 
-	$oGroep = new group($iGroep); 
+	$oGroep = group($iGroep); 
 	$oMijnRechten = $oGroep->userrights(me());
 	
 	if (!($oMijnRechten->userrights() || $oMijnRechten->useradd() || $oMijnRechten->userdel() || $oMijnRechten->groupinfo())) $oSecurity->doLogout(); 
 	
     $groupNr = $_GET["group"];
- 	if (isset($_POST["adduser"])) { 
+ 	if ((isset($_POST["adduser"]))&&(intval($_POST["adduser"]) != 0)) {  
 		if ($oMijnRechten->useradd()) {
 			$oGroep->addUser(intval($_POST["adduser"])); 
-		} // else $oSecurity->doLogout(); 
+		} // else $oSecurity->doLogout();  
 	}
 	if (isset($_POST["setadmin"])) {   
 		if ($oMijnRechten->userrights()) {
@@ -66,7 +66,7 @@
                         <ul>
                         	<li><a href="admin.php">Admin</a></li><li><a href="admin.users.php">Gebruikers</a></li><li><a href="admin.groepen.php">Groepen</a></li>
                         </ul>
-                        <form method="post" class="form-horizontal">
+                        <form method="post" class="form-horizontal" id="admingroupform">
                         
                        	<? if ($oMijnRechten->groupinfo()) { ?>
                             <fieldset>
@@ -94,6 +94,7 @@
                         <? if ($oMijnRechten->useradd()) { ?>
                             <fieldset>
                                 <legend>Persoon toevoegen:</legend> 
+                                <input type="hidden" name="adduser" id="adduser" value="0" />
                                 <div class="form-group">
                                     <label for="username" class="control-label col-lg-2">Persoon zoeken:</label>
                                     <div class="col-lg-10">
@@ -108,8 +109,7 @@
                                     <div class="col-lg-12">
                                         <a href="#" id="personenzoeken" class="btn btn-default pull-right">Personen zoeken</a>
                                     </div>
-                                </div>
-                                 
+                                </div> 
                             </fieldset> 
                         <? } ?>
                         

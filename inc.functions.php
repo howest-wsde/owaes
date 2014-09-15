@@ -317,7 +317,7 @@
 	
 	function fixPath($strURL, $bAbsolute = FALSE) {
 		global $arConfig;  
-		if (strrpos($strURL, "://") === false) {  // relatief pad 
+		if ((strrpos($strURL, "://") === false) && (substr($strURL, 0, 2)!="//")) {  // relatief pad 
 			if (substr($strURL, 0, 1) == "/"){ 
 				return ($bAbsolute ? $arConfig["domain"]["absroot"] : $arConfig["domain"]["root"]) . substr($strURL, 1); 
 			} else { 

@@ -40,7 +40,7 @@
 				$iNewTime = (is_null($oDB->get("datum"))) ? owaesTime() : ($oDB->get("datum") + $iRefreshTijd);
 				switch($oDB->get("reason")) { // vorige reason
 					case TIMEOUT_CLICKED:  // wordt geset in class.subscription: wanneer een user zich inschrijft wordt er meteen een record toegevoegd met reason = TIMEOUT_CLICKED
-						$oOwaesItem = new owaesitem($oDB->get("link"));
+						$oOwaesItem = owaesitem($oDB->get("link"));
 						$arChange["physical"] = ($oOwaesItem->physical()>0) ? 0 : -1; 
 						$arChange["emotional"] = ($oOwaesItem->emotional()>0) ? 0 : -1; 
 						$arChange["mental"] = ($oOwaesItem->mental()>0) ? 0 : -1; 

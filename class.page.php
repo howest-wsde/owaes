@@ -20,14 +20,14 @@
 			$this->addCSS("style/reset-min.css"); 
             $this->addCSS("style/bootstrap.css");
             $this->addCSS("style/bootswatch.css");
-            $this->addCSS("http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
+            $this->addCSS("//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
 			$this->addCSS("style/owaes.css"); 
 			// $this->addCSS("style/min1100.css", "only screen and (max-width: 1100px)"); 
             $this->addCSS("style/style.css");
             // $this->addCSS("style/style2.css");
-			$this->addCSS("http://fonts.googleapis.com/css?family=Titillium+Web:400,700"); 
-			$this->addJS("http://code.jquery.com/jquery-1.9.1.js");  
-            $this->addJS("http://code.jquery.com/ui/1.10.3/jquery-ui.min.js");
+			$this->addCSS("//fonts.googleapis.com/css?family=Titillium+Web:400,700"); 
+			$this->addJS("//code.jquery.com/jquery-1.9.1.js");  
+            $this->addJS("//code.jquery.com/ui/1.10.3/jquery-ui.min.js");
             $this->addJS("bootstrap.js");
             $this->addJS("script/notify.min.js");
             //$this->addJS("script/bootstrap-datepicker.js");

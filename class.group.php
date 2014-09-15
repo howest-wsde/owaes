@@ -1,5 +1,16 @@
 <?php
  
+ 	$ar_GLOBAL_groups = array(); 
+	
+	function group($iID = NULL) { // FUNCTION group(5) == CLASS new group(5) , maar met call by ref
+		global $ar_GLOBAL_groups; 
+		if (!isset($ar_GLOBAL_groups[$iID])) {
+			$oGroep = new group($iID); 
+			$ar_GLOBAL_groups[$iID] = &$oGroep; 
+		}
+		return $ar_GLOBAL_groups[$iID]; 
+	}
+	
 	class group { 
 		private $iID = 0;  
 		private $strNaam = NULL;
@@ -30,19 +41,19 @@
 		
 		public function admin($iAdmin = NULL) {
 			if (!is_null($iAdmin)) $this->iAdmin = $iAdmin; 
-			if (is_null($this->iAdmin)) $this->load(); 
+			if (is_null($this->iAdmin)) $this->load(__LINE__); 
 			return user($this->iAdmin); 
 		}
 		
 		public function naam($strNaam = NULL) {
 			if (!is_null($strNaam)) $this->strNaam = $strNaam; 
-			if (is_null($this->strNaam)) $this->load(); 
+			if (is_null($this->strNaam)) $this->load(__LINE__); 
 			return $this->strNaam; 
 		}
 		
 		public function alias($strAlias = NULL) {
 			if (!is_null($strAlias)) $this->strAlias = $strAlias; 
-			if (is_null($this->strAlias)) $this->load(); 
+			if (is_null($this->strAlias)) $this->load(__LINE__); 
 			return $this->strAlias; 
 		}
 		
@@ -53,7 +64,7 @@
 		
 		public function image($strImage = NULL) {
 			if (!is_null($strImage)) $this->strImage = $strImage; 
-			if (is_null($this->strImage)) $this->load(); 
+			if (is_null($this->strImage)) $this->load(__LINE__); 
 			return $this->strImage; 
 		}
 		
@@ -85,7 +96,7 @@
 
 		private function lastupdate($iLastUpdate = NULL) {
 			if (!is_null($iLastUpdate)) $this->iLastUpdate = $iLastUpdate; 
-			if (is_null($this->iLastUpdate)) $this->load(); 
+			if (is_null($this->iLastUpdate)) $this->load(__LINE__); 
 			return $this->iLastUpdate; 
 		}
 		

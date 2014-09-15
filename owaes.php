@@ -4,7 +4,7 @@
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
    
 	$iID = intval($_GET["owaes"]); 
-	$oOwaesItem = new owaesitem($iID);  
+	$oOwaesItem = owaesitem($iID);  
 	
 	if ($oOwaesItem->author()->id() == $oSecurity->me()->id()) {
 		redirect("owaes-selecteer.php?owaes=" . $iID); 

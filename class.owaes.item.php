@@ -4,6 +4,16 @@
 	define ("STATE_FINISHED", 2); 
 	define ("STATE_DELETED", -1); 
 	
+ 	$ar_GLOBAL_owaesitems= array(); 
+	
+	function owaesitem($iID = NULL) { // FUNCTION owaesitem(5) == CLASS new owaesitem(5)  , maar met call by ref
+		global $ar_GLOBAL_owaesitems; 
+		if (!isset($ar_GLOBAL_owaesitems[$iID])) {
+			$oOwaesItem = new owaesitem($iID); 
+			$ar_GLOBAL_owaesitems[$iID] = &$oOwaesItem; 
+		}
+		return $ar_GLOBAL_owaesitems[$iID]; 
+	}
 	
 	class owaesitem {   // een item
 		private $iID = 0; 
@@ -68,9 +78,7 @@
 		}
 		
 		
-		public function load() {
-
-global $i_GLOBAL_starttijd;  
+		public function load() { 
 			$oDB = new database("select * from tblMarket where id = " . intval($this->iID) . ";", TRUE); 
 
 			if ($oDB->length() == 1) {
@@ -161,7 +169,7 @@ if (is_null($this->iState)) $this->state($oDBrecord["state"]);
 		*/
 			if (!is_null($iGroup)) $this->iGroup = $iGroup;  
 			if (is_null($this->iGroup)) $this->load();
-			return ($this->iGroup == 0) ? FALSE : new group($this->iGroup); 
+			return ($this->iGroup == 0) ? FALSE : group($this->iGroup); 
 		}
 		
 		public function subscriptions($arFilter = array()) { // returns array van class.subscription's
@@ -343,8 +351,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			return $bActive; 	
 		}
 		
-		public function classes() {
-global $i_GLOBAL_starttijd;  
+		public function classes() { 
 			$arClasses = array(); 
 			$arClasses[] = $this->task() ? "opdracht" : "markt";  
 			$arClasses[] = $this->type()->key();  

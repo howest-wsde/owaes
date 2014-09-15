@@ -5,7 +5,7 @@
 	$iOwaes = intval($_GET["m"]); 
 	$iUser = intval($_GET["u"]); 
  
- 	$oOwaes = new owaesitem($iOwaes);
+ 	$oOwaes = owaesitem($iOwaes);
 	$oOwaes->addSubscription($iUser, -1); 
 	
 	$oConversation = new conversation($iUser); 

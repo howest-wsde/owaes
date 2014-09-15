@@ -17,16 +17,23 @@
 		global $ar_GLOBAL_users; 
 		foreach($ar_GLOBAL_users as $oUser) {
 			if (!is_null($strKey)) {
-				if ($oUser["id"] == $strKey) return $oUser["object"]; 
-				if ($oUser["alias"] == $strKey) return $oUser["object"]; 	
+				if ($oUser["id"] == $strKey) {
+					//echo " BY_ID($strKey) "; 
+					return $oUser["object"]; 
+				} 
+				if ($oUser["alias"] == $strKey) {
+					//echo " BY_KEY($strKey) "; 
+					return $oUser["object"];  
+				}	
 			}
 		}
 		$oUser = new user($strKey);  
 		$ar_GLOBAL_users[] = array(
 			"id" => $oUser->id(), 
 			"alias" => $oUser->alias(), 
-			"object" => $oUser, 
+			"object" => &$oUser, 
 		); 
+		//echo " NEW($strKey) "; 
 		return $oUser; 
 	}
 	
@@ -217,11 +224,11 @@
 			if (!is_null($strLocation)) $this->strLocation = $strLocation; 
 			if (!is_null($iLocationLat)) $this->iLocationLat = $iLocationLat;
 			if (!is_null($iLocationLong)) $this->iLocationLong = $iLocationLong; 
-			if (is_null($this->strLocation)) $this->load();
+			if (is_null($this->strLocation)) $this->load(__LINE__);
 			return $this->visible4me("location") ? $this->strLocation : ""; 
 		} 
 		public function LatLong() { // returns arra(iLat, iLong)
-			if (is_null($this->iLocationLat)||is_null($this->iLocationLong)) $this->load();
+			if (is_null($this->iLocationLat)||is_null($this->iLocationLong)) $this->load(__LINE__);
 			return array($this->iLocationLat, $this->iLocationLong); 	
 		}
 		
@@ -351,8 +358,7 @@
 				->visible("firstname", VISIBILITY_VISIBLE); = set / voornaam zichtbaar
 
 				VISIBILITY_HIDDEN / VISIBILITY_VISIBLE / VISIBILITY_FRIENDS
-		*/
-		
+		*/ 
 			if (is_numeric($oSelector)) $oSelector = intval($oSelector);
 			if (is_numeric($iValue)) $iValue = intval($iValue); 
 			if (!is_null($oSelector)) { 
@@ -383,7 +389,7 @@
 							case "birthdate":   
 							case "description":   
 							case "img":  
-								if (!isset($this->arVisible[$oSelector])) $this->load(); 
+								if (!isset($this->arVisible[$oSelector])) $this->load($oSelector . " " . __LINE__); 
 								return $this->arVisible[$oSelector]; 
 							default: 
 								error("class.user.php line " . __LINE__ . ": '" . $oSelector . "' ongeldige waarde"); 
@@ -513,35 +519,53 @@
 		}
 		
 		public function firstname($strFirstname = NULL) { // get / set first name
-			if (!is_null($strFirstname)) $this->strFirstname = $strFirstname; 
+			if (!is_null($strFirstname)) {
+				$this->strFirstname = $strFirstname; 
+				return TRUE; 
+			}
 			if (is_null($this->strFirstname)) $this->load(); 
 			return ($this->visible4me("firstname")) ? $this->strFirstname : ""; 
 		}
 		
 		public function lastname($strLastname = NULL) { // get / set last name 
-			if (!is_null($strLastname)) $this->strLastname = $strLastname; 
+			if (!is_null($strLastname)) {
+				$this->strLastname = $strLastname; 
+				return TRUE; 
+			}
 			if (is_null($this->strLastname)) $this->load(); 
 			return ($this->visible4me("lastname")) ? $this->strLastname : "";    
 		}
 		
 		public function gender($strGender = NULL) { // get / set gender (string) 
-			if (!is_null($strGender)) $this->strGender = $strGender; 
+			if (!is_null($strGender)) {
+				$this->strGender = $strGender; 
+				return TRUE; 
+			}
 			if (is_null($this->strGender)) $this->load(); 
 			return ($this->visible4me("gender")) ? $this->strGender : "";    
 		}
 		public function telephone($strTelephone = NULL) { // get / set telephone (string) 
-			if (!is_null($strTelephone)) $this->strTelephone = $strTelephone; 
+			if (!is_null($strTelephone)) {
+				$this->strTelephone = $strTelephone; 
+				return TRUE; 
+			}
 			if (is_null($this->strTelephone)) $this->load(); 
 			return ($this->visible4me("telephone")) ? $this->strTelephone : "";    
 		}
 		public function birthdate($ibirthdate = NULL) { // get / set birthdate (integer) 
-			if (!is_null($ibirthdate)) $this->ibirthdate = $ibirthdate; 
+			if (!is_null($ibirthdate)){
+				$this->ibirthdate = $ibirthdate; 
+				return TRUE; 
+			}
 			if (is_null($this->ibirthdate)) $this->load(); 
 			return ($this->visible4me("birthdate")) ? $this->ibirthdate : 0;    
 		}
 		
 		public function description($strDescription = NULL) { // get / set omschrijving 
-			if (!is_null($strDescription)) $this->strDescription = $strDescription; 
+			if (!is_null($strDescription)) {
+				$this->strDescription = $strDescription; 
+				return TRUE; 
+			}
 			if (is_null($this->strDescription)) $this->load(); 
 			return ($this->visible4me("description")) ? $this->strDescription : "";  
 		}
@@ -552,7 +576,7 @@
 				$oDB->execute("select count(id) as aantal from tblUsers where mail='" . $oDB->escape($strEmail) . "' and id != "  . $this->id() . ";"); 
 				if ($oDB->get("aantal") > 0) $strEmail = ""; 
 				$this->strEmail = $strEmail; 
-				if ($strEmail == "") return FALSE; 
+				return ($strEmail != ""); 
 			}
 			if (is_null($this->strEmail)) $this->load(); 
 			return ($this->visible4me("email")) ? $this->strEmail : ""; 
@@ -570,17 +594,18 @@
 			global $arConfig;  
 			$oDB = new database();
 			if (!is_null($this->iID)) {
-				$strSQL = "select * from tblUsers where id = " . $this->iID . "; "; 
+				$strSQL = "select * from tblUsers where id = " . $this->iID . "; /* class.user.php " . __LINE__ . " */"; 
 			} else if (!is_null($this->strAlias)) {
 				$strSQL = "select * from tblUsers where alias = '" . $oDB->escape($this->strAlias) . "'; "; 
 			} else {
 				error("Geen ID of alias gedefinieerd (class.user.php)");
 				return FALSE; 
 			}  
-			$oDB->execute($strSQL); 
+			$oDB->execute($strSQL);  
 			if ($oDB->length() == 1) {
 				$oDBrecord = $oDB->record(); 
 				if (is_null($this->iID)) $this->id($oDBrecord["id"]);
+				
 				if (is_null($this->strAlias)) $this->alias($oDBrecord["alias"]);  
 				if (is_null($this->strLogin)) $this->login($oDBrecord["login"]);
 				if (is_null($this->strFirstname)) $this->firstname($oDBrecord["firstname"]);
@@ -591,9 +616,9 @@
 				if (is_null($this->strGender)) $this->gender($oDBrecord["gender"]);
 				if (is_null($this->strTelephone)) $this->telephone($oDBrecord["telephone"]);
 				if (is_null($this->strIMG)) $this->img($oDBrecord["img"]);
-				if (is_null($this->bVisible)) $this->visible($oDBrecord["visible"]);
 				if ($oDBrecord["data"] != "") $this->arData = json_decode($oDBrecord["data"], TRUE); 
-				// foreach (json_decode($oDBrecord["data"], TRUE) as $strK=>$strV) $this->data($strK, $strV["value"]); 
+
+				if (is_null($this->bVisible)) $this->visible($oDBrecord["visible"]);
 				if (!isset($this->arVisible["firstname"])) $this->visible("firstname", $oDBrecord["showfirstname"]);
 				if (!isset($this->arVisible["lastname"])) $this->visible("lastname", $oDBrecord["showlastname"]);
 				if (!isset($this->arVisible["email"])) $this->visible("email", $oDBrecord["showemail"]);
@@ -603,6 +628,8 @@
 				if (!isset($this->arVisible["description"])) $this->visible("description", $oDBrecord["showdescription"]);
 				if (!isset($this->arVisible["img"])) $this->visible("img", $oDBrecord["showimg"]);
 				if (!isset($this->arVisible["location"])) $this->visible("location", $oDBrecord["showlocation"]);
+				
+				// foreach (json_decode($oDBrecord["data"], TRUE) as $strK=>$strV) $this->data($strK, $strV["value"]); 
 				if (is_null($this->strLocation)) $this->location($oDBrecord["location"], $oDBrecord["location_lat"], $oDBrecord["location_long"]);
 				if (is_null($this->strPassword)) $this->password($oDBrecord["pass"], FALSE); 
 				// if (is_null($this->iSocial)) $this->social($oDBrecord["social"]);
@@ -613,6 +640,7 @@
 				// nog geen return-> verderlopen in functie voor social en emo enzo  
 			} else {
 				if (is_null($this->iID)) $this->id(0);
+				
 				if (is_null($this->strAlias)) $this->alias("");
 				if (is_null($this->strLogin)) $this->login("");
 				if (is_null($this->strFirstname)) $this->firstname("");
@@ -620,6 +648,10 @@
 				if (is_null($this->strDescription)) $this->description("");
 				if (is_null($this->strEmail)) $this->email("");
 				if (is_null($this->strIMG)) $this->img("");
+				if (is_null($this->strLocation)) $this->location("", 0, 0);
+				if (is_null($this->strPassword)) $this->password(owaesTime()); 
+				if (is_null($this->iLastUpdate)) $this->lastupdate(owaesTime());
+				
 				if (is_null($this->bVisible)) $this->visible(TRUE);
 				if (!isset($this->arVisible["firstname"])) $this->visible("firstname", VISIBILITY_VISIBLE);
 				if (!isset($this->arVisible["lastname"])) $this->visible("lastname", VISIBILITY_VISIBLE);
@@ -630,9 +662,6 @@
 				if (!isset($this->arVisible["gender"])) $this->visible("gender", VISIBILITY_VISIBLE);
 				if (!isset($this->arVisible["telephone"])) $this->visible("telephone", VISIBILITY_HIDDEN);
 				if (!isset($this->arVisible["birthdate"])) $this->visible("birthdate", VISIBILITY_VISIBLE);
-				if (is_null($this->strLocation)) $this->location("", 0, 0);
-				if (is_null($this->strPassword)) $this->password(owaesTime()); 
-				if (is_null($this->iLastUpdate)) $this->lastupdate(owaesTime());
 
 				if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"]);
 				if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"]);
@@ -1342,6 +1371,23 @@
 					$strGender = ""; 
 					foreach ($arGenderOptions as $strG=>$strV) $strGender .= "<option value=\"$strG\" " . (($this->gender()==$strG)?"selected":"") . ">$strV</option>"; 
 					return $strGender;  
+					
+				case "actions": 
+					$arActions = array(); 
+					if (!$this->isCurrentUser()) { 
+						$arActions[] = "<li><a href=\"" . $this->messageLink("", FALSE) . "\"><span class=\"icon icon-berichtsturen\"></span><span class=\"title\">Bericht versturen</span></a></li>";
+						$arActions[] = "<li><a href=\"" . $this->donateLink("", TRUE) . "\" class=\"transactie\"><span class=\"icon icon-credits\"></span><span class=\"title\">Credits versturen</span></a></li> ";
+						foreach (user(me())->groups() as $oGroup) {
+							if ($oGroup->userrights()->useradd()) {
+								if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"#\" class=\"addtogroup\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toevoegen aan " . $oGroup->naam() . "</span></a></li> ";
+							}
+							if ($oGroup->userrights()->userdel()) {
+								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"#\" class=\"addtogroup\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> ";
+							}
+						}
+					}
+					return implode("", $arActions); 
+
 				default: 
 					return NULL; 
 			}

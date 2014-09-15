@@ -53,9 +53,14 @@ $(document).ready(function(e) {
 		$(this).parent().load($(this).attr("href")); 
 		return false; 	
 	});  
+	$(document).on("click", "a.adduser", function() { // admin.groepusers
+		$("#adduser").val($(this).attr("rel")); 
+		$("#admingroupform").submit(); 
+		return false; 	
+	});  
 	
 	$("a#personenzoeken").click(function(){
-		$("div#persoonzoekenresult").load("admin.groupusers.php", {"f": $("#persoonzoeken").val()}); 
+		$("div#persoonzoekenresult").load("admin.groepusers.list.php", {"f": $("#persoonzoeken").val()}); 
 		return false; 
 	});
 });

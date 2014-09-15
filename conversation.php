@@ -106,7 +106,7 @@
                                             echo ("<h1>" . implode(" - ", $arSTRusers) . "</h1>");  
                                             break; 
                                         default: 
-                                            $oMarket = new owaesitem($iKey) ;
+                                            $oMarket = owaesitem($iKey) ;
                                             echo("</div><div class='conversation'>");
                                             echo ("<h1><a href=\"" . $oMarket->getLink() . "\">" . $oMarket->title() . "</a></h1>"); 	
                                     }

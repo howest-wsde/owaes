@@ -19,7 +19,7 @@
 	if (isset($_GET["ajax"])) {
 		echo $oRating->html(); 
 	} else {
-		$oOwaes = new owaesitem($oRating->market()); 
+		$oOwaes = owaesitem($oRating->market()); 
 		header('Location: ' . $oOwaes->getLink()); 
 	}
 ?>

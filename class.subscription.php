@@ -26,7 +26,7 @@ class subscription {
 	public function market($iMarket = NULL) { // (optional) sets user (by id) and (always) returns user-class
 		if (!is_null($iMarket)) $this->iMarket = intval($iMarket); 
 		if (is_null($this->iMarket)) $this->load(); 
-		return new owaesitem($this->iMarket); 
+		return owaesitem($this->iMarket); 
 	}
 	
 	public function state($iStatus = NULL){ // (optional) sets state (by value) and (always) returns state-value
@@ -84,7 +84,7 @@ class subscription {
 			case SUBSCRIBE_NEGOTIATE:  
 				break; 
 			case SUBSCRIBE_CONFIRMED:  
-				$oMarket = new owaesitem($this->iMarket);  
+				$oMarket = owaesitem($this->iMarket);  
 				$oDB->execute("insert into tblIndicators 
 									(user, datum, physical, mental, emotional, social, reason, link)
 									values (" . $this->iUser . ", " . owaesTime() . ", " . ($oMarket->physical()/25) . ", 

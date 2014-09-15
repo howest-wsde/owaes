@@ -8,7 +8,7 @@
 	$strWut = $_GET["w"]; 
 	$iVal = intval($_GET["v"]); 
 	
-	$oGroep = new group($iGroep); 
+	$oGroep = group($iGroep); 
 	
 	$oMijnRechten = $oGroep->userrights(me());  
 	  

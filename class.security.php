@@ -96,7 +96,7 @@
 		}
 		
 		public function doLogin($strUser, $strPass = NULL) {
-            //echo "doLogin";
+            //echo "doLogin"; 
 			$this->setLoggedIn(FALSE); 
 			$this->strError = ""; 
 			$strUser = mysql_escape_string($strUser); 

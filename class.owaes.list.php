@@ -199,7 +199,7 @@ group by
 				//
 				// echo $oOWAES->getTime(); 
 				while ($oOWAES->nextRecord()) { 
-					$oItem = new owaesitem($oOWAES->get("id"), $oOWAES->record()); 
+					$oItem = owaesitem($oOWAES->get("id"));  
 					$bPassFilter = TRUE;
 					foreach($this->arFilter as $strKey=>$strValue) {
 						switch($strKey) {

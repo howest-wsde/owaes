@@ -3,7 +3,7 @@
 	$oSecurity = new security(FALSE); 
    
 	$iID = intval($_GET["owaes"]); 
-	$oOwaesItem = new owaesitem($iID);  
+	$oOwaesItem = owaesitem($iID);  
 	
 	if ($oOwaesItem->author() != $oSecurity->me()->id()) {
 		$oSecurity->doLogout(); 

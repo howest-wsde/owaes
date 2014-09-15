@@ -12,7 +12,7 @@
 	 
 	
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
-	$oOwaesItem = new owaesitem($iID);
+	$oOwaesItem = owaesitem($iID);
 	
 	if ($oOwaesItem->author()->id() != me()) {
 		if (!admin()) {
@@ -31,7 +31,7 @@
 		
 		$iGroup = intval($_POST["group"]); 
 		if ($iGroup != 0){
-			$oGroup = new group($iGroup); 
+			$oGroup = group($iGroup); 
 			if ($oGroup->userrights()->owaesadd()) $oOwaesItem->group($iGroup);
 			// TODO : BOVENSTAANDE KAN FOUT OPLEVEREN ALS ADMIN GROUPSITEM AANPAST ! 
 		} else {

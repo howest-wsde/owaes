@@ -6,7 +6,7 @@
 	$iOwaes = intval($_GET["m"]);
 	$iType = intval($_GET["t"]); 
  
- 	$oOwaes = new owaesitem($iOwaes);
+ 	$oOwaes = owaesitem($iOwaes);
 	$oOwaes->addSubscription($oSecurity->getUserID(), $iType); 
 	
 	
