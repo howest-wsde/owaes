@@ -1,6 +1,6 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
-	$oSecurity = new security(TRUE); 
+	$oSecurity = security(TRUE); 
 	if (!$oSecurity->admin()) $oSecurity->doLogout(); 
 	
 	$oPage->addJS("script/admin.js"); 

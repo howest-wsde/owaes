@@ -3,6 +3,14 @@
 	define ("SCRIPT", 1); 
 	define ("AJAX", 2);  
 	
+	$o_GLOBAL_security = NULL; 
+	
+	function security($bHasToBeLoggedIn = TRUE, $iType = PAGE) {  
+		global $o_GLOBAL_security; 
+		if (is_null($o_GLOBAL_security)) $o_GLOBAL_security = new security($bHasToBeLoggedIn = TRUE, $iType = PAGE);  
+		return $o_GLOBAL_security; 
+	}
+	
 	class security {   /*
 	wordt aangeroepen vanaf elke pagina, sessie wordt aangemaakt / opgeroepen
 	- inloggen van de bezoeker

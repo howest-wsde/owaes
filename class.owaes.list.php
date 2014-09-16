@@ -224,6 +224,9 @@ group by
 		public function filterByUser($iUser, $bComp = TRUE) {
 			$this->arSQLwhere["user"] = " m.author " . ($bComp?"=":"!=") . " $iUser "; 
 		}
+		public function filterByGroup($iGroep, $bComp = TRUE) {
+			$this->arSQLwhere["user"] = " m.groep " . ($bComp?"=":"!=") . " $iGroep "; 
+		}
 		
 		public function filterByID($iID) {
 			$this->arSQLwhere["id"] = " m.id = $iID "; 

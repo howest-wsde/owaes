@@ -41,19 +41,19 @@
 		
 		public function admin($iAdmin = NULL) {
 			if (!is_null($iAdmin)) $this->iAdmin = $iAdmin; 
-			if (is_null($this->iAdmin)) $this->load(__LINE__); 
+			if (is_null($this->iAdmin)) $this->load();
 			return user($this->iAdmin); 
 		}
 		
 		public function naam($strNaam = NULL) {
 			if (!is_null($strNaam)) $this->strNaam = $strNaam; 
-			if (is_null($this->strNaam)) $this->load(__LINE__); 
+			if (is_null($this->strNaam)) $this->load();
 			return $this->strNaam; 
 		}
 		
 		public function alias($strAlias = NULL) {
 			if (!is_null($strAlias)) $this->strAlias = $strAlias; 
-			if (is_null($this->strAlias)) $this->load(__LINE__); 
+			if (is_null($this->strAlias)) $this->load();
 			return $this->strAlias; 
 		}
 		
@@ -64,7 +64,7 @@
 		
 		public function image($strImage = NULL) {
 			if (!is_null($strImage)) $this->strImage = $strImage; 
-			if (is_null($this->strImage)) $this->load(__LINE__); 
+			if (is_null($this->strImage)) $this->load();
 			return $this->strImage; 
 		}
 		
@@ -96,7 +96,7 @@
 
 		private function lastupdate($iLastUpdate = NULL) {
 			if (!is_null($iLastUpdate)) $this->iLastUpdate = $iLastUpdate; 
-			if (is_null($this->iLastUpdate)) $this->load(__LINE__); 
+			if (is_null($this->iLastUpdate)) $this->load();
 			return $this->iLastUpdate; 
 		}
 		
@@ -118,8 +118,27 @@
 			if ($this->userrights(me())->useradd()) {
 				$this->arUsers = NULL; 
 				$oDB = new database(); 
-				$strSQL = "insert into tblGroupUsers (groep, user) values (" . $this->id() . ", " . $iUser . "); "; 
-				$oDB->execute($strSQL); 
+				
+				if (user(me())->admin()) {
+					$strSQL = "insert into tblGroupUsers (groep, user, confirmed) values (" . $this->id() . ", " . $iUser . ", 1); "; 
+					$oDB->execute($strSQL); 
+					
+					$oNotification = new notification($iUser, "group." . $this->id()); 
+					$oNotification->message("Je werd toegevoegd aan de groep '" . $this->naam() . "'"); 
+					$oNotification->sender(me()); 
+					$oNotification->link($this->getURL()); 
+					$oNotification->send(); 
+					
+				} else {
+					$strSQL = "insert into tblGroupUsers (groep, user, confirmed) values (" . $this->id() . ", " . $iUser . ", 0); "; 
+					$oDB->execute($strSQL); 
+					
+					$oNotification = new notification($iUser, "group." . $this->id()); 
+					$oNotification->message(user(me())->getName() . " heeft je uitgenodigd lid te worden van de groep '" . $this->naam() . "'"); 
+					$oNotification->sender(me()); 
+					$oNotification->link($this->getURL()); 
+					$oNotification->send(); 
+				}
 				return TRUE; 
 			} else return FALSE; 
 		}
@@ -209,18 +228,105 @@
 			}	
 		}
 		
-		public function html($strTemplate = "") {
-			$strHTML = content($strTemplate);  
-			$arActions = array(); 
-			$oRights = $this->userrights();  
-			if ($oRights->groupinfo()) $arActions[] = "<a href=\"groupsettings.php?id=" . $this->id() . "\">aanpassen</a>"; 
-			$strHTML = str_replace("[naam]", $this->naam(), $strHTML);
-			$strHTML = str_replace("[link]", $this->getURL(), $strHTML);
-			$strHTML = str_replace("[description]", $this->info(), $strHTML);
-			$strHTML = str_replace("[actions]", implode("", $arActions), $strHTML);
-			//$strHTML = preg_replace('/\[profileimg\:([0-9]*x[0-9]*)\]/e', '$this->getImage("$1", FALSE)', $strHTML);
+		public function html($strTemplate = "", $bFile = TRUE) {
+			$strHTML = $bFile ? content($strTemplate) : $strTemplate;   
+			
+			/* LEDEN - START */
+			preg_match_all("/\[if:members\]([\s\S]*?)\[\/if:members\]/", $strHTML, $arResult);   // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]   
+			for ($i=0;$i<count($arResult[0]);$i++) {
+				if (count($this->users())>0) {
+					$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
+				} else {
+					$strHTML = str_replace($arResult[0][$i], "", $strHTML);
+				} 
+			} 
+			preg_match_all("/\[members((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/members\\1\]/", $strHTML, $arResult);   // bv. [friends]loop[/friends] 
+			for ($i=0;$i<count($arResult[1]);$i++) { 
+				$strMembers = ""; 
+				$iTeller = 0; 
+				$iMax = intval($arResult[2][$i]); 
+				foreach ($this->users() as $oMember) {  
+					if ($iMax == 0 || ++$iTeller <= $iMax) $strMembers .= $oMember->html($arResult[3][$i], FALSE);
+				}
+				$strHTML = str_replace($arResult[0][$i], $strMembers, $strHTML); 
+			}  
+			/* LEDEN - END */
+			
+			
+			/* MARKET - START */
+			preg_match_all("/\[if:market\]([\s\S]*?)\[\/if:market\]/", $strHTML, $arResult);   // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]   
+			for ($i=0;$i<count($arResult[0]);$i++) { 
+				$oOwaesList = new owaeslist();   
+				$oOwaesList->filterByGroup($this->id()); 
+				if (count($oOwaesList->getList())>0) {
+					$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
+				} else {
+					$strHTML = str_replace($arResult[0][$i], "", $strHTML);
+				} 
+			} 
+			preg_match_all("/\[market((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/market\\1\]/", $strHTML, $arResult);   // bv. [friends]loop[/friends] 
+			for ($i=0;$i<count($arResult[1]);$i++) { 
+				$strMarket = ""; 
+				$iTeller = 0; 
+				$iMax = intval($arResult[2][$i]); 
+				$oOwaesList = new owaeslist();   
+				$oOwaesList->filterByGroup($this->id()); 
+				foreach ($oOwaesList->getList() as $oItem) {  
+					if ($iMax == 0 || ++$iTeller <= $iMax) $strMarket .= $oItem->html($arResult[3][$i], FALSE);
+				}
+				$strHTML = str_replace($arResult[0][$i], $strMarket, $strHTML); 
+			}  
+			/* MARKET - END */
+			 
+			preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]([\s\S]*?)\[\/\\1\]/", $strHTML, $arResult); // [tag]...[/tag]
+			for ($i=0;$i<count($arResult[1]);$i++) { 
+				$strResult = $this->HTMLvalue($arResult[1][$i], $arResult[2][$i]); 
+				if (!is_null($strResult)) $strHTML = str_replace($arResult[0][$i], $strResult, $strHTML);
+			}  
+			 
 			$strHTML = preg_replace_callback('/\[profileimg\:([0-9]*x[0-9]*)\]/', array(&$this, "imageregreplace"), $strHTML); 
+			
+ 			preg_match_all("/\[if:([a-zA-Z0-9-_:#]+)\]([\s\S]*?)\[\/if:\\1\]/", $strHTML, $arResult);   // bv. [if:naam]naam ingevuld en zichtbaar[/if:naam]  
+			for ($i=0;$i<count($arResult[0]);$i++) {
+				$strResult = $this->HTMLvalue($arResult[1][$i]);  
+				if (!is_null($strResult)) $strHTML = str_replace($arResult[0][$i], (($strResult == "") ? "" : $arResult[2][$i]), $strHTML); 	
+			} 
+			preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]/", $strHTML, $arResult);   // alle tags (zonder whitespace)
+			if (isset($arResult[1])) foreach ($arResult[1] as $strTag){ 
+				$strResult = $this->HTMLvalue($strTag);  
+				if (!is_null($strResult)) $strHTML = str_replace("[$strTag]", $strResult, $strHTML); 
+			} 
 			return $strHTML; 
+		}
+		
+		private function HTMLvalue($strTag, $strTemplate = NULL) {
+			switch($strTag) { 
+				case "id": 
+					return $this->id(); 
+				case "naam": 
+					return $this->naam(); 
+				case "link": 
+					return $this->getURL(); 
+				case "description": 
+					return $this->info(); 
+				case "members:count": 
+					return count($this->users());
+				case "market:count": 
+					$oOwaesList = new owaeslist();   
+					$oOwaesList->filterByGroup($this->id()); 
+					return count($oOwaesList->getList()); 
+				case "actions":  
+					$arActions = array(); 
+					$oRights = $this->userrights();  
+					if ($oRights->groupinfo()) $arActions[] = "<a href=\"admin.groepusers.php?group=" . $this->id() . "\">aanpassen</a>"; 
+					return implode("", $arActions); 
+				case "editlink": 
+					return fixPath("admin.groepusers.php?group=" . $this->id()); 
+				case "if:rights:editpage": 
+					return $this->userrights()->editpage() ? $strTemplate : ""; 
+				case "admin":  
+					return $this->admin()->html($strTemplate, FALSE);  
+			}
 		}
 		
 		private function imageregreplace(&$matches) { 
@@ -261,7 +367,7 @@
 		} 
 		
 		public function admin() {
-			return ($this->iUser == $this->oGroup->admin()->id());
+			return user($this->iUser)->admin() || ($this->iUser == $this->oGroup->admin()->id());
 		}
 		
 		public function useradd($bVal = NULL) {
@@ -304,9 +410,20 @@
 			if (!is_null($bVal)) $this->arRights[$strKey] = $bVal; 
 			return $this->admin() || $this->arRights[$strKey]; 
 		}
+		public function editpage(){ // heeft de gebruiker rechten op iets? 
+			$bRechten = FALSE; 
+			$arCheck = array(
+				"useradd",
+				"userdel",
+				"userrights",
+				"groupinfo",
+			); 
+			foreach ($arCheck as $strKey) if ($this->right($strKey)) $bRechten = TRUE; 
+			return $bRechten; 
+		}
 		
 		public function update() {
-			$arUpdates = ""; 
+			$arUpdates = array(); 
 			foreach ($this->arRights as $strKey=>$bValue) if (!is_null($bValue)) $arUpdates[] = $strKey . "=" . ($bValue?1:0);
 			$oDB = new database(); 
 			$oDB->sql("update tblGroupUsers set " . implode(",", $arUpdates) . " where user = " . $this->iUser . " and groep = " . $this->oGroup->id() . ";"); 

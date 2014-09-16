@@ -24,7 +24,7 @@
 		}
 		
 		public function group($iGroup) { // enkel de gebruikers die in een bepaalde groep zitten 
-			$this->arSQLjoin["group"] = "inner join tblGroupUsers gu on gu.user = u.id and gu.groep = " . intval($iGroup);  
+			$this->arSQLjoin["group"] = "inner join tblGroupUsers gu on gu.user = u.id and gu.confirmed = 1 and gu.groep = " . intval($iGroup);  
 		}
 		
 

@@ -36,8 +36,8 @@
                                 Meer ... 
                                 <span class="caret"></span>
                             </button>
-                            <ul class="dropdown-menu">
-                                <li><a href="[link:credits]"  class='transactie'><span class="icon icon-credits"></span><span class="title">Credits versturen</span></a></li>
+                            <ul class="dropdown-menu"> 
+                                [actions]
                                 <li class="divider"></li>
                                 <li><a href="#">Rapporteren</a></li>
                                 <li><a href="#">Blokkeren</a></li>
@@ -146,10 +146,28 @@
                     <li><img src="img/placeholder.png" /> <a href="#">Nog iets anders...</a></li>
                 </ul>
             </div>-->
+             
+            [if:groups]
+                <div class="well well-bedrijven">
+                    <h3>Groepen <span class="badge">[groups:count]</span></h3>
+        
+                    <div class="list-group">
+                        [groups]
+                            <a href="[link]" class="list-group-item">
+                                <div class="media">
+                                    <img class="media-object pull-left" src="[profileimg:70x70]"> 
+                                    <div class="media-body">
+                                        <h4 class="media-heading">[naam]</h4>
+                                        <p>[description]</p>
+                                    </div>
+                                </div>
+                            </a>
+                        [/groups]  
+                    </div> 
+                </div>
+            [/if:groups]
             
-            <div class="well well-bedrijven">
-                <h3>Bedrijven <span class="badge">xx</span></h3>
-            </div>
+            
             <div class="well well-badges">
                 <h3>Badges <span class="badge">[badges:count]</span></h3>
                 [badges]

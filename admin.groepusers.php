@@ -1,6 +1,6 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
-	$oSecurity = new security(TRUE); 
+	$oSecurity = security(TRUE); 
 //	if (!$oSecurity->admin()) $oSecurity->doLogout(); 
 	
 	$oPage->addJS("script/admin.js"); 
@@ -39,7 +39,13 @@
 	if (isset($_POST["changeprops"])) {
 		if ($oMijnRechten->groupinfo()) {
 			$oGroep->naam($_POST["groepsnaam"]); 
-			$oGroep->info($_POST["info"]); 	
+			$oGroep->info($_POST["info"]); 	 	
+			if ($_FILES["img"]["error"] == 0){  
+				$strTmp = "upload/tmp/" . $_FILES["img"]["name"]; 
+				move_uploaded_file($_FILES["img"]["tmp_name"], $strTmp);
+				createGroupPicture($strTmp, $oGroep->id()); 
+			}
+			
 			$oGroep->update(); 
 		} else $oSecurity->doLogout(); 
 	}
@@ -63,10 +69,12 @@
                             ?>
                     </div>
                     <div class="main market admin-groepusers"> 
+                    	<? if (user(me())->admin()) { ?>
                         <ul>
                         	<li><a href="admin.php">Admin</a></li><li><a href="admin.users.php">Gebruikers</a></li><li><a href="admin.groepen.php">Groepen</a></li>
                         </ul>
-                        <form method="post" class="form-horizontal" id="admingroupform">
+                        <? } ?>
+                        <form method="post" class="form-horizontal" id="admingroupform" enctype="multipart/form-data"> 
                         
                        	<? if ($oMijnRechten->groupinfo()) { ?>
                             <fieldset>
@@ -78,9 +86,16 @@
                                     </div> 
                                 </div>
                                 <div class="form-group">
-                                    <label for="description" class="control-label col-lg-2">Over jezelf:</label>
+                                    <label for="description" class="control-label col-lg-2">Omschrijving:</label>
                                     <div class="col-lg-10">
                                         <textarea name="info" id="info" class="form-control" placeholder="Vertel ons iets over deze groep..."><? echo textarea($oGroep->info()); ?></textarea>
+                                    </div> 
+                                </div>
+                                <div class="form-group">
+                                    <label for="img" class="control-label col-lg-2">Foto:</label>
+                                    <div class="col-lg-10">
+                                        <input type="file" name="img" class="img image form-control" id="img" placeholder="" value="" />
+                                        <? echo $oGroep->getImage(); ?>
                                     </div> 
                                 </div>
                                 <div class="form-group">
@@ -192,9 +207,7 @@
                                 </table>
 						 	</fieldset>
                             <? } ?>
-                            
-                            OOK VIA PROFIEL VAN GEBRUIKER: EXTRA ACTIES: TOEVOGENEN AAN GROEP
-                            <br />INDIEN NIET DOOR SITE-ADMIN: TOEVOEGEN AAN GROEP MOET CONFIRMED WORDEN DOOR GEBRUIKER
+                             
                             <?
 
 								function checkbox($oGroep, $iUser, $strWut) {

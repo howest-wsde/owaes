@@ -24,7 +24,8 @@
 		}
 		return $strHTML; 
 	}
-	
+
+
 	function createProfilePicture($strLocation, $iUserID, $bKeepOld = FALSE) {
 		$arLocation = explode(".", $strLocation); 
 		$strExt = strtolower($arLocation[count($arLocation)-1]);  
@@ -75,6 +76,60 @@
 				return FALSE; 	
 		}
 	}
+
+
+	function createGroupPicture($strLocation, $iGroupID, $bKeepOld = FALSE) {
+		$arLocation = explode(".", $strLocation); 
+		$strExt = strtolower($arLocation[count($arLocation)-1]);  
+		switch($strExt) {
+			case "jpg": 
+			case "jpeg": 
+			case "gif": 
+			case "png": 
+				switch($strExt) {
+					case "jpg": 
+					case "jpeg": 
+						$oGroupIMG = imagecreatefromjpeg($strLocation);
+						break; 
+					case "gif": 
+						$oGroupIMG = imagecreatefromgif($strLocation);
+						break; 
+					case "png": 
+						$oGroupIMG = imagecreatefrompng($strLocation);
+						break; 
+				}
+				$iX = imagesx($oGroupIMG); 
+				$iY = imagesy($oGroupIMG); 
+				$iX2 = 0; 
+				if ($iX > $iY) {
+					if ($iX > 300) {
+						$iY2 = 300 / ($iX/$iY); 
+						$iX2 = 300; 
+					} 
+				} else {
+					if ($iY > 300) {
+						$iX2 = 300 / ($iY/$iX); 
+						$iY2 = 300; 
+					}	
+				}
+				if ($iX2 != 0) {
+					$oThumb = imagecreatetruecolor($iX2, $iY2);
+					imagecopyresampled($oThumb, $oGroupIMG, 0, 0, 0, 0, $iX2, $iY2, $iX, $iY);
+					imagepng($oThumb, "upload/groups/id/" . $iGroupID . ".png");
+					imagedestroy($oThumb); 
+				} else {
+					imagepng($oGroupIMG, "upload/groups/id/" . $iGroupID . ".png");
+				}
+				imagedestroy($oGroupIMG); 
+				if (!$bKeepOld) unlink($strLocation); 	
+				return TRUE; 
+				break;  
+			default: 
+				return FALSE; 	
+		}
+	}
+
+
 	/*
 		
 

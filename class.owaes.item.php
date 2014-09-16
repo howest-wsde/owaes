@@ -364,9 +364,9 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			return $arClasses; 
 		}
 		
-		public function HTML($strTemplate) { // vraagt pad van template en returns de html met replaced [tags]  
+		public function HTML($strTemplate, $bFile = TRUE) { // vraagt pad van template en returns de html met replaced [tags]  
 			$arActions = array(); 
-			$strHTML = content($strTemplate); 
+			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
 			$strHTML = str_replace("[classes]", implode(" ", $this->classes()), $strHTML);
 			$strHTML = str_replace("[title]", $this->title(), $strHTML);
 			$strHTML = str_replace("[body]", nl2br($this->body()), $strHTML); 

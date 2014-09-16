@@ -11,7 +11,7 @@
 		}
 		
 		public function user($iUser) { // select only groups where this user exists
-			$this->arJoin["user" . $iUser] = " inner join tblGroupUsers ug" . $iUser . " on g.id = ug" . $iUser . ".groep and ug" . $iUser . ".user = " . $iUser . ";";  
+			$this->arJoin["user" . $iUser] = " inner join tblGroupUsers ug" . $iUser . " on g.id = ug" . $iUser . ".groep and ug" . $iUser . ".user = " . $iUser . " and ug" . $iUser . ".confirmed = 1 ";  
 			$this->reset(); 
 		}
 		

@@ -76,6 +76,7 @@
 		private $bUnlocked = FALSE; // als user unlocked wordt (->unlock() ) kan e-mailadres en dergelijke ook opgevraagd worden zonder vriend te moeten zijn
 		private $arData = array(); 
 		private $iFriendStatus = NULL; 
+		private $bAdmin = NULL; 
 		
 		private $bNEW = TRUE; 
 		 
@@ -179,6 +180,12 @@
 			$this->bUnlocked = $bValue; 
 		}
 		
+		public function admin($bAdmin = NULL) {
+			if (!is_null($bAdmin)) $this->bAdmin = $bAdmin; 
+			if (is_null($this->bAdmin)) $this->load(); 
+			return $this->bAdmin; 	
+		}
+		
 		public function id($iID = NULL) { // get / set ID (enkel set via DB)
 			if (!is_null($iID)) $this->iID = $iID; 
 			if (is_null($this->iID)) $this->load(); 
@@ -262,14 +269,14 @@
 		}
 		
 		public function isFriend() { // GET boolean
-			if (is_null($this->iFriendStatus)) $this->load(); 
+			if (is_null($this->iFriendStatus)) $this->loadFriendship(); 
 			return ($this->id() == me() || $this->iFriendStatus == FRIEND_FRIENDS);  
 		}
 		
 		public function addFriend($bSetFriend = TRUE) { // GET boolean
 			$iUser = me(); 
 			$iFriend = $this->id(); 
-			if (is_null($this->iFriendStatus)) $this->load(); 
+			if (is_null($this->iFriendStatus)) $this->loadFriendship(); 
 			$oDB = new database(); 
 			switch($this->iFriendStatus) {
 				case FRIEND_FRIENDS:  // had been confirmed by both sides
@@ -492,25 +499,27 @@
 			return (isset($this->arData[$strKey]["visible"])) ? $this->arData[$strKey]["visible"] : VISIBILITY_VISIBLE;  
 		}
 		
-		public function login($strLogin = NULL) { /*
+		public function login($strLogin = NULL, $bCheck = TRUE) { /*
 		 get / set login 
-		 TODO: checken of login nog niet bestaat! 
+		 TODO: checken of login nog niet bestaat!  
 		 */
 			if (!is_null($strLogin)) {
 				$oReturn = $strLogin;
-				if ($strLogin == "") $strLogin = randomstring(8); 
-				if (!strrpos($strLogin, "@") === false) {
-					$strLogin = str_replace("@", "", $strLogin); 
-					$oReturn = FALSE; 
-				}
-				$oDB = new database(); 
-				do { 
-					$oDB->execute("select count(id) as aantal from tblUsers where login='" . $oDB->escape($strLogin) . "' and id != "  . $this->id() . ";"); 
-					if ($oDB->get("aantal") > 0) {
-						$strLogin = randomstring(8);
+				if ($bCheck) {
+					if ($strLogin == "") $strLogin = randomstring(8); 
+					if (!strrpos($strLogin, "@") === false) {
+						$strLogin = str_replace("@", "", $strLogin); 
 						$oReturn = FALSE; 
 					}
-				} while ($oDB->get("aantal") > 0); 
+					$oDB = new database(); 
+					do { 
+						$oDB->execute("select count(id) as aantal from tblUsers where login='" . $oDB->escape($strLogin) . "' and id != "  . $this->id() . ";"); 
+						if ($oDB->get("aantal") > 0) {
+							$strLogin = randomstring(8);
+							$oReturn = FALSE; 
+						}
+					} while ($oDB->get("aantal") > 0); 
+				}
 				$this->strLogin = $strLogin; 
 				return $oReturn; 
 			}
@@ -570,11 +579,13 @@
 			return ($this->visible4me("description")) ? $this->strDescription : "";  
 		}
 		
-		public function email($strEmail = NULL) { // get / set e-mailadres
+		public function email($strEmail = NULL, $bCheck = TRUE) { // get / set e-mailadres
 			if (!is_null($strEmail)) { 
-				$oDB = new database();  
-				$oDB->execute("select count(id) as aantal from tblUsers where mail='" . $oDB->escape($strEmail) . "' and id != "  . $this->id() . ";"); 
-				if ($oDB->get("aantal") > 0) $strEmail = ""; 
+				if ($bCheck) {
+					$oDB = new database();  
+					$oDB->execute("select count(id) as aantal from tblUsers where mail='" . $oDB->escape($strEmail) . "' and id != "  . $this->id() . ";"); 
+					if ($oDB->get("aantal") > 0) $strEmail = ""; 
+				}
 				$this->strEmail = $strEmail; 
 				return ($strEmail != ""); 
 			}
@@ -607,15 +618,16 @@
 				if (is_null($this->iID)) $this->id($oDBrecord["id"]);
 				
 				if (is_null($this->strAlias)) $this->alias($oDBrecord["alias"]);  
-				if (is_null($this->strLogin)) $this->login($oDBrecord["login"]);
+				if (is_null($this->strLogin)) $this->login($oDBrecord["login"], FALSE);
 				if (is_null($this->strFirstname)) $this->firstname($oDBrecord["firstname"]);
 				if (is_null($this->strLastname)) $this->lastname($oDBrecord["lastname"]);
 				if (is_null($this->strDescription)) $this->description($oDBrecord["description"]);
-				if (is_null($this->strEmail)) $this->email($oDBrecord["mail"]);
+				if (is_null($this->strEmail)) $this->email($oDBrecord["mail"], FALSE);
 				if (is_null($this->ibirthdate)) $this->birthdate($oDBrecord["birthdate"]);
 				if (is_null($this->strGender)) $this->gender($oDBrecord["gender"]);
 				if (is_null($this->strTelephone)) $this->telephone($oDBrecord["telephone"]);
 				if (is_null($this->strIMG)) $this->img($oDBrecord["img"]);
+				if (is_null($this->bAdmin)) $this->admin($oDBrecord["admin"]);
 				if ($oDBrecord["data"] != "") $this->arData = json_decode($oDBrecord["data"], TRUE); 
 
 				if (is_null($this->bVisible)) $this->visible($oDBrecord["visible"]);
@@ -642,15 +654,16 @@
 				if (is_null($this->iID)) $this->id(0);
 				
 				if (is_null($this->strAlias)) $this->alias("");
-				if (is_null($this->strLogin)) $this->login("");
+				if (is_null($this->strLogin)) $this->login("", FALSE);
 				if (is_null($this->strFirstname)) $this->firstname("");
 				if (is_null($this->strLastname)) $this->lastname("");
 				if (is_null($this->strDescription)) $this->description("");
-				if (is_null($this->strEmail)) $this->email("");
+				if (is_null($this->strEmail)) $this->email("", FALSE);
 				if (is_null($this->strIMG)) $this->img("");
 				if (is_null($this->strLocation)) $this->location("", 0, 0);
 				if (is_null($this->strPassword)) $this->password(owaesTime()); 
 				if (is_null($this->iLastUpdate)) $this->lastupdate(owaesTime());
+				if (is_null($this->bAdmin)) $this->admin(FALSE);
 				
 				if (is_null($this->bVisible)) $this->visible(TRUE);
 				if (!isset($this->arVisible["firstname"])) $this->visible("firstname", VISIBILITY_VISIBLE);
@@ -670,20 +683,28 @@
  
 			}
 			 
+		}
+		
+		private function loadFriendship() {
+			$oDB = new database();
 			$iUser = me(); 
 			$iFriend = $this->id(); 
-			$oDB->execute("select * from tblFriends where (user = $iUser and friend = $iFriend) or (user = $iFriend and friend = $iUser); ");
-			switch($oDB->length()) {
-				case 0: 
-					$this->iFriendStatus = FRIEND_NOFRIENDS;
-					break; 	
-				case 1:  
-					$this->iFriendStatus = ($oDB->get("user") == $iUser) ? FRIEND_REQUESTED : FRIEND_ASKED; 
-					break; 	
-				case 2: 
-					$this->iFriendStatus = FRIEND_FRIENDS;  
-					break; 	
-			} 
+			if ($iFriend == $iUser) {
+				$this->iFriendStatus = FRIEND_FRIENDS;  
+			} else {
+				$oDB->execute("select * from tblFriends where (user = $iUser and friend = $iFriend) or (user = $iFriend and friend = $iUser); ");
+				switch($oDB->length()) {
+					case 0: 
+						$this->iFriendStatus = FRIEND_NOFRIENDS;
+						break; 	
+					case 1:  
+						$this->iFriendStatus = ($oDB->get("user") == $iUser) ? FRIEND_REQUESTED : FRIEND_ASKED; 
+						break; 	
+					case 2: 
+						$this->iFriendStatus = FRIEND_FRIENDS;  
+						break; 	
+				}  
+			}
 		}
 		
 		private function loadIndicators() {
@@ -754,6 +775,7 @@
 					"location_long" => $this->iLocationLong, 
 					"data" => json_encode($this->arData), 
 				);  
+				if (user(me())->admin()) $arVelden["admin"] = ($this->admin()?1:0); 
 				$oUser = new database();
 				if ($this->bNEW) {
 					$arVeldKeys = array(); 
@@ -1132,7 +1154,7 @@
 		public function HTML($strTemplate = "", $bFile = TRUE) { // vraagt pad van template (of HTML if bFile==FALSE) en returns de html met replaced [tags] 
 			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
 			
-			
+			/* VRIENDEN - START */
 			preg_match_all("/\[if:friends\]([\s\S]*?)\[\/if:friends\]/", $strHTML, $arResult);   // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]   
 			for ($i=0;$i<count($arResult[0]);$i++) {
 				if (count($this->friends())>0) {
@@ -1150,7 +1172,30 @@
 					if ($iMax == 0 || ++$iTeller <= $iMax) $strFriends .= $oFriend->html($arResult[3][$i], FALSE);
 				}
 				$strHTML = str_replace($arResult[0][$i], $strFriends, $strHTML); 
+			}  
+			/* VRIENDEN - END */
+			
+			
+			/* GROEPEN - START */
+			preg_match_all("/\[if:groups\]([\s\S]*?)\[\/if:groups\]/", $strHTML, $arResult);   // bv. [if:groups]<div><h1>Groepen</h1><ul>....</ul></div>[/if:groups]   
+			for ($i=0;$i<count($arResult[0]);$i++) {
+				if (count($this->groups())>0) {
+					$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
+				} else {
+					$strHTML = str_replace($arResult[0][$i], "", $strHTML);
+				} 
 			} 
+			preg_match_all("/\[groups((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/groups\\1\]/", $strHTML, $arResult);   // bv. [groups]loop[/groups] 
+			for ($i=0;$i<count($arResult[1]);$i++) { 
+				$strGroups = ""; 
+				$iTeller = 0; 
+				$iMax = intval($arResult[2][$i]); 
+				foreach ($this->groups() as $oGroup) {  
+					if ($iMax == 0 || ++$iTeller <= $iMax) $strGroups .= $oGroup->html($arResult[3][$i], FALSE);
+				}
+				$strHTML = str_replace($arResult[0][$i], $strGroups, $strHTML); 
+			}  
+			/* GROEPEN - END */
 			
 			if ($this->id() == me()) {   
 				$strHTML = filterTag("me", $strHTML, TRUE); 
@@ -1269,6 +1314,9 @@
 					return count($this->friends()); 
 				case "friends:url": 
 					return fixPath("friends.php?u=" . $this->id()); 
+					
+				case "groups:count": 
+					return count($this->groups()); 
 					
 				case "badges": 
 					return $this->badgelist($this->getBadges()); 
