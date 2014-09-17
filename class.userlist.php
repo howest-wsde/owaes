@@ -23,8 +23,13 @@
 			}
 		}
 		
-		public function group($iGroup) { // enkel de gebruikers die in een bepaalde groep zitten 
-			$this->arSQLjoin["group"] = "inner join tblGroupUsers gu on gu.user = u.id and gu.confirmed = 1 and gu.groep = " . intval($iGroup);  
+		public function group($iGroup, $bMustBeConfirmed = TRUE) { // enkel de gebruikers die in een bepaalde groep zitten 
+			$arWhere = array(
+				"gu.user = u.id", 
+				"gu.groep = " . intval($iGroup), 
+			); 
+			if ($bMustBeConfirmed) $arWhere[]  = "gu.confirmed = 1"; 
+			$this->arSQLjoin["group"] = "inner join tblGroupUsers gu on " . implode(" and ", $arWhere);  
 		}
 		
 

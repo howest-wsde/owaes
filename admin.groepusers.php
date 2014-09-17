@@ -163,15 +163,16 @@
                                             if ($oMijnRechten->userdel()) echo "<th></th>"
                                         ?>
                                     </tr>
-                                    <? 
-                                     
-                                    foreach ($oGroep->users() as $oUser) {
+                                    <?   
+									
+									$oLeden = new userlist(); 
+									$oLeden->group($oGroep->id(), FALSE); 
+                                    foreach ($oLeden->getList() as $oUser) {
                                     //	$oRechten = $oGroep->userrights($oUser->id());  
-                                        echo "<tr>";  
+                                        echo "<tr class=\"confirmed" . ($oGroep->userrights($oUser->id())->value("confirmed") ? 1:0) . "\">";  
                                         $oUser->unlock(); 
                                         echo "<td>" . $oUser->firstname() . "</td>"; 
-                                        echo "<td>" . $oUser->lastname() . "</td>";  
-        
+                                        echo "<td>" . $oUser->lastname() . "</td>";   
                                         if ($oMijnRechten->userrights()) {
                                             echo "<td>" . checkbox($oGroep, $oUser->id(), "useradd") . "</td>";  
                                             echo "<td>" . checkbox($oGroep, $oUser->id(), "userdel") . "</td>";  

@@ -6,11 +6,24 @@
 	$oPage->addJS("script/admin.js"); 
 	$oPage->addCSS("style/admin.css"); 
  
- 	if (isset($_POST["addgroep"])) {
+ 	if (isset($_POST["addgroup"])) {
 		$oGroep = new group(); 
 		$oGroep->naam($_POST["naam"]);
 		$oGroep->info($_POST["info"]);
 		$oGroep->admin($_POST["admin"]);
+		$oGroep->update(); 
+		if ($_FILES["img"]["error"] == 0){  
+			$strTmp = "upload/tmp/" . $_FILES["img"]["name"]; 
+			move_uploaded_file($_FILES["img"]["tmp_name"], $strTmp);
+			createGroupPicture($strTmp, $oGroep->id()); 
+		}
+		$oGroep->update(); 
+		$oGroep->addUser(intval($_POST["admin"])); 
+	}
+	
+ 	if (isset($_POST["delgroup"])) {
+		$oGroep = group(intval($_POST["delgroup"])); 
+		$oGroep->delete(TRUE); 
 		$oGroep->update(); 
 	}
  
@@ -37,78 +50,78 @@
                         	<li><a href="admin.php">Admin</a></li><li><a href="admin.users.php">Gebruikers</a></li>
                         </ul>
                     	<h1>Toevoegen: </h1>
-                        <form method="post" class="groepToevoegenForm">
-                        	<input type="text" name="naam" value="naam" />
+                        <form method="post" class="groepToevoegenForm form-horizontal" enctype="multipart/form-data"> 
+
+                            <fieldset>
+                                <legend>Algemene gegevens</legend>
+                                <div class="form-group">
+                                    <label for="username" class="control-label col-lg-2">Groepsnaam:</label>
+                                    <div class="col-lg-10">
+                                        <input type="text" name="naam" class="naam form-control" id="naam" placeholder="Groepsnaam" value="" />
+                                    </div> 
+                                </div>
+                                <div class="form-group">
+                                    <label for="username" class="control-label col-lg-2">Beheerder:</label>
+                                    <div class="col-lg-10">
+                                        <select name="admin" class="form-control" id="admin">
+                                        	<option value="0">- selecteer een beheerder -</option>
+											<?
+												$oUserList = new userlist();   
+												foreach ($oUserList->getList() as $oUser) { 
+													echo  "<option value=\"" . $oUser->id() . "\">" . $oUser->getName() . "</option>"; 	
+												}
+                                            ?>
+                                        </select> 
+                                    </div> 
+                                </div>
+                                <div class="form-group">
+                                    <label for="description" class="control-label col-lg-2">Omschrijving:</label>
+                                    <div class="col-lg-10">
+                                        <textarea name="info" id="info" class="form-control" placeholder="Vertel ons iets over deze groep..."></textarea>
+                                    </div> 
+                                </div>
+                                <div class="form-group">
+                                    <label for="img" class="control-label col-lg-2">Foto:</label>
+                                    <div class="col-lg-10">
+                                        <input type="file" name="img" class="img image form-control" id="img" placeholder="" value="" /> 
+                                    </div> 
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-lg-12">
+                                        <input type="submit" value="Gegevens opslaan" id="profile" class="btn btn-default pull-right" name="addgroup" />
+                                    </div>
+                                </div>
+                            </fieldset>  
                             
-                            <select name="admin">
-                            	<?
-                                	$oUserList = new userlist();   
-									foreach ($oUserList->getList() as $oUser) { 
-										echo  "<option value=\"" . $oUser->id() . "\">" . $oUser->getName() . "</option>"; 	
-									}
-								?>
-                            </select>
-                            <textarea name="info">info</textarea>
-                        	<input type="submit" name="addgroep" value="Toevoegen" class="btn btn-default"/>
-                        </form>
-                        
-                        <h1>Groepen: </h1> 
-                        <table class="editable">
-                        	<tr>
-                            	<th>id</th>
-                            	<th>naam</th>
-                            	<th>info</th>
-                            	<th>admin</th>
-                            	<th>...</th>
-                            </tr>
-							<?
-                                $oGroepen = new grouplist(); 
-                                
-                                $itemsPerPage = 20;
-                                $pages = array_chunk($oGroepen->getList(),$itemsPerPage);
-                                
-                                if(isset($_GET['showpage'])){
-                                    $pageKey=(int)$_GET['showpage'];
-                                }else{$pageKey=0;}
-                                
-                                if($pageKey >= count($pages)){
-                                    $pageKey = count($pages)-1;
-                                }
-                                
-                                foreach ($pages[$pageKey] as $oGroep) {
-									echo "<tr>"; 
-                                    echo "<td>" . $oGroep->id() . "</td>"; 
-                                    echo "<td id=\"tblGroups_" . $oGroep->id() . "_naam\">" . $oGroep->naam() . "</td>"; 
-                                    echo "<td id=\"tblGroups_" . $oGroep->id() . "_info\">" . $oGroep->info() . "</td>"; 
-                                    echo "<td id=\"tblGroups_" . $oGroep->id() . "_admin\" class=\"user\">" . $oGroep->admin()->id() . "</td>"; 
-                                    echo "<td><a href=\"admin.groepusers.php?group=" . $oGroep->id() . "\">users</a></td>"; 
-									echo "</tr>"; 
-                                }
-                            ?>
-                        </table>
-					     <? 
-                            echo("<div class='links'>");
-                             if($pageKey > 0){
-                                 $prevPage = $pageKey -1;
-                                 echo("<a href='admin.groepen.php?showpage=$prevPage'>BACK</a>");
-                             }
-                             
-                              for($i=1; $i< count($pages)+1; $i++): 
-                                    $j = $i-1;
-                                        if($pageKey + 1 == $i){
-                                            echo("<span>".$i."</span>");
-                                        }else{
-                                            echo("<a href='admin.groepen.php?showpage=$j'> $i</a>");
-                                        }
-                                    
-                                     endfor;
-                                     
-                           if($pageKey < (count($pages)-1)){
-                                $nextPage = $pageKey +1;
-                                echo("<a href='admin.groepen.php?showpage=$nextPage'>NEXT</a>");
-                          }
-                             echo("</div>");
-                        ?>
+							<fieldset>
+                                <legend>Groepen</legend>
+                                <div class="form-group">
+                                    <table>
+                                        <tr>
+                                            <th>naam</th>
+                                            <th>info</th>
+                                            <th>beheerder</th>
+                                            <th>...</th>
+                                        </tr>
+                                        <?
+                                            $oGroepen = new grouplist(); 
+                                            foreach ($oGroepen->getList() as $oGroep) {
+                                                echo "<tr>";  
+                                                echo "<td>" . $oGroep->naam() . "</td>"; 
+                                                echo "<td>" . $oGroep->info() . "</td>"; 
+                                                echo "<td>" . $oGroep->admin()->getName() . "</td>"; 
+                                                echo "<td>
+														<a href=\"admin.groepusers.php?group=" . $oGroep->id() . "\">leden</a> 
+														<button class=\"actiondelete\" value=\"" . $oGroep->id() . "\" onclick=\"return confirm('Weet je zeker?');\" name=\"delgroup\" />
+													</td>"; 
+                                                echo "</tr>"; 
+                                            }
+                                        ?>
+                                    </table>
+                                </div>
+                            
+                        </form> 
+					     
                     </div>
                 </div> 
         	<? echo $oPage->endTabs(); ?>

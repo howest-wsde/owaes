@@ -11,8 +11,9 @@
 		}
 		
 		public function user($iUser = NULL) { // get / set user 
-			if (!is_null($iUser)) $this->iUser = $iUser; 
-			return user($this->iUser);  
+			if (!is_null($iUser)) {
+				$this->iUser = $iUser; 
+			} else return user($this->iUser);  
 		}
 		
 		public function sleutel($strKey = NULL) { // get / set key (een key is leeg of uniek, gebruik een key als een experience maar 1x gegeven mag worden aan een user: bv. "owaes.30" of "quest.8")

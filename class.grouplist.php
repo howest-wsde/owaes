@@ -5,9 +5,10 @@
 	*/
 		private $arList = NULL; 
 		private $arJoin = array(); 
+		private $arWhere = array(); 
 		 
 		public function grouplist() {  
-			 
+			 $this->arWhere[] = " g.deleted = 0 "; 
 		}
 		
 		public function user($iUser) { // select only groups where this user exists
@@ -28,6 +29,7 @@
 			
 			$strSQL = "select g.* from tblGroups g ";
 			foreach ($this->arJoin as $strJoin) $strSQL .= $strJoin; 
+			if (count($this->arWhere)>0) $strSQL .= " where " . implode(" and ", $this->arWhere); 
 			$oDB->sql($strSQL); 
 			$oDB->execute();   
 			while ($oDB->nextRecord()) {

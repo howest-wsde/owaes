@@ -320,6 +320,8 @@
 				bv. $oUser->visible4me("firstname") => checkt of actieve gebruiker de voornaam van $oUser kan zien (afhankelijk van settings  en al dan niet friend zijn )
 			*/  
 			if ($this->bUnlocked) return TRUE; 
+			if ($this->id() == me()) return TRUE; 
+			if (user(me())->admin()) return TRUE; 
 			$arParts = explode(":", $oSelector, 2);  
 			switch ($arParts[0]) {
 				case "data": 

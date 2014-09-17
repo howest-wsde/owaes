@@ -21,6 +21,7 @@
 		private $strImage = NULL;
 		private $iLastUpdate = NULL; 
 		private $arUserRights = array(); 
+		private $bDeleted = FALSE; 
 		 
 		public function group($strKey=NULL) { // $strKey = ID or ALIAS // when not defined: create new user  
 			if (!is_null($strKey)) {
@@ -68,7 +69,9 @@
 			return $this->strImage; 
 		}
 		
-		
+		public function delete($bValue = NULL) {
+			if (!is_null($bValue)) if (user(me())->admin()) $this->bDeleted = $bValue; 
+		}
 
 		public function getImage($strSize="100x100", $bHTML = TRUE) {  
 			$iWidth = 100; 
@@ -144,7 +147,7 @@
 		}
 		
 		public function removeUser($iUser) {
-			if ($this->userrights(me())->userdel()) {
+			if (($iUser==me()) || $this->userrights(me())->userdel()) {
 				$this->arUsers = NULL; 
 				$oDB = new database(); 
 				$strSQL = "delete from tblGroupUsers where groep = " . $this->id() . " and user = " . $iUser . "; "; 
@@ -205,6 +208,7 @@
 			if (!is_null($this->strInfo)) $arVelden["info"] = $this->strInfo; 
 			if (!is_null($this->iAdmin)) $arVelden["admin"] = $this->iAdmin; 
 			if (!is_null($this->strImage)) $arVelden["img"] = $this->strImage; 
+			$arVelden["deleted"] = $this->bDeleted ? 1 : 0; 
 			$arVelden["lastupdate"] = owaesTime(); 
 
 			$oDB = new database(); 
@@ -336,7 +340,7 @@
 	}
 	
 	class usergrouprights {
-		private $arRights = array(
+		private $arFields = array(
 								"useradd" => NULL, 
 								"userdel" => NULL, 
 								"userrights" => NULL, 
@@ -346,7 +350,8 @@
 								"owaesselect" => NULL, 
 								"owaespay" => NULL, 
 								"groupinfo" => NULL, 
-							); 
+								"confirmed" => NULL, 
+							);  
 		private $oGroup = NULL;
 		private $iUser = NULL;  
 		
@@ -354,14 +359,14 @@
 			$this->oGroup = $oGroup; 
 			$this->iUser = $iUser;  
 			if ($iUser==$oGroup->admin()->id()) { 
-				foreach ($this->arRights as $strType=>$bVal) $this->arRights[$strType] = TRUE;  
+				foreach ($this->arFields as $strType=>$bVal) $this->arFields[$strType] = TRUE;  
 			} else {
-				foreach ($this->arRights as $strType=>$bVal) $this->arRights[$strType] = FALSE;  
+				foreach ($this->arFields as $strType=>$bVal) $this->arFields[$strType] = NULL;  
 				$oDB = new database(); 
 				$oDB->sql("select * from tblGroupUsers where user = " . $iUser . " and groep = " . $oGroup->id() . ";"); 
 				$oDB->execute(); 
 				if ($oDB->record()){ 
-					foreach ($this->arRights as $strType=>$bVal) $this->arRights[$strType] = ($oDB->get($strType) == YES); 
+					foreach ($this->arFields as $strType=>$bVal) $this->arFields[$strType] = ($oDB->get($strType) == YES); 
 				}
 			}
 		} 
@@ -371,44 +376,48 @@
 		}
 		
 		public function useradd($bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights["useradd"] = $bVal; 
-			return $this->admin() || $this->arRights["useradd"]; 
+			if (!is_null($bVal)) $this->arFields["useradd"] = $bVal; 
+			return $this->admin() || $this->arFields["useradd"]; 
 		}
 		public function userdel($bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights["userdel"] = $bVal; 
-			return $this->admin() || $this->arRights["userdel"]; 
+			if (!is_null($bVal)) $this->arFields["userdel"] = $bVal; 
+			return $this->admin() || $this->arFields["userdel"]; 
 		}
 		public function userrights($bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights["userrights"] = $bVal; 
-			return $this->admin() || $this->arRights["userrights"]; 
+			if (!is_null($bVal)) $this->arFields["userrights"] = $bVal; 
+			return $this->admin() || $this->arFields["userrights"]; 
 		}
 		public function owaesadd($bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights["owaesadd"] = $bVal; 
-			return $this->admin() || $this->arRights["owaesadd"]; 
+			if (!is_null($bVal)) $this->arFields["owaesadd"] = $bVal; 
+			return $this->admin() || $this->arFields["owaesadd"]; 
 		}
 		public function owaesedit($bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights["owaesedit"] = $bVal; 
-			return $this->admin() || $this->arRights["owaesedit"]; 
+			if (!is_null($bVal)) $this->arFields["owaesedit"] = $bVal; 
+			return $this->admin() || $this->arFields["owaesedit"]; 
 		}
 		public function owaesdel($bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights["owaesdel"] = $bVal; 
-			return $this->admin() || $this->arRights["owaesdel"]; 
+			if (!is_null($bVal)) $this->arFields["owaesdel"] = $bVal; 
+			return $this->admin() || $this->arFields["owaesdel"]; 
 		}
 		public function owaesselect($bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights["owaesselect"] = $bVal; 
-			return $this->admin() || $this->arRights["owaesselect"]; 
+			if (!is_null($bVal)) $this->arFields["owaesselect"] = $bVal; 
+			return $this->admin() || $this->arFields["owaesselect"]; 
 		}
 		public function owaespay($bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights["owaespay"] = $bVal; 
-			return $this->admin() || $this->arRights["owaespay"]; 
+			if (!is_null($bVal)) $this->arFields["owaespay"] = $bVal; 
+			return $this->admin() || $this->arFields["owaespay"]; 
 		}
 		public function groupinfo($bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights["groupinfo"] = $bVal; 
-			return $this->admin() || $this->arRights["groupinfo"]; 
+			if (!is_null($bVal)) $this->arFields["groupinfo"] = $bVal; 
+			return $this->admin() || $this->arFields["groupinfo"]; 
 		}
 		public function right($strKey, $bVal = NULL) {
-			if (!is_null($bVal)) $this->arRights[$strKey] = $bVal; 
-			return $this->admin() || $this->arRights[$strKey]; 
+			if (!is_null($bVal)) $this->arFields[$strKey] = $bVal; 
+			return $this->admin() || $this->arFields[$strKey]; 
+		}
+		public function value($strKey, $bVal = NULL) {
+			if (!is_null($bVal)) $this->arFields[$strKey] = $bVal; 
+			return $this->arFields[$strKey]; 
 		}
 		public function editpage(){ // heeft de gebruiker rechten op iets? 
 			$bRechten = FALSE; 
@@ -424,7 +433,7 @@
 		
 		public function update() {
 			$arUpdates = array(); 
-			foreach ($this->arRights as $strKey=>$bValue) if (!is_null($bValue)) $arUpdates[] = $strKey . "=" . ($bValue?1:0);
+			foreach ($this->arFields as $strKey=>$bValue) if (!is_null($bValue)) $arUpdates[] = $strKey . "=" . ($bValue?1:0);
 			$oDB = new database(); 
 			$oDB->sql("update tblGroupUsers set " . implode(",", $arUpdates) . " where user = " . $this->iUser . " and groep = " . $this->oGroup->id() . ";"); 
 			$oDB->execute();  
