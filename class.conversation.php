@@ -36,7 +36,7 @@
 		
 		public function user($iUser) { // user toevoegen aan conversatie
 			if (!isset($this->arUsers[$iUser])) {
-				$this->arUsers[$iUser] = new user($iUser); 
+				$this->arUsers[$iUser] = user($iUser); 
 			}
 			return $this->arUsers[$iUser]; 
 		}

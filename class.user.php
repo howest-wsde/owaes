@@ -1442,13 +1442,7 @@
 					return NULL; 
 			}
 		}
-		
-		/* 
-				case "": 
-					return ; 
-					break; 
-		*/
-		
+		 
 		
 		private function test($str) {
 			echo $str; 	

@@ -194,7 +194,7 @@
 		public function me() { /* geeft ID van huidige gebruiker terug. 
 			TODO: zou weg moeten want er bestaat een GLOBAL function me()
 			*/
-			if (!isset($this->oUser)) $this->oUser = new user($this->iUser); 
+			if (!isset($this->oUser)) $this->oUser = user($this->iUser); 
 			return $this->oUser; 
 		}
 		 

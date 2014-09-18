@@ -37,7 +37,7 @@
 					//$arDiscFriends = array(); 
 					foreach ($arDB as $iUser) {
 						if ($iUser != $iMe) {
-							if (!isset($arFriends[$iUser])) $arFriends[$iUser] = new user($iUser); 
+							if (!isset($arFriends[$iUser])) $arFriends[$iUser] = user($iUser); 
 							$arDiscussion["users"][] = array(
 												"id" => $iUser, 
 												"name" => $arFriends[$iUser]->getName()

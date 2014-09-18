@@ -49,11 +49,40 @@
                         <ul>
                         	<li><a href="admin.php">Admin</a></li><li><a href="admin.users.php">Gebruikers</a></li>
                         </ul>
-                    	<h1>Toevoegen: </h1>
+                    	<h1>Groepsbeheer </h1>
                         <form method="post" class="groepToevoegenForm form-horizontal" enctype="multipart/form-data"> 
 
+							<fieldset>
+                                <legend>Groepen</legend>
+                                <div class="form-group">
+                                    <table>
+                                        <tr>
+                                            <th>naam</th>
+                                            <th>info</th>
+                                            <th>beheerder</th>
+                                            <th>...</th>
+                                        </tr>
+                                        <?
+                                            $oGroepen = new grouplist(); 
+                                            foreach ($oGroepen->getList() as $oGroep) {
+                                                echo "<tr>";  
+                                                echo "<td>" . $oGroep->naam() . "</td>"; 
+                                                echo "<td>" . $oGroep->info() . "</td>"; 
+                                                echo "<td>" . $oGroep->admin()->getName() . "</td>"; 
+                                                echo "<td>
+														<a href=\"admin.groepusers.php?group=" . $oGroep->id() . "\">leden</a> 
+														<button class=\"actiondelete\" value=\"" . $oGroep->id() . "\" onclick=\"return confirm('Weet je zeker?');\" name=\"delgroup\" />
+													</td>"; 
+                                                echo "</tr>"; 
+                                            }
+                                        ?>
+                                    </table>
+                                </div>
+                            </fieldset>
+                            
+                            
                             <fieldset>
-                                <legend>Algemene gegevens</legend>
+                                <legend>Nieuwe groep toevoegen</legend>
                                 <div class="form-group">
                                     <label for="username" class="control-label col-lg-2">Groepsnaam:</label>
                                     <div class="col-lg-10">
@@ -92,33 +121,6 @@
                                     </div>
                                 </div>
                             </fieldset>  
-                            
-							<fieldset>
-                                <legend>Groepen</legend>
-                                <div class="form-group">
-                                    <table>
-                                        <tr>
-                                            <th>naam</th>
-                                            <th>info</th>
-                                            <th>beheerder</th>
-                                            <th>...</th>
-                                        </tr>
-                                        <?
-                                            $oGroepen = new grouplist(); 
-                                            foreach ($oGroepen->getList() as $oGroep) {
-                                                echo "<tr>";  
-                                                echo "<td>" . $oGroep->naam() . "</td>"; 
-                                                echo "<td>" . $oGroep->info() . "</td>"; 
-                                                echo "<td>" . $oGroep->admin()->getName() . "</td>"; 
-                                                echo "<td>
-														<a href=\"admin.groepusers.php?group=" . $oGroep->id() . "\">leden</a> 
-														<button class=\"actiondelete\" value=\"" . $oGroep->id() . "\" onclick=\"return confirm('Weet je zeker?');\" name=\"delgroup\" />
-													</td>"; 
-                                                echo "</tr>"; 
-                                            }
-                                        ?>
-                                    </table>
-                                </div>
                             
                         </form> 
 					     

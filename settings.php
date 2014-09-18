@@ -3,7 +3,7 @@
 	$oSecurity = new security(TRUE); 
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
 
-	$oProfile = new user(me()); 
+	$oProfile = user(me()); 
 	
 	$arErrors = array(); 
 	

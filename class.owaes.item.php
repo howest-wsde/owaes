@@ -53,7 +53,7 @@
 		}
 		 
 		public function getTags() {
-			if (is_null($this->arTags)) $this->load();
+			if (is_null($this->arTags)) $this->loadTags(); ;
 			$arTags = array(); 
 			foreach ($this->arTags as $strTag => $arDetails) {
 				switch($arDetails["state"]) {
@@ -66,71 +66,114 @@
 			return $arTags;  
 		}
 		public function addTag($strTag, $strType="NEW") {
-			if (is_null($this->arTags)) $this->load(); 	
+			if (is_null($this->arTags)) $this->loadTags(); 	
 			if ($strTag != "") {
 				if (!isset($this->arTags[$strTag])) $this->arTags[$strTag] = array("original" => $strType); 
 				$this->arTags[$strTag]["state"] = $strType; 
 			}
 		}
 		public function removeTag($strTag) { // tag verwijderen 
-			if (is_null($this->arTags)) $this->load(); 
+			if (is_null($this->arTags)) $this->loadTags(); 
 			if (isset($this->arTags[$strTag])) $this->arTags[$strTag]["state"] = "DELETE"; 
 		}
 		
-		
-		public function load() { 
-			$oDB = new database("select * from tblMarket where id = " . intval($this->iID) . ";", TRUE); 
+		private function loadValue($strKey, $strValue) {
+			switch($strKey) {
+				case "id": 
+					$this->iID = $strValue;
+					break; 	
+				case "date":  
+					$this->iDate = $strValue;  
+					break; 	 
+				case "lastupdate": 
+					$this->iLastupdate = $strValue; 
+					break; 	
+				case "title": 
+					if (is_null($this->strTitle)) $this->title($strValue); 
+					break; 	
+				case "body": 
+					if (is_null($this->strBody)) $this->body($strValue); 
+					break; 	
+				case "author": 
+					if (is_null($this->iAuthor)) $this->author($strValue); 
+					break; 	
+				case "groep": 
+					if (is_null($this->iGroup)) $this->group($strValue); 
+					break; 	
+				case "credits": 
+					if (is_null($this->iCredits)) $this->credits($strValue);   
+					break; 	
+				case "physical": 
+					if (is_null($this->iPhysical)) $this->physical($strValue);   
+					break; 	 
+				case "mental": 
+					if (is_null($this->iMental)) $this->mental($strValue);   
+					break; 	
+				case "emotional": 
+					if (is_null($this->iEmotional)) $this->emotional($strValue); 
+					break; 	
+				case "social": 
+					if (is_null($this->iSocial)) $this->social($strValue);  
+					break; 	
+				case "mtype": 
+					if (is_null($this->iType)) $this->type($strValue);       
+					break; 	
+				case "state": 
+					if (is_null($this->iState)) $this->state($strValue);  
+					break; 	
+				case "timing": 
+					if (is_null($this->iTiming)) $this->timing($strValue);  
+					break; 	
+				case "timingtype": 
+					if (is_null($this->strTiming)) $this->timingtype($strValue);  
+					break; 	 
 
-			if ($oDB->length() == 1) {
-				$oDBrecord = $oDB->record(); 
-				$this->iDate = $oDBrecord["date"];  
-				$this->iID = $oDBrecord["id"]; 
-				$this->iLastupdate = $oDBrecord["lastupdate"]; 
-				if (is_null($this->strTitle)) $this->title($oDBrecord["title"]); 
-				if (is_null($this->strBody)) $this->body($oDBrecord["body"]); 
-				if (is_null($this->iAuthor)) $this->author($oDBrecord["author"]); 
-				if (is_null($this->iGroup)) $this->group( $oDBrecord["groep"]); 
+			}	
+		}
+		
+		public function load($oRecord = NULL) {
+			if (!is_null($oRecord)) {
+				foreach ($oRecord as $strVeld=>$strValue) $this->loadValue($strVeld, $strValue);
+			} else {
+				$oDB = new database("select * from tblMarket where id = " . intval($this->iID) . ";", TRUE); 
 	
-				if (is_null($this->iCredits)) $this->credits($oDBrecord["credits"]);   
-				if (is_null($this->iPhysical)) $this->physical($oDBrecord["physical"]);   
-				if (is_null($this->iMental)) $this->mental($oDBrecord["mental"]);   
-				if (is_null($this->iEmotional)) $this->emotional( $oDBrecord["emotional"]); 
-				if (is_null($this->iSocial)) $this->social($oDBrecord["social"]);  
-				if (is_null($this->iType)) $this->type($oDBrecord["mtype"]);     
-//				if (is_null($this->bTask)) $this->task($oDBrecord["task"]==1);  
-if (is_null($this->iState)) $this->state($oDBrecord["state"]);  
-				if (is_null($this->iTiming)) $this->timing($oDBrecord["timing"]);  
-				if (is_null($this->strTiming)) $this->timingtype($oDBrecord["timingtype"]);  
-				if (is_null($this->strLocation)) $this->location($oDBrecord["location"], $oDBrecord["location_lat"], $oDBrecord["location_long"]); 
-				if (is_null($this->arTags)) {
-					$oTags = new database("select tag from tblMarketTags where market = " . intval($this->iID) . ";", TRUE); 
-					$this->arTags = array();
-					while ($oTags->nextRecord()){
-						$this->addTag($oTags->get("tag"), "DB"); 
-					} 
-				} 
-			}  else {
-				$this->iLastupdate = 0; 
-				$this->iDate = owaesTime();
-				$this->iID = 0;
-				if (is_null($this->strTitle)) $this->title(""); 
-				if (is_null($this->strBody)) $this->body(""); 
-				if (is_null($this->iAuthor)) $this->author(me()); 
-				if (is_null($this->iGroup)) $this->group(0); 
-				if (is_null($this->iCredits)) $this->credits(0);   
-				if (is_null($this->iPhysical)) $this->physical(25);   
-				if (is_null($this->iMental)) $this->mental(25);   
-				if (is_null($this->iEmotional)) $this->emotional(25); 
-				if (is_null($this->iSocial)) $this->social(25);   
-				if (is_null($this->iType)) $this->type(0);    
-//				if (is_null($this->bTask)) $this->task(TRUE);   
-				if (is_null($this->iState)) $this->state(STATE_RECRUTE);  
-				if (is_null($this->iTiming)) $this->timing(0);   
-				if (is_null($this->strTiming)) $this->timingtype("free");  
-				if (is_null($this->strLocation)) $this->location("", 0, 0);  
-				if (is_null($this->arTags)) $this->arTags = array();   
-			} 	
-			 
+				if ($oDB->length() == 1) {
+					$oDBrecord = $oDB->record(); 
+					foreach ($oDBrecord as $strVeld=>$strValue) $this->loadValue($strVeld, $strValue);
+ 					if (is_null($this->strLocation)) $this->location($oDBrecord["location"], $oDBrecord["location_lat"], $oDBrecord["location_long"]); 
+					// if (is_null($this->arMomenten)) $this->loadMomenten();  
+				}  else {
+					$this->iLastupdate = 0; 
+					$this->iDate = owaesTime();
+					$this->iID = 0;
+					if (is_null($this->strTitle)) $this->title(""); 
+					if (is_null($this->strBody)) $this->body(""); 
+					if (is_null($this->iAuthor)) $this->author(me()); 
+					if (is_null($this->iGroup)) $this->group(0); 
+					if (is_null($this->iCredits)) $this->credits(0);   
+					if (is_null($this->iPhysical)) $this->physical(25);   
+					if (is_null($this->iMental)) $this->mental(25);   
+					if (is_null($this->iEmotional)) $this->emotional(25); 
+					if (is_null($this->iSocial)) $this->social(25);   
+					if (is_null($this->iType)) $this->type(0);    
+					if (is_null($this->iState)) $this->state(STATE_RECRUTE);  
+					if (is_null($this->iTiming)) $this->timing(0);   
+					if (is_null($this->strTiming)) $this->timingtype("free");  
+					if (is_null($this->strLocation)) $this->location("", 0, 0);  
+					if (is_null($this->arTags)) $this->arTags = array();   
+					if (is_null($this->arMomenten)) $this->arMomenten = array();   
+				} 	 
+			}
+		}
+		
+		private function loadTags() {  
+			$this->arTags = array();
+			$oTags = new database("select tag from tblMarketTags where market = " . intval($this->iID) . ";", TRUE); 
+			while ($oTags->nextRecord()){
+				$this->addTag($oTags->get("tag"), "DB"); 
+			}  
+		}  
+		private function loadMomenten() {
 			$this->arMomenten = array(); 
 			$oDB = new database("select * from tblMarketDates where market = " . intval($this->iID) . ";", TRUE);  
 			while ($oDB->nextRecord()) { 
@@ -194,11 +237,7 @@ if (is_null($this->iState)) $this->state($oDBrecord["state"]);
 			}
 			return $arResult; 
 		}
-		
-		/*public function getAuthor() {
-			if (is_null($this->oAuthor)) $this->oAuthor = new user($this->iAuthor); 
-			return $this->oAuthor; 
-		}*/
+		 
 		
 		public function subscriptionDiv() { // returns de html met de "schrijf in / onderhandel"-knop (of status-tekst)
 			$arSubscriptions = $this->subscriptions(); 
@@ -365,48 +404,68 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		}
 		
 		public function HTML($strTemplate, $bFile = TRUE) { // vraagt pad van template en returns de html met replaced [tags]  
-			$arActions = array(); 
 			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
-			$strHTML = str_replace("[classes]", implode(" ", $this->classes()), $strHTML);
-			$strHTML = str_replace("[title]", $this->title(), $strHTML);
-			$strHTML = str_replace("[body]", nl2br($this->body()), $strHTML); 
-			$strHTML = str_replace("[body:short]", nl2br(shorten($this->body(), 250, TRUE)), $strHTML); 
-			$strHTML = str_replace("[link]", $this->getLink(), $strHTML);
-
-			$strHTML = str_replace("[soortIcon]","<span class='" . $this->type()->iconclass() . "'></span>", $strHTML);
-			$strHTML = str_replace("[iconclass]", $this->type()->iconclass(), $strHTML);
- 
+			
+ 			preg_match_all("/\[if:([a-zA-Z0-9-_:#]+)\]([\s\S]*?)\[\/if:\\1\]/", $strHTML, $arResult);   // bv. [if:firstname]firstname ingevuld en zichtbaar[/if:firstname]  
+			for ($i=0;$i<count($arResult[0]);$i++) {
+				$strResult = $this->HTMLvalue($arResult[1][$i]);  
+				if (!is_null($strResult)) $strHTML = str_replace($arResult[0][$i], (($strResult == "") ? "" : $arResult[2][$i]), $strHTML); 	
+			} 
+			preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]/", $strHTML, $arResult);   // alle tags (zonder whitespace)
+			if (isset($arResult[1])) foreach ($arResult[1] as $strTag){ 
+				$strResult = $this->HTMLvalue($strTag);  
+				if (!is_null($strResult)) $strHTML = str_replace("[$strTag]", $strResult, $strHTML); 
+			} 
               
-			if ($this->group()){ 
-				$strHTML = str_replace("[author:type]", "group", $strHTML); 
-				$strHTML = str_replace("[author]", $this->group()->getLink(), $strHTML);
-				// $strHTML = str_replace("[author:img:60x60]", $this->group()->getImage("60x60", FALSE), $strHTML);
-				//$strHTML = preg_replace('/\[author\:img\:([0-9]*x[0-9]*)\]/e', '$this->group()->getImage("$1", FALSE)', $strHTML);
+ 			if ($this->group()){   
 				$strHTML = preg_replace_callback('/\[author\:img\:([0-9]*x[0-9]*)\]/', array(&$this, "imagegroupregreplace"), $strHTML); 
-
-
-				$strHTML = str_replace("[author:url]", $this->group()->getURL(), $strHTML);
-				$strHTML = str_replace("[author:key]", (($this->group()->alias() == "")?$this->group()->id():$this->group()->alias()), $strHTML); // of id als er geen username is
-			} else {
-				$strHTML = str_replace("[author:type]", "user", $strHTML); 
-				$strHTML = str_replace("[author]", $this->author()->getLink(), $strHTML);
-				//$strHTML = str_replace("[author:img:60x60]", $this->author()->getImage("60x60", FALSE), $strHTML);
-				//$strHTML = preg_replace('/\[author\:img\:([0-9]*x[0-9]*)\]/e', '$this->author()->getImage("$1", FALSE)', $strHTML);
+			} else {   
 				$strHTML = preg_replace_callback('/\[author\:img\:([0-9]*x[0-9]*)\]/', array(&$this, "imageauthorregreplace"), $strHTML); 
-
-				$strHTML = str_replace("[author:url]", $this->author()->getURL(), $strHTML);
-				$strHTML = str_replace("[author:key]", (($this->author()->alias() == "")?$this->author()->iID:$this->author()->alias()), $strHTML); // of id als er geen username is
-			}
-            $strHTML = str_replace("[author:adress]",$this->location(),$strHTML);    
-			      
-			/*switch($this->timingtype()) {
-				case "free": 
-					$strHTML = str_replace("[data]", "vrij te kiezen", $strHTML);  
-					break; 	
-				case "tbc": 
-					$strHTML = str_replace("[data]", "nog vast te leggen", $strHTML);  
-					break; 	
-				default: */
+			}  
+   
+ 		
+			return $strHTML; 
+		} 
+		private function imageauthorregreplace(&$matches) { 
+			return $this->author()->getImage($matches[1], FALSE);  
+		} 
+		private function imagegroupregreplace(&$matches) { 
+			return $this->group()->getImage($matches[1], FALSE);  
+		} 
+		
+		
+		
+		private function HTMLvalue($strTag) {
+			switch($strTag) { 
+				case "id": 
+					return $this->id();  
+				case "classes": 
+					return implode(" ", $this->classes());  
+				case "title": 
+					return $this->title();  
+				case "body": 
+					return nl2br($this->body());  
+				case "body:short": 
+					return nl2br(shorten($this->body(), 250, TRUE));  
+				case "link": 
+					return $this->getLink(); 
+				case "soortIcon": 
+					return "<span class='" . $this->type()->iconclass() . "'></span>"; 
+				case "author:type": 
+					return ($this->group()) ? "group" : "user"; 
+				case "author": 
+					return ($this->group()) ? $this->group()->getLink() : $this->author()->getLink(); 
+				case "author:url": 
+					return ($this->group()) ? $this->group()->getURL() : $this->author()->getURL(); 
+				case "author:key": 
+					if ($this->group()) {
+						return (($this->group()->alias() == "")?$this->group()->id():$this->group()->alias());  // of id als er geen username is
+					} else {
+						return (($this->author()->alias() == "")?$this->author()->iID:$this->author()->alias());  // of id als er geen username is
+					} 
+				case "author:adress": 
+					return $this->location(); 
+				case "data": 
 					if (count($this->data()) > 0) {
 						$strSub = "<ul class=\"data\">"; 
 						foreach ($this->data() as $iDate) {
@@ -420,9 +479,15 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 									}
 								} else {
 									if ($oMoment["start"] == 0) {
-										$strSub .= "<li>willekeurige datum, gedurende " . ($oMoment["tijd"]/60) . "uur</li>"; 
+										$strSub .= "<li>willekeurige datum, gedurende " . minutesTOhhmm($oMoment["tijd"]) . "</li>"; 
 									} else {
-										$strSub .= "<li>willekeurige datum, van " . minutesTOhhmm($oMoment["start"]) . " tot " . minutesTOhhmm($oMoment["start"]+$oMoment["tijd"]) . "</li>"; 
+										if ($oMoment["start"]+$oMoment["tijd"] > 60*24) {
+											$strSub .= "<li>willekeurige datum, vanaf " . minutesTOhhmm($oMoment["start"]) . 
+															"  gedurende " . minutesTOhh($oMoment["tijd"]) . "</li>"; 
+										} else {
+											$strSub .= "<li>willekeurige datum, van " . minutesTOhhmm($oMoment["start"]) . 
+															" tot " . minutesTOhhmm($oMoment["start"]+$oMoment["tijd"]) . "</li>"; 
+										}
 									} 
 								} 
 							} else {
@@ -434,141 +499,138 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 									}
 								} else {
 									if ($oMoment["start"] == 0) {
-										$strSub .= "<li>" . str_date($iDate, "datum") . " gedurende " . ($oMoment["tijd"]/60) . "uur</li>"; 
+										$strSub .= "<li>" . str_date($iDate, "datum") . " gedurende " . minutesTOhh($oMoment["tijd"]) . "</li>"; 
 									} else {
-										$strSub .= "<li>" . str_date($iDate, "datum") . " van " . minutesTOhhmm($oMoment["start"]) . " tot " . minutesTOhhmm($oMoment["start"]+$oMoment["tijd"]) . "</li>"; 
+										if ($oMoment["start"]+$oMoment["tijd"] > 60*24) {
+											$strSub .= "<li>" . str_date($iDate, "datum") . " vanaf " . minutesTOhhmm($oMoment["start"]) . 
+														" gedurende " . minutesTOhh($oMoment["tijd"]) . "</li>"; 
+										} else {
+											$strSub .= "<li>" . str_date($iDate, "datum") . " van " . minutesTOhhmm($oMoment["start"]) . 
+														" tot " . minutesTOhhmm($oMoment["start"]+$oMoment["tijd"]) . "</li>"; 
+										}
 									} 
 								} 
-							}
-							//$strSub .= "<li>" . str_date($iDate) . "</li>"; 
+							} 
 						}
 						$strSub .= "</ul>"; 
-						$strHTML = str_replace("[data]", $strSub, $strHTML);  
-						// ************************************************************************
+						return $strSub; 
 					} else {
-						$strHTML = str_replace("[data]", "willekeurige datum", $strHTML);  
+						return "willekeurige datum"; 
 					}
-					/*break; 	
-			}*/
-			$strHTML = str_replace("[data]", "vrij te kiezen", $strHTML); 
-			$strHTML = str_replace("[timing]", $this->timing() . " uur", $strHTML);  
-			switch ($this->location()) {
-				case "":  
-				case "free": 
-					$strHTML = str_replace("[locationimg:100x100]", "", $strHTML); 
-					break; 
-				default: 	
-					$strHTML = str_replace("[locationimg:100x100]", $this->locationIMG(), $strHTML);  
-			}
-			$strHTML = str_replace("[development]", $this->developmentBoxes(), $strHTML);  
-			$strHTML = str_replace("[credits]", ($this->iCredits==0) ? "aantal credits n.o.t.k." : $this->iCredits . " credits", $strHTML); 
-			if (instr("[subscribe]", $strHTML)) $strHTML = str_replace("[subscribe]", $this->subscriptionDiv(), $strHTML);  
-			if (instr("[author:box]", $strHTML)) $strHTML = str_replace("[author:box]", $this->author()->userBox(), $strHTML);  
-			switch($this->state()) {
-				case STATE_SELECTED: 
-					$strHTML = str_replace("[state]", "in uitvoering", $strHTML); 
-					break; 
-				case STATE_FINISHED:  
-					$strHTML = str_replace("[state]", "afgesloten", $strHTML); 
-					break; 
-				case STATE_RECRUTE: 
-					$strHTML = str_replace("[state]", "open", $strHTML);
-					break;  
-				default: 
-					$strHTML = str_replace("[state]", "", $strHTML); 
-					break; 
-			}
-			$arSubscriptions = $this->subscriptions();  
-			if ($this->iAuthor != me()) {
-				$iMyValue = (isset($arSubscriptions[me()])) ? $arSubscriptions[me()]->state() : SUBSCRIBE_CANCEL;
-				if ($iMyValue == SUBSCRIBE_CONFIRMED) {
-					//$arTransactions = $this->transactions(); 
-					//if (isset($arTransactions[me()]))  {
-						$oPayment = $arSubscriptions[me()]->payment();   
-						if (!$oPayment->signed()) { 
-							if ($oPayment->sender() == me()) {
-								$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>"; 
-							} else {
-								
-								if (filename(FALSE) != "owaes.php") $arActions[] = "<a href=\"" . $this->getLink() . "\"><img src=\"" . fixPath("img/contact.png") . "\" alt=\"neem contact op\" align=\"right\" /></a>"; 
-							}
-							$arActions[] = $oPayment->html(); 
-						} else {
-							$arActions[] = "credits-overdracht OK"; 
-							$oRating = $arSubscriptions[me()]->rating(me()); 
-							if ($oRating->stars()) {
-								$arActions[] =  ("<div>" . $oRating->html() . "</div>"); 
-							} else {
-								$arActions[] =  ("<div>" . $oRating->html() . "</div>"); 	
-							}
-							
-						}  
-					//}
-				} 
-				if (admin()) $arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" class=\"btn btn-default btn-sm pull-right edit\" align=\"right\" /></a>"; 
-			} else { // ik == author
-				$iCount = count($arSubscriptions); 
-				if ($iCount > 0) { 
-					$iConfirmed = 0; 
-					$iPayed = 0;  
-					foreach ($arSubscriptions as $iUser=>$oSubscription) {
-						if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) {
-							$iConfirmed++; 
-							if ($oSubscription->payment()->signed()) $iPayed ++; 
-						} 
+					return "vrij te kiezen"; 
+				case "timing": 
+					return $this->timing();
+				case "locationimg:100x100": 
+					switch ($this->location()) {
+						case "":  
+						case "free": 
+							return "";
+							break; 
+						default: 	
+							return $this->locationIMG();
 					}
-					if ($this->task()) { // ik moet betalen
-						if ($iConfirmed > $iPayed) {
-							$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>"; 
-						} else { 
-							if ($iConfirmed > 0) $arActions[] = "credits-overdracht allemaal OK"; 
-						}
-					} else { // ik moet ontvangen
-						if ($iConfirmed > $iPayed) {
-							$arActions[] = "TODO: ik moet nog van sommige betaling krijgen";  
-						} else {
-							$arActions[] = "credits-overdracht allemaal OK"; 
-						}
-					} 	
-					foreach ($arSubscriptions as $iUser=>$oSubscription) {
-						if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) { 
-							if ($oSubscription->payment()->signed()) {
-								$oRating = $oSubscription->rating(me()); 
-								if ($oRating->stars()) {
-									$arActions[] =  ("<li>" . $oRating->html() . "</li>"); 
+				case "development":
+					return $this->developmentBoxes(); 
+				case "credits":
+					return ($this->iCredits==0) ? "aantal credits n.o.t.k." : $this->iCredits . " credits"; 
+				case "subscribe":
+					return $this->subscriptionDiv();
+				case "author:box":
+					return $this->author()->userBox(); 
+				case "state":
+					switch($this->state()) {
+						case STATE_SELECTED: 
+							return "in uitvoering"; 
+						case STATE_FINISHED:  
+							return "afgesloten";  
+						case STATE_RECRUTE: 
+							return "open"; 
+						default: 
+							return ""; 
+					}
+				case "tags":  
+					$arTags = array(); 
+					foreach ($this->getTags() as $strTag) $arTags[] = "<span>" . htmlentities($strTag) . "</span>"; 
+					return implode("", $arTags); 
+				case "aantalInschrijvingen":  
+					$arSubscriptions = $this->subscriptions(); 
+					return (count($arSubscriptions)==1) ? "1 inschrijving " : count($arSubscriptions) . " inschrijvingen ";
+				case "actions":  
+					$arActions = array(); 
+					$arSubscriptions = $this->subscriptions();  
+					if ($this->iAuthor != me()) {
+						$iMyValue = (isset($arSubscriptions[me()])) ? $arSubscriptions[me()]->state() : SUBSCRIBE_CANCEL;
+						if ($iMyValue == SUBSCRIBE_CONFIRMED) { 
+							$oPayment = $arSubscriptions[me()]->payment();   
+							if (!$oPayment->signed()) { 
+								if ($oPayment->sender() == me()) {
+									$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>"; 
 								} else {
-									$arActions[] =  ("<li>" . $oRating->html() . "</li>"); 	
-								} 
+									
+									if (filename(FALSE) != "owaes.php") $arActions[] = "<a href=\"" . $this->getLink() . "\"><img src=\"" . fixPath("img/contact.png") . "\" alt=\"neem contact op\" align=\"right\" /></a>"; 
+								}
+								$arActions[] = $oPayment->html(); 
 							} else {
-								$arActions[] = $oSubscription->payment()->html(); 
-							}
+								$arActions[] = "credits-overdracht OK"; 
+								$oRating = $arSubscriptions[me()]->rating(me()); 
+								if ($oRating->stars()) {
+									$arActions[] =  ("<div>" . $oRating->html() . "</div>"); 
+								} else {
+									$arActions[] =  ("<div>" . $oRating->html() . "</div>"); 	
+								}
+								
+							}   
 						} 
+						if (admin()) $arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" class=\"btn btn-default btn-sm pull-right edit\" align=\"right\" /></a>"; 
+					} else { // ik == author
+						$iCount = count($arSubscriptions); 
+						if ($iCount > 0) { 
+							$iConfirmed = 0; 
+							$iPayed = 0;  
+							foreach ($arSubscriptions as $iUser=>$oSubscription) {
+								if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) {
+									$iConfirmed++; 
+									if ($oSubscription->payment()->signed()) $iPayed ++; 
+								} 
+							}
+							if ($this->task()) { // ik moet betalen
+								if ($iConfirmed > $iPayed) {
+									$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>"; 
+								} else { 
+									if ($iConfirmed > 0) $arActions[] = "credits-overdracht allemaal OK"; 
+								}
+							} else { // ik moet ontvangen
+								if ($iConfirmed > $iPayed) {
+									$arActions[] = "TODO: ik moet nog van sommige betaling krijgen";  
+								} else {
+									$arActions[] = "credits-overdracht allemaal OK"; 
+								}
+							} 	
+							foreach ($arSubscriptions as $iUser=>$oSubscription) {
+								if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) { 
+									if ($oSubscription->payment()->signed()) {
+										$oRating = $oSubscription->rating(me()); 
+										if ($oRating->stars()) {
+											$arActions[] =  ("<li>" . $oRating->html() . "</li>"); 
+										} else {
+											$arActions[] =  ("<li>" . $oRating->html() . "</li>"); 	
+										} 
+									} else {
+										$arActions[] = $oSubscription->payment()->html(); 
+									}
+								} 
+							}
+						}
+						$arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img class=\"btn btn-default btn-sm pull-right\" src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" align=\"right\" /></a>"; 
 					}
-				}
-				$arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img class=\"btn btn-default btn-sm pull-right\" src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" align=\"right\" /></a>"; 
+					return implode("", $arActions);
+ 
+ 
+				default: 
+					return NULL; 
 			}
-			if (instr("[tags]", $strHTML)) {
-				$arTags = array(); 
-				foreach ($this->getTags() as $strTag) $arTags[] = "<span>" . htmlentities($strTag) . "</span>"; 
-				$strHTML = str_replace("[tags]", implode("", $arTags), $strHTML);  
-			}
-            if (instr("[aantalInschrijvingen]",$strHTML)){
-                $arSubscriptions = $this->subscriptions(); 
-			    $strCount = (count($arSubscriptions)==1) ? "1 inschrijving " : count($arSubscriptions) . " inschrijvingen ";
-                $strHTML= str_replace("[aantalInschrijvingen]",$strCount,$strHTML);
-			  
-            }
-                
-			$strHTML = str_replace("[actions]", implode("", $arActions), $strHTML);
-						
-			return $strHTML; 
-		} 
-		private function imageauthorregreplace(&$matches) { 
-			return $this->author()->getImage($matches[1], FALSE);  
-		} 
-		private function imagegroupregreplace(&$matches) { 
-			return $this->group()->getImage($matches[1], FALSE);  
-		} 
+		}
+		
 		
 		public function type($vType = NULL) {
 			if (!is_null($vType)) $this->iType = owaestype($vType)->id(); 
@@ -650,7 +712,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		public function addMoment($iDatum = NULL, $iStart = NULL, $iTijd = NULL, $strStatus = "NEW") { /* datum toevoegen ($iDatum = unix time, iStart en $iTijd = minuten)
 		(TODO: strStatus moet er niet staan in public function)
 		*/
-			if (is_null($this->arMomenten)) $this->load(); 
+			if (is_null($this->arMomenten)) $this->loadMomenten(); 
 			$this->arMomenten[intval($iDatum)] = array(
 				"start" => $iStart,  
 				"tijd" => $iTijd, 
@@ -660,28 +722,14 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		} 
 		
 		public function getMoment($iDate) {
-			if (is_null($this->arMomenten)) $this->load(); 
+			if (is_null($this->arMomenten)) $this->loadMomenten(); 
 			if (!isset($this->arMomenten[$iDate])) return FALSE; 
 			if ($this->arMomenten[$iDate]["status"] == "DELETE") return FALSE; 
 			return $this->arMomenten[$iDate]; 
 		}
-		
-		/*public function removeTimingStart($iTiming) {  // timing verwijderen ($iTiming = unix time)
-			if (is_null($this->arTiming)) $this->load(); 
-			if (isset($this->arTiming[intval($iTiming)])) {
-				switch($this->arTiming[intval($iTiming)]){
-					case "NEW": 
-						unset($this->arTiming[intval($iTiming)]);
-						break;
-					default: 
-						$this->arTiming[intval($iTiming)] = "DELETE"; 
-				}
-				return TRUE; 
-			} else return FALSE;  
-		} */
-		
+		 
 		public function removeMoment($iDatum) {  // timing verwijderen ($iTiming = unix time)
-			if (is_null($this->arMomenten)) $this->load(); 
+			if (is_null($this->arMomenten)) $this->loadMomenten(); 
 			if (isset($this->arMomenten[intval($iDatum)])) {
 				switch($this->arMomenten[intval($iDatum)]){
 					case "NEW": 
@@ -695,7 +743,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		} 
 		public function data() { // returns Array van unix-times
 			$arData = array();
-			if (is_null($this->arMomenten)) $this->load();  
+			if (is_null($this->arMomenten)) $this->loadMomenten();  
 			foreach ($this->arMomenten as $iTiming => $strStatus) {
 				switch($strStatus) {
 					case "DELETE": 
@@ -709,7 +757,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		
 		public function timing($iTiming = NULL) { // get / set tijdsduur (uur)
 			if (!is_null($iTiming)) $this->iTiming = intval($iTiming); 
-			if (is_null($this->arMomenten)) $this->load(); 
+			if (is_null($this->arMomenten)) $this->loadMomenten(); 
 			$iTiming = 0; 
 			foreach ($this->arMomenten as $arMoment) {
 				if ($arMoment["status"] != "DELETE") $iTiming += $arMoment["tijd"];

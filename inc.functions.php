@@ -510,8 +510,18 @@
 		if ($iTijd > 0) {
 			$iUren = floor($iTijd/60);  
 			return ($iUren%24) . "u" . substr("00" . ($iTijd-($iUren*60)), -2); 
+		} else return "";  
+	}
+	function minutesTOhh($iTijd) { 
+		if ($iTijd > 0) {
+			$iUren = floor($iTijd/60);  
+			if (($iTijd-($iUren*60)) == 0) {
+				$strTijd = $iUren . " uur"; 
+			} else {
+				$strTijd = $iUren . "u" . substr("00" . ($iTijd-($iUren*60)), -2); 
+			}
+			return $strTijd; // . substr("00" . ($iTijd-($iUren*60)), -2); 
 		} else return ""; 
-		return $iTijd; 
 	}
 	
 	function ddmmyyyyTOdate($strDate) { 

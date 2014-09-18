@@ -2,11 +2,8 @@
 	define ("DIRECTION_SPEND", 0); 
 	define ("DIRECTION_EARN", 1); 
 	
-	$ar_GLOBAL_owaestypes = array(); 
-	function owaestype($vKey = NULL) { // FUNCTION owaestype(5) == CLASS new owaestype(5) 
-		global $ar_GLOBAL_owaestypes; 
-		if (!isset($ar_GLOBAL_owaestypes[$vKey])) $ar_GLOBAL_owaestypes[$vKey] = new owaestype($vKey); 
-		return $ar_GLOBAL_owaestypes[$vKey];  
+	function owaestype($vKey = NULL) { // FUNCTION owaestype(5) == CLASS new owaestype(5)  
+		return new owaestype($vKey); 
 	}
  
 	class owaestype {  

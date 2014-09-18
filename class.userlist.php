@@ -66,7 +66,7 @@
 				$strSQL .= " order by " . implode(",", $this->arOrder); 
 				$oOWAES = new database($strSQL, true); 
 				while ($oOWAES->nextRecord()) { 
-					$oUser = new user($oOWAES->get("id")); 
+					$oUser = user($oOWAES->get("id")); 
 
 					array_push ($arUserlist, $oUser);  
 				}  

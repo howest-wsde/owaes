@@ -6,7 +6,7 @@
 	$iUser = isset($_GET["user"]) ? intval($_GET["user"]) : 0; 
 	
 	$oOwaesItem = owaesitem($iMarket);  
-	$oUser = new user($iUser);  
+	$oUser = user($iUser);  
 	 
 	/*
 	if ($iMarket != 0) {

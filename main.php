@@ -663,7 +663,6 @@
                     }, 700); 
                 });
             });
-        </script>
-        
+        </script> 
     </body>
 </html>

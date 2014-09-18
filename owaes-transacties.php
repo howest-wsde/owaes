@@ -67,7 +67,7 @@
 									foreach ($oOwaesItem->subscriptions() as $iUser=>$iValue) {
 										switch ($iValue) {
 											case SUBSCRIBE_CONFIRMED: 
-												$oUser = new user($iUser);
+												$oUser = user($iUser);
 												echo ("<div id='user" . $oUser->id() . "'>");  
 												echo ($oUser->html("templates/userid.html")); 
 												echo ("</div>"); 

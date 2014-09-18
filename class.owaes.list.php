@@ -14,27 +14,8 @@
 		 
 		public function owaeslist() { 
 			$this->arOrder[] = "enkalkuli desc";   
-			$this->arOrder[] = "date desc";   
-			/*
-			$this->arSQLjoin["history"] = " left join 
-				tblMarketDates md on m.id = md.market  " ; 
-			$this->arSQLwhere["history"] = " m. " ;  
-			*/
-			
-			
-/* 
-
-select f.FOO_ID, f.A_STRING, min(d.dt) as 'MY_DATE'
-from FOO f
-left join (
-  select FOO_ID, min(A_DATE) as dt from A_DATES group by FOO_ID
-  union select FOO_ID, min(B_DATE) as dt from B_DATES group by FOO_ID
-) d
-  on f.FOO_ID = d.FOO_ID
-group by
-  f.FOO_ID, f.A_STRING
-*/
-
+			$this->arOrder[] = "date desc";    
+		 
 		}
 		 
 		public function setUser($oUser) {
@@ -198,8 +179,9 @@ group by
  //echo ("$strSQL "); 
 				//
 				// echo $oOWAES->getTime(); 
-				while ($oOWAES->nextRecord()) { 
+				while ($oOWAES->nextRecord()) {  
 					$oItem = owaesitem($oOWAES->get("id"));  
+					$oItem->load($oOWAES->record()); 
 					$bPassFilter = TRUE;
 					foreach($this->arFilter as $strKey=>$strValue) {
 						switch($strKey) {
@@ -319,20 +301,13 @@ group by
 		
 		public function filterPassedDate($iTime = 0) { // geen attribuut of 0: voorbij vandaag, integer: time, FALSE of niet-integer: geen filter
 			if ($iTime == 0) $iTime = owaesTime(); 
-			if (is_numeric($iTime)) {
-				// "select distinct m.* from tblMarket m  where m.state != -1  and ( 1=1  ) and (m.task = 1 ) and (m.state = 0) order by date desc"
+			if (is_numeric($iTime)) { 
 				$this->arSQLwhere["date"] = " (md.start > " . ($iTime-6*60*60) . ") or (md.start is NULL and m.lastupdate > " . ($iTime-(60*60*24*30)) . ")  or (md.start = 0 and m.lastupdate > " . ($iTime-(60*60*24*30)) . ")  " ;  // start > 6 uur geleden of laatst updated > maand geleden 
 				$this->arSQLjoin["date"] = "left join (select market, max(datum) as start from tblMarketDates group by market) md on m.id = md.market"; 
 			} else {
 				unset($this->arSQLwhere["date"]); 
 				unset($this->arSQLjoin["date"]);  
-			}
-			// $iTime = 1384632000; 
-			
-			
-		// $this->arJoin["onlylastrecord"] = " left join tblMarketSubscriptions m2 on (m.user = m2.user and m.market = m2.market and m.id < m2.id)"; 
-		
-			// $this->arSQLwhere["date"] = "md.datum = (SELECT max(datum) FROM tblMarketDates where market = m.id)"; 
+			} 
 		}
 		
 	}

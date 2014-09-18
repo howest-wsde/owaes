@@ -47,7 +47,7 @@
 			$oDB = new database();
 			$oDB->sql("select * from tblUserRecover where passcode = '" . $oDB->escape($strCode) . "' and timeexpires > " . owaesTime() . "; ");
 			if ($oDB->execute() == 1) {
-				$oUser = new user($oDB->get("user")); 
+				$oUser = user($oDB->get("user")); 
 				$oUser->unlock(); 
 				$oUser->password($_POST["pass1"]); 
 				$oUser->update(); 

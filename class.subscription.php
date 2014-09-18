@@ -20,7 +20,7 @@ class subscription {
 	public function user($iUser = NULL) { // (optional) sets user (by id) and (always) returns user-class
 		if (!is_null($iUser)) $this->iUser = intval($iUser); 
 		if (is_null($this->iUser)) $this->load(); 
-		return new user($this->iUser); 
+		return user($this->iUser); 
 	}
 	
 	public function market($iMarket = NULL) { // (optional) sets user (by id) and (always) returns user-class

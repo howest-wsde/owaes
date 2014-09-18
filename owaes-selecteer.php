@@ -120,7 +120,7 @@
 										foreach ($oOwaesItem->subscriptions() as $iUser=>$oValue) {
 											switch ($oValue->state()) {
 												case SUBSCRIBE_SUBSCRIBE: 
-													$oUser = new user($iUser); 
+													$oUser = user($iUser); 
 													echo ("<div id='user" . $oUser->id() . "'>");  
                                                         echo ($oUser->html("templates/userid.html"));  
                                                         echo("<div class='toestemming'>");
@@ -130,7 +130,7 @@
 													echo ("</div>"); 
 													break; 
 												case SUBSCRIBE_NEGOTIATE: 
-													$oUser = new user($iUser);
+													$oUser = user($iUser);
 													echo ("<div id='user" . $oUser->id() . "'>");
                                                         echo ($oUser->html("templates/userid.html"));  
 														echo ("<span class='cursor'><a href='#goedkeuren' class='goedkeuren' rel='" . $oUser->id() . "'><span class='icon icon-check'>Goedkeuren</span></a></span>");
@@ -152,7 +152,7 @@
 										foreach ($oOwaesItem->subscriptions() as $iUser=>$oValue) {
 											switch ($oValue->state()) {
 												case SUBSCRIBE_DECLINED: 
-													$oUser = new user($iUser);
+													$oUser = user($iUser);
 													echo ("<div id='user" . $oUser->id() . "'>");  
 													echo ($oUser->html("templates/userid.html")); 
 													echo ("</div>"); 
@@ -177,7 +177,7 @@
 											switch ($oValue->state()) {
 												case SUBSCRIBE_CONFIRMED: 
 													$iConfirmed ++; 
-													$oUser = new user($iUser);
+													$oUser = user($iUser);
 													echo ("<div id='user" . $oUser->id() . "'>");  
 													echo ($oUser->html("templates/userid.html")); 
 													$oTransaction = $oValue->payment(); 
