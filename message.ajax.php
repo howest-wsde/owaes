@@ -1,12 +1,11 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
-	$oSecurity = new security(TRUE);  
-  
-	if ($_SESSION['views'] ++ % 5 == 1) {
-		$oExperience = new experience(me()); 
-		$oExperience->detail("reason", "ping");  
+	$oSecurity = new security(TRUE);   
+	if ($_SESSION['views'] ++ % 5 == 1) { 
+		$oExperience = new experience(me());  
+		$oExperience->detail("reason", "ping");   
 		$oExperience->add(0.1); 
-	}  
+	}   
 	
 	$oNotification = new notification(me()); 
 	$arMessages = $oNotification->getList(); 

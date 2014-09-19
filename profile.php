@@ -7,7 +7,7 @@
 		? $_GET["alias"]
 		: ( isset($_GET["id"]) ? intval($_GET["id"]) : me() ); 
 	
-	$oProfile = user($strKey);  
+	$oProfile = new user($strKey); // NEW user, want user-functie werkt niet met key
     $oPage->tab("account");
 	 
 	$oNotification = new notification(); 

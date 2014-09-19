@@ -66,7 +66,9 @@
 				$strSQL .= " order by " . implode(",", $this->arOrder); 
 				$oOWAES = new database($strSQL, true); 
 				while ($oOWAES->nextRecord()) { 
-					$oUser = user($oOWAES->get("id")); 
+					$oUser = user($oOWAES->get("id"));  
+					$oUser->load($oOWAES->record()); 
+					$oUser->location($oOWAES->get("location"), $oOWAES->get("location_lat"), $oOWAES->get("location_long"));
 
 					array_push ($arUserlist, $oUser);  
 				}  

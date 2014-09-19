@@ -274,7 +274,7 @@
 			return $this->bLoggedInUser;
 		}
 		
-		public function footer(){ // footer tekst 
+		public function footer(){ // footer tekst  
 			return "<section class='block block-block contextual-links-region clearfix'>
                         <div class='container'>
 	                        <div class='yellowPart'><span>OWAES &ndash; Online Werk Activatie EcoSysteem &ndash; is een <a href='http://www.esf-agentschap.be/' tabindex='-1'>ESF</a> ondersteund onderzoeksproject onder leiding van Howest.</span></div>

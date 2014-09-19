@@ -38,6 +38,7 @@
 			$this->iRecord = -1;  
 			if (!is_null($strSQL)) $this->sql($strSQL);
 			$strSQL = $this->sql(); 
+			//echo "[$strSQL]<br>"; 
 			$iStartQuery = time();  
 			$arFieldNames = array(); 
 			$oResult = NULL; 

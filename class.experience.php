@@ -28,9 +28,10 @@
 		
 		public function add($iNumber, $bConfirmed = FALSE) { // experience toevoegen (standaard niet confirmed)
 			$arLevels = settings("levels"); 
-			$iMultiplier = isset($arLevels[$this->level()]["multiplier"]) ? $arLevels[$this->level()]["multiplier"] : 1; 
+			$iLevel = $this->level(); 
+			$iMultiplier = isset($arLevels[$iLevel]["multiplier"]) ? $arLevels[$iLevel]["multiplier"] : 1; 
 			$iNumber *= $iMultiplier; 
-			
+
 			$oDB = new database(); 
 			
 			$strKey = (is_null($this->sleutel()) ? "" : $this->sleutel()); 
@@ -48,6 +49,7 @@
 		
 		public function level($bShowNotConfirmed = FALSE) { // returns huidige level (of eventueel volgende met parameter TRUE)
 			$iExp = $this->total($bShowNotConfirmed); 
+
 			$this->iLevel = 0; 
 			foreach (settings("levels") as $iLevel=>$arSettings) {
 				if (($iExp >= $arSettings["threshold"]) && ($iLevel > $this->iLevel)) $this->iLevel = $iLevel;  
@@ -64,7 +66,7 @@
 			}
 		}
 		
-		public function confirm() {
+		public function confirm() { 
 			$oDB = new database(); 
 			$strSQL = "update tblExperience set confirmed = 1 where user = '" . $this->iUser . "' and confirmed = 0; ";
 			$oDB->execute($strSQL); 
@@ -75,20 +77,29 @@
 			}
 		}
 		
-		public function total($bShowNotConfirmed = FALSE) { // als parameter bShowNotConfirmed == TRUE > ook punten die nog niet bevestigd werden door gebruiker
-			if (!isset($this->arTotal[$bShowNotConfirmed ? "all" : "confirmed"])) {
+		public function total($bShowNotConfirmed = FALSE, $iValue = NULL) { // als parameter bShowNotConfirmed == TRUE > ook punten die nog niet bevestigd werden door gebruiker
+			$strKey = $bShowNotConfirmed ? "all" : "confirmed"; 
+			if (!is_null($iValue)) $this->arTotal[$strKey] = $iValue; 
+			if (!isset($this->arTotal[$strKey])) {
 				$oDB = new database();
-				if ($bShowNotConfirmed) {
+				if ($bShowNotConfirmed) { 
 					$oDB->execute("select round(sum(experience)) as totaal from tblExperience where user = " . $this->iUser . ";"); 
 					$this->arTotal["all"] = intval($oDB->get("totaal")); 
 				} else {
-					$oDB->execute("select round(sum(experience)) as totaal from tblExperience where user = " . $this->iUser . " and confirmed = 1;"); 
-					$this->arTotal["confirmed"] = intval($oDB->get("totaal")); 
-				}
-			} 
-			return $this->arTotal[$bShowNotConfirmed ? "all" : "confirmed"]; 
+
+					$arUsers = loadedUsers();  // voert query uit voor alle users die in memory zitten
+					if (!in_array($this->iUser, $arUsers)) $arUsers[] = $this->iUser;  
+					foreach ($arUsers as $iUser) user($iUser)->experience()->total(FALSE, 0);
+					
+					$oDB->execute("select user, round(sum(experience)) as totaal from tblExperience where user in (" . implode(",", $arUsers) . ") and confirmed = 1 group by user;"); 
+					while ($oDB->nextRecord()) { 
+						user($oDB->get("user"))->experience()->total(FALSE, intval($oDB->get("totaal"))); 
+					} 
+				} 
+			}  
+			return $this->arTotal[$strKey]; 
 		}
-		 
-	}
-	
+
+	} 
+	 
 ?> 

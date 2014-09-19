@@ -13,28 +13,19 @@
 	define ("FRIEND_FRIENDS", 10); 
  
 	$ar_GLOBAL_users = array(); 
-	function user($strKey = NULL) { // FUNCTION user(5) == CLASS new user(5) 
+	function user($iID = NULL) { // FUNCTION user(5) == CLASS new user(5)  // Enkel ID ! 
 		global $ar_GLOBAL_users; 
-		foreach($ar_GLOBAL_users as $oUser) {
-			if (!is_null($strKey)) {
-				if ($oUser["id"] == $strKey) {
-					//echo " BY_ID($strKey) "; 
-					return $oUser["object"]; 
-				} 
-				if ($oUser["alias"] == $strKey) {
-					//echo " BY_KEY($strKey) "; 
-					return $oUser["object"];  
-				}	
-			}
-		}
-		$oUser = new user($strKey);  
-		$ar_GLOBAL_users[] = array(
-			"id" => $oUser->id(), 
-			"alias" => $oUser->alias(), 
-			"object" => &$oUser, 
-		); 
-		//echo " NEW($strKey) "; 
-		return $oUser; 
+		if (!isset($ar_GLOBAL_users[$iID])) {
+			$oUser = new user($iID);  
+			$ar_GLOBAL_users[$iID] = &$oUser;
+		} 
+		return $ar_GLOBAL_users[$iID]; 
+	}
+	function loadedUsers(){
+		global $ar_GLOBAL_users; 
+		$arUsers = array(); 
+		foreach ($ar_GLOBAL_users as $iID=>$oUser) $arUsers[] = $iID; 
+		return $arUsers; 
 	}
 	
 	class user {  
@@ -74,7 +65,7 @@
 		private $oExperience = NULL;
 		private $arVisible = array();  
 		private $bUnlocked = FALSE; // als user unlocked wordt (->unlock() ) kan e-mailadres en dergelijke ook opgevraagd worden zonder vriend te moeten zijn
-		private $arData = array(); 
+		private $arData = NULL; 
 		private $iFriendStatus = NULL; 
 		private $bAdmin = NULL; 
 		
@@ -182,13 +173,13 @@
 		
 		public function admin($bAdmin = NULL) {
 			if (!is_null($bAdmin)) $this->bAdmin = $bAdmin; 
-			if (is_null($this->bAdmin)) $this->load(); 
+			if (is_null($this->bAdmin)) $this->load();
 			return $this->bAdmin; 	
 		}
 		
 		public function id($iID = NULL) { // get / set ID (enkel set via DB)
 			if (!is_null($iID)) $this->iID = $iID; 
-			if (is_null($this->iID)) $this->load(); 
+			if (is_null($this->iID)) $this->load();
 			$this->bNEW = ($this->iID == 0);
 			return $this->iID; 	
 		} 
@@ -209,7 +200,7 @@
 				}
 				$this->strAlias = $strAlias; 
 			}
-			if (is_null($this->strAlias)) $this->load();  
+			if (is_null($this->strAlias)) $this->load();
 			return $this->strAlias;  
 		}  
 		
@@ -219,7 +210,7 @@
 		 set: if ($bEncode==TRUE) => send MD5-string / $bEncode==FALSe => send user input
 		 */
 			if (!is_null($strPassword)) $this->strPassword = $bEncode ? md5(trim($strPassword)) : $strPassword; 
-			if (is_null($this->strPassword)) $this->load(); 	
+			if (is_null($this->strPassword)) $this->load();	
 			return $this->strPassword; 
 		} 
 		 
@@ -231,11 +222,11 @@
 			if (!is_null($strLocation)) $this->strLocation = $strLocation; 
 			if (!is_null($iLocationLat)) $this->iLocationLat = $iLocationLat;
 			if (!is_null($iLocationLong)) $this->iLocationLong = $iLocationLong; 
-			if (is_null($this->strLocation)) $this->load(__LINE__);
+			if (is_null($this->strLocation)) $this->load();
 			return $this->visible4me("location") ? $this->strLocation : ""; 
 		} 
 		public function LatLong() { // returns arra(iLat, iLong)
-			if (is_null($this->iLocationLat)||is_null($this->iLocationLong)) $this->load(__LINE__);
+			if (is_null($this->iLocationLat)||is_null($this->iLocationLong)) $this->load();
 			return array($this->iLocationLat, $this->iLocationLong); 	
 		}
 		
@@ -398,7 +389,7 @@
 							case "birthdate":   
 							case "description":   
 							case "img":  
-								if (!isset($this->arVisible[$oSelector])) $this->load($oSelector . " " . __LINE__); 
+								if (!isset($this->arVisible[$oSelector])) $this->load();
 								return $this->arVisible[$oSelector]; 
 							default: 
 								error("class.user.php line " . __LINE__ . ": '" . $oSelector . "' ongeldige waarde"); 
@@ -480,6 +471,7 @@
 		}
 		
 		public function data($strKey, $strValue = NULL) {
+			if (is_null($this->arData)) $this->load();
 			if (!is_null($strValue)) {
 				if (isset($this->arData[$strKey])) {
 					$this->arData[$strKey]["value"] = $strValue; 
@@ -491,6 +483,7 @@
 			return ($this->visible4me("data:$strKey"))? $strVal : ""; 
 		}
 		public function datavisible($strKey, $iValue = NULL) {
+			if (is_null($this->arData)) $this->load();
 			if (!is_null($iValue)) {
 				if (isset($this->arData[$strKey])) {
 					$this->arData[$strKey]["visible"] = $iValue; 
@@ -525,7 +518,7 @@
 				$this->strLogin = $strLogin; 
 				return $oReturn; 
 			}
-			if (is_null($this->strLogin)) $this->load(); 
+			if (is_null($this->strLogin)) $this->load();
 			return $this->strLogin; 
 		}
 		
@@ -534,7 +527,7 @@
 				$this->strFirstname = $strFirstname; 
 				return TRUE; 
 			}
-			if (is_null($this->strFirstname)) $this->load(); 
+			if (is_null($this->strFirstname)) $this->load();
 			return ($this->visible4me("firstname")) ? $this->strFirstname : ""; 
 		}
 		
@@ -543,7 +536,7 @@
 				$this->strLastname = $strLastname; 
 				return TRUE; 
 			}
-			if (is_null($this->strLastname)) $this->load(); 
+			if (is_null($this->strLastname)) $this->load();
 			return ($this->visible4me("lastname")) ? $this->strLastname : "";    
 		}
 		
@@ -552,7 +545,7 @@
 				$this->strGender = $strGender; 
 				return TRUE; 
 			}
-			if (is_null($this->strGender)) $this->load(); 
+			if (is_null($this->strGender)) $this->load();
 			return ($this->visible4me("gender")) ? $this->strGender : "";    
 		}
 		public function telephone($strTelephone = NULL) { // get / set telephone (string) 
@@ -560,7 +553,7 @@
 				$this->strTelephone = $strTelephone; 
 				return TRUE; 
 			}
-			if (is_null($this->strTelephone)) $this->load(); 
+			if (is_null($this->strTelephone)) $this->load();
 			return ($this->visible4me("telephone")) ? $this->strTelephone : "";    
 		}
 		public function birthdate($ibirthdate = NULL) { // get / set birthdate (integer) 
@@ -568,7 +561,7 @@
 				$this->ibirthdate = $ibirthdate; 
 				return TRUE; 
 			}
-			if (is_null($this->ibirthdate)) $this->load(); 
+			if (is_null($this->ibirthdate)) $this->load();
 			return ($this->visible4me("birthdate")) ? $this->ibirthdate : 0;    
 		}
 		
@@ -577,7 +570,7 @@
 				$this->strDescription = $strDescription; 
 				return TRUE; 
 			}
-			if (is_null($this->strDescription)) $this->load(); 
+			if (is_null($this->strDescription)) $this->load();
 			return ($this->visible4me("description")) ? $this->strDescription : "";  
 		}
 		
@@ -591,100 +584,152 @@
 				$this->strEmail = $strEmail; 
 				return ($strEmail != ""); 
 			}
-			if (is_null($this->strEmail)) $this->load(); 
+			if (is_null($this->strEmail)) $this->load();
 			return ($this->visible4me("email")) ? $this->strEmail : ""; 
 		}
 		
 		
 		public function img($strIMG = NULL) { // get / set fotolocatie (relatief pad)
 			if (!is_null($strIMG)) $this->strIMG = $strIMG; 
-			if (is_null($this->strIMG)) $this->load(); 
+			if (is_null($this->strIMG)) $this->load();
 			return $this->strIMG; 
 		}
 		
-		
-		private function load() {
-			global $arConfig;  
-			$oDB = new database();
-			if (!is_null($this->iID)) {
-				$strSQL = "select * from tblUsers where id = " . $this->iID . "; /* class.user.php " . __LINE__ . " */"; 
-			} else if (!is_null($this->strAlias)) {
-				$strSQL = "select * from tblUsers where alias = '" . $oDB->escape($this->strAlias) . "'; "; 
-			} else {
-				error("Geen ID of alias gedefinieerd (class.user.php)");
-				return FALSE; 
-			}  
-			$oDB->execute($strSQL);  
-			if ($oDB->length() == 1) {
-				$oDBrecord = $oDB->record(); 
-				if (is_null($this->iID)) $this->id($oDBrecord["id"]);
-				
-				if (is_null($this->strAlias)) $this->alias($oDBrecord["alias"]);  
-				if (is_null($this->strLogin)) $this->login($oDBrecord["login"], FALSE);
-				if (is_null($this->strFirstname)) $this->firstname($oDBrecord["firstname"]);
-				if (is_null($this->strLastname)) $this->lastname($oDBrecord["lastname"]);
-				if (is_null($this->strDescription)) $this->description($oDBrecord["description"]);
-				if (is_null($this->strEmail)) $this->email($oDBrecord["mail"], FALSE);
-				if (is_null($this->ibirthdate)) $this->birthdate($oDBrecord["birthdate"]);
-				if (is_null($this->strGender)) $this->gender($oDBrecord["gender"]);
-				if (is_null($this->strTelephone)) $this->telephone($oDBrecord["telephone"]);
-				if (is_null($this->strIMG)) $this->img($oDBrecord["img"]);
-				if (is_null($this->bAdmin)) $this->admin($oDBrecord["admin"]);
-				if ($oDBrecord["data"] != "") $this->arData = json_decode($oDBrecord["data"], TRUE); 
-
-				if (is_null($this->bVisible)) $this->visible($oDBrecord["visible"]);
-				if (!isset($this->arVisible["firstname"])) $this->visible("firstname", $oDBrecord["showfirstname"]);
-				if (!isset($this->arVisible["lastname"])) $this->visible("lastname", $oDBrecord["showlastname"]);
-				if (!isset($this->arVisible["email"])) $this->visible("email", $oDBrecord["showemail"]);
-				if (!isset($this->arVisible["birthdate"])) $this->visible("birthdate", $oDBrecord["showbirthdate"]);
-				if (!isset($this->arVisible["gender"])) $this->visible("gender", $oDBrecord["showgender"]);
-				if (!isset($this->arVisible["telephone"])) $this->visible("telephone", $oDBrecord["showtelephone"]);
-				if (!isset($this->arVisible["description"])) $this->visible("description", $oDBrecord["showdescription"]);
-				if (!isset($this->arVisible["img"])) $this->visible("img", $oDBrecord["showimg"]);
-				if (!isset($this->arVisible["location"])) $this->visible("location", $oDBrecord["showlocation"]);
-				
-				// foreach (json_decode($oDBrecord["data"], TRUE) as $strK=>$strV) $this->data($strK, $strV["value"]); 
-				if (is_null($this->strLocation)) $this->location($oDBrecord["location"], $oDBrecord["location_lat"], $oDBrecord["location_long"]);
-				if (is_null($this->strPassword)) $this->password($oDBrecord["pass"], FALSE); 
-				// if (is_null($this->iSocial)) $this->social($oDBrecord["social"]);
-				// if (is_null($this->iEmotional)) $this->emotional($oDBrecord["emotional"]);
-				// if (is_null($this->iPhysical)) $this->physical($oDBrecord["physical"]);
-				// if (is_null($this->iMental)) $this->mental($oDBrecord["mental"]);
-				if (is_null($this->iLastUpdate)) $this->lastupdate($oDBrecord["lastupdate"]); 
-				// nog geen return-> verderlopen in functie voor social en emo enzo  
-			} else {
-				if (is_null($this->iID)) $this->id(0);
-				
-				if (is_null($this->strAlias)) $this->alias("");
-				if (is_null($this->strLogin)) $this->login("", FALSE);
-				if (is_null($this->strFirstname)) $this->firstname("");
-				if (is_null($this->strLastname)) $this->lastname("");
-				if (is_null($this->strDescription)) $this->description("");
-				if (is_null($this->strEmail)) $this->email("", FALSE);
-				if (is_null($this->strIMG)) $this->img("");
-				if (is_null($this->strLocation)) $this->location("", 0, 0);
-				if (is_null($this->strPassword)) $this->password(owaesTime()); 
-				if (is_null($this->iLastUpdate)) $this->lastupdate(owaesTime());
-				if (is_null($this->bAdmin)) $this->admin(FALSE);
-				
-				if (is_null($this->bVisible)) $this->visible(TRUE);
-				if (!isset($this->arVisible["firstname"])) $this->visible("firstname", VISIBILITY_VISIBLE);
-				if (!isset($this->arVisible["lastname"])) $this->visible("lastname", VISIBILITY_VISIBLE);
-				if (!isset($this->arVisible["email"])) $this->visible("email", VISIBILITY_HIDDEN);
-				if (!isset($this->arVisible["description"])) $this->visible("description", VISIBILITY_VISIBLE);
-				if (!isset($this->arVisible["img"])) $this->visible("img", VISIBILITY_VISIBLE);
-				if (!isset($this->arVisible["location"])) $this->visible("location", VISIBILITY_VISIBLE);
-				if (!isset($this->arVisible["gender"])) $this->visible("gender", VISIBILITY_VISIBLE);
-				if (!isset($this->arVisible["telephone"])) $this->visible("telephone", VISIBILITY_HIDDEN);
-				if (!isset($this->arVisible["birthdate"])) $this->visible("birthdate", VISIBILITY_VISIBLE);
-
-				if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"]);
-				if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"]);
-				if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"]);
-				if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"]);
- 
+		private function loadValue($strKey, $strValue) {
+			switch($strKey) {
+				case "id": 
+					$this->id($strValue); 
+					break; 	
+				case "alias":  
+					if (is_null($this->strAlias)) $this->alias($strValue);  
+					break; 	
+				case "login": 
+					if (is_null($this->strLogin)) $this->login($strValue, FALSE);
+					break; 	
+				case "firstname": 
+					if (is_null($this->strFirstname)) $this->firstname($strValue);
+					break; 	
+				case "lastname": 
+					if (is_null($this->strLastname)) $this->lastname($strValue);
+					break; 	
+				case "description": 
+					if (is_null($this->strDescription)) $this->description($strValue);
+					break; 	
+				case "mail": 
+					if (is_null($this->strEmail)) $this->email($strValue, FALSE);
+					break; 	
+				case "birthdate": 
+					if (is_null($this->ibirthdate)) $this->birthdate($strValue);
+					break; 	
+				case "gender": 
+					if (is_null($this->strGender)) $this->gender($strValue);
+					break; 	
+				case "telephone": 
+					if (is_null($this->strTelephone)) $this->telephone($strValue);
+					break; 	
+				case "img": 
+					if (is_null($this->strIMG)) $this->img($strValue);
+					break; 	
+				case "admin": 
+					if (is_null($this->bAdmin)) $this->admin($strValue);
+					break; 	
+				case "data": 
+					if (($strValue != "")&&(is_null($this->arData))) $this->arData = json_decode($strValue, TRUE); 
+					break; 	
+				case "visible":  
+					if (is_null($this->bVisible)) $this->visible($strValue);
+					break; 	
+				case "showfirstname": 
+					if (!isset($this->arVisible["firstname"])) $this->visible("firstname", $strValue);
+					break; 	
+				case "showlastname": 
+					if (!isset($this->arVisible["lastname"])) $this->visible("lastname", $strValue);
+					break; 	
+				case "showemail": 
+					if (!isset($this->arVisible["email"])) $this->visible("email", $strValue);
+					break; 	
+				case "showbirthdate": 
+					if (!isset($this->arVisible["birthdate"])) $this->visible("birthdate", $strValue);
+					break; 	
+				case "showgender": 
+					if (!isset($this->arVisible["gender"])) $this->visible("gender", $strValue);
+					break; 	
+				case "showtelephone": 
+					if (!isset($this->arVisible["telephone"])) $this->visible("telephone", $strValue);
+					break; 	
+				case "showdescription": 
+					if (!isset($this->arVisible["description"])) $this->visible("description", $strValue);
+					break; 	
+				case "showimg": 
+					if (!isset($this->arVisible["img"])) $this->visible("img", $strValue);
+					break; 	
+				case "showlocation": 
+					if (!isset($this->arVisible["location"])) $this->visible("location", $strValue);
+					break; 	 
+				case "pass": 
+					if (is_null($this->strPassword)) $this->password($strValue, FALSE); 
+					break; 	
+				case "lastupdate": 
+					if (is_null($this->iLastUpdate)) $this->lastupdate($strValue);  
+					break;
 			}
-			 
+		}
+		
+		public function load($oRecord = NULL) {   
+			global $arConfig;  
+			if (!is_null($oRecord)) {  
+				foreach ($oRecord as $strVeld=>$strValue) $this->loadValue($strVeld, $strValue);
+			} else {
+				$oDB = new database();
+				if (!is_null($this->iID)) {
+					$strSQL = "select * from tblUsers where id = " . $this->iID . "; "; 
+				} else if (!is_null($this->strAlias)) {
+					$strSQL = "select * from tblUsers where alias = '" . $oDB->escape($this->strAlias) . "'; "; 
+				} else {
+					error("Geen ID of alias gedefinieerd (class.user.php)");
+					return FALSE; 
+				}  
+				$oDB->execute($strSQL);  
+				if ($oDB->length() == 1) {
+					$oDBrecord = $oDB->record(); 
+					foreach ($oDBrecord as $strVeld=>$strValue) $this->loadValue($strVeld, $strValue);
+					
+					if (is_null($this->strLocation)) $this->location($oDBrecord["location"], $oDBrecord["location_lat"], $oDBrecord["location_long"]);
+				
+				} else {
+					if (is_null($this->iID)) $this->id(0);
+					
+					if (is_null($this->strAlias)) $this->alias("");
+					if (is_null($this->strLogin)) $this->login("", FALSE);
+					if (is_null($this->strFirstname)) $this->firstname("");
+					if (is_null($this->strLastname)) $this->lastname("");
+					if (is_null($this->strDescription)) $this->description("");
+					if (is_null($this->strEmail)) $this->email("", FALSE);
+					if (is_null($this->strIMG)) $this->img("");
+					if (is_null($this->strLocation)) $this->location("", 0, 0);
+					if (is_null($this->strPassword)) $this->password(owaesTime()); 
+					if (is_null($this->iLastUpdate)) $this->lastupdate(owaesTime());
+					if (is_null($this->bAdmin)) $this->admin(FALSE);
+					if (is_null($this->arData)) $this->arData = array(); 
+					
+					if (is_null($this->bVisible)) $this->visible(TRUE);
+					if (!isset($this->arVisible["firstname"])) $this->visible("firstname", VISIBILITY_VISIBLE);
+					if (!isset($this->arVisible["lastname"])) $this->visible("lastname", VISIBILITY_VISIBLE);
+					if (!isset($this->arVisible["email"])) $this->visible("email", VISIBILITY_HIDDEN);
+					if (!isset($this->arVisible["description"])) $this->visible("description", VISIBILITY_VISIBLE);
+					if (!isset($this->arVisible["img"])) $this->visible("img", VISIBILITY_VISIBLE);
+					if (!isset($this->arVisible["location"])) $this->visible("location", VISIBILITY_VISIBLE);
+					if (!isset($this->arVisible["gender"])) $this->visible("gender", VISIBILITY_VISIBLE);
+					if (!isset($this->arVisible["telephone"])) $this->visible("telephone", VISIBILITY_HIDDEN);
+					if (!isset($this->arVisible["birthdate"])) $this->visible("birthdate", VISIBILITY_VISIBLE);
+	
+					if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"]);
+					if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"]);
+					if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"]);
+					if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"]);
+	 
+				}
+			}
 		}
 		
 		private function loadFriendship() {
@@ -743,7 +788,7 @@
 			} 
 			if ($oUser->length() == 1) {
 				$this->id($oUser->get("id")); 
-				$this->load(); 
+				$this->load();
 			}
 		}
 		
@@ -1103,14 +1148,17 @@
 			}
 			return $strHTML; 
         }
-        
-		
-		public function stars() {
+         
+		public function stars($iStars = NULL) {
+			if (!is_null($iStars)) $this->iStars = $iStars; 
 			if (is_null($this->iStars)) { 
 				$oDB = new database(); 
-				$oDB->sql("select count(id) as aantal, sum(stars) as som from tblStars where receiver = '" . $this->id() . "' and actief = 1; "); 	
+				$arUsers = loadedUsers();  // voert query uit voor alle users die in memory zitten
+				if (!in_array($this->id(), $arUsers)) $arUsers[] = $this->id(); 
+				foreach ($arUsers as $iID) user($iID)->stars(0); 
+				$oDB->sql("select receiver, count(id) as aantal, sum(stars) as som from tblStars where receiver in (" . implode(",", $arUsers) . ") and actief = 1 group by receiver; ");  
 				$oDB->execute(); 
-				$this->iStars = ($oDB->get("som") > 15) ? $oDB->get("som") / $oDB->get("aantal") : 0;
+				while ($oDB->nextRecord()) user($oDB->get("receiver"))->stars( ($oDB->get("som") > 15) ? $oDB->get("som") / $oDB->get("aantal") : 0 );  
 			}	
 			return round($this->iStars); 
 		}
@@ -1442,11 +1490,7 @@
 					return NULL; 
 			}
 		}
-		 
-		
-		private function test($str) {
-			echo $str; 	
-		}
+		  
 		
 		private function editkey() {
 			if ($this->id() == me()) { // indien rechten: vaste key
