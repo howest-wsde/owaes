@@ -5,7 +5,7 @@
 	$iStars = intval($_GET["score"]);  
 	$iMarket = intval($_GET["market"]);  
 	$iReceiver = intval($_GET["receiver"]);  
-	$strComment = $_GET["comment"];  
+	$strComment = isset($_GET["comment"]) ? $_GET["comment"] : "";  
  
  	$oRating = new rating(array(
 						"market" => $iMarket, 

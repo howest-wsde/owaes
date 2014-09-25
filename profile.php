@@ -1,17 +1,24 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
+
 	$oSecurity = new security(TRUE); 
+
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	$strKey = isset($_GET["alias"]) 
 		? $_GET["alias"]
 		: ( isset($_GET["id"]) ? intval($_GET["id"]) : me() ); 
 	
+
+
 	$oProfile = new user($strKey); // NEW user, want user-functie werkt niet met key
+	if ($oProfile->id() == me()) $oProfile->savePostData(); 
+	
     $oPage->tab("account");
 	 
 	$oNotification = new notification(); 
 	$oNotification->read("friendship." . $oProfile->id() . "." . me());  
+
 
 	
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -34,6 +41,7 @@
 
 					<?  
 					
+
 					//vardump($oProfile->friends()); 
 					
                         //echo "<div class=\"masonry\">";
@@ -53,6 +61,7 @@
 						}
 						//if ($oSecurity->getUserID() == $oProfile->id()) echo $oProfile->transactionList(); 
 					
+
                     ?>  
 
         	<? echo $oPage->endTabs(); ?>

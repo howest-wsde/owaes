@@ -182,7 +182,7 @@
 					if (is_null($this->strInfo)) $this->info($oDB->get("info")); 
 					if (is_null($this->iAdmin)) $this->admin($oDB->get("admin")); 
 					if (is_null($this->strImage)) $this->image($oDB->get("img")); 
-					if (is_null($this->iLastUpdate)) $this->lastupdate(0); 
+					if (is_null($this->iLastUpdate)) $this->lastupdate($oDB->get("lastupdate")); 
 				} else {
 					if (is_null($this->strNaam)) $this->naam(""); 
 					if (is_null($this->strAlias)) $this->alias(""); 
@@ -208,8 +208,8 @@
 			if (!is_null($this->strInfo)) $arVelden["info"] = $this->strInfo; 
 			if (!is_null($this->iAdmin)) $arVelden["admin"] = $this->iAdmin; 
 			if (!is_null($this->strImage)) $arVelden["img"] = $this->strImage; 
-			$arVelden["deleted"] = $this->bDeleted ? 1 : 0; 
-			$arVelden["lastupdate"] = owaesTime(); 
+			$arVelden["deleted"] = $this->bDeleted ? 1 : 0;  
+			$arVelden["lastupdate"] = $this->lastupdate(owaesTime()); 
 
 			$oDB = new database(); 
 			if ($this->iID == 0) {

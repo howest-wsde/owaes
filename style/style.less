@@ -2283,6 +2283,34 @@ input[type="number"] {
             text-decoration: none;
         }
     }
+	
+	div.development  ul li {
+		margin-right: 5px; 	
+		float: left; 
+	}
+	a.list-group-item {margin-bottom: 15px; }
+	span.stars {text-align: center; display: block; color: #666; font-style: italic; }
+	ol.stars {
+		text-align: center; 
+		margin-bottom: 0; 
+		
+		li {
+			display: inline-block; 
+			width: 38px; 
+			height: 38px;
+			margin: 0 5px; 
+			overflow: hidden; 
+			
+			a {
+				display: inline-block;  
+				background: url("star.png") no-repeat left center; 
+				width: 38px; 
+				height: 38px;
+				color: rgba(0,0,0,0); 
+			}
+		}
+		li.not a {background-position: right center; }
+	}
 }
 /*#endregion*/
 

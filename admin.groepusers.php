@@ -41,7 +41,7 @@
 			$oGroep->naam($_POST["groepsnaam"]); 
 			$oGroep->info($_POST["info"]); 	 	
 			if ($_FILES["img"]["error"] == 0){  
-				$strTmp = "upload/tmp/" . $_FILES["img"]["name"]; 
+				$strTmp = "upload/tmp/" . $_FILES["img"]["name"];  
 				move_uploaded_file($_FILES["img"]["tmp_name"], $strTmp);
 				createGroupPicture($strTmp, $oGroep->id()); 
 			}

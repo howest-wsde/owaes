@@ -27,6 +27,7 @@
 
 
 	function createProfilePicture($strLocation, $iUserID, $bKeepOld = FALSE) {
+		$iSize = 300; 
 		$arLocation = explode(".", $strLocation); 
 		$strExt = strtolower($arLocation[count($arLocation)-1]);  
 		switch($strExt) {
@@ -46,28 +47,31 @@
 						$oProfileIMG = imagecreatefrompng($strLocation);
 						break; 
 				}
-				$iX = imagesx($oProfileIMG); 
-				$iY = imagesy($oProfileIMG); 
-				$iX2 = 0; 
-				if ($iX > $iY) {
-					if ($iX > 300) {
-						$iY2 = 300 / ($iX/$iY); 
-						$iX2 = 300; 
-					} 
+
+				 
+				$iW = imagesx($oProfileIMG); 
+				$iH = imagesy($oProfileIMG); 
+				$iProp = $iW / $iH;  
+				if ($iProp > 1) { // horizontal
+					$iX2=0; 
+					$iY2=($iSize-($iH * $iSize / $iW))/2; 
+					$iW2=$iSize; 
+					$iH2=$iSize/$iProp; 
 				} else {
-					if ($iY > 300) {
-						$iX2 = 300 / ($iY/$iX); 
-						$iY2 = 300; 
-					}	
-				}
-				if ($iX2 != 0) {
-					$oThumb = imagecreatetruecolor($iX2, $iY2);
-					imagecopyresampled($oThumb, $oProfileIMG, 0, 0, 0, 0, $iX2, $iY2, $iX, $iY);
-					imagepng($oThumb, "upload/profiles/id/" . $iUserID . ".png");
-					imagedestroy($oThumb); 
-				} else {
-					imagepng($oProfileIMG, "upload/profiles/id/" . $iUserID . ".png");
-				}
+					$iX2=($iSize-($iW * $iSize / $iH))/2;
+					$iY2=0; 
+					$iH2=$iSize; 
+					$iW2=$iSize*$iProp;
+ 				} 
+				
+				$oThumb = imagecreatetruecolor($iSize, $iSize); 
+				imagealphablending($oThumb, false); 
+				imagesavealpha($oThumb, true);
+				imagefill($oThumb,0,0,0x7fff0000);
+				imagecopyresampled($oThumb, $oProfileIMG, $iX2, $iY2, 0, 0, $iW2, $iH2, $iW, $iH);
+				imagepng($oThumb, "upload/profiles/id/" . $iUserID . ".png");
+				imagedestroy($oThumb);  
+				
 				imagedestroy($oProfileIMG); 
 				if (!$bKeepOld) unlink($strLocation); 	
 				return TRUE; 
@@ -79,6 +83,7 @@
 
 
 	function createGroupPicture($strLocation, $iGroupID, $bKeepOld = FALSE) {
+		$iSize = 300; 
 		$arLocation = explode(".", $strLocation); 
 		$strExt = strtolower($arLocation[count($arLocation)-1]);  
 		switch($strExt) {
@@ -92,34 +97,36 @@
 						$oGroupIMG = imagecreatefromjpeg($strLocation);
 						break; 
 					case "gif": 
-						$oGroupIMG = imagecreatefromgif($strLocation);
+						$oGroupIMG = imagecreatefromgif($strLocation); 
 						break; 
 					case "png": 
-						$oGroupIMG = imagecreatefrompng($strLocation);
+						$oGroupIMG = imagecreatefrompng($strLocation); 
 						break; 
 				}
-				$iX = imagesx($oGroupIMG); 
-				$iY = imagesy($oGroupIMG); 
-				$iX2 = 0; 
-				if ($iX > $iY) {
-					if ($iX > 300) {
-						$iY2 = 300 / ($iX/$iY); 
-						$iX2 = 300; 
-					} 
+				 
+				$iW = imagesx($oGroupIMG); 
+				$iH = imagesy($oGroupIMG); 
+				$iProp = $iW / $iH;  
+				if ($iProp > 1) { // horizontal
+					$iX2=0; 
+					$iY2=($iSize-($iH * $iSize / $iW))/2; 
+					$iW2=$iSize; 
+					$iH2=$iSize/$iProp; 
 				} else {
-					if ($iY > 300) {
-						$iX2 = 300 / ($iY/$iX); 
-						$iY2 = 300; 
-					}	
-				}
-				if ($iX2 != 0) {
-					$oThumb = imagecreatetruecolor($iX2, $iY2);
-					imagecopyresampled($oThumb, $oGroupIMG, 0, 0, 0, 0, $iX2, $iY2, $iX, $iY);
-					imagepng($oThumb, "upload/groups/id/" . $iGroupID . ".png");
-					imagedestroy($oThumb); 
-				} else {
-					imagepng($oGroupIMG, "upload/groups/id/" . $iGroupID . ".png");
-				}
+					$iX2=($iSize-($iW * $iSize / $iH))/2;
+					$iY2=0; 
+					$iH2=$iSize; 
+					$iW2=$iSize*$iProp;
+ 				} 
+				
+				$oThumb = imagecreatetruecolor($iSize, $iSize); 
+				imagealphablending($oThumb, false); 
+				imagesavealpha($oThumb, true);
+				imagefill($oThumb,0,0,0x7fff0000);
+				imagecopyresampled($oThumb, $oGroupIMG, $iX2, $iY2, 0, 0, $iW2, $iH2, $iW, $iH);
+				imagepng($oThumb, "upload/groups/id/" . $iGroupID . ".png");
+				imagedestroy($oThumb);  
+				
 				imagedestroy($oGroupIMG); 
 				if (!$bKeepOld) unlink($strLocation); 	
 				return TRUE; 
@@ -129,79 +136,7 @@
 		}
 	}
 
-
-	/*
-		
-
-			$arIMG = getimagesize($_FILES["img"]["tmp_name"]); 
-			$strImage = uniqueKey() . "." . extentie($_FILES["img"]["name"]);  
-			switch($arIMG["mime"]) {
-				case "image/jpeg": 
-				case "image/gif": 
-				case "image/png": 
-					move_uploaded_file($_FILES["img"]["tmp_name"], "upload/profiles/" . $strImage); 
-					$oProfile->img($strImage); 
-					$bImageUploaded = TRUE;
-					switch($arIMG["mime"]) {
-						case "image/jpeg": 
-							$oProfileIMG = imagecreatefromjpeg("upload/profiles/" . $strImage);
-							break; 
-						case "image/gif": 
-							$oProfileIMG = imagecreatefromgif("upload/profiles/" . $strImage);
-							break; 
-						case "image/png": 
-							$oProfileIMG = imagecreatefrompng("upload/profiles/" . $strImage);
-							break; 
-					}
-					$iX = imagesx($oProfileIMG); 
-					$iY = imagesy($oProfileIMG); 
-					$iX2 = 0; 
-					if ($iX > $iY) {
-						if ($iX > 300) {
-							$iY2 = 300 / ($iX/$iY); 
-							$iX2 = 300; 
-						} 
-					} else {
-						if ($iY > 300) {
-							$iX2 = 300 / ($iY/$iX); 
-							$iY2 = 300; 
-						}	
-					}
-					if ($iX2 != 0) {
-						$oThumb = imagecreatetruecolor($iX2, $iY2);
-						imagecopyresampled($oThumb, $oProfileIMG, 0, 0, 0, 0, $iX2, $iY2, $iX, $iY);
-						imagepng($oThumb, "upload/profiles/id/" . $oProfile->id() . ".png");
-						imagedestroy($oThumb); 
-					} else {
-						imagepng($oProfileIMG, "upload/profiles/id/" . $oProfile->id() . ".png");
-					}
-					imagedestroy($oProfileIMG); 
-					break;  
-				default: 
- 					// echo $arIMG["mime"];   // niet ondersteund
-
-
-
-	}
-	*/
-	/*
-	function HTMLelement($strTag, $arAttributes = array(), $oContent = NULL) { // $oContent kan string zijn, of array met strings of andere HTMLelements
-		$strHTML = "<$strTag"; 	 
-		foreach ($arAttributes as $strAtt=>$strVal) {
-			$strHTML .= " $strAtt=\"" . str_replace('"', "&quot;", $strVal) . "\""; 
-		}
-		if (is_null($oContent)) {
-			$strHTML .= " />"; 
-		} else {
-			$strHTML .= ">"; 
-			if (is_array($oContent)) foreach ($oContent as $strChild) {
-				$strHTML .= $strChild; 
-			} else $strHTML .= $oContent;
-			$strHTML .= "</$strTag>"; 
-		}
-		return $strHTML; 
-	}
-	*/
+ 
 	
 	function showDropdown($strName, $iValue) { // de dropdown bij instellingen en profile-page waar kan ingesteld worden wie wat ziet
 		$strHTML = "<select name=\"$strName\" class=\"form-control\">"; 
@@ -265,7 +200,7 @@
 		if (is_null($oJSON)) {
 			if (file_exists($strFile)) {
 				$strJSON = @file_get_contents($strFile, TRUE); 
-				if ($strJSON) {
+				if ($strJSON) { 
 					$oJSON = json_decode($strJSON, TRUE); 
 				} else $oJSON = array(); 
 			} else $oJSON = array(); 

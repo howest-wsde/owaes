@@ -11,8 +11,9 @@
 	define ("FRIEND_ASKED", 1); 
 	define ("FRIEND_REQUESTED", 2); 
 	define ("FRIEND_FRIENDS", 10); 
+	 
  
-	$ar_GLOBAL_users = array(); 
+	$ar_GLOBAL_users = array();  
 	function user($iID = NULL) { // FUNCTION user(5) == CLASS new user(5)  // Enkel ID ! 
 		global $ar_GLOBAL_users; 
 		if (!isset($ar_GLOBAL_users[$iID])) {
@@ -71,7 +72,7 @@
 		
 		private $bNEW = TRUE; 
 		 
-		public function user($strKey=NULL) { // $strKey = ID or ALIAS // when not defined: create new user  
+		public function user($strKey=NULL) { // $strKey = ID or ALIAS // when not defined: create new user   
 			if (!is_null($strKey)) {
 				if (is_numeric($strKey)) { 
 					$this->id($strKey);
@@ -83,88 +84,86 @@
 				$this->bNEW = TRUE; 
 				$this->id(0); 
 			}
-			if (isset($_POST["edit-profile"])) { 
-				if ($_POST["edit-profile"] == $this->editkey()) {
-					$this->savePostData(); 
-					$_POST["edit-profile"] = ""; // prevent "save again" with further loads
-				}
-			} 
+			
 		}
+		 
 		
-		private function savePostData() { 
-			foreach ($_POST as $strKey=>$strVal) { 
-				switch($strKey) {
-					case "edit-profile": break; 
-					case "firstname": 
-						$this->firstname($strVal); 
-						break; 	
-					case "lastname": 
-						$this->lastname($strVal); 
-						break; 	
-					case "email": 
-						$this->email($strVal); 
-						break; 	
-					case "description": 
-						$this->description($strVal); 
-						break; 	
-					case "telephone": 
-						$this->telephone($strVal); 
-						break; 	
-					case "gender": 
-						$this->gender($strVal); 
-						break; 	
-					case "birthdate":  
-						$this->birthdate(ddmmyyyyTOdate($strVal));  
-						break; 	
-					case "location": 
-						$this->location($strVal, 0, 0); 
-						break; 	
-					case "showlocation": 
-						$this->visible("location", $_POST["showlocation"]);
-						break; 	
-					case "showemail": 
-						$this->visible("email", $_POST["showemail"]);
-						break; 	
-					case "showtelephone": 
-						$this->visible("telephone", $_POST["showtelephone"]);
-						break; 	
-					case "showbirthdate": 
-						$this->visible("birthdate", $_POST["showbirthdate"]);
-						break; 	
-					case "showgender": 
-						$this->visible("gender", $_POST["showgender"]);
-						break; 	
-					case "showfirstname": 
-						$this->visible("firstname", $_POST["showfirstname"]);
-						break; 	
-					case "showlastname": 
-						$this->visible("lastname", $_POST["showlastname"]);
-						break; 	
-					case "showimg": 
-						$this->visible("img", $_POST["showimg"]);
-						break; 	
-						 
-					default: 
-						$arKey = explode("-", $strKey, 2);  
-						switch ($arKey[0]) {
-							case "showdata": 
-								$this->datavisible($arKey[1], $strVal); 
-								break; 
-							default: 
-								$this->data($strKey, $strVal); 
-						}
+		public function savePostData() { 
+			if (isset($_POST["edit-profile"])) if ($_POST["edit-profile"] == $this->editkey()) {
+				foreach ($_POST as $strKey=>$strVal) { 
+					switch($strKey) {
+						case "edit-profile": break; 
+						case "firstname": 
+							$this->firstname($strVal); 
+							break; 	
+						case "lastname": 
+							$this->lastname($strVal); 
+							break; 	
+						case "email": 
+							$this->email($strVal); 
+							break; 	
+						case "description": 
+							$this->description($strVal); 
+							break; 	
+						case "telephone": 
+							$this->telephone($strVal); 
+							break; 	
+						case "gender": 
+							$this->gender($strVal); 
+							break; 	
+						case "birthdate":  
+							$this->birthdate(ddmmyyyyTOdate($strVal));  
+							break; 	
+						case "location": 
+							$this->location($strVal, 0, 0); 
+							break; 	
+						case "showlocation": 
+							$this->visible("location", $_POST["showlocation"]);
+							break; 	
+						case "showemail": 
+							$this->visible("email", $_POST["showemail"]);
+							break; 	
+						case "showtelephone": 
+							$this->visible("telephone", $_POST["showtelephone"]);
+							break; 	
+						case "showbirthdate": 
+							$this->visible("birthdate", $_POST["showbirthdate"]);
+							break; 	
+						case "showgender": 
+							$this->visible("gender", $_POST["showgender"]);
+							break; 	
+						case "showfirstname": 
+							$this->visible("firstname", $_POST["showfirstname"]);
+							break; 	
+						case "showlastname": 
+							$this->visible("lastname", $_POST["showlastname"]);
+							break; 	
+						case "showimg": 
+							$this->visible("img", $_POST["showimg"]);
+							break; 	
+							 
+						default: 
+							$arKey = explode("-", $strKey, 2);  
+							switch ($arKey[0]) {
+								case "showdata": 
+									$this->datavisible($arKey[1], $strVal); 
+									break; 
+								default: 
+									$this->data($strKey, $strVal); 
+							}
+					}
+					$this->update(); 
 				}
-				$this->update(); 
+				foreach ($_FILES as $strKey=>$strVal) { 
+					switch($strKey) {
+						case "img":  
+							$strTmp = "upload/tmp/" . $_FILES["img"]["name"]; 
+							move_uploaded_file($_FILES["img"]["tmp_name"], $strTmp);
+							createProfilePicture($strTmp, $this->id()); 
+							break; 	
+					}
+				} 
 			}
-			foreach ($_FILES as $strKey=>$strVal) { 
-				switch($strKey) {
-					case "img":  
-						$strTmp = "upload/tmp/" . $_FILES["img"]["name"]; 
-						move_uploaded_file($_FILES["img"]["tmp_name"], $strTmp);
-						createProfilePicture($strTmp, $this->id()); 
-						break; 	
-				}
-			} 
 		}
 		
 		public function unlock($bValue = TRUE) { // als een user unlocked is kan ook een niet-aangemelde gebruiker bv. emailadres opvragen of aanpassingen doen (nodig voor "paswoord vergeten")
@@ -497,7 +496,7 @@
 		public function login($strLogin = NULL, $bCheck = TRUE) { /*
 		 get / set login 
 		 TODO: checken of login nog niet bestaat!  
-		 */
+		 */ 
 			if (!is_null($strLogin)) {
 				$oReturn = $strLogin;
 				if ($bCheck) {
@@ -517,7 +516,7 @@
 				}
 				$this->strLogin = $strLogin; 
 				return $oReturn; 
-			}
+			} 
 			if (is_null($this->strLogin)) $this->load();
 			return $this->strLogin; 
 		}
@@ -729,7 +728,7 @@
 					if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"]);
 	 
 				}
-			}
+			} 
 		}
 		
 		private function loadFriendship() {
@@ -792,7 +791,7 @@
 			}
 		}
 		
-		public function update() { 
+		public function update() {  
 			if ($this->bUnlocked || $this->bNEW || ($this->id() == me())) {
 				$arVelden = array(
 					"login" => $this->login(), 
@@ -816,12 +815,12 @@
 					"showimg" => ($this->visible("img")),
 					"showlocation" => ($this->visible("location")), 
 					"pass" => $this->password(), 
-					"lastupdate" => owaesTime(), 
+					"lastupdate" => $this->lastupdate(owaesTime()), 
 					"location" => $this->location(), 
 					"location_lat" => $this->iLocationLat, 
 					"location_long" => $this->iLocationLong, 
 					"data" => json_encode($this->arData), 
-				);  
+				);   
 				if (user(me())->admin()) $arVelden["admin"] = ($this->admin()?1:0); 
 				$oUser = new database();
 				if ($this->bNEW) {
@@ -841,10 +840,10 @@
 					}
 					$strSQL = "update tblUsers set " . implode(", ", $arUpdates) . " where id = " . $this->id() . ";"; 
 					$oUser->execute($strSQL); 
-				} 
+				}  
 			} else {
 				error ("Geen rechten om deze gebruiker aan te passen (class.user, lijn " . __LINE__ . ")"); 	
-			}
+			} 
 		}
 		
 		 

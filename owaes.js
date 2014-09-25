@@ -253,6 +253,17 @@ $(document).ready(function() {
 		$("#" + strRel).load($(this).attr("href")); 
 		return false; 	
 	})
+	$(document).on("click","a.ajax:not([rel])",function(e){  
+		strLink = $(this).attr("href"); 
+		arLink = strLink.split("?"); 
+		if (arLink.length == 1) {
+			strLink = strLink + "?ajax"; 
+		} else {
+			strLink = strLink + "&ajax"; 
+		}
+		$.ajax(strLink);  
+		return false; 	
+	})
 	
 	
 	$(document).on("submit","form.rating",function(e){

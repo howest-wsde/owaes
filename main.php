@@ -9,6 +9,8 @@
     $oPage->tab("home");
 	
 	$oMe = user(me()); 
+	
+	$arModals = array(); 
  
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -106,6 +108,7 @@
 			function showMarket(iID) {
 				$("#map-item").html("<div class='info'>Bezig met laden...</div>").show().load("get/htm/owaes/owaes-map.html?id=" + iID);
 			} 
+			
 		</script></script>
     </head>
     <body id="index">             
@@ -143,7 +146,7 @@
 							}
 						?>
                         <p class="gebruikers-naam"><a href="<? echo $oMe->getURL(); ?>"><? echo $oMe->getName(); ?></a></p>
-                        <p class="level">Level <? echo $oMe->level(); ?></p>
+                        <p class="level">Level <span class="levelvalue"><? echo $oMe->level(); ?></span></p>
                         <div class="progress progress-experience" title="Vooruitgang: <? echo $iPercent2; ?>%" >
                             <div class="progress-bar progress-bar-experience" role="progressbar" aria-valuenow="<? echo $oMe->experience()->total(); ?>" aria-valuemin="0" aria-valuemax="<? echo $oMe->experience()->leveltreshold(); ?>" style="width: <? echo $iPercent1; ?>%;">
                                 <span class="sr-only"><? echo $iPercent1; ?>% Complete</span>
@@ -276,7 +279,7 @@
                 	}
 				?>
                 
-                
+                <? /*
                 <!-- Quests -->  
                 		<div class="col-md-6 clearfix masonrybox" style="z-index: 980;">
                         	<div class="layoutBlocks border">
@@ -428,7 +431,7 @@
                                     </div>
                             </div>
                          </div>
-                         
+                         */ ?>
 
                         <?
                             $oOwaesList = new owaeslist(); 
@@ -520,7 +523,7 @@
                             }
                         ?>  
                          
-						<?
+						<? /*
                             $oOwaesList = new owaeslist(); 
 							$oOwaesList->payment(me(), "yes");
 							$oOwaesList->rated(me(), "no"); 
@@ -545,7 +548,7 @@
                                      </div>
                                 <?
                             }
-                        ?>  
+                        */ ?>  
                          
 						<?
                             $oOwaesList = new owaeslist(); 
@@ -610,7 +613,9 @@
         <div class="footer">
         	<? echo $oPage->footer(); ?> 
         </div>
-        <? if ($iExp2 > $iExp1) { ?>
+        <? if ($iExp2 > $iExp1) { 
+			$arModals[] = "expModal"; 
+			?>
             <!-- MODALS -->
             <div class="modal fade" id="expModal">
               <div class="modal-dialog">
@@ -622,14 +627,16 @@
                     <p>U hebt sinds uw laatste aanmelding <? echo ($iExp2-$iExp1); ?> ervaringspunt<? echo (($iExp2-$iExp1)==1) ? "" : "en"; ?> verdiend!</p>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="btn-credits" data-dismiss="modal">Ok</button>
+                    <button type="button" class="btn btn-default next-modal" id="btn-credits" data-dismiss="modal">Ok</button>
                   </div>
                 </div><!-- /.modal-content -->
               </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
         <? }?>
         
-        <? if ( $oMe->experience()->level(FALSE) != $oMe->experience()->level(TRUE)) { ?>
+        <? if ( $oMe->experience()->level(FALSE) != $oMe->experience()->level(TRUE)) { 
+			$arModals[] = "lvlModal"; 
+			?>
             <div class="modal fade" id="lvlModal">
               <div class="modal-dialog">
                 <div class="modal-content">
@@ -640,21 +647,65 @@
                     <p>U bent nu level <? echo ($oMe->experience()->level(TRUE)); ?>!</p>
                   </div>
                   <div class="modal-footer">
-                    <button type="button" class="btn btn-default" id="btn-credits" data-dismiss="modal">Ok</button>
+                    <button type="button" class="btn btn-default next-modal" data-dismiss="modal">Ok</button>
                   </div>
                 </div><!-- /.modal-content -->
               </div><!-- /.modal-dialog -->
             </div><!-- /.modal -->
        	<? } ?>
         
+        <? 
+			$oOwaesList = new owaeslist(); 
+			$oOwaesList->payment(me(), "yes");
+			$oOwaesList->rated(me(), "no"); 
+			if (count($oOwaesList->getList()) > 0) {  			
+				foreach ($oOwaesList->getList() as $oItem) {  
+					foreach ($oItem->actions() as $arAction) {
+						switch($arAction["type"]) {
+							case "rating": 	
+								$strModalID = "modalFeedback" . $oItem->id() . "k" . rand(0, 99999); 
+								$arModals[] = $strModalID;  
+								echo '<div class="modal fade" id="' . $strModalID . '">
+									  <div class="modal-dialog">
+										<div class="modal-content">
+										  <div class="modal-header">
+											<h4 class="modal-title">Feedback</h4>
+										  </div>
+										  <div class="modal-body">
+											<div>' . $oItem->HTML("templates/owaes.main-full.html") . '</div>
+											<p>Hoe tevreden ben je over de samenwerking met ' . user($arAction["to"])->getName() . '</p>
+											<ol class="stars">
+												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=1') . '" class="next-modal stars" data-dismiss="modal">Helemaal niet tevreden</a></li>
+												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=2') . '" class="next-modal stars" data-dismiss="modal">Onvoldoende tevreden</a</li>
+												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=3') . '" class="next-modal stars" data-dismiss="modal">Matig tevreden</a</li>
+												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=4') . '" class="next-modal stars" data-dismiss="modal">Tevreden</a</li>
+												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=5') . '" class="next-modal stars" data-dismiss="modal">Uiterst tevreden</a></li>
+											</ol>
+											<span class="stars"></span>
+										  </div>
+										  <div class="modal-footer">
+											<button type="button" class="btn btn-cancel next-modal" data-dismiss="modal">niet nu</button>
+										  </div>
+										</div><!-- /.modal-content -->
+									  </div><!-- /.modal-dialog -->
+									</div><!-- /.modal -->'; 
+						}
+					} 
+
+				}  
+			} 
+		?>
         <script>
             $(document).ready(function () {
                 initCreditmeter();
-                $("#expModal").modal({
-                    show: true,
-                    backdrop: "static",
-                    keyboard: false
-                });
+				<? if (count($arModals)>0) { ?>
+					arModals = ["<? echo implode('", "', $arModals); ?>"];
+					nextModal(); 
+				<? } ?>
+				  
+				$(".next-modal").click(function(){
+					nextModal(); 	
+				})
                 
                 $("#btn-credits").click( function (){
 					$.ajax("<? echo fixPath("experience-confirm.ajax.php") ?>");  
@@ -663,6 +714,16 @@
                     }, 700); 
                 });
             });
+			function nextModal() {
+				if (arModals.length > 0) {
+					strModal = arModals.shift(); 
+					$("#" + strModal).modal({
+						show: true,
+						backdrop: "static",
+						keyboard: false
+					});
+				}	
+			}
         </script> 
     </body>
 </html>

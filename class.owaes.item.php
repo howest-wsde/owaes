@@ -13,6 +13,12 @@
 			$ar_GLOBAL_owaesitems[$iID] = &$oOwaesItem; 
 		}
 		return $ar_GLOBAL_owaesitems[$iID]; 
+	} 
+	function loadedOwaesItems(){
+		global $ar_GLOBAL_owaesitems; 
+		$arItems = array(); 
+		foreach ($ar_GLOBAL_owaesitems as $iID=>$oItem) $arItems[] = $iID; 
+		return $arItems; 
 	}
 	
 	class owaesitem {   // een item
@@ -175,9 +181,11 @@
 		}  
 		private function loadMomenten() {
 			$this->arMomenten = array(); 
-			$oDB = new database("select * from tblMarketDates where market = " . intval($this->iID) . ";", TRUE);  
+			$arLoadedItems = loadedOwaesItems(); 
+			if (!in_array($this->id(), $arLoadedItems)) $arLoadedItems[] = $this->id();  
+			$oDB = new database("select * from tblMarketDates where market in (" . implode(",", $arLoadedItems) . ");", TRUE);  
 			while ($oDB->nextRecord()) { 
-				 $this->addMoment($oDB->get("datum"), $oDB->get("start"), $oDB->get("tijd"), "DB");  
+				owaesitem($oDB->get("id"))->addMoment($oDB->get("datum"), $oDB->get("start"), $oDB->get("tijd"), "DB");  
 			}  
 		}  
 		 
@@ -433,7 +441,72 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			return $this->group()->getImage($matches[1], FALSE);  
 		} 
 		
-		
+		public function actions() { 
+			$arActions = array(); 
+			$arSubscriptions = $this->subscriptions();  
+			if ($this->iAuthor != me()) {
+				if (isset($arSubscriptions[me()])) {
+					$oSubscription = $arSubscriptions[me()];  
+					if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) { // SUBSCRIBE_CANCEL, SUBSCRIBE_SUBSCRIBE, SUBSCRIBE_NEGOTIATE, SUBSCRIBE_CONFIRMED, SUBSCRIBE_DECLINED 
+						$oPayment = $oSubscription->payment();   
+						if (!$oPayment->signed()) { 
+							if ($oPayment->sender() == me()) {
+								$arActions[] = array(
+									"type" => "transaction",  
+									"to" => $oPayment->receiver(), 
+									"credits" => 0,   
+								); 
+							} else {
+								$arActions[] = array(
+									"type" => "remind", 
+									"reason" => "transaction",  
+									"to" => $oPayment->sender(), 
+									"credits" => 0,   
+								); 
+							} 
+						}  else {
+							 if (!$oSubscription->rating(me())->rated())  $arActions[] = array(
+										"type" => "rating",  
+										"to" => $this->iAuthor,  
+									);  
+						}
+					} 
+				}
+				if (admin()) $arActions[] = array(
+								"type" => "edit",  
+							); 
+			} else { // ik == author 
+				foreach ($arSubscriptions as $iUser=>$oSubscription) {
+					if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) {
+						if ($oSubscription->payment()->signed()) { // is betaald 
+							if (!$oSubscription->rating(me())->rated()) $arActions[] = array(
+									"type" => "rating",  
+									"to" => $oRating->receiver(),  
+								); 
+						} else {
+							if ($this->task()) { // ik moet betalen 
+								$arActions[] = array(
+									"type" => "transaction",  
+									"to" => $oPayment->receiver(), 
+									"credits" => 0,   
+								); 
+							} else { // ik moet nog ontvangen
+								$arActions[] = array(
+									"type" => "remind", 
+									"reason" => "transaction",  
+									"to" => $oPayment->sender(), 
+									"credits" => 0,   
+								); 
+							}
+						}
+					} 
+				}  
+				if (admin()) $arActions[] = array(
+								"type" => "edit",  
+							); 
+			} 
+			return $arActions; 	
+		}
 		
 		private function HTMLvalue($strTag) {
 			switch($strTag) { 
@@ -712,7 +785,13 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		public function addMoment($iDatum = NULL, $iStart = NULL, $iTijd = NULL, $strStatus = "NEW") { /* datum toevoegen ($iDatum = unix time, iStart en $iTijd = minuten)
 		(TODO: strStatus moet er niet staan in public function)
 		*/
-			if (is_null($this->arMomenten)) $this->loadMomenten(); 
+			if (is_null($this->arMomenten)) {
+				if ($strStatus == "DB") {
+					$this->arMomenten = array(); 
+				} else {
+					$this->loadMomenten(); 
+				}
+			}
 			$this->arMomenten[intval($iDatum)] = array(
 				"start" => $iStart,  
 				"tijd" => $iTijd, 

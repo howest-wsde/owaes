@@ -28,7 +28,9 @@
 		$iY = 0; 
 	}
 	 
-	
+
+	imagealphablending($oThumb, false); 
+	imagesavealpha($oThumb, true);
 	
 	imagecopyresampled($oThumb, $oSource, $iX, $iY, 0, 0, $iW, $iH, imagesx($oSource), imagesy($oSource));
 	

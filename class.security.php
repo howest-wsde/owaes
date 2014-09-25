@@ -87,7 +87,7 @@
 			if (!is_null($iUser)) {
 				$this->iUser = $iUser; 
 				me($iUser); 
-			}
+			} 
 			return user($this->iUser); 	
 		}
 		

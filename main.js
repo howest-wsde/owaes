@@ -8,7 +8,14 @@ $(document).ready(function () {
     initAttributes();
     initEventHandlers();
 
-    console.log("JS: [document.ready] document loaded succesfully.");
+    
+	
+	$("ol.stars li").on("mouseover", function(){
+		$(this).parent().find("li").removeClass("not"); 
+		$(this).nextAll("li").addClass("not"); 
+		$("span.stars").html($(this).find("a").html());  
+	}); 
+	
 });
 
 jQuery.removeFromArray = function (value, arr) {
@@ -551,7 +558,7 @@ function consoleArray(array) {
  * raiseExp($exp)
  * $exp     de verkregen experience (int) van een opdracht/opleiding/delen
  */
-function raiseExp($exp) {
+function raiseExp($exp) { 
     var $progressbar = $(".progress-bar-experience");
     var $valuenow = $progressbar.attr("aria-valuenow");
     var $valuemax = $progressbar.attr("aria-valuemax");
@@ -566,11 +573,13 @@ function raiseExp($exp) {
 
     setTimeout(function () {
         if ($newExp >= $valuemax) {
+			/*
             $("#lvlModal").modal({
                 show: true,
                 backdrop: "static",
                 keyboard: false
             });
+			*/
 
             $progressbar.css({
                 "width": "0%",
@@ -580,9 +589,11 @@ function raiseExp($exp) {
 
             var $rest = $newExp - $valuemax;
             raiseExp($rest);
+			$(".levelvalue").html(parseInt($(".levelvalue").html())+1);
+			
         }
+		
     }, 1000)
-    
 }
 
 

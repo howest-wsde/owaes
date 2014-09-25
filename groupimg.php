@@ -13,6 +13,8 @@
 	if ($iH==0) $iH = $iW / $iProp; 
 	
 	$oThumb = imagecreatetruecolor($iW, $iH);
+	imagealphablending($oThumb, false);
+	imagesavealpha($oThumb, true);
 	
 	if ($iW/$iH > $iProp) {
 		$iX = 0;

@@ -75,6 +75,7 @@
 			if (isset($arQueries)) foreach ($arQueries as $strKey=>$arQRY) {
 				if ($arQRY["date"] < time()-60*60*3) unset ($arQueries[$strKey]); 
 			}
+			while (count($arQueries)>500) $xDel = array_shift($arQueries);
 			global $ar_GLOBAL_queries; 
 			if (!isset($ar_GLOBAL_queries[$this->sql()])) $ar_GLOBAL_queries[$this->sql()]=0; 
 			$arQueries[time() . "." . rand(0,9999)] = array(
