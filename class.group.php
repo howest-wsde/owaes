@@ -118,31 +118,33 @@
 		}
 		
 		public function addUser($iUser) {
-			if ($this->userrights(me())->useradd()) {
-				$this->arUsers = NULL; 
-				$oDB = new database(); 
-				
-				if (user(me())->admin()) {
-					$strSQL = "insert into tblGroupUsers (invitedby, groep, user, confirmed) values (" . me() . ", " . $this->id() . ", " . $iUser . ", 1); "; 
-					$oDB->execute($strSQL); 
+			if ($this->userrights(me())->useradd()) { 
+				if (!$this->users($iUser)) {
+					$this->arUsers = NULL; 
+					$oDB = new database(); 
 					
-					$oNotification = new notification($iUser, "group." . $this->id()); 
-					$oNotification->message("Je werd toegevoegd aan de groep '" . $this->naam() . "'"); 
-					$oNotification->sender(me()); 
-					$oNotification->link($this->getURL()); 
-					$oNotification->send(); 
-					
-				} else {
-					$strSQL = "insert into tblGroupUsers (invitedby, groep, user, confirmed) values (" . me() . ", " . $this->id() . ", " . $iUser . ", 0); "; 
-					$oDB->execute($strSQL); 
-					
-					$oNotification = new notification($iUser, "group." . $this->id()); 
-					$oNotification->message(user(me())->getName() . " heeft je uitgenodigd lid te worden van de groep '" . $this->naam() . "'"); 
-					$oNotification->sender(me()); 
-					$oNotification->link($this->getURL()); 
-					$oNotification->send(); 
-				}
-				return TRUE; 
+					if (user(me())->admin()) {
+						$strSQL = "insert into tblGroupUsers (invitedby, groep, user, confirmed) values (" . me() . ", " . $this->id() . ", " . $iUser . ", 1); "; 
+						$oDB->execute($strSQL); 
+						
+						$oNotification = new notification($iUser, "group." . $this->id()); 
+						$oNotification->message("Je werd toegevoegd aan de groep '" . $this->naam() . "'"); 
+						$oNotification->sender(me()); 
+						$oNotification->link($this->getURL()); 
+						$oNotification->send(); 
+						
+					} else {
+						$strSQL = "insert into tblGroupUsers (invitedby, groep, user, confirmed) values (" . me() . ", " . $this->id() . ", " . $iUser . ", 0); "; 
+						$oDB->execute($strSQL); 
+						
+						$oNotification = new notification($iUser, "group." . $this->id()); 
+						$oNotification->message(user(me())->getName() . " heeft je uitgenodigd lid te worden van de groep '" . $this->naam() . "'"); 
+						$oNotification->sender(me()); 
+						$oNotification->link($this->getURL()); 
+						$oNotification->send(); 
+					}
+					return TRUE; 
+				} else return FALSE; 
 			} else return FALSE; 
 		}
 		

@@ -30,7 +30,7 @@
 
                         <? 
                             foreach ($oUserList->getList() as $oUser) { 
-                                echo $oUser->HTML("templates/userfromlist.html");  
+                                echo "<div id=\"user-" . $oUser->id() . "\">" . $oUser->HTML("templates/userfromlist.html") . "</div>";   
                             }
                         ?>
                     <!--</div>-->

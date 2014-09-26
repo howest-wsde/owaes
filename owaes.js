@@ -27,18 +27,16 @@ $(document).ready(function() {
 	}); 
 	 
 	 
-	
+	/*
 	$(document).on("click", "a.addfriend", function(event){ // add as friend - links in overzicht gebruikers
 		strLink = $(this).attr("href");  
 		strTarget = $(this).parentsUntil(".userlistitem").parent().attr("id"); 
 		$("<div />").load(strLink, {"return": "item"}, function() {
 			$("#" + strTarget).replaceWith($(this)); 
-		})
-		console.log($("#" + strTarget)); 
-		console.log(strTarget); 
-		console.log(strLink); 
+		}) 
 		return false; 	
 	}) 
+	*/
 
 	$(document).on('click', "div.subscribe a.subscribe", function(event){ // "schrijf in"-knoppen
 		$(this).parent().load($(this).attr("href") + "&ajax=1");
@@ -250,7 +248,14 @@ $(document).ready(function() {
 	 
 	$(document).on("click","a.ajax[rel!='']",function(e){
 		strRel = $(this).attr("rel"); 
-		$("#" + strRel).load($(this).attr("href")); 
+		strLink = $(this).attr("href"); 
+		arLink = strLink.split("?"); 
+		if (arLink.length == 1) {
+			strLink = strLink + "?ajax"; 
+		} else {
+			strLink = strLink + "&ajax"; 
+		}
+		$("#" + strRel).load(strLink); 
 		return false; 	
 	})
 	$(document).on("click","a.ajax:not([rel])",function(e){  

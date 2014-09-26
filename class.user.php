@@ -8,8 +8,8 @@
 	define ("VISIBILITY_FRIENDS", 2); 
 		
 	define ("FRIEND_NOFRIENDS", 0); 
-	define ("FRIEND_ASKED", 1); 
-	define ("FRIEND_REQUESTED", 2); 
+	define ("FRIEND_ASKED", 1);  // de andere heeft invite gestuurd
+	define ("FRIEND_REQUESTED", 2);  // ik heb reeds aanvraag gedaan 
 	define ("FRIEND_FRIENDS", 10); 
 	 
  
@@ -263,42 +263,47 @@
 			return ($this->id() == me() || $this->iFriendStatus == FRIEND_FRIENDS);  
 		}
 		
-		public function addFriend($bSetFriend = TRUE) { // GET boolean
-			$iUser = me(); 
+		public function removeFriend() {
+			$iMe = me(); 
+			$iFriend = $this->id(); 
+			if (is_null($this->iFriendStatus)) $this->loadFriendship(); 
+			$oDB = new database(); 
+			$oDB->execute("update tblFriends set confirmed = 0 where user = $iFriend and friend = $iMe; ");
+			$oDB->execute("delete from tblFriends where user = $iMe and friend = $iFriend; "); 
+			$this->iFriendStatus = FRIEND_NOFRIENDS; 
+		}
+		
+		public function addFriend() { // GET boolean
+			$iMe = me(); 
 			$iFriend = $this->id(); 
 			if (is_null($this->iFriendStatus)) $this->loadFriendship(); 
 			$oDB = new database(); 
 			switch($this->iFriendStatus) {
 				case FRIEND_FRIENDS:  // had been confirmed by both sides
-					$oDB->execute("update tblFriends set confirmed = 0 where user = $iFriend and friend = $iUser; ");
-					$oDB->execute("delete from tblFriends where user = $iUser and friend = $iFriend; ");
-					$this->iFriendStatus = FRIEND_ASKED; 
 					break; 
 					
 				case FRIEND_REQUESTED: // request had already been made by me
-					$oDB->execute("delete from tblFriends where user = $iUser and friend = $iFriend; ");
-					$this->iFriendStatus = FRIEND_NOFRIENDS; 
 					break; 
 
 				case FRIEND_ASKED: // other party had already asked friendship
-					$oDB->execute("insert into tblFriends (user, friend, datum, confirmed) values ($iUser, $iFriend, " . owaestime() . ", 1);");
-					$oDB->execute("update tblFriends set confirmed = 1 where user = $iFriend and friend = $iUser; ");
+					$oDB->execute("insert into tblFriends (user, friend, datum, confirmed) values ($iMe, $iFriend, " . owaestime() . ", 1);");
+					$oDB->execute("update tblFriends set confirmed = 1 where user = $iFriend and friend = $iMe; ");
 					$oNotification = new notification($iFriend); 
-					$oNotification->key("friendship.$iUser.$iFriend"); 
-					$oNotification->message(user($iUser)->getName() . " heeft je vriendschapaanvraag bevestigd"); 
-					$oNotification->link(user($iUser)->getURL());
-					$oNotification->sender($iUser); 
+					$oNotification->key("friendship.$iMe.$iFriend"); 
+					$oNotification->message(user($iMe)->getName() . " heeft je vriendschapaanvraag bevestigd"); 
+					$oNotification->link(user($iMe)->getURL());
+					$oNotification->sender($iMe); 
 					$oNotification->send(); 
 					$this->iFriendStatus = FRIEND_FRIENDS; 
 					break; 
 
 				case FRIEND_NOFRIENDS:  // nothing asked yet
 				default: 
-					$oDB->execute("insert into tblFriends (user, friend, datum) values ($iUser, $iFriend, " . owaestime() . ") ");
+					$oDB->execute("insert into tblFriends (user, friend, datum) values ($iMe, $iFriend, " . owaestime() . ") ");
 					$oNotification = new notification($iFriend); 
-					$oNotification->key("friendship.$iUser.$iFriend"); 
-					$oNotification->message(user($iUser)->getName() . " heeft een vriendschapaanvraag verstuurd"); 
-					$oNotification->link(user($iUser)->getURL());
+					$oNotification->key("friendship.$iMe.$iFriend"); 
+					$oNotification->message(user($iMe)->getName() . " heeft een vriendschapaanvraag verstuurd"); 
+					$oNotification->link(user($iMe)->getURL());
 					$oNotification->sender(0); 
 					$oNotification->send(); 
 					$this->iFriendStatus = FRIEND_REQUESTED; 
@@ -733,24 +738,24 @@
 		
 		private function loadFriendship() {
 			$oDB = new database();
-			$iUser = me(); 
+			$iMe = me(); 
 			$iFriend = $this->id(); 
-			if ($iFriend == $iUser) {
+			if ($iFriend == $iMe) {
 				$this->iFriendStatus = FRIEND_FRIENDS;  
 			} else {
-				$oDB->execute("select * from tblFriends where (user = $iUser and friend = $iFriend) or (user = $iFriend and friend = $iUser); ");
+				$oDB->execute("select * from tblFriends where (user = $iMe and friend = $iFriend) or (user = $iFriend and friend = $iMe); ");
 				switch($oDB->length()) {
 					case 0: 
 						$this->iFriendStatus = FRIEND_NOFRIENDS;
 						break; 	
 					case 1:  
-						$this->iFriendStatus = ($oDB->get("user") == $iUser) ? FRIEND_REQUESTED : FRIEND_ASKED; 
+						$this->iFriendStatus = ($oDB->get("user") == $iMe) ? FRIEND_REQUESTED : FRIEND_ASKED; 
 						break; 	
 					case 2: 
 						$this->iFriendStatus = FRIEND_FRIENDS;  
 						break; 	
 				}  
-			}
+			} 
 		}
 		
 		private function loadIndicators() {
@@ -1258,26 +1263,29 @@
 			} else {
 				$strHTML = filterTag("me", $strHTML, FALSE); 
 				$strHTML = filterTag("notme", $strHTML, TRUE);  
-				
+				if (is_null($this->iFriendStatus)) $this->loadFriendship(); 
 				switch($this->iFriendStatus) {
 					case FRIEND_FRIENDS: 
-						$strHTML = filterTag("friend", $strHTML, TRUE);   
+						$strHTML = filterTag("friend", $strHTML, TRUE);  
+						$strHTML = str_replace("[link:addfriend]", fixPath("addfriend.php?action=del&u=" . $this->id()), $strHTML); 
 						break; 
 					case FRIEND_ASKED: 
 						$strHTML = filterTag("nofriend", $strHTML, TRUE);  
 						$strHTML = filterTag("nofriend:asked", $strHTML, TRUE); 
+						$strHTML = str_replace("[link:addfriend]", fixPath("addfriend.php?action=add&u=" . $this->id()), $strHTML); 
 						break; 
 					case FRIEND_REQUESTED:  
 						$strHTML = filterTag("nofriend", $strHTML, TRUE);  
 						$strHTML = filterTag("nofriend:requested", $strHTML, TRUE); 
+						$strHTML = str_replace("[link:addfriend]", fixPath("addfriend.php?action=add&u=" . $this->id()), $strHTML); 
 						break; 
 					case FRIEND_NOFRIENDS: 
 					default:  
 						$strHTML = filterTag("nofriend", $strHTML, TRUE);  
-						$strHTML = filterTag("nofriend:noconnection", $strHTML, TRUE);  
+						$strHTML = filterTag("nofriend:noconnection", $strHTML, TRUE); 
+						$strHTML = str_replace("[link:addfriend]", fixPath("addfriend.php?action=add&u=" . $this->id()), $strHTML);  
 						break; 
 				}  
-				$strHTML = str_replace("[link:addfriend]", fixPath("addfriend.php?u=" . $this->id()), $strHTML);
 				// overschot invisible
 				$strHTML = filterTag("friend", $strHTML, FALSE); 
 				$strHTML = filterTag("nofriend", $strHTML, FALSE);  
@@ -1474,12 +1482,12 @@
 					if (!$this->isCurrentUser()) { 
 						$arActions[] = "<li><a href=\"" . $this->messageLink("", FALSE) . "\"><span class=\"icon icon-berichtsturen\"></span><span class=\"title\">Bericht versturen</span></a></li>";
 						$arActions[] = "<li><a href=\"" . $this->donateLink("", TRUE) . "\" class=\"transactie\"><span class=\"icon icon-credits\"></span><span class=\"title\">Credits versturen</span></a></li> ";
-						foreach (user(me())->groups() as $oGroup) {
+						foreach (user(me())->groups() as $oGroup) { 
 							if ($oGroup->userrights()->useradd()) {
-								if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"#\" class=\"addtogroup\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toevoegen aan " . $oGroup->naam() . "</span></a></li> ";
+								if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toevoegen aan " . $oGroup->naam() . "</span></a></li> ";
 							}
 							if ($oGroup->userrights()->userdel()) {
-								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"#\" class=\"addtogroup\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> ";
+								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> ";
 							}
 						}
 					}

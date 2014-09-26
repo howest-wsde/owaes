@@ -2,22 +2,29 @@
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE);  
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
-	$oLog = new log("add friend", array("url" => $oPage->filename())); 
+	$oLog = new log("add friend", array("url" => $oPage->filename()));  
 	 
 	$oUser = user($_GET["u"]);  
+	
+	switch($_GET["action"]) {
+		case "add": 
+			$oUser->addFriend(); 
+			break; 
+		case "del": 
+			$oUser->removeFriend(); 
+			break; 	
+	}
+	/*
 	if ($oUser->isFriend()) {
-		$oUser->addFriend(); 
+		
 	} else {
 		$oUser->addFriend(FALSE); 
 	}
+	*/
 	
-	$strReturn = (isset($_POST["return"])) ? $_POST["return"] : ""; 
-	switch($strReturn) {
-		case "item": 
-			echo $oUser->HTML("templates/userfromlist.html");  
-			break; 
-		default: 
-			header("location:" . $_SERVER["HTTP_REFERER"]);
-			break; 	
+	if (isset($_GET["ajax"])) { 
+		echo $oUser->HTML("templates/userfromlist.html");  
+	} else {  
+		header("location:" . $_SERVER["HTTP_REFERER"]);
 	}
 ?>
