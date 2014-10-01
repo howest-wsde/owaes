@@ -183,9 +183,9 @@
 			$this->arMomenten = array(); 
 			$arLoadedItems = loadedOwaesItems(); 
 			if (!in_array($this->id(), $arLoadedItems)) $arLoadedItems[] = $this->id();  
-			$oDB = new database("select * from tblMarketDates where market in (" . implode(",", $arLoadedItems) . ");", TRUE);  
+			$oDB = new database("select * from tblMarketDates where market in (" . implode(",", $arLoadedItems) . ");", TRUE); 
 			while ($oDB->nextRecord()) { 
-				owaesitem($oDB->get("id"))->addMoment($oDB->get("datum"), $oDB->get("start"), $oDB->get("tijd"), "DB");  
+				owaesitem($oDB->get("market"))->addMoment($oDB->get("datum"), $oDB->get("start"), $oDB->get("tijd"), "DB");  
 			}  
 		}  
 		 

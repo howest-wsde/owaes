@@ -36,8 +36,8 @@
             $this->addJS("script/fullcalendar.min.js"); 
             $this->addCSS("style/fullcalendar.css");
 			
-			$this->addJS("owaes.js");  
-            $this->addJS("main.js");
+			$this->addJS("owaes.js?v3");  
+            $this->addJS("main.js?v3");
 			
 			switch ($this->filename(FALSE)) {
 				case "index.php": 

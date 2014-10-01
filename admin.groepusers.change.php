@@ -1,7 +1,6 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
-	$oSecurity = new security(TRUE); 
-	if (!$oSecurity->admin()) $oSecurity->doLogout(); 
+	$oSecurity = new security(TRUE);  
 
 	$iGroep = intval($_GET["g"]); 
 	$iUser = intval($_GET["u"]); 
@@ -11,7 +10,6 @@
 	$oGroep = group($iGroep); 
 	
 	$oMijnRechten = $oGroep->userrights(me());  
-	  
 	if ($oMijnRechten->userrights()) {  
 		$oRechten = $oGroep->userrights($iUser);
 		$oRechten->right($strWut, $iVal); 
@@ -21,5 +19,5 @@
 		} else {
 			echo "<a class=\"checkbox off userrights\" href=\"" . fixpath("admin.groepusers.change.php?g=" . $iGroep . "&u=" . $iUser . "&w=" . $strWut . "&v=1") . "\">0</a>"; 
 		}  
-	} 
+	}  
 ?>

@@ -517,7 +517,7 @@
     }
 	
 	function html($strTxt) {
-		return htmlspecialchars($strTxt); 
+		return nl2br(htmlspecialchars($strTxt)); 
 	}
 	
 	function javascriptSafe($strTxt) {

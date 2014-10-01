@@ -31,7 +31,7 @@
 			foreach ($this->arJoin as $strJoin) $strSQL .= $strJoin; 
 			if (count($this->arWhere)>0) $strSQL .= " where " . implode(" and ", $this->arWhere); 
 			$oDB->sql($strSQL); 
-			$oDB->execute();   
+			$oDB->execute();    
 			while ($oDB->nextRecord()) {
 				$oGroep = new group(); 
 				$oGroep->id($oDB->get("id")); 

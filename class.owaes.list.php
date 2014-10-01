@@ -237,14 +237,16 @@
 				"m.body", 
 				"m.location", 
 				"mt.tag", 
-			); 
+			);  
 			preg_match_all("/[a-zA-Z0-9_-]+/", $strSearch, $arMatches, PREG_SET_ORDER);   
-			foreach ($arMatches as $arSearch) { 
-				$arFieldSearches = array(); 
-				foreach ($arFields as $strField) $arFieldSearches[] = "$strField like '%" . $arSearch[0] . "%'";  
-				$arSearchQRY[] = "(" . implode(" or ", $arFieldSearches) . ")"; 
-			}  
-			$this->arSQLwhere["search"] = implode(" and ", $arSearchQRY);  
+			if(count($arMatches)>0) {
+				foreach ($arMatches as $arSearch) { 
+					$arFieldSearches = array(); 
+					foreach ($arFields as $strField) $arFieldSearches[] = "$strField like '%" . $arSearch[0] . "%'";  
+					$arSearchQRY[] = "(" . implode(" or ", $arFieldSearches) . ")"; 
+				}  
+				$this->arSQLwhere["search"] = implode(" and ", $arSearchQRY);  
+			} 
 		}
 		
 		public function filterByState($oState) { 

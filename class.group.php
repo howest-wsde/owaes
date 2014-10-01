@@ -310,11 +310,13 @@
 				case "id": 
 					return $this->id(); 
 				case "naam": 
-					return $this->naam(); 
+					return html($this->naam()); 
 				case "link": 
 					return $this->getURL(); 
 				case "description": 
-					return $this->info(); 
+					return html($this->info()); 
+				case "description:short": 
+					return shorten(html($this->info())); 
 				case "members:count": 
 					return count($this->users());
 				case "market:count": 

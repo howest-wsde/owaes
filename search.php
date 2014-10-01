@@ -92,7 +92,7 @@
 								        // $oOwaesList->setUser($oUser); 
 								        if (count($oOwaesList->getList())>0) echo ("<h1>Owaes</h1>");  
 								        foreach ($oOwaesList->getList() as $oItem) { 
-                                        echo $oItem->HTML("templates/owaeskortsearch.html"); 
+                                       		echo $oItem->HTML("templates/owaeskortsearch.html"); 
 								        }
 								        $oUserList = new userlist();   
 								        $oUserList->filter("visible"); 

@@ -7,14 +7,25 @@ var $dates = [];
 $(document).ready(function () { 
     initAttributes();
     initEventHandlers();
-
-    
 	
-	$("ol.stars li").on("mouseover", function(){
+	/* START FEEDBACK STARS */
+	$(document).on("mouseover", "ol.stars li:not(.fixed)", function(){
 		$(this).parent().find("li").removeClass("not"); 
 		$(this).nextAll("li").addClass("not"); 
 		$("span.stars").html($(this).find("a").html());  
+		iStars = $(this).find("a").attr("rel"); 
+		$(this).parentsUntil("form").parent().find("input.stars").val(iStars);
 	}); 
+	$("ol.stars li a").on("click", function(){ 
+		iStars = $(this).attr("rel"); 
+		$(this).parentsUntil("form").find("li").addClass("fixed"); 
+		$(this).parentsUntil("form").find("li").removeClass("not"); 
+		$(this).parent().nextAll("li").addClass("not"); 
+		$("span.stars").html($(this).html());  
+		$(this).parentsUntil("form").parent().find("input.stars").val(iStars);
+		return false; 
+	}); 
+	/* END FEEDBACK STARS */
 	
 });
 

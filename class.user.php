@@ -1336,11 +1336,11 @@
 				case "id": 
 					return $this->id(); 
 				case "firstname": 
-					return $this->firstname(); 
+					return html($this->firstname()); 
 				case "lastname": 
-					return $this->lastname(); 
+					return html($this->lastname()); 
 				case "name": 
-					return $this->getName(); 
+					return html($this->getName()); 
 				case "username": 
 					return $this->login(); 
 				case "key": 
@@ -1354,7 +1354,7 @@
 				case "telephone": 
 					return $this->telephone(); 
 				case "description": 
-					return $this->description(); 
+					return html($this->description()); 
 				case "link": 
 					return $this->getURL(); 
 				case "url": 
@@ -1437,7 +1437,7 @@
 				case "userdetails":  
 					$arUserDetails = array();  
 					if ($this->email() != "") $arUserDetails[] = "<dt>E-mail</dt><dd><a href=\"mailto:" . $this->email() . "\">" . $this->email() . "</a></dd>"; 
-					if ($this->telephone() != "") $arUserDetails[] = "<dt>Telefoon</dt><dd>" . $this->telephone() . "</dd>"; 
+					if ($this->telephone() != "") $arUserDetails[] = "<dt>Telefoon</dt><dd>" . html($this->telephone()) . "</dd>"; 
 					if ($this->gender() != "") {
 						$strGender = "<dt>Geslacht</dt><dd>"; 
 						switch($this->gender()) {

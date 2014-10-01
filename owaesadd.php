@@ -29,14 +29,35 @@
 	 
 	if (isset($_POST["owaesadd"])) { 
 		
-		$iGroup = intval($_POST["group"]); 
-		if ($iGroup != 0){
-			$oGroup = group($iGroup); 
-			if ($oGroup->userrights()->owaesadd()) $oOwaesItem->group($iGroup);
-			// TODO : BOVENSTAANDE KAN FOUT OPLEVEREN ALS ADMIN GROUPSITEM AANPAST ! 
+		if (user(me())->admin()) {
+			$strPoster = $_POST["poster"]; 
+			$arPoster = explode(".", $strPoster); 
+			switch($arPoster[0]) {
+				case "g": // group
+					$iGroep = intval($arPoster[1]); ; 
+					if (!($oOwaesItem->group() && $oOwaesItem->group() == $iGroep)){
+						$oOwaesItem->group($iGroep);	
+						$oOwaesItem->author(group($iGroep)->admin()->id()); 
+					}
+					break; 	
+				case "u": // gebruiker
+					$iGebruiker = intval($arPoster[1]); 
+					if (!(!$oOwaesItem->group() && $oOwaesItem->author()->id() == $iGebruiker)){
+						$oOwaesItem->group(0);
+						$oOwaesItem->author($iGebruiker); 
+					}
+					break; 	
+			}
 		} else {
-			$oOwaesItem->group(0); 
-		} 
+			$iGroup = intval($_POST["group"]); 
+			if ($iGroup != 0){
+				$oGroup = group($iGroup); 
+				if ($oGroup->userrights()->owaesadd()) $oOwaesItem->group($iGroup);
+				// TODO : BOVENSTAANDE KAN FOUT OPLEVEREN ALS ADMIN GROUPSITEM AANPAST ! 
+			} else {
+				$oOwaesItem->group(0); 
+			}  
+		}
 		
 		$oOwaesItem->title($_POST["title"]); 
 		$oOwaesItem->body($_POST["description"]); 
@@ -221,25 +242,56 @@ input.time {width: 100%; display: block; }
 									foreach (user(me())->groups() as $oGroup) { 
 										if (!in_array($oGroup, $arAddGroups)) if ($oGroup->userrights()->owaesadd()) $arAddGroups[] = $oGroup; 
 									} 
-									
-									if (count($arAddGroups) > 0) {
+									if (user(me())->admin()) {
 										echo ('<div class="form-group">
 												<label for="group" class="col-lg-12">Aanbieder</label>
-												<div class="col-lg-12">
-													<select name="group" id="group" class="required form-control">'); 
-													echo ("<option value=\"0\" style=\"border-bottom: 1px dotted #000; \">" . $oOwaesItem->author()->getName() . "</option>");  
-													foreach ($arAddGroups as $oGroup) {
-														if ($oOwaesItem->group() && $oOwaesItem->group()->id()==$oGroup->id()) { 
-															echo ("<option selected=\"selected\" value=\"" . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
-														} else {
-															echo ("<option value=\"" . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
+												<div class="col-lg-12">');   
+													echo '<select name="poster" id="person" class="required form-control">'; 
+														echo "<optgroup label=\"Groepen\">";  
+														$oAllGroepen = new grouplist();   
+														foreach ($oAllGroepen->getList() as $oGroup) {
+															if ($oOwaesItem->group() && $oOwaesItem->group()->id()==$oGroup->id()) { 
+																echo ("<option selected=\"selected\" value=\"g." . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
+															} else {
+																echo ("<option value=\"g." . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
+															}
 														}
-													}
+														echo "</optgroup>"; 
+	
+														echo "<optgroup label=\"Gebruikers\">"; 
+														$oUsers = new userlist();  
+														foreach ($oUsers->getList() as $oUser) {
+															if ((!$oOwaesItem->group() && $oOwaesItem->author()->id()==$oUser->id()) || ($oOwaesItem->author()->id()==0 && me()==$oUser->id())) {  
+																echo ("<option selected=\"selected\" value=\"u." . $oUser->id() . "\">" . $oUser->getName() . "</option>"); 
+															} else {
+																echo ("<option value=\"u." . $oUser->id() . "\">" . $oUser->getName() . "</option>"); 
+															}
+														}
+														echo "</optgroup>"; 
 													echo ('</select>
 												</div>
-											</div>');  
+											</div>');   
+											
 									} else {
-										echo ("<input type=\"hidden\" name=\"group\" value=\"0\" />"); 	
+										if (count($arAddGroups) > 0) {
+											echo ('<div class="form-group">
+													<label for="group" class="col-lg-12">Aanbieder</label>
+													<div class="col-lg-12">
+														<select name="group" id="group" class="required form-control">'); 
+														echo ("<option value=\"0\" style=\"border-bottom: 1px dotted #000; \">" . $oOwaesItem->author()->getName() . "</option>");  
+														foreach ($arAddGroups as $oGroup) {
+															if ($oOwaesItem->group() && $oOwaesItem->group()->id()==$oGroup->id()) { 
+																echo ("<option selected=\"selected\" value=\"" . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
+															} else {
+																echo ("<option value=\"" . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
+															}
+														}
+														echo ('</select>
+													</div>
+												</div>');  
+										} else {
+											echo ("<input type=\"hidden\" name=\"group\" value=\"0\" />"); 	
+										}
 									}
 									 
 									

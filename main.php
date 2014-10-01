@@ -667,26 +667,38 @@
 								$arModals[] = $strModalID;  
 								echo '<div class="modal fade" id="' . $strModalID . '">
 									  <div class="modal-dialog">
-										<div class="modal-content">
-										  <div class="modal-header">
-											<h4 class="modal-title">Feedback</h4>
-										  </div>
-										  <div class="modal-body">
-											<div>' . $oItem->HTML("templates/owaes.main-full.html") . '</div>
-											<p>Hoe tevreden ben je over de samenwerking met ' . user($arAction["to"])->getName() . '</p>
-											<ol class="stars">
-												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=1') . '" class="next-modal stars" data-dismiss="modal">Helemaal niet tevreden</a></li>
-												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=2') . '" class="next-modal stars" data-dismiss="modal">Onvoldoende tevreden</a</li>
-												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=3') . '" class="next-modal stars" data-dismiss="modal">Matig tevreden</a</li>
-												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=4') . '" class="next-modal stars" data-dismiss="modal">Tevreden</a</li>
-												<li><a class="ajax" href="' . fixpath('rate.php?market=' . $oItem->id() . '&receiver=' . user($arAction["to"])->id() . '&score=5') . '" class="next-modal stars" data-dismiss="modal">Uiterst tevreden</a></li>
-											</ol>
-											<span class="stars"></span>
-										  </div>
-										  <div class="modal-footer">
-											<button type="button" class="btn btn-cancel next-modal" data-dismiss="modal">niet nu</button>
-										  </div>
-										</div><!-- /.modal-content -->
+									  	<form>
+											<input type="hidden" name="score" class="stars" value="5" />
+											<input type="hidden" name="market" value="' . $oItem->id() . '" />
+											<input type="hidden" name="receiver" value="' . $arAction["to"] . '" />
+											<div class="modal-content">
+											  <div class="modal-header">
+												<h4 class="modal-title">Feedback</h4>
+											  </div>
+											  <div class="modal-body">
+												<div>' . $oItem->HTML("templates/owaes.main-full.html") . '</div>
+												<p>Hoe tevreden ben je over de samenwerking met ' . user($arAction["to"])->getName() . '</p>
+												<ol class="stars">
+													<li><a href="#1" rel="1" class="next-modal stars">Helemaal niet tevreden</a></li>
+													<li><a href="#2" rel="2" class="next-modal stars">Onvoldoende tevreden</a</li>
+													<li><a href="#3" rel="3" class="next-modal stars">Matig tevreden</a</li>
+													<li><a href="#4" rel="4" class="next-modal stars">Tevreden</a</li> 
+													<li><a href="#5" rel="5" class="next-modal stars">Uiterst tevreden</a></li>
+												</ol>
+												<span class="stars">Uiterst tevreden</span>
+											  </div>
+											  <div class="modal-body">  
+													<label for="description" class="control-label col-lg-12">Jouw feedback:</label>
+													<div class="col-lg-12">
+														<textarea name="comment" class="form-control" placeholder="Geef je feedback voor ' . user($arAction["to"])->getName() . '"></textarea>
+													</div>  
+											  </div>
+											  <div class="modal-footer">
+												<button type="button" class="btn btn-success next-modal save-feedback-stars" data-dismiss="modal">versturen</button>
+												<button type="button" class="btn btn-cancel next-modal" data-dismiss="modal">niet nu</button>
+											  </div>
+											</div><!-- /.modal-content -->
+										</form>
 									  </div><!-- /.modal-dialog -->
 									</div><!-- /.modal -->'; 
 						}
@@ -705,6 +717,10 @@
 				  
 				$(".next-modal").click(function(){
 					nextModal(); 	
+				})
+				
+				$(".save-feedback-stars").click(function(){ 
+					$.post("<? echo fixPath("rate.php") ?>", $(this).parentsUntil("form").parent().serialize());  
 				})
                 
                 $("#btn-credits").click( function (){

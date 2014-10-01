@@ -4,7 +4,7 @@
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
  
 	$oUserList = new userlist();   
-	$oUserList->filter("visible"); 
+	if (!user(me())->admin()) $oUserList->filter("visible"); 
     
     $oPage->tab("lijsten");
 	
