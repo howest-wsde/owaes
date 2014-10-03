@@ -70,8 +70,9 @@
                         </a>
                     [/friends:3]  
                 </div>
-    
-                <p class="meer"><a href="[friends:url]">meer...</a></p>
+   				[if:friends>3]
+                	<p class="meer"><a href="[friends:url]">meer...</a></p>
+                [/if:friends>3]
             </div>
 		[/if:friends]
         
@@ -124,7 +125,35 @@
 
             <p class="meer"><a href="#">meer...</a></p>
         </div>
+        
+		[if:payments]
+            <div class="well well-volgers">
+                <h3>Transactie's <span class="badge">[payments:count]</span></h3>
+    
+                <div class="list-group">
+                    [payments:10]
+                    <a href="[owaes:url]" class="list-group-item">
+                        <div class="media [in-out]">
+                            <img class="mini" src="[img:src:30x30]" />
+                            <div class="inout">[in-out]</div>
+                            <div class="credits">[credits]</div>
+                            <div class="owaes">[owaes]</div>
+                        </div>
+                    </a>
+                    [/payments:10] 
+                </div> 
+                [if:payments>10]<p class="meer"><a href="#">meer...</a></p>[/if:payments>10] 
+            </div>
+		[/if:payments]
     </div>
+    <style>
+		div.in {background: #ddeedd; }
+		div.out {background: #ffe5e5; }
+		img.mini {width: 30px; height: 30px; float: left; margin-right: 10px; }
+		.inout {display: none; float: left; width: 50px; text-align: center; }
+		.credits {display: inline-block; float: left; width: 55px; }
+		.owaes {display: inline-block; float: left; width: 155px; }
+	</style>
     <div class="col-md-8">
             <div class="well well-intro">
                 <h3>
@@ -181,53 +210,29 @@
                 <h3>Certificaten <span class="badge">[certificates:count]</span></h3>
                 [certificates]
             </div>
-            <div class="well well-recenteactiviteit">
-                <h3>Recente Activiteit <span class="badge">xx</span></h3>
-
-                <div class="list-group">
-                    <a href="#" class="list-group-item">
-                        <div class="media">
-                            <img class="media-object pull-left" src="img/placeholder.png">
-                            <div class="media-body">
-                                <h4 class="media-heading">Vestibulum fermentum tortor in dui mattis</h4>
-
-                                <div class="development odd">
-                                    <ul>
-                                        <li class="physical first"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
-                                        <li class="physical"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
-                                        <li class="physical"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
-                                        <li class="mental last"><img src="img/mental.png" title="Kennis" alt="Kennis: 25%"></li>
-                                    </ul>
+            
+            [if:activities]
+                <div class="well well-recenteactiviteit">
+                    <h3>Activiteiten <span class="badge">[activities:count]</span></h3>
+    
+                    <div class="list-group">
+                        [activities:5]
+                            <a href="[link]" class="list-group-item">
+                                <div class="media">
+                                    <img class="media-object pull-left" src="[author:img:64x64]">
+                                    <div class="media-body">
+                                        <h4 class="media-heading">[title]</h4>
+                                        <div class="development">[development]</div>
+                                        <span class="icon [iconclass] icon-lg"></span>
+                                    </div>
                                 </div>
-
-                                <span class="icon icon-opleiding icon-lg"></span>
-                            </div>
-                        </div>
-                    </a>
-                    <a href="#" class="list-group-item">
-                        <div class="media">
-                            <img class="media-object pull-left" src="img/placeholder.png">
-                            <div class="media-body">
-                                <h4 class="media-heading">Morbi tempor lorem rhoncus</h4>
-
-                                <div class="development odd">
-                                    <ul>
-                                        <li class="physical first"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
-                                        <li class="physical"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
-                                        <li class="physical"><img src="img/physical.png" title="Fysiek" alt="Fysiek: 75%"></li>
-                                        <li class="mental last"><img src="img/mental.png" title="Kennis" alt="Kennis: 25%"></li>
-                                    </ul>
-                                </div>
-
-                                <span class="icon icon-werkervaring icon-lg"></span>
-                            </div>
-                        </div>
-                    </a>
+                            </a>
+                        [/activities:5] 
+                    </div> 
+                    [if:activities>5]<p class="meer"><a href="#">meer...</a></p>[/if:activities>5]
                 </div>
-
-                <p class="meer"><a href="#">meer...</a></p>
-
-            </div>
+            [/if:activities]
+            
         </div>
     </div>
     

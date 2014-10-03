@@ -33,7 +33,7 @@
     	<div class="body content content-account-profile container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("templates/leftuserprofile.html"); */
+					<?  
                     echo $oSecurity->me()->html("templates/user.html");
                     ?>
                 </div>
@@ -41,28 +41,10 @@
 
 					<?  
 					
-
-					//vardump($oProfile->friends()); 
-					
-                        //echo "<div class=\"masonry\">";
-						echo $oProfile->html("templates/userprofile.html"); 
-						//echo "</div>";
+ 
+						echo $oProfile->html("templates/userprofile.html");  
                     ?>
    
-                    <?
-                        $oOwaesList = new owaeslist(); 
-                        $oOwaesList->filterByUser($oProfile->id()); 
-                        foreach ($oOwaesList->getList() as $oItem) { 
-                            echo $oItem->HTML("templates/owaeskort.html"); 
-                        }
-                        
-						foreach ($oProfile->payments("all") as $oTransaction) {
-							vardump($oTransaction); 
-						}
-						//if ($oSecurity->getUserID() == $oProfile->id()) echo $oProfile->transactionList(); 
-					
-
-                    ?>  
 
         	<? echo $oPage->endTabs(); ?>
         </div>

@@ -25,6 +25,31 @@ $(document).ready(function() {
 	}).on("change", function() {
 		$(this).addClass("aangepast");
 	}); 
+	
+	$("th.order").each(function(){
+		// $(this).append("&gt;"); 
+	}).click(function() {
+		bUp = !($(this).hasClass("asc"));
+		$("th.order").removeClass("asc").removeClass("desc")
+		$(this).addClass(bUp ? "asc" : "desc"); 
+		iCol = $(this).index();
+		oTable = $(this).parentsUntil("table").parent();  
+		$(oTable).find("tr").each(function(){ 
+			$(this).attr("order", $(this).find("td:eq(" + iCol + ")").text().toUpperCase());
+		}) 
+		$(oTable).find("tr:not(:eq(0))").each(function(){
+			oA = $(this); 
+			$(oTable).find("tr:not(:eq(0))").each(function(){ 
+				oB = $(this); 
+				if (bUp) {
+					if ($(oA).attr("order") > $(oB).attr("order")) $(oA).insertAfter($(oB)); 
+				} else {
+					if ($(oA).attr("order") < $(oB).attr("order")) $(oA).insertAfter($(oB)); 
+				}
+			}) 
+		}) 
+
+	})
 	 
 	 
 	/*

@@ -124,35 +124,63 @@
 				} 
 			}		
 		}
-		
 
-		public function html() { 
-			$strHTML = "<form class=\"pay\" action=\"pay.php\" method=\"post\">"; 
-			if ($this->signed()) {
-				$strHTML .= "<dl class=\"payment\">";
-				if ($this->sender() == me()) { 
-					$strHTML .= "<dt>betaald aan " . user($this->receiver())->getName() . ": " . $this->credits() . " credits</dt>"; 
+		public function html($strHTML = NULL) { 
+			if (is_null($strHTML)) {
+				$strHTML = "<form class=\"pay\" action=\"pay.php\" method=\"post\">"; 
+				if ($this->signed()) {
+					$strHTML .= "<dl class=\"payment\">";
+					if ($this->sender() == me()) { 
+						$strHTML .= "<dt>betaald aan " . user($this->receiver())->getName() . ": " . $this->credits() . " credits</dt>"; 
+					} else {
+						$strHTML .= "<dt>betaald door " . user($this->sender())->getName() . ": " . $this->credits() . " credits</dt>"; 
+					}
+					$strHTML .= "</dl>"; 
 				} else {
-					$strHTML .= "<dt>betaald door " . user($this->sender())->getName() . ": " . $this->credits() . " credits</dt>"; 
-				}
-				$strHTML .= "</dl>"; 
-			} else {
-				if ($this->sender() == me()) { 
-					$strHTML .= "
-						<input type=\"hidden\" name=\"market\" value=\"" . $this->market() . "\" />
-						<input type=\"hidden\" name=\"receiver\" value=\"" . $this->receiver() . "\" />
-						<input type=\"hidden\" name=\"score\" value=\"\" />
-					<fieldset>
-									<dl class=>";
-					$strHTML .= "<dt>Draag " . $this->credits() . " credits over naar " . user($this->receiver())->getName() . " voor dit item</dt>";    
-					$strHTML .= "</dl>
-									</fieldset> 
-							"; 
-				}
-			} 
-			$strHTML .= "</form>"; 
-			return $strHTML; 	
+					if ($this->sender() == me()) { 
+						$strHTML .= "
+							<input type=\"hidden\" name=\"market\" value=\"" . $this->market() . "\" />
+							<input type=\"hidden\" name=\"receiver\" value=\"" . $this->receiver() . "\" />
+							<input type=\"hidden\" name=\"score\" value=\"\" />
+						<fieldset>
+										<dl class=>";
+						$strHTML .= "<dt>Draag " . $this->credits() . " credits over naar " . user($this->receiver())->getName() . " voor dit item</dt>";    
+						$strHTML .= "</dl>
+										</fieldset> 
+								"; 
+					}
+				} 
+				$strHTML .= "</form>"; 
+				return $strHTML; 	
+			} else { 
+				preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]/", $strHTML, $arResult);   // alle tags (zonder whitespace)
+				if (isset($arResult[1])) foreach ($arResult[1] as $strTag){ 
+					$strResult = $this->HTMLvalue($strTag);  
+					if (!is_null($strResult)) $strHTML = str_replace("[$strTag]", $strResult, $strHTML); 
+				} 
+				return $strHTML; 	
+			}
 		}
+		
+		private function HTMLvalue($strTag) {
+			switch($strTag) { 
+				case "id": 
+					return $this->id();  
+				case "credits": 
+					return ($this->sender() == me() ? "-":"") . $this->credits();  
+				case "in-out": 
+					return ($this->sender() == me()) ? "out" : "in";  
+				case "owaes": 
+					return owaesitem($this->market())->title();  
+				case "owaes:url": 
+					return owaesitem($this->market())->url(); 
+				case "img:src:30x30": 
+					return ($this->sender() == me()) ? user($this->receiver())->getImage("30x30", FALSE) : user($this->sender())->getImage("30x30", FALSE);  
+				default: 
+					return NULL; 
+			}
+		}
+		
 	}
 	
 ?> 

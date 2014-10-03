@@ -57,9 +57,9 @@
                                 <div class="form-group">
                                     <table>
                                         <tr>
-                                            <th>naam</th>
-                                            <th>info</th>
-                                            <th>beheerder</th>
+                                            <th class="order asc">naam</th>
+                                            <th class="order">info</th>
+                                            <th class="order">beheerder</th>
                                             <th>...</th>
                                         </tr>
                                         <?
@@ -67,10 +67,10 @@
                                             foreach ($oGroepen->getList() as $oGroep) {
                                                 echo "<tr>";  
                                                 echo "<td>" . $oGroep->naam() . "</td>"; 
-                                                echo "<td>" . $oGroep->info() . "</td>"; 
+                                                echo "<td>" . shorten($oGroep->info()) . "</td>"; 
                                                 echo "<td>" . $oGroep->admin()->getName() . "</td>"; 
                                                 echo "<td>
-														<a href=\"admin.groepusers.php?group=" . $oGroep->id() . "\">leden</a> 
+														<a href=\"admin.groepusers.php?group=" . $oGroep->id() . "\">aanpassen</a> 
 														<button class=\"actiondelete\" value=\"" . $oGroep->id() . "\" onclick=\"return confirm('Weet je zeker?');\" name=\"delgroup\" />
 													</td>"; 
                                                 echo "</tr>"; 

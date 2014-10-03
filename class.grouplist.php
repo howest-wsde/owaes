@@ -6,9 +6,10 @@
 		private $arList = NULL; 
 		private $arJoin = array(); 
 		private $arWhere = array(); 
+		private $arOrder = array(); 
 		 
 		public function grouplist() {  
-			 $this->arWhere[] = " g.deleted = 0 "; 
+			 $this->arWhere[] = " g.deleted = 0 ";  
 		}
 		
 		public function user($iUser) { // select only groups where this user exists
@@ -18,6 +19,10 @@
 		
 		public function reset() { // reset resultaat. TODO: checken of dit niet private mag
 			$this->arList = NULL; 	
+		}
+		
+		public function order($strOrder) { // reset resultaat. TODO: checken of dit niet private mag
+			$this->arOrder[] = $strOrder; 
 		}
 		
 		public function load() { /* lijst creeren (moet niet perse aangeroepen worden, wordt ook aangeroepen vanuit 'getList') 
@@ -30,6 +35,8 @@
 			$strSQL = "select g.* from tblGroups g ";
 			foreach ($this->arJoin as $strJoin) $strSQL .= $strJoin; 
 			if (count($this->arWhere)>0) $strSQL .= " where " . implode(" and ", $this->arWhere); 
+			$this->arOrder[] = "g.naam"; 
+			$strSQL .= " order by " . implode(",", $this->arOrder); 
 			$oDB->sql($strSQL); 
 			$oDB->execute();    
 			while ($oDB->nextRecord()) {

@@ -25,7 +25,7 @@
 	function loadedUsers(){
 		global $ar_GLOBAL_users; 
 		$arUsers = array(); 
-		foreach ($ar_GLOBAL_users as $iID=>$oUser) $arUsers[] = $iID; 
+		foreach ($ar_GLOBAL_users as $iID=>$oUser) $arUsers[] = intval($iID); 
 		return $arUsers; 
 	}
 	
@@ -1208,49 +1208,97 @@
 		public function HTML($strTemplate = "", $bFile = TRUE) { // vraagt pad van template (of HTML if bFile==FALSE) en returns de html met replaced [tags] 
 			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
 			
-			/* VRIENDEN - START */
-			preg_match_all("/\[if:friends\]([\s\S]*?)\[\/if:friends\]/", $strHTML, $arResult);   // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]   
-			for ($i=0;$i<count($arResult[0]);$i++) {
-				if (count($this->friends())>0) {
-					$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
-				} else {
-					$strHTML = str_replace($arResult[0][$i], "", $strHTML);
-				} 
-			} 
-			preg_match_all("/\[friends((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/friends\\1\]/", $strHTML, $arResult);   // bv. [friends]loop[/friends] 
-			for ($i=0;$i<count($arResult[1]);$i++) { 
-				$strFriends = ""; 
-				$iTeller = 0; 
-				$iMax = intval($arResult[2][$i]); 
-				foreach ($this->friends() as $oFriend) {  
-					if ($iMax == 0 || ++$iTeller <= $iMax) $strFriends .= $oFriend->html($arResult[3][$i], FALSE);
+			/* START LUSSEN [friends]xxx[/friends] */ 
+			$arLoopStrings = array("friends", "groups", "activities", "payments");
+			foreach ($arLoopStrings as $strLoop) {
+				$arCheckRegXs = array(
+					"/\[if:$strLoop\]([\s\S]*?)\[\/if:$strLoop\]/", // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]
+					"/\[if:$strLoop(>([0-9]+){0,1})\]([\s\S]*?)\[\/if:$strLoop\\1\]/", // bv. [if:friends>3]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends>3]  
+					"/\[$strLoop((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/$strLoop\\1\]/",  // bv. [friends]loop[/friends] 
+					"/\[$strLoop:count\]/" // bv. [friends:count]
+				); 
+				$bSet = FALSE; 
+				foreach ($arCheckRegXs as $strCheckRX) { 
+					if(preg_match($strCheckRX, $strHTML)) $bSet = TRUE;  
 				}
-				$strHTML = str_replace($arResult[0][$i], $strFriends, $strHTML); 
-			}  
-			/* VRIENDEN - END */
-			
-			
-			/* GROEPEN - START */
-			preg_match_all("/\[if:groups\]([\s\S]*?)\[\/if:groups\]/", $strHTML, $arResult);   // bv. [if:groups]<div><h1>Groepen</h1><ul>....</ul></div>[/if:groups]   
-			for ($i=0;$i<count($arResult[0]);$i++) {
-				if (count($this->groups())>0) {
-					$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
-				} else {
-					$strHTML = str_replace($arResult[0][$i], "", $strHTML);
-				} 
-			} 
-			preg_match_all("/\[groups((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/groups\\1\]/", $strHTML, $arResult);   // bv. [groups]loop[/groups] 
-			for ($i=0;$i<count($arResult[1]);$i++) { 
-				$strGroups = ""; 
-				$iTeller = 0; 
-				$iMax = intval($arResult[2][$i]); 
-				foreach ($this->groups() as $oGroup) {  
-					if ($iMax == 0 || ++$iTeller <= $iMax) $strGroups .= $oGroup->html($arResult[3][$i], FALSE);
+				 
+				if ($bSet)  {
+				
+					switch($strLoop) {
+						case "friends": 
+							$arList = $this->friends(); 
+							break; 
+						case "groups": 
+							$arList = $this->groups(); 
+							break; 
+						case "activities": 
+							$oList = new owaeslist(); 
+							$oList->filterByUser($this->id());  
+							$arList = $oList->getList(); 
+							break; 
+						case "payments": 
+							$arList = $this->payments("all");
+							break; 
+						default: 
+							$arList = array(); 
+					}  
+					
+					preg_match_all("/\[$strLoop:count\]/", $strHTML, $arResult);   // bv. [data:facebook] 
+					for ($i=0;$i<count($arResult[0]);$i++) { // [friends:count]  
+						$strHTML = str_replace($arResult[0][$i], count($arList), $strHTML); 
+					} 
+					
+					preg_match_all("/\[if:$strLoop\]([\s\S]*?)\[\/if:$strLoop\]/", $strHTML, $arResult);  // regex opnieuw runnen want kan aangepast zijn in vorige loop
+					for ($i=0;$i<count($arResult[0]);$i++) { // run trough [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]  
+						if (count($arList)>0) {
+							$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
+						} else {
+							$strHTML = str_replace($arResult[0][$i], "", $strHTML);
+						} 
+					} 
+					
+					preg_match_all("/\[if:$strLoop(\>([0-9]+)){0,1}\]([\s\S]*?)\[\/if:$strLoop\\1\]/", $strHTML, $arResult); 
+					for ($i=0;$i<count($arResult[0]);$i++) { // run trough [if:friends>3]<a href="loadmore">meer...</a>[/if:friends>3]  
+						if (count($arList)>intval($arResult[2][$i])) {
+							$strHTML = str_replace($arResult[0][$i], $arResult[3][$i], $strHTML);
+						} else {
+							$strHTML = str_replace($arResult[0][$i], "", $strHTML);
+						} 
+					}  
+					 
+					preg_match_all("/\[$strLoop((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/$strLoop\\1\]/", $strHTML, $arResult);   // regex opnieuw runnen want kan aangepast zijn in vorige loop
+					for ($i=0;$i<count($arResult[1]);$i++) { // run trough [friends]loop[/friends] 
+						$strSubHTML = ""; 
+						$iTeller = 0; 
+						$iMax = intval($arResult[2][$i]); 
+						foreach ($arList as $oItem) {  
+							if ($iMax == 0 || ++$iTeller <= $iMax) {
+								switch($strLoop) {
+									case "friends": 
+										$strSubHTML .= $oItem->html($arResult[3][$i], FALSE);
+										break; 
+									case "groups": 
+										$strSubHTML .= $oItem->html($arResult[3][$i], FALSE);
+										break; 
+									case "activities": 
+										$strSubHTML .= $oItem->html($arResult[3][$i], FALSE); 
+										break; 
+									case "payments": 
+										$strSubHTML .= $oItem->html($arResult[3][$i]); 
+										break; 
+									default: 
+										$strSubHTML .= $arResult[3][$i]; 
+										break; 
+								}
+							} 
+						}
+						$strHTML = str_replace($arResult[0][$i], $strSubHTML, $strHTML); 
+					}  
+
 				}
-				$strHTML = str_replace($arResult[0][$i], $strGroups, $strHTML); 
-			}  
-			/* GROEPEN - END */
-			
+			}
+			/* EIND LUSSEN [friends]xxx[/friends] */  
+			 
 			if ($this->id() == me()) {   
 				$strHTML = filterTag("me", $strHTML, TRUE); 
 				$strHTML = filterTag("notme", $strHTML, FALSE);  

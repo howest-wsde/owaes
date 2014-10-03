@@ -479,7 +479,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				foreach ($arSubscriptions as $iUser=>$oSubscription) {
 					if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) {
 						if ($oSubscription->payment()->signed()) { // is betaald 
-							if (!$oSubscription->rating(me())->rated()) $arActions[] = array(
+							$oRating = $oSubscription->rating(me()); 
+							if (!$oRating->rated()) $arActions[] = array(
 									"type" => "rating",  
 									"to" => $oRating->receiver(),  
 								); 
@@ -522,6 +523,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					return nl2br(shorten($this->body(), 250, TRUE));  
 				case "link": 
 					return $this->getLink(); 
+				case "iconclass": 
+					return $this->type()->iconclass(); 
 				case "soortIcon": 
 					return "<span class='" . $this->type()->iconclass() . "'></span>"; 
 				case "author:type": 

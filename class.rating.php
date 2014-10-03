@@ -97,7 +97,7 @@
 							$oDB = new database(); 
 							$oDB->execute("insert into tblStars (datum, sender, receiver, stars, comment, market, actief) values (" . owaesTime() . ", " . $this->sender() . ", " . $this->receiver() . ", " . $this->stars() . ", '" . $oDB->escape($this->comment()) . "', " . $this->market() . ", 1);"); 
 							$oConversation = new conversation($this->receiver()); 
-							$oConversation->add("U kreeg een score van " . $this->stars() . " sterren voor deze opdracht", $this->market());  
+							$oConversation->add("U kreeg een score van " . (($this->stars()==1) ? "1 ster" : ($this->stars() . " sterren")) . "  voor deze opdracht", $this->market());  
 							$oConversation->add($this->comment(), $this->market());  
 						}
 					} else {

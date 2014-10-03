@@ -32,12 +32,11 @@
                         
                         <!-- <h1>Users: </h1>  -->
                         <table class="editable">
-                        	<tr>
-                            	<th>id</th>
-                            	<th>first name</th>
-                            	<th>last name</th>
-                            	<th>alias</th>
-                            	<th>login</th>
+                        	<tr> 
+                            	<th class="order">first name</th>
+                            	<th class="order">last name</th>
+                            	<th class="order">alias</th>
+                            	<th class="order">login</th>
                             </tr>
 							<?
                                 $oUsers = new userList(); 
@@ -54,8 +53,7 @@
                                     $pageKey = count($pages)-1;
                                  }
                                 foreach ($pages[$pageKey] as $oUser) {
-									echo "<tr>"; 
-                                    echo "<td>" . $oUser->id() . "</td>"; 
+									echo "<tr>";  
                                     echo "<td id=\"tblUsers_" . $oUser->id() . "_firstname\">" . $oUser->firstname() . "</td>"; 
                                     echo "<td id=\"tblUsers_" . $oUser->id() . "_lastname\">" . $oUser->lastname() . "</td>";  
                                     echo "<td id=\"tblUsers_" . $oUser->id() . "_alias\">" . $oUser->alias() . "</td>";  
