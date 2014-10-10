@@ -3,6 +3,7 @@ var $addfile = "";
 var $errors = [];
 var $errorsTime = [];
 var $dates = [];
+var iBestand = 0;
 
 $(document).ready(function () { 
     initAttributes();
@@ -101,34 +102,7 @@ function initEventHandlers() {
             //iets anders
         }
     });
-    
-    //owaesadd
-   //  $(".datetimerpicker").click(function () { $(".datepicker").parent().addClass("fixdatepicker"); });
-
- /*
-	$("div#timers input").bind("change", function() {
-		alert("test");  
-	}) 
-	$("input.time").bind("change", function (e) {
-		alert("time"); 
-	}); 
-	*/
-
-    //profile
-    $(".well-intro span.icon-settings").click(bestandenInit);
-    $("#editIntro .bestand-toevoegen").click(bestandenToevoegen);
-    $("#editIntro .close").click(function () {
-        bestandenClear();
-        bestandenToevoegen();
-    });
-    $("#editIntro .btn-cancel").click(function () {
-        bestandenClear();
-        bestandenToevoegen();
-    });
-    $("#editIntro .btn-save").click(introOpslaan);
-    $("#editPersoonlijkeInformatie .btn-save").click(persoonlijkeGegevensOpslaan);
-    $("#editBasisgegevens .btn-save").click(basisGegevensOpslaan);
-
+     
    // $(".content-market-add #owaesadd").click(validateAddActivity);
     
 
@@ -137,25 +111,7 @@ function initEventHandlers() {
 }
 // --- Add New OWAES Item --- //
 
-
-
-/*
- * addClassesToDates()
- * Zal in de fullcalendar de klasses zogezegd "onthouden" wanneer men van maand veranderd
- * Eigenlijk wordt de array van dates overlopen en zo klasses toegevoegd aan de dagen in de fullcalendar
- *//*
-function addClassesToDates() {
-    for (i = 0; i < $dates.length; i++) {
-        $(".fc-day").each(function () {
-            var selecteddate = $(this).data('date');
-            if (selecteddate == $dates[i].format()) {
-                $(this).addClass("selected");
-                //console.log(selecteddate);
-            }
-        });
-    }
-}
-
+ 
 
 /*
  * appendKeyupErrors()
@@ -319,93 +275,6 @@ function keyUpDateTime() {
     });
 }
 
-// --- Profile Edit --- //
-
-/*
- * bestandenInit()
- * Kan misschien nog vervangen worden door een template HTML file?
- * Wordt afgevuurd door een click op de span .icon-settings, enkel in de .well-intro
- * $addfile werd globaal aangemaakt.
- */
-function bestandenInit() {
-    console.log("JS: [bestandenInit]");
-
-    $addfile = "";
-    $addfile += "<div class=\"form-group file-uploaden\">";
-    $addfile += "<div class=\"col-lg-3\"><input type=\"text\" class=\"form-control filetitle\" placeholder=\"Titel voor bestand\"></div>";
-    $addfile += "<div class=\"col-lg-5\"><input type=\"file\" class=\"form-control filedata\"></div>";
-    $addfile += "<div class=\"col-lg-4\"><select class=\"form-control\"><option>Zichtbaar voor iedereen</option><option>Zichtbaar voor vrienden</option><option>Verborgen</option></select></div>";
-    $addfile += "</div>"
-}
-
-/*
- * bestandenToevoegen
- * Zal een $addfile appenden aan de .files
- * Wordt afgevuurd door een click op de anchor .bestand-toevoegen, in het model
- * $addfile werd globaal aangemaakt, data werd toegevoegd via bestandenInit()
- */
-function bestandenToevoegen() {
-    $("#editIntro .files").append($addfile);
-}
-
-/*
- * bestandenClear
- * Zal alle toegevoegde divs ".file-uploaden" verwijderen die leeg zijn gelaten
- * Wordt afgevuurd door het sluiten van het model (.btn-cancel en .close)
- * Wordt gebruikt om personen tegen te gaan die ontelbare divs ".file-uploaden" toevoegen, zodat de snelheid van de pagina blijft
- */
-function bestandenClear() {
-    //foreach van elke .file-uploaden 
-    $("#editIntro .files .file-uploaden").each(function () {
-        //kijken of het child element .filetitle en .filedata leeg zijn. Indien ja: verwijderen. Indien nee: houden.
-        if ($(this).find(".filetitle").val() == "" && $(this).find(".filedata").val() == "") {
-            $(this).remove();
-            console.log("JS: [bestandenClear] removed one file.");
-        }
-    });
-
-    //achterlaten van 1 lege ".file-uploaden". ==> gebeurd na deze functie (click)
-}
-
-/*
- * introOpslaan()
- * Zal eerste alle lege rijen (bestanden) weghalen, erna opslaan naar de database
- * Getriggerd door .btn-save
- */
-function introOpslaan() {
-    $errors = [];
-    $message = "";
-    $(".alert").remove();
-    $(".has-error").removeClass("has-error");
-
-    //alle lege rijen weghalen
-    bestandenClear();
-	 
-    if ($(".filetitle").val() == "") {
-        $errors.push("U hebt een bestand opgeladen zonder deze een naam te geven. Gelieve een naam toe te kennen aan uw bestand.");
-        $("#editIntro .filetitle").parent("div").addClass("has-error");
-        $("#editIntro .filetitle").focus();
-    }
-    if ($(".filedata").val() == "") {
-        $errors.push("U hebt een titel gegeven aan een bestand die u nog niet opgeladen hebt. Gelieve de titel te verwijderen of het bestand op te laden.");
-        $("#editIntro .filedata").parent("div").addClass("has-error");
-        //no focus here
-    }
-	
-
-    $message = printErrors($errors);
-
-    if ($errors.length > 0) {
-        //errors printen
-        console.log("JS: [introOpslaan] errors: " + $errors[0] + " " + $errors[1]);
-        $($message).insertBefore("#editIntro .modal-body fieldset");
-		return false; 
-    } else {
-        //opslaan in de database
-        console.log("JS: [introOpslaan] gegevens opslaan naar de database...");
-    }
-	return false; 
-}
 
 /*
  * validateEmail()
@@ -433,47 +302,6 @@ function validatePhone(phone) {
 }
 
 /*
- * basisGegevensOpslaan()
- * Valideert de basisgegevens
- * Valid    =>  opslaan naar de database
- * Invalid  =>  een alert tonen adhv printErrors($errors)
- */
-function persoonlijkeGegevensOpslaan() {
-    $errors = [];
-    $message = "";
-    $(".alert").remove();
-    $(".has-error").removeClass("has-error");
-
-    var $email = $("#editPersoonlijkeInformatie #email").val();
-    var $phone = $("#editPersoonlijkeInformatie #telefoonnummer").val();
-
-    if (!validateEmail($email)) {
-        $errors.push("Het gegeven e-mailadres is incorrect.");
-        $("#editPersoonlijkeInformatie #email").parent("div").addClass("has-error");
-        $("#editPersoonlijkeInformatie #email").focus();
-
-    }
-   // if (!validatePhone($phone)) {
-   //    $errors.push("Het gegeven telefoonnummer is incorrect.");
-   //     $("#editPersoonlijkeInformatie #telefoonnummer").parent("div").addClass("has-error");
-    //    $("#editPersoonlijkeInformatie #telefoonnummer").focus();
-    //}
-
-    $message = printErrors($errors);
-
-    if ($errors.length > 0) {
-        //errors printen
-        console.log("JS: [persoonlijkeGegevensOpslaan] errors: " + $errors[0] + " " + $errors[1]);
-        $($message).insertBefore("#editPersoonlijkeInformatie .modal-body fieldset");
-		return false; 
-    } else {
-        //opslaan in de database
-        console.log("JS: [persoonlijkeGegevensOpslaan] gegevens opslaan naar de database...");
-    } 
-
-}
-
-/*
  * printErrors(errors)
  * Vraagt een array van errors
  * Returned HTML code voor een alert aan de hand van de errors
@@ -488,72 +316,6 @@ function printErrors(errors) {
 
     return $message;
 }
-
-/*
- * basisGegevensOpslaan()
- * Slaat de basisgegevens op. Geen check nodig want alles mag leeg zijn en validatie is niet van toepassing
- */
-function basisGegevensOpslaan() {
-    $errors = [];
-    $message = "";
-    $(".alert").remove();
-    $(".has-error").removeClass("has-error");
- 
- 
-	strFB = $("#facebook").val(); 
-    if (strFB != "") { 
-		if (strFB.indexOf("://") < 0) strFB = "http://" + strFB; 
-		if (( strFB.indexOf("facebook.com") + strFB.indexOf("fb.com") ) < 0) { // indien geen van beide: resultaat = -2, indien 1 > resultaat = 3 ofzo
-			$errors.push("De opgegeven facebook-link is ongeldig. Kopieer de volledige link van uw facebook-pagina. (bv. https://www.facebook.com/howestbe) ");
-        	$("#facebook").parent("div").addClass("has-error");
-		} else {
-			$("#facebook").val(strFB); 
-		}
-    }
-	strTwitter = $("#twitter").val(); 
-    if (strTwitter != "") { 
-		if (strTwitter.indexOf("://") < 0) strTwitter = "http://" + strTwitter; 
-		if (( strTwitter.indexOf("twitter.com") ) < 0) {  
-			$errors.push("De opgegeven Twitter-link is ongeldig. Kopieer de volledige link van uw Twitter-pagina. (bv. https://www.twitter.com/howestbe) ");
-        	$("#twitter").parent("div").addClass("has-error");
-		} else {
-			$("#twitter").val(strTwitter); 
-		}
-    }
-	strLinkedIn = $("#linkedin").val(); 
-    if (strLinkedIn != "") { 
-		if (strLinkedIn.indexOf("://") < 0) strLinkedIn = "http://" + strLinkedIn; 
-		if (( strLinkedIn.indexOf("linkedin.com") ) < 0) {  
-			$errors.push("De opgegeven LinkedIn-link is ongeldig. Kopieer de volledige link van uw LinkedIn-pagina. (bv. https://www.linkedin.com/profile/view?id=15032447) ");
-        	$("#linkedin").parent("div").addClass("has-error");
-		} else {
-			$("#linkedin").val(strLinkedIn); 
-		}
-    }
-	strPlus = $("#plus").val(); 
-    if (strPlus != "") { 
-		if (strPlus.indexOf("://") < 0) strPlus = "http://" + strPlus; 
-		if (( strPlus.indexOf("plus.google.com") ) < 0) {  
-			$errors.push("De opgegeven GooglePlus-link is ongeldig. Kopieer de volledige link van uw GooglePlus-pagina. (bv. https://plus.google.com/howestbe) ");
-        	$("#plus").parent("div").addClass("has-error");
-		} else {
-			$("#plus").val(strPlus); 
-		}
-    }
-	
-    $message = printErrors($errors);
-
-    if ($errors.length > 0) {
-        //errors printen
-        console.log("JS: [basisGegevensOpslaan] errors: " + $errors[0] + " " + $errors[1]);
-        $($message).insertBefore("#editBasisgegevens .modal-body fieldset");
-		return false; 
-    } else {
-        //opslaan in de database
-        console.log("JS: [basisGegevensOpslaan] gegevens opslaan naar de database...");
-    }  
-}
-
 
 
 //function console($origin, $data) {

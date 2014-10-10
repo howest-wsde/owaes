@@ -39,6 +39,7 @@
 	if (isset($_POST["changeprops"])) {
 		if ($oMijnRechten->groupinfo()) {
 			$oGroep->naam($_POST["groepsnaam"]); 
+			$oGroep->website($_POST["groepsurl"]); 
 			$oGroep->info($_POST["info"]); 	 	
 			if ($_FILES["img"]["error"] == 0){  
 				$strTmp = "upload/tmp/" . $_FILES["img"]["name"];  
@@ -86,6 +87,12 @@
                                     </div> 
                                 </div>
                                 <div class="form-group">
+                                    <label for="groepsurl" class="control-label col-lg-2">Website:</label>
+                                    <div class="col-lg-10">
+                                        <input type="text" name="groepsurl" class="groepsurl form-control" id="groepsurl" placeholder="Website" value="<? echo inputfield($oGroep->website()); ?>" />
+                                    </div> 
+                                </div>
+                                <div class="form-group">
                                     <label for="description" class="control-label col-lg-2">Omschrijving:</label>
                                     <div class="col-lg-10">
                                         <textarea name="info" id="info" class="form-control" placeholder="Vertel ons iets over deze groep..."><? echo textarea($oGroep->info()); ?></textarea>
@@ -94,7 +101,7 @@
                                 <div class="form-group">
                                     <label for="img" class="control-label col-lg-2">Foto:</label>
                                     <div class="col-lg-10">
-                                        <input type="file" name="img" class="img image form-control" id="img" placeholder="" value="" />
+                                        <input type="file" name="img" ext="jpg,jpeg,gif,bmp,png" class="img image form-control" id="img" placeholder="" value="" />
                                         <? echo $oGroep->getImage(); ?>
                                     </div> 
                                 </div>

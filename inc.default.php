@@ -32,5 +32,4 @@
 		unset($process);
 	}
 	
-	set_error_handler('owaes_error_handler'); 
-?>
+	set_error_handler('owaes_error_handler');  

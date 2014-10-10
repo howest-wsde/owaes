@@ -171,9 +171,17 @@
 				case "in-out": 
 					return ($this->sender() == me()) ? "out" : "in";  
 				case "owaes": 
-					return owaesitem($this->market())->title();  
+					if ($this->market() == 0) {
+						return "schenking";  
+					} else {
+						return owaesitem($this->market())->title();  
+					}
 				case "owaes:url": 
-					return owaesitem($this->market())->url(); 
+					if ($this->market() == 0) {
+						return "#";  
+					} else {
+						return owaesitem($this->market())->url(); 
+					} 
 				case "img:src:30x30": 
 					return ($this->sender() == me()) ? user($this->receiver())->getImage("30x30", FALSE) : user($this->sender())->getImage("30x30", FALSE);  
 				default: 
@@ -183,4 +191,3 @@
 		
 	}
 	
-?> 

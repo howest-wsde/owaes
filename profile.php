@@ -15,6 +15,7 @@
 	if ($oProfile->id() == me()) $oProfile->savePostData(); 
 	
     $oPage->tab("account");
+	$oPage->addJS("script/profile.js"); 
 	 
 	$oNotification = new notification(); 
 	$oNotification->read("friendship." . $oProfile->id() . "." . me());  

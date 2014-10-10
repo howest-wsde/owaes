@@ -1,1 +1,7 @@
 tblMarket
+
+ALTER TABLE `tblGroups` ADD `website` VARCHAR( 255 ) NOT NULL AFTER `naam` ;
+
+
+check folders voor upload files
+

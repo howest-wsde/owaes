@@ -45,6 +45,7 @@
 				$oGroep->naam($oDB->get("naam")); 
 				$oGroep->info($oDB->get("info")); 
 				$oGroep->admin($oDB->get("admin")); 
+				$oGroep->website($oDB->get("website")); 
 				$this->arList[] = $oGroep; 
 			}	
 		}
@@ -56,4 +57,3 @@
 
 	}
 	
-?>

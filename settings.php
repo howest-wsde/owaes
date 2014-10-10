@@ -281,7 +281,7 @@
                         <div class="form-group">
                             <label for="img" class="control-label col-lg-2">Foto:</label>
                             <div class="col-lg-6">
-                                <input type="file" name="img" class="img image form-control" id="img" placeholder="" value="" />
+                                <input type="file" name="img" ext="jpg,jpeg,gif,bmp,png" class="img image form-control" id="img" placeholder="" value="" />
                                 <? echo $oProfile->getImage(); ?>
                             </div>
                             <div class="col-lg-4">

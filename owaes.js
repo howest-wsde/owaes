@@ -20,6 +20,16 @@ $(document).ready(function() {
 		return false; 	
 	})
 	
+	$(document).on("change", "input[ext]", function(){
+		if ($(this).attr("type") == "file") { 
+			arExt = $(this).attr("ext").toLowerCase().split(","); 
+			strFile = $(this).val().match(/\.([^\.]+)$/)[1]; 
+			if(arExt.indexOf(strFile.toLowerCase())<0) {
+				$(this).val(""); 
+			}
+		}
+	});  
+	
 	$(":input").on("blur", function() {
 		$(this).addClass("gepasseerd");
 	}).on("change", function() {
@@ -51,18 +61,7 @@ $(document).ready(function() {
 
 	})
 	 
-	 
-	/*
-	$(document).on("click", "a.addfriend", function(event){ // add as friend - links in overzicht gebruikers
-		strLink = $(this).attr("href");  
-		strTarget = $(this).parentsUntil(".userlistitem").parent().attr("id"); 
-		$("<div />").load(strLink, {"return": "item"}, function() {
-			$("#" + strTarget).replaceWith($(this)); 
-		}) 
-		return false; 	
-	}) 
-	*/
-
+	  
 	$(document).on('click', "div.subscribe a.subscribe", function(event){ // "schrijf in"-knoppen
 		$(this).parent().load($(this).attr("href") + "&ajax=1");
 		return false; 
@@ -150,27 +149,7 @@ $(document).ready(function() {
 	
 	initBadgeHover(); 
 	
-
-	
-	/*
-	$("a.contact").mouseover(function(){
-		strLink = $(this).attr("href"); 
-		if($(this).next("div.contactpopup").length == 0){
-			$("div.contactpopup").remove(); 
-			$(this).after(
-				$("<div />").addClass("contactpopup").html("loading").load(strLink, {ajax: 1}, function(){
-					$(this).find("form").submit(function(){ 
-						console.log($(this).find(":input[name=message]")); 
-						$(this).load($(this).attr("action"), {message: $(this).find(":input[name=message]").val() , mail: 1, ajax: 1}, function(){
-							$(this).html("saved"); 
-						}); 
-						return false; 
-					})
-				})
-			);	
-		}
-	})
-	*/
+ 
 	
 	$("div.checkboxer").mouseover(function(){
 		$(this).addClass("hover");
@@ -194,83 +173,7 @@ $(document).ready(function() {
 		return false; 	
 	})
 	
-
-	
-/*
-	$("form#frmowaesadd ol.addtabs li a").click(function(){
-		showfrmtab($(this).attr("href")); 
-		return false; 
-	});
-	$("form#frmowaesadd ol.addtabs li:not(.actief) a").each(function(){
-		strLink = $(this).attr("href"); 
-		$(strLink).hide(); 
-	})
-	function checkTabs() {
-		iTabOK=0
-		iTabActief=0; 
-		$("form#frmowaesadd ol.addtabs li").removeClass("disabled").each(function(){
-			strTabID = $(this).find("a").attr("href"); 
-			if (iTabOK == iTabActief) { 
-				if (checkTab(strTabID)) {
-					iTabOK++; 
-					$(strTabID).find("a.volgende").removeClass("disabled");	
-				} else {
-					$(strTabID).find("a.volgende").addClass("disabled");	
-				}
-			} else $(this).addClass("disabled");  
-			$(strTabID).find(":input.required").change(function(){
-				checkTabs(); 
-			})
-			iTabActief ++; 
-		}) 
-	}
-	function checkTab(strID) {
-		bOK = true; 
-		$(strID).find(":input.required").each(function(){ 
-			if ($(this).val() == "") bOK = false; 	
-		})
-		return bOK; 
-	}
-	checkTabs(); 
-	
-	*/
-	/*
-	$("form#frmowaesadd :input").each(function() {
-		strID = $(this).attr("id"); 
-		if (strID != "") {
-			// Sommige velden worden pas getoond wanneer andere actief staan
-			switch($(this).attr("type")){
-				case "checkbox": 
-				case "radio":
-					if (!$(this).is(':checked')) $("dd." + strID + ",dt." + strID).hide(); 
-					break; 
-				default: 
-			} 
-		}
-	})
-
-
-	$("form#frmowaesadd .buttons a").click(function() {
-		showfrmtab($(this).attr("href")); 
-		return false; 
-	})
-	
-	function showfrmtab(strMetHash) {  
-		$("form#frmowaesadd ol.addtabs li a").each(function(){
-			strLink = $(this).attr("href"); 
-			$(strLink).hide(); 
-		});
-		strLink = $(this).attr("href"); 
-		$("form#frmowaesadd ol.addtabs li").removeClass("actief"); 
-		$("form#frmowaesadd ol.addtabs li a[href='" + strMetHash + "']").parent().addClass("actief"); 
-		$(strMetHash).show();  
-		$("." + $(this).attr("id")).show(); 
-		oCurrentPos = map.getCenter(); 
-		google.maps.event.trigger(map, 'resize');
-		map.panTo(oCurrentPos);  
-	}
-	*/
-	 
+ 
 	$(document).on("click","a.ajax[rel!='']",function(e){
 		strRel = $(this).attr("rel"); 
 		strLink = $(this).attr("href"); 

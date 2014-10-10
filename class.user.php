@@ -86,11 +86,10 @@
 			}
 			
 		}
-		 
 		
 		public function savePostData() { 
 			if (isset($_POST["edit-profile"])) if ($_POST["edit-profile"] == $this->editkey()) {
-				foreach ($_POST as $strKey=>$strVal) { 
+				foreach ($_POST as $strKey=>$strVal) {  
 					switch($strKey) {
 						case "edit-profile": break; 
 						case "firstname": 
@@ -141,8 +140,28 @@
 						case "showimg": 
 							$this->visible("img", $_POST["showimg"]);
 							break; 	
-							 
-						default: 
+						case "files": 
+							foreach ($strVal as $strSubVal) {
+								$arInputs = explode(",", $strSubVal);
+								$strFolder = "upload/userfiles/" . $this->id(); 
+								if (!file_exists($strFolder)) mkdir($strFolder); 
+								$strFileLoc = $strFolder . "/" . md5(time() . $_FILES[$arInputs[1]]["name"]); 
+								if($_FILES[$arInputs[1]]["name"] != "") { 
+									move_uploaded_file($_FILES[$arInputs[1]]["tmp_name"], $strFileLoc);
+									$this->addFile($_FILES[$arInputs[1]]["name"], $strFileLoc, $_POST[$arInputs[0]], $_POST[$arInputs[2]]); 
+								}
+							}
+							break; 
+						case "existingfiles": 
+							foreach ($strVal as $strSubVal) {
+								$arInputs = explode(",", $strSubVal);  
+								$strKey = $arInputs[3];  
+								$this->arBestanden[$strKey]["visible"] = intval($_POST[ $arInputs[2] ]);
+								$this->arBestanden[$strKey]["title"] = $_POST[ $arInputs[0] ]; 
+								//$this->addFile($_FILES[$arFile[1]]["name"], $strFileLoc, $_POST[$arFile[0]], $_POST[$arFile[2]]); 
+							}
+							break; 
+						default:  
 							$arKey = explode("-", $strKey, 2);  
 							switch ($arKey[0]) {
 								case "showdata": 
@@ -202,6 +221,47 @@
 			if (is_null($this->strAlias)) $this->load();
 			return $this->strAlias;  
 		}  
+		
+		public function addFile($strFilename, $strLoc, $strTitel, $iPrivacy, $strKey = NULL) {
+			if (is_null($this->arBestanden)) $this->load(); 
+			if (is_null($strKey)) $strKey = md5($strLoc . time()); 
+			if ($strFilename != "") {
+				$this->arBestanden[$strKey] = array(
+					"title" => $strTitel, 
+					"filename" => $strFilename, 
+					"location" => $strLoc, 
+					"visible" => intval($iPrivacy), 
+				); 
+			} 
+		}
+		
+		public function files($strKey = NULL) { // if $strKEY defined: returns filepath of FALSE / else: returns array met alle files
+			if (is_null($this->arBestanden)) $this->load(); 
+			if (is_null($this->arBestanden)) $this->arBestanden = array(); 
+			if (is_null($strKey)) {
+				$arBestanden = array(); 
+				foreach ($this->arBestanden as $strKey=>$arBestand) {
+					if ($arBestand["visible"] != -1) {
+						if ($this->visible4me("file:$strKey")) { 
+							$arBestanden[] = array( 
+								"key" => $strKey, 
+								"link" => fixPath("download.php?u=" . $this->id() . "&f=" . $strKey), 
+								"filename" => $arBestand["filename"], 
+								"title" => $arBestand["title"], 
+								"visible" => $arBestand["visible"], 
+							);  
+						}
+					}
+				} 
+				return $arBestanden; 	
+			} else { 
+				if ($this->visible4me("file:$strKey")) { 
+					return $this->arBestanden[$strKey];
+				} else {
+					return FALSE; 
+				}
+			}
+		}
 		
 		public function password($strPassword = NULL, $bEncode = TRUE) { /*
 		 get / set password:
@@ -319,6 +379,22 @@
 			if (user(me())->admin()) return TRUE; 
 			$arParts = explode(":", $oSelector, 2);  
 			switch ($arParts[0]) {
+				case "file": 
+					if (is_null($this->arBestanden)) $this->load(); 
+					switch($this->arBestanden[$arParts[1]]["visible"]) {
+						case VISIBILITY_HIDDEN:   
+							return ($this->id() == me()); 
+							break; 
+							
+						case VISIBILITY_VISIBLE:  
+							return TRUE; 
+							break; 
+							
+						case VISIBILITY_FRIENDS:   
+							return $this->isFriend(); 
+							break; 
+					}
+					break; 
 				case "data": 
 					switch($this->datavisible($arParts[1])) {
 						case VISIBILITY_HIDDEN:   
@@ -640,6 +716,9 @@
 				case "data": 
 					if (($strValue != "")&&(is_null($this->arData))) $this->arData = json_decode($strValue, TRUE); 
 					break; 	
+				case "bestanden": 
+					if (($strValue != "")&&(is_null($this->arBestanden))) $this->arBestanden = json_decode($strValue, TRUE); 
+					break; 	
 				case "visible":  
 					if (is_null($this->bVisible)) $this->visible($strValue);
 					break; 	
@@ -714,7 +793,8 @@
 					if (is_null($this->strPassword)) $this->password(owaesTime()); 
 					if (is_null($this->iLastUpdate)) $this->lastupdate(owaesTime());
 					if (is_null($this->bAdmin)) $this->admin(FALSE);
-					if (is_null($this->arData)) $this->arData = array(); 
+					if (is_null($this->arData)) $this->arData = array();
+					if (is_null($this->arBestanden)) $this->arBestanden = array(); 
 					
 					if (is_null($this->bVisible)) $this->visible(TRUE);
 					if (!isset($this->arVisible["firstname"])) $this->visible("firstname", VISIBILITY_VISIBLE);
@@ -825,6 +905,7 @@
 					"location_lat" => $this->iLocationLat, 
 					"location_long" => $this->iLocationLong, 
 					"data" => json_encode($this->arData), 
+					"bestanden" => json_encode($this->arBestanden), 
 				);   
 				if (user(me())->admin()) $arVelden["admin"] = ($this->admin()?1:0); 
 				$oUser = new database();
@@ -1209,7 +1290,7 @@
 			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
 			
 			/* START LUSSEN [friends]xxx[/friends] */ 
-			$arLoopStrings = array("friends", "groups", "activities", "payments");
+			$arLoopStrings = array("friends", "groups", "activities", "payments", "files");
 			foreach ($arLoopStrings as $strLoop) {
 				$arCheckRegXs = array(
 					"/\[if:$strLoop\]([\s\S]*?)\[\/if:$strLoop\]/", // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]
@@ -1238,6 +1319,9 @@
 							break; 
 						case "payments": 
 							$arList = $this->payments("all");
+							break; 
+						case "files": 
+							$arList = $this->files();
 							break; 
 						default: 
 							$arList = array(); 
@@ -1285,6 +1369,14 @@
 										break; 
 									case "payments": 
 										$strSubHTML .= $oItem->html($arResult[3][$i]); 
+										break; 
+									case "files": 
+										$strSubHTML .= $arResult[3][$i];  
+										$strSubHTML = str_replace("[icon:64x64]", icon($oItem["filename"], 64, 64), $strSubHTML);  
+										$strSubHTML = str_replace("[select:visible:file]", showDropdown("xfilevisibility-" . $oItem["key"], $oItem["visible"], "<option value='-1'> Bestand verwijderen</option>"), $strSubHTML);   
+										foreach($oItem as $strKey=>$strVal) {
+											$strSubHTML = str_replace("[$strKey]", $strVal, $strSubHTML); 
+										}
 										break; 
 									default: 
 										$strSubHTML .= $arResult[3][$i]; 
@@ -1373,7 +1465,7 @@
 				if (!is_null($strResult)) $strHTML = str_replace("[$strTag]", $strResult, $strHTML); 
 			} 
 
-			return $strHTML; 
+			return specialHTMLtags($strHTML); 
 		} 
 		private function imageregreplace(&$matches) { 
 			return $this->getImage($matches[1], FALSE);  
@@ -1403,6 +1495,8 @@
 					return $this->telephone(); 
 				case "description": 
 					return html($this->description()); 
+				case "description:pure": 
+					return ($this->description()); 
 				case "link": 
 					return $this->getURL(); 
 				case "url": 
@@ -1578,4 +1672,3 @@
 
 	}
 	 
-?>

@@ -88,4 +88,4 @@
 			// echo $oDB->table(TRUE); 
 		}
 	}
-?>
+	

@@ -5,6 +5,26 @@
 		if (!is_null($iID)) $i_GLOBAL_userid = $iID; 
 		return $i_GLOBAL_userid; 
 	}
+	
+	function specialHTMLtags($strHTML) { /* [htmlencode]huppeldepup<script>alert("test"); </script>[/htmlencode]  */
+		preg_match_all("/\[htmlencode\]([\s\S]*?)\[\/htmlencode\]/", $strHTML, $arResult); 
+		for ($i=0;$i<count($arResult[0]);$i++) {  
+			$strHTML = str_replace($arResult[0][$i], htmlspecialchars($arResult[1][$i]), $strHTML);
+		} 
+		
+		preg_match_all("/\[showurls\]([\s\S]*?)\[\/showurls\]/", $strHTML, $arResult); 
+		for ($i=0;$i<count($arResult[0]);$i++) {  
+			$strSubHTML = $arResult[1][$i]; 
+			$strSubHTML = preg_replace("/([^\w\/])(www\.[a-z0-9\-]+\.[a-z0-9\-]+)/i", "$1http://$2",$strSubHTML); /*** make sure there is an http:// on all URLs ***/ 
+//			$strSubHTML = preg_replace("/([\w]+:\/\/[\w-?&;#~=\.\/\@]+[\w\/])/i","<a target=\"_blank\" href=\"$1\">$1</a>",$strSubHTML); /*** make all URLs links ***/
+			$strSubHTML = preg_replace("/(([\w]+:\/\/)([\w-?&;#~=\.\/\@]+[\w\/]))/i","<a target=\"_blank\" href=\"$1\">$3</a>",$strSubHTML); /*** make all URLs links ***/
+			$strSubHTML = preg_replace("/([\w-?&;#~=\.\/]+\@(\[?)[a-zA-Z0-9\-\.]+\.([a-zA-Z]{2,3}|[0-9]{1,3})(\]?))/i","<a href=\"mailto:$1\">$1</a>",$strSubHTML);
+
+			$strHTML = str_replace($arResult[0][$i], $strSubHTML, $strHTML); 
+		} 
+
+		return $strHTML; 
+	}
 	 
 	function owaesTime() {
 		$iSpeed = settings("date", "speed"); 
@@ -23,6 +43,19 @@
 			$strHTML = preg_replace("/\[$strTag\][\s\S]*?\[\/$strTag\]/", "", $strHTML);  
 		}
 		return $strHTML; 
+	}
+	
+	function icon($strFilename, $iWidth=64, $iHeight=64) {
+		$arFile = explode(".", $strFilename); 
+		$strExt = strtolower($arFile[count($arFile)-1]); 
+		$arExt = array("jpg", "zip", "gif", "bmp", "pdf", "png", "xls", "xlsx", "doc", "docx", "txt", "md", "ppt", "pps", "odt", "csv", "ods", "odp", "svg"); 
+		if (in_array($strExt, $arExt)) return fixpath("img/filetypes/$strExt.png"); 	
+		switch(strtolower($strExt)) { 
+			case "jpeg": 
+				return fixpath("img/filetypes/jpg.png"); 	
+				break; 	
+		}
+		return fixpath("img/filetypes/other.png"); 	
 	}
 
 
@@ -138,8 +171,9 @@
 
  
 	
-	function showDropdown($strName, $iValue) { // de dropdown bij instellingen en profile-page waar kan ingesteld worden wie wat ziet
+	function showDropdown($strName, $iValue, $strExtra = "") { // de dropdown bij instellingen en profile-page waar kan ingesteld worden wie wat ziet
 		$strHTML = "<select name=\"$strName\" class=\"form-control\">"; 
+		$strHTML .= $strExtra; 
 		$strHTML .= "<option value=\"" . VISIBILITY_VISIBLE . "\"" . ((intval($iValue)==VISIBILITY_VISIBLE) ? " selected=selected" : "") . ">Zichtbaar voor iedereen</option>"; 
 		$strHTML .= "<option value=\"" . VISIBILITY_FRIENDS . "\"" . ((intval($iValue)==VISIBILITY_FRIENDS) ? " selected=selected" : "") . ">Enkel zichtbaar voor vrienden</option>"; 
 		$strHTML .= "<option value=\"" . VISIBILITY_HIDDEN . "\"" . ((intval($iValue)==VISIBILITY_HIDDEN) ? " selected=selected" : "") . ">Verborgen</option>"; 

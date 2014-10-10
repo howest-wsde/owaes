@@ -127,7 +127,7 @@
         </div>
         
 		[if:payments]
-            <div class="well well-volgers">
+            <div class="well well-transacties">
                 <h3>Transactie's <span class="badge">[payments:count]</span></h3>
     
                 <div class="list-group">
@@ -145,36 +145,38 @@
                 [if:payments>10]<p class="meer"><a href="#">meer...</a></p>[/if:payments>10] 
             </div>
 		[/if:payments]
-    </div>
-    <style>
-		div.in {background: #ddeedd; }
-		div.out {background: #ffe5e5; }
-		img.mini {width: 30px; height: 30px; float: left; margin-right: 10px; }
-		.inout {display: none; float: left; width: 50px; text-align: center; }
-		.credits {display: inline-block; float: left; width: 55px; }
-		.owaes {display: inline-block; float: left; width: 155px; }
-	</style>
+    </div> 
     <div class="col-md-8">
             <div class="well well-intro">
                 <h3>
                     Info
                     [me]<span data-toggle="modal" data-target="#editPersoonlijkeInformatie" class="icon icon-settings"></span>[/me]
                 </h3>
-                <p>[description]</p>
+                <p>[showurls][description][/showurls]</p>
                 [userdetails] 
             </div>
-            
-            <!--<div class="well well-intro"> 
-                <h3>
-                	Bestanden
-                    [me]<span data-toggle="modal" data-target="#editBestanden" class="icon icon-settings"></span>[/me]
-                </h3>
-                <ul class="varia">
-                    <li><img src="img/placeholder.png" /> <a href="#">CV</a></li>
-                    <li><img src="img/placeholder.png" /> <a href="#">Iets anders...</a></li>
-                    <li><img src="img/placeholder.png" /> <a href="#">Nog iets anders...</a></li>
-                </ul>
-            </div>-->
+           
+           [notme]
+               [if:files]
+               <div class="well well-intro"> 
+                    <h3>Bestanden</h3>
+                    <ul class="varia">
+                        [files]<li><img src="[icon:64x64]" /> <a href="[link]" target="_blank">[title]</a></li>[/files]
+                    </ul>
+                </div>
+                [/if:files]
+            [/notme]
+            [me]
+               <div class="well well-intro"> 
+                    <h3>
+                        Bestanden
+                        <span data-toggle="modal" data-target="#editBestanden" class="icon icon-settings"></span>
+                    </h3>
+                    <ul class="varia">
+                        [files]<li><img src="[icon:64x64]" /> <a href="[link]" target="_blank">[title]</a></li>[/files]
+                    </ul>
+                </div> 
+            [/me]
              
             [if:groups]
                 <div class="well well-bedrijven">
@@ -242,7 +244,7 @@
     <div class="modal fade" id="editBasisgegevens" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form class="form-horizontal" method="post" enctype="multipart/form-data"> 
+                <form class="form-horizontal basisgegevens" method="post" enctype="multipart/form-data"> 
                 	[editprofile-key]
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -272,7 +274,7 @@
                             <div class="form-group">
                                 <label for="profielfoto" class="control-label col-lg-2">Profielfoto:</label>
                                 <div class="col-lg-6">
-                                    <input type="file" name="img" id="img" class="form-control" id="profielfoto">
+                                    <input type="file" name="img" id="img" ext="jpg,jpeg,gif,bmp,png" lass="form-control" id="profielfoto">
                                 </div>
                                 <div class="col-lg-4">
                                     [select:visible:img]
@@ -346,7 +348,7 @@
     <div class="modal fade" id="editPersoonlijkeInformatie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form class="form-horizontal" method="post">
+                <form class="form-horizontal persoonlijkeinformatie" method="post">
                 	[editprofile-key]
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -356,7 +358,7 @@
                         <fieldset>
                             <h4>Intro</h4>
                             <div class="form-group col-lg-12">
-                                <textarea name="description" class="form-control" placeholder="Plaats hier een introductie over jezelf.">[description]</textarea>
+                                <textarea name="description" class="form-control" placeholder="Plaats hier een introductie over jezelf.">[description:pure]</textarea>
                             </div> 
                             <h4>Andere informatie</h4> 
                             <div class="form-group">
@@ -424,7 +426,7 @@
     <div class="modal fade" id="editBestanden" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form class="form-horizontal" method="post">
+                <form class="form-horizontal bestanden" method="post" enctype="multipart/form-data"> 
                 	[editprofile-key]
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
@@ -434,18 +436,35 @@
                         <fieldset>
                             <h4>Bestanden</h4>
                             <div class="files">
+                                [files] 
+									<div class="form-group file-uploaden"> 
+                                    
+                                        <input type="hidden" name="existingfiles[]" class="existingfiles" value="xfiletitle-[key],xfilename-[key],xfilevisibility-[key],[key]" />
+                                        <div class="col-lg-3">
+                                            <input type="text" class="form-control filetitle" name="xfiletitle-[key]" placeholder="Titel voor bestand" value="[htmlencode][title][/htmlencode]" />
+                                        </div>
+                                        <div class="col-lg-5">
+                                            <input type="text" name="xfilename-[key]" disabled="disabled" value="[filename]" class="form-control">
+                                        </div>
+                                        <div class="col-lg-4"> 
+                                        	[select:visible:file] 
+                                        </div>
+									</div>
+                                [/files]
+                                
                                 <div class="form-group file-uploaden">
+                                	<input type="hidden" name="files[]" class="veldnamen" value="bestandtitel0,bestand0,zichtbaar0" />
                                     <div class="col-lg-3">
-                                        <input type="text" class="form-control filetitle" placeholder="Titel voor bestand">
+                                        <input type="text" class="form-control filetitle" name="bestandtitel0" placeholder="Titel voor bestand">
                                     </div>
                                     <div class="col-lg-5">
-                                        <input type="file" class="form-control filedata">
+                                        <input type="file" name="bestand0" ext="pdf,doc,docx,txt,jpg,jpeg,gif,bmp,png,xls,xlsx,md,ppt,pps,odt,ods,odp,csv,svg" class="form-control filedata">
                                     </div>
                                     <div class="col-lg-4"> 
-                                        <select class="form-control">
-                                            <option>Zichtbaar voor iedereen</option>
-                                            <option>Zichtbaar voor vrienden</option>
-                                            <option>Verborgen</option>
+                                        <select class="form-control" name="zichtbaar0"> 
+                                            <option selected="selected" value="1">Zichtbaar voor iedereen</option>
+                                            <option value="2">Enkel zichtbaar voor vrienden</option>
+                                            <option value="0">Verborgen</option>
                                         </select>
                                     </div>
                                 </div>

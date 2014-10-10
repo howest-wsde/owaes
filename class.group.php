@@ -15,6 +15,7 @@
 		private $iID = 0;  
 		private $strNaam = NULL;
 		private $strAlias = NULL;  
+		private $strWebsite = NULL;  
 		private $strInfo = NULL;  
 		private $iAdmin = NULL;  
 		private $arUsers = NULL;  
@@ -50,6 +51,18 @@
 			if (!is_null($strNaam)) $this->strNaam = $strNaam; 
 			if (is_null($this->strNaam)) $this->load();
 			return $this->strNaam; 
+		}
+		
+		public function website($strWebsite = NULL) {
+			if (!is_null($strWebsite)) $this->strWebsite = $strWebsite; 
+			if (is_null($this->strWebsite)) $this->load();
+			$strURL = $this->strWebsite;  
+			if (strrpos($strURL, "://") === false) { 
+				if (preg_match("/[a-z0-9\-]\.[a-z0-9\-]/i", $strURL)) $strURL = "http://" . $strURL; 
+				//if (strrpos($strURL, ".") !== false) $strURL = "http://" . $strURL; 
+			}
+			
+			return $strURL; 
 		}
 		
 		public function alias($strAlias = NULL) {
@@ -180,6 +193,7 @@
 				$oDB = new database($strSQL, TRUE); 
 				if ($oDB->record()) {
 					if (is_null($this->strNaam)) $this->naam($oDB->get("naam")); 
+					if (is_null($this->strWebsite)) $this->website($oDB->get("website")); 
 					if (is_null($this->strAlias)) $this->alias($oDB->get("alias")); 
 					if (is_null($this->strInfo)) $this->info($oDB->get("info")); 
 					if (is_null($this->iAdmin)) $this->admin($oDB->get("admin")); 
@@ -187,6 +201,7 @@
 					if (is_null($this->iLastUpdate)) $this->lastupdate($oDB->get("lastupdate")); 
 				} else {
 					if (is_null($this->strNaam)) $this->naam(""); 
+					if (is_null($this->strNaam)) $this->website(""); 
 					if (is_null($this->strAlias)) $this->alias(""); 
 					if (is_null($this->strInfo)) $this->info(""); 
 					if (is_null($this->iAdmin)) $this->admin("");
@@ -195,6 +210,7 @@
 				}
 			} else {
 				if (is_null($this->strNaam)) $this->naam(""); 
+				if (is_null($this->strNaam)) $this->website(""); 
 				if (is_null($this->strAlias)) $this->alias(""); 
 				if (is_null($this->strInfo)) $this->info(""); 
 				if (is_null($this->iAdmin)) $this->admin("");
@@ -206,6 +222,7 @@
 		public function update() {
 			$arVelden = array(); 
 			if (!is_null($this->strNaam)) $arVelden["naam"] = $this->strNaam; 
+			if (!is_null($this->strWebsite)) $arVelden["website"] = $this->strWebsite; 
 			if (!is_null($this->strAlias)) $arVelden["alias"] = $this->strAlias; 
 			if (!is_null($this->strInfo)) $arVelden["info"] = $this->strInfo; 
 			if (!is_null($this->iAdmin)) $arVelden["admin"] = $this->iAdmin; 
@@ -302,7 +319,8 @@
 				$strResult = $this->HTMLvalue($strTag);  
 				if (!is_null($strResult)) $strHTML = str_replace("[$strTag]", $strResult, $strHTML); 
 			} 
-			return $strHTML; 
+			
+			return specialHTMLtags($strHTML);  
 		}
 		
 		private function HTMLvalue($strTag, $strTemplate = NULL) {
@@ -311,6 +329,8 @@
 					return $this->id(); 
 				case "naam": 
 					return html($this->naam()); 
+				case "website": 
+					return $this->website(); 
 				case "link": 
 					return $this->getURL(); 
 				case "description": 
@@ -455,4 +475,3 @@
 		}
 	}   
 	
-?>
