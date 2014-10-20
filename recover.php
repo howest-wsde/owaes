@@ -17,7 +17,7 @@
 			$oDB->execute("insert into tblUserRecover (user, timeasked, timeexpires, ipasked, conf, passcode) values ('" . $oUser->id() . "', '" . owaesTime() . "', '" . $iExpires . "', '" . $_SERVER['REMOTE_ADDR'] . "', '" . $_SERVER['HTTP_USER_AGENT'] . "', '" . $strPass . "'); "); 
 			$oMail = new email(); 
 				$oMail->setTo($oUser->email(), $oUser->getName());
-				$strMail = $oUser->HTML("templates/mail.recoverpassword.html"); 
+				$strMail = $oUser->HTML("mail.recoverpassword.html"); 
 				$strLink = fixPath("login.php?recover=" . urlencode($strPass), TRUE); 
 				$strMail = str_replace("[recoverurl]", $strLink, $strMail); 
 				$strMail = str_replace("[recoverexpirydate]", date("H:i", $iExpires), $strMail); 

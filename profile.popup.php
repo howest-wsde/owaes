@@ -7,6 +7,6 @@
     <head> 
     </head>
     <body id="profile">  
-		<? echo $oProfile->html("templates/userpopup.html"); ?> 
+		<? echo $oProfile->html("userpopup.html"); ?> 
     </body>
 </html>

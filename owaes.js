@@ -20,6 +20,25 @@ $(document).ready(function() {
 		return false; 	
 	})
 	
+	$(document).on("click", "a.loadmore", function(){ 
+		oLink = this; 
+		arVars = {};  
+		$.each(this.attributes, function(i, attrib){
+			arVars[attrib.name] = attrib.value; 
+		});  
+		strID = $(this).attr("href").split("#")[1]; 
+		oEl = $("a[name='" + strID + "']"); 
+	 	$("<div>").load("loadmore.php", arVars, function(strResult) {
+			oEl.before($(strResult)); 
+			if (strResult.indexOf("<!-- EOL -->")>=0) {
+				$(oLink).hide(); 
+			} else {
+				$(oLink).attr("start", parseInt($(oLink).attr("start"))+parseInt($(oLink).attr("count")));
+			}
+		});
+		return false; 
+	});
+	
 	$(document).on("change", "input[ext]", function(){
 		if ($(this).attr("type") == "file") { 
 			arExt = $(this).attr("ext").toLowerCase().split(","); 
@@ -89,7 +108,7 @@ $(document).ready(function() {
 		return false; 
 	})
 	
-	$("pre.vardump").each(function(){ // debugging-purposes (****)
+	$("textarea.vardump").each(function(){ // debugging-purposes (****)
 		strFull = $(this).text(); 
 		strTitle = $(this).attr("title")?($(this).attr("title") + ": " + strFull.split(" ")[0]):strFull.split(" ")[0]; 
 		$(this).attr("rel", strFull).attr("title", strTitle).html(strTitle).mouseover(function(){

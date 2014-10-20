@@ -20,8 +20,8 @@
     	<div class="body content content-lists content-lists-badges container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("templates/leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("templates/user.html");
+					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                 
@@ -31,11 +31,11 @@
                 <div class="row sidecenterright behaaldebadges">
                         <? 
                             //foreach ($oBadgesList->getList() as $oBadge) { 
-                            //    echo $oBadge->HTML("templates/badgesfromlist.html");  
+                            //    echo $oBadge->HTML("badgesfromlist.html");  
                             //}
                             
                             //for ($i = 1; $i <= 10; $i++) {
-                            //    readfile("templates/badgesfromlist.html");
+                            //    readfile("badgesfromlist.html");
                             //}
                         ?>
                         
@@ -115,11 +115,11 @@
                 <div class="row sidecenterright resterendebadges">
                         <? 
                             //foreach ($oBadgesList->getList() as $oBadge) { 
-                            //    echo $oBadge->HTML("templates/badgesfromlist.html");  
+                            //    echo $oBadge->HTML("badgesfromlist.html");  
                             //}
                             
                             //for ($i = 1; $i <= 20; $i++) {
-                            //    readfile("templates/badgesfromlist.html");
+                            //    readfile("badgesfromlist.html");
                             //}
                             
                             

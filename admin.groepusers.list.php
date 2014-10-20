@@ -7,7 +7,7 @@
 	
 	$arResult = array(); 
 	foreach ($oUserList->getList() as $oUser)  {
-		$arResult[] = "" . $oUser->html("templates/admin.useradd.html") . ""; 
+		$arResult[] = "" . $oUser->html("admin.useradd.html") . ""; 
 		
 //		$arResult[] = "<li><button value=\"" . $oUser->id() . "\" name=\"adduser\">" . $oUser->getName() . "</button></li>";  
 	}

@@ -13,7 +13,7 @@
 	$oOwaesList->filterPassedDate(owaesTime()); 
 
 	foreach ($oOwaesList->getList() as $oItem) { 
-		echo $oItem->HTML("templates/owaeskort.html"); 
+		echo $oItem->HTML("owaeskort.html"); 
 	}
  
 ?>

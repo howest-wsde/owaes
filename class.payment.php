@@ -125,8 +125,8 @@
 			}		
 		}
 
-		public function html($strHTML = NULL) { 
-			if (is_null($strHTML)) {
+		public function html($strTemplate = NULL) { 
+			if (is_null($strTemplate)) {
 				$strHTML = "<form class=\"pay\" action=\"pay.php\" method=\"post\">"; 
 				if ($this->signed()) {
 					$strHTML .= "<dl class=\"payment\">";
@@ -153,6 +153,7 @@
 				$strHTML .= "</form>"; 
 				return $strHTML; 	
 			} else { 
+				$strHTML = template($strTemplate);  
 				preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]/", $strHTML, $arResult);   // alle tags (zonder whitespace)
 				if (isset($arResult[1])) foreach ($arResult[1] as $strTag){ 
 					$strResult = $this->HTMLvalue($strTag);  

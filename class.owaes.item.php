@@ -183,7 +183,7 @@
 			$this->arMomenten = array(); 
 			$arLoadedItems = loadedOwaesItems(); 
 			if (!in_array($this->id(), $arLoadedItems)) $arLoadedItems[] = $this->id();  
-			$oDB = new database("select * from tblMarketDates where market in (" . implode(",", $arLoadedItems) . ");", TRUE); 
+			$oDB = new database("select * from tblMarketDates where market in (" . implode(",", $arLoadedItems) . ") order by datum;", TRUE); 
 			while ($oDB->nextRecord()) { 
 				owaesitem($oDB->get("market"))->addMoment($oDB->get("datum"), $oDB->get("start"), $oDB->get("tijd"), "DB");  
 			}  
@@ -294,8 +294,17 @@
 									//$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_CANCEL . "\" class=\"active subscribe\">onderhandelend</a> ";
 									break; 
 								case SUBSCRIBE_CONFIRMED: 
-									$strSubscription .= "<p>Uw inschrijving werd bevestigd</p>";
-									// geen break want inschrijven opnieuw mogelijk
+									//$strSubscription .= "<p>Uw inschrijving werd bevestigd</p>";
+									
+									$strSubscription .= "<a href=\"#\" class=\"btn-sm btn btn-success pull-right\"><span class=\"icon icon-inschrijven\"></span>Inschrijving bevestigd</a> "; 
+									/*$strSubscription .= "<div class=\"btn-group pull-right\">
+  <button type=\"button\" class=\"btn btn-success dropdown-toggle\" data-toggle=\"dropdown\">
+    <span class=\"icon icon-inschrijven\"></span> Inschrijving bevestigd 
+  </button>
+  <ul class=\"dropdown-menu\" role=\"menu\"> 
+    <li><a href=\"#\">Markeren als uitgevoerd</a></li>
+  </ul>
+</div>"; */
 									break; 
 								case SUBSCRIBE_DECLINED:
 									$strSubscription .= "<p>Uw inschrijving werd afgezen</p>";
@@ -411,8 +420,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			return $arClasses; 
 		}
 		
-		public function HTML($strTemplate, $bFile = TRUE) { // vraagt pad van template en returns de html met replaced [tags]  
-			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
+		public function html($strTemplate) { // vraagt pad van template en returns de html met replaced [tags]  
+			$strHTML = template($strTemplate); 
 			
  			preg_match_all("/\[if:([a-zA-Z0-9-_:#]+)\]([\s\S]*?)\[\/if:\\1\]/", $strHTML, $arResult);   // bv. [if:firstname]firstname ingevuld en zichtbaar[/if:firstname]  
 			for ($i=0;$i<count($arResult[0]);$i++) {
@@ -631,6 +640,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "aantalInschrijvingen":  
 					$arSubscriptions = $this->subscriptions(); 
 					return (count($arSubscriptions)==1) ? "1 inschrijving " : count($arSubscriptions) . " inschrijvingen ";
+				//case "status": 
+				//	$arStatus = array(); 
+				//	$arStatus[] = "<div class=\"transaction\">creditoverdracht: ok</div>"; 
+				//	$arStatus[] = "<div class=\"subscription\">inschrijving: ok</div>"; 
+				//	return implode("", $arStatus); 
 				case "actions":  
 					$arActions = array(); 
 					$arSubscriptions = $this->subscriptions();  

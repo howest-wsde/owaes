@@ -20,8 +20,8 @@
     	<div class="body content content-lists-users container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("templates/leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("templates/user.html");
+					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                 <div class="usersfromlist row sidecenterright">
@@ -30,7 +30,7 @@
 
                         <? 
                             foreach ($oUserList->getList() as $oUser) { 
-                                echo "<div id=\"user-" . $oUser->id() . "\">" . $oUser->HTML("templates/userfromlist.html") . "</div>";   
+                                echo "<div id=\"user-" . $oUser->id() . "\">" . $oUser->HTML("userfromlist.html") . "</div>";   
                             }
                         ?>
                     <!--</div>-->

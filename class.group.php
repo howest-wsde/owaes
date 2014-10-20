@@ -251,10 +251,87 @@
 			}	
 		}
 		
-		public function html($strTemplate = "", $bFile = TRUE) {
-			$strHTML = $bFile ? content($strTemplate) : $strTemplate;   
+		public function html($strTemplate = "") {
+			$strHTML = template($strTemplate);
 			
-			/* LEDEN - START */
+	/* START LUSSEN [friends]xxx[/friends] */ 
+			$arLoopStrings = array("members", "market");
+			foreach ($arLoopStrings as $strLoop) {
+				$arCheckRegXs = array(
+					"/\[if:$strLoop\]([\s\S]*?)\[\/if:$strLoop\]/", // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]
+					"/\[if:$strLoop(>([0-9]+){0,1})\]([\s\S]*?)\[\/if:$strLoop\\1\]/", // bv. [if:friends>3]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends>3]  
+					"/\[$strLoop((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/$strLoop\\1\]/",  // bv. [friends]loop[/friends] 
+					"/\[$strLoop:count\]/" // bv. [friends:count]
+				); 
+				$bSet = FALSE; 
+				foreach ($arCheckRegXs as $strCheckRX) { 
+					if(preg_match($strCheckRX, $strHTML)) $bSet = TRUE;  
+				} 
+				if ($bSet)  { 
+					switch($strLoop) {
+						case "members": 
+							$arList = $this->users();
+							break;  
+						case "market":  
+							$oList = new owaeslist();   
+							$oList->filterByGroup($this->id()); 
+							$arList = $oList->getList();   
+							break; 
+						default: 
+							$arList = array(); 
+					}  
+					
+					preg_match_all("/\[$strLoop:count\]/", $strHTML, $arResult);   // bv. [data:facebook] 
+					for ($i=0;$i<count($arResult[0]);$i++) { // [friends:count]  
+						$strHTML = str_replace($arResult[0][$i], count($arList), $strHTML);  
+					} 
+					
+					preg_match_all("/\[if:$strLoop\]([\s\S]*?)\[\/if:$strLoop\]/", $strHTML, $arResult);  // regex opnieuw runnen want kan aangepast zijn in vorige loop
+					for ($i=0;$i<count($arResult[0]);$i++) { // run trough [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]  
+						if (count($arList)>0) {
+							$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
+						} else {
+							$strHTML = str_replace($arResult[0][$i], "", $strHTML);
+						} 
+					} 
+					
+					preg_match_all("/\[if:$strLoop(\>([0-9]+)){0,1}\]([\s\S]*?)\[\/if:$strLoop\\1\]/", $strHTML, $arResult); 
+					for ($i=0;$i<count($arResult[0]);$i++) { // run trough [if:friends>3]<a href="loadmore">meer...</a>[/if:friends>3]  
+						if (count($arList)>intval($arResult[2][$i])) {
+							$strHTML = str_replace($arResult[0][$i], $arResult[3][$i], $strHTML);
+						} else {
+							$strHTML = str_replace($arResult[0][$i], "", $strHTML);
+						} 
+					}  
+					 
+					preg_match_all("/\[$strLoop((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/$strLoop\\1\]/", $strHTML, $arResult);   // regex opnieuw runnen want kan aangepast zijn in vorige loop
+					for ($i=0;$i<count($arResult[1]);$i++) { // run trough [friends]loop[/friends] 
+						$strSubHTML = ""; 
+						$iTeller = 0; 
+						$iMax = intval($arResult[2][$i]); 
+						foreach ($arList as $oItem) {  
+							if ($iMax == 0 || ++$iTeller <= $iMax) {
+								switch($strLoop) {
+									case "members": 
+										$strSubHTML .= $oItem->html($arResult[3][$i]);
+										break;  
+									case "market": 
+										$strSubHTML .= $oItem->html($arResult[3][$i]);
+										break;  
+									default: 
+										$strSubHTML .= $arResult[3][$i]; 
+										break; 
+								}
+							} 
+						}
+						$strHTML = str_replace($arResult[0][$i], $strSubHTML, $strHTML); 
+					}  
+
+				}
+			}
+			/* EIND LUSSEN [friends]xxx[/friends] */  
+			
+			/* LEDEN - START 
 			preg_match_all("/\[if:members\]([\s\S]*?)\[\/if:members\]/", $strHTML, $arResult);   // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]   
 			for ($i=0;$i<count($arResult[0]);$i++) {
 				if (count($this->users())>0) {
@@ -276,7 +353,7 @@
 			/* LEDEN - END */
 			
 			
-			/* MARKET - START */
+			/* MARKET - START  
 			preg_match_all("/\[if:market\]([\s\S]*?)\[\/if:market\]/", $strHTML, $arResult);   // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]   
 			for ($i=0;$i<count($arResult[0]);$i++) { 
 				$oOwaesList = new owaeslist();   
@@ -353,7 +430,7 @@
 				case "if:rights:editpage": 
 					return $this->userrights()->editpage() ? $strTemplate : ""; 
 				case "admin":  
-					return $this->admin()->html($strTemplate, FALSE);  
+					return $this->admin()->html($strTemplate);  
 			}
 		}
 		

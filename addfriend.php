@@ -23,7 +23,7 @@
 	*/
 	
 	if (isset($_GET["ajax"])) { 
-		echo $oUser->HTML("templates/userfromlist.html");  
+		echo $oUser->HTML("userfromlist.html");  
 	} else {  
 		header("location:" . $_SERVER["HTTP_REFERER"]);
 	}

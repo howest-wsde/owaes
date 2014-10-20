@@ -36,8 +36,8 @@
             $this->addJS("script/fullcalendar.min.js"); 
             $this->addCSS("style/fullcalendar.css");
 			
-			$this->addJS("owaes.js?v3");  
-            $this->addJS("main.js?v3");
+			$this->addJS("owaes.js?v4");  
+            $this->addJS("main.js?v4");
 			
 			switch ($this->filename(FALSE)) {
 				case "index.php": 
@@ -278,10 +278,11 @@
 			return "<section class='block block-block contextual-links-region clearfix'>
                         <div class='container'>
 	                        <div class='yellowPart'><span>OWAES &ndash; Online Werk Activatie EcoSysteem &ndash; is een <a href='http://www.esf-agentschap.be/' tabindex='-1'>ESF</a> ondersteund onderzoeksproject onder leiding van Howest.</span></div>
+							<div class='algemenevoorwaarden'><a href='" . fixPath("algemenevoorwaarden.php") . "'>algemene voorwaarden</a></div>
 	                        <div class='whitePart'>
-                            <img src='img/footer/pub_leeuw.png' alt='' />
-                            <img src='img/footer/logo_eu_.png' alt='' />
-                            <a href='http://www.esf-agentschap.be' tabindex='-1' target='_blank'><img class='esfLogoFooter' src='img/footer/esfLogo.png' alt='ESF' /></a>
+                            <img src='" . fixPath("img/footer/pub_leeuw.png") . "' alt='' />
+                            <img src='" . fixPath("img/footer/logo_eu_.png") . "' alt='' />
+                            <a href='http://www.esf-agentschap.be' tabindex='-1' target='_blank'><img class='esfLogoFooter' src='" . fixPath("img/footer/esfLogo.png") . "' alt='ESF' /></a>
                             </div>
                         </div>
                      </section>";

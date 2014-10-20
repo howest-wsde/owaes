@@ -79,7 +79,7 @@
 			$oUser->update();  
 			$oMail = new email(); 
 				$oMail->setTo($oUser->email, $oUser->getName());
-				$strMail = $oUser->HTML("templates/mail.subscribe.html");  
+				$strMail = $oUser->HTML("mail.subscribe.html");  
 				$oMail->setBody($strMail);  
 				$oMail->setSubject("OWAES inschrijving"); 
 			$oMail->send();  

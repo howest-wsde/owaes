@@ -201,8 +201,8 @@ input.time {width: 100%; display: block; }
     	<div class="body content content-market content-market-add container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("templates/leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("templates/user.html");
+					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                 <div class="container sidecenterright"> 

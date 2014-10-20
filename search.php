@@ -20,7 +20,7 @@
                 <div class="container sidecenterright">
                     <div class="row">
 					    <? 
-                            echo $oSecurity->me()->html("templates/user.html");
+                            echo $oSecurity->me()->html("user.html");
                         ?>
                     </div>
                     <div class="main market"> 
@@ -92,14 +92,14 @@
 								        // $oOwaesList->setUser($oUser); 
 								        if (count($oOwaesList->getList())>0) echo ("<h1>Owaes</h1>");  
 								        foreach ($oOwaesList->getList() as $oItem) { 
-                                       		echo $oItem->HTML("templates/owaeskortsearch.html"); 
+                                       		echo $oItem->HTML("owaeskortsearch.html"); 
 								        }
 								        $oUserList = new userlist();   
 								        $oUserList->filter("visible"); 
 								        $oUserList->search($strSearch);  
 								        if (count($oUserList->getList())>0) echo ("<h1>Gebruikers</h1>");  
 								        foreach ($oUserList->getList() as $oUser) { 
-									        echo $oUser->HTML("templates/userfromlist.html"); 
+									        echo $oUser->HTML("userfromlist.html"); 
 								        }
                                         
                                         if((count($oOwaesList->getList())==0) && (count($oUserList->getList())==0)){

@@ -1,6 +1,6 @@
 <div class="col-sm-6 userlistitem" id="userfromlist[id]">
 
-    [notme]
+    [if:notme]
         <div class="btn-group pull-right">
             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                 Acties <span class="caret"></span>
@@ -8,16 +8,16 @@
             <ul class="dropdown-menu" role="menu">
                 <li><a href="#"><span class="icon icon-volgen"></span><span class="title">Volgen</span></a></li>
                 <li>
-                    [friend]<a href="[link:addfriend]" class="ajax" rel="user-[id]"><span class="icon icon-vriendtoevoegen"></span><span class="title">Ontvrienden</span></a>[/friend]
-                    [nofriend:requested]<a href="#" class=""><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap aangevraagd</span></a>[/nofriend:requested]
-                    [nofriend:asked]<a href="[link:addfriend]" class="ajax" rel="user-[id]"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap bevestigen</span></a>[/nofriend:asked]
-                    [nofriend:noconnection]<a href="[link:addfriend]" class="ajax" rel="user-[id]"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriend toevoegen</span></a>[/nofriend:noconnection]
+                    [if:friend]<a href="[link:addfriend]" class="ajax" rel="user-[id]"><span class="icon icon-vriendtoevoegen"></span><span class="title">Ontvrienden</span></a>[/if:friend]
+                    [if:nofriend:requested]<a href="#" class=""><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap aangevraagd</span></a>[/if:nofriend:requested]
+                    [if:nofriend:asked]<a href="[link:addfriend]" class="ajax" rel="user-[id]"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap bevestigen</span></a>[/if:nofriend:asked]
+                    [if:nofriend:noconnection]<a href="[link:addfriend]" class="ajax" rel="user-[id]"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriend toevoegen</span></a>[/if:nofriend:noconnection]
                 </li>
                 <li class="divider"></li>
                 [actions] 
             </ul>
         </div>
-    [/notme]
+    [/if:notme]
 
     <div class="well">
         <div class="row">

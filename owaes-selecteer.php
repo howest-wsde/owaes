@@ -32,7 +32,18 @@
 			$oOwaesItem->addSubscription($iUser, SUBSCRIBE_CONFIRMED); 
 			$oConversation = new conversation($iUser); 
 			$oConversation->add($_POST["mailgoedgekeurd"], $oOwaesItem->id() ); 
-
+			
+			$oAction = new action($oOwaesItem->task() ? me() : $iUser);
+			$oAction->type("transaction");  
+			$iDatum = owaestime() + (7*24*60*60); // 7 dagen  
+			foreach ($oOwaesItem->data() as $iTijd) {
+				if ($iTijd > 0) $iDatum = $iTijd + (24*60*60); // 1 dag
+			}
+			$oAction->data("owaes", $iID); 
+			$oAction->data("user", $oOwaesItem->task() ? $iUser : me()); 
+			$oAction->tododate($iDatum);  
+			$oAction->update(); 
+			
 		}
 		if (isset($_POST["afgekeurd"])) foreach ($_POST["afgekeurd"] as $iUser){  
 			$oOwaesItem->addSubscription($iUser, SUBSCRIBE_DECLINED); 
@@ -100,13 +111,13 @@
             <? echo $oPage->startTabs(); ?> 
             <div class="container content content-marktitem">
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("templates/leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("templates/user.html");
+					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                 <!-- <div class="sidecenterright">  -->
                 <div class="ownerDetail"> 
-					<? echo $oOwaesItem->HTML("templates/owaesdetail.html");  ?> 
+					<? echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
 					
                     <? echo ("<form method=\"post\">"); ?>
                     
@@ -122,7 +133,7 @@
 												case SUBSCRIBE_SUBSCRIBE: 
 													$oUser = user($iUser); 
 													echo ("<div id='user" . $oUser->id() . "'>");  
-                                                        echo ($oUser->html("templates/userid.html"));  
+                                                        echo ($oUser->html("userid.html"));  
                                                         echo("<div class='toestemming'>");
 														echo ("<span class='cursor'><a href='#goedkeuren' class='goedkeuren' rel='" . $oUser->id() . "'><span class='icon icon-check'></span><span>Goedkeuren</span></a></span>"); 
 														echo ("<span class='cursor'><a href='#afkeuren' class='afkeuren' rel='" . $oUser->id() . "'><span class='icon icon-close'></span><span>Afkeuren</span></a></span>");
@@ -132,7 +143,7 @@
 												case SUBSCRIBE_NEGOTIATE: 
 													$oUser = user($iUser);
 													echo ("<div id='user" . $oUser->id() . "'>");
-                                                        echo ($oUser->html("templates/userid.html"));  
+                                                        echo ($oUser->html("userid.html"));  
 														echo ("<span class='cursor'><a href='#goedkeuren' class='goedkeuren' rel='" . $oUser->id() . "'><span class='icon icon-check'>Goedkeuren</span></a></span>");
 														echo ("<span class='cursor'><a href='#afkeuren' class='afkeuren' rel='" . $oUser->id() . "'><span class='icon icon-close'>Afkeuren</span></a></span>"); 
 													echo ("</div>"); 
@@ -154,7 +165,7 @@
 												case SUBSCRIBE_DECLINED: 
 													$oUser = user($iUser);
 													echo ("<div id='user" . $oUser->id() . "'>");  
-													echo ($oUser->html("templates/userid.html")); 
+													echo ($oUser->html("userid.html")); 
 													echo ("</div>"); 
 													break;  
 											}
@@ -179,7 +190,7 @@
 													$iConfirmed ++; 
 													$oUser = user($iUser);
 													echo ("<div id='user" . $oUser->id() . "'>");  
-													echo ($oUser->html("templates/userid.html")); 
+													echo ($oUser->html("userid.html")); 
 													$oTransaction = $oValue->payment(); 
 													//$oTransaction = $oOwaesItem->transactions($iUser); 
 													$strIMG = fixPath("img/handshake" . ($oTransaction->signed()?1:0) . ".png");
@@ -213,7 +224,7 @@
                         //                            $iConfirmed ++; 
                         //                            $oUser = new user($iUser);
                         //                            echo ("<div id='user" . $oUser->id() . "'>");  
-                        //                            echo ($oUser->html("templates/userid.html")); 
+                        //                            echo ($oUser->html("userid.html")); 
                         //                            $oTransaction = $oValue->payment(); 
                         //                            //$oTransaction = $oOwaesItem->transactions($iUser); 
                         //                            $strIMG = fixPath("img/handshake" . ($oTransaction->signed()?1:0) . ".png");
@@ -237,7 +248,7 @@
                                     //                $oUser = new user($iUser); 
                                     //                echo ("<div id='user" . $oUser->id() . "'>");  
                                     //                    echo ("<a href='#goedkeuren' class='goedkeuren' rel='" . $oUser->id() . "'>goedkeuren</a>"); 
-                                    //                    echo ($oUser->html("templates/userid.html"));  
+                                    //                    echo ($oUser->html("userid.html"));  
                                     //                    echo ("<a href='#afkeuren' class='afkeuren' rel='" . $oUser->id() . "'>afkeuren</a>");  
                                     //                echo ("</div>"); 
                                     //                break; 
@@ -245,7 +256,7 @@
                                     //                $oUser = new user($iUser);
                                     //                echo ("<div id='user" . $oUser->id() . "'>");  
                                     //                    echo ("<a href='#goedkeuren' class='goedkeuren' rel='" . $oUser->id() . "'>goedkeuren</a>"); 
-                                    //                    echo ($oUser->html("templates/userid.html"));  
+                                    //                    echo ($oUser->html("userid.html"));  
                                     //                    echo ("<a href='#afkeuren' class='afkeuren' rel='" . $oUser->id() . "'>afkeuren</a>"); 
                                     //                echo ("</div>"); 
                                     //                break;  
@@ -260,7 +271,7 @@
                                 //                case SUBSCRIBE_DECLINED: 
                                 //                    $oUser = new user($iUser);
                                 //                    echo ("<div id='user" . $oUser->id() . "'>");  
-                                //                    echo ($oUser->html("templates/userid.html")); 
+                                //                    echo ($oUser->html("userid.html")); 
                                 //                    echo ("</div>"); 
                                 //                    break;  
                                 //            }

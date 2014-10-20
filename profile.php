@@ -35,7 +35,7 @@
         	
             	<div class="row">
 					<?  
-                    echo $oSecurity->me()->html("templates/user.html");
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
  
@@ -43,7 +43,7 @@
 					<?  
 					
  
-						echo $oProfile->html("templates/userprofile.html");  
+						echo $oProfile->html("userprofile.html");  
                     ?>
    
 

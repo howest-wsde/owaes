@@ -45,7 +45,7 @@
                 <div class="container ">
                   <div class="row">
 					<? 
-                    echo $oSecurity->me()->html("templates/user.html");
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                     <div class="main market admin"> 

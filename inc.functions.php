@@ -6,6 +6,7 @@
 		return $i_GLOBAL_userid; 
 	}
 	
+	
 	function specialHTMLtags($strHTML) { /* [htmlencode]huppeldepup<script>alert("test"); </script>[/htmlencode]  */
 		preg_match_all("/\[htmlencode\]([\s\S]*?)\[\/htmlencode\]/", $strHTML, $arResult); 
 		for ($i=0;$i<count($arResult[0]);$i++) {  
@@ -196,25 +197,20 @@
 	}
 	
 	function vardump($oVar, $oVar2 = NULL, $oVar3 = NULL) { // var_dump with layout  
-		$strTitle = ""; 
-		foreach($GLOBALS as $var_name => $value) {
-			if ($value === $oVar) {
-				$strTitle = "title = \"$" . $var_name . "\""; 
-			}
-		}
-		echo ("<pre class=\"vardump\" $strTitle >"); 
-		var_dump($oVar);  
-		echo ("</pre>");  			
-		if (!is_null($oVar2)) {
-			echo ("<pre class=\"vardump\" $strTitle >"); 
-			var_dump($oVar2);  	
-			echo ("</pre>");  			
-		}	
-		if (!is_null($oVar3)) {
-			echo ("<pre class=\"vardump\" $strTitle >"); 
-			var_dump($oVar3);  
-			echo ("</pre>");  		
+		$arDumps = array($oVar);
+		if (!is_null($oVar2)) $arDumps[] = $oVar2; 
+		if (!is_null($oVar3)) $arDumps[] = $oVar3; 
+		
+		echo ("<div style='margin: 20px; '>"); 
+		for ($i=0; $i<count($arDumps); $i++) {
+			$arClasses = array(""); 
+			$arStyle = array("height: 130px; resize: both;");  
+			$arStyle[] = "width: " . floor(100/count($arDumps)) . "%;"; 
+			echo ("<textarea class=\"" . implode(" ", $arClasses) . "\" style=\"" . implode(" ", $arStyle) . "\" wrap=\"off\">"); 
+			var_dump($arDumps[$i]);  
+			echo ("</textarea>");  			
 		} 
+		echo ("</div>"); 
 		echo " "; 
 	}
 	

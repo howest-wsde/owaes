@@ -12,14 +12,14 @@
 		case "add": 
 			if ($oMijnRechten->useradd()) {
 				$oGroep->addUser($iUser); 
-				echo user($iUser)->HTML("templates/userfromlist.html");
+				echo user($iUser)->HTML("userfromlist.html");
 				// echo ("<span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toegevoegd aan " . $oGroep->naam() . "</span>");  
 			} else $oSecurity->doLogout(); 
 			break; 
 		case "del": 
 			if ($oMijnRechten->userdel()) {
 				$oGroep->removeUser($iUser);
-				echo user($iUser)->HTML("templates/userfromlist.html"); 
+				echo user($iUser)->HTML("userfromlist.html"); 
 				//echo ("<span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderd uit " . $oGroep->naam() . "</span>");  
 			} else $oSecurity->doLogout();  
 			break; 

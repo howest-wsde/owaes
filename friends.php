@@ -28,14 +28,14 @@
         	
             	<div class="row"> 
                 	<? 
-	                    echo $oSecurity->me()->html("templates/user.html");
+	                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                 <div class="usersfromlist row sidecenterright">
              
                     <? 
                         foreach ($oUserList->getList() as $oUser) { 
-                            echo $oUser->HTML("templates/userfromlist.html");  
+                            echo $oUser->HTML("userfromlist.html");  
                         }
                     ?> 
                 </div>

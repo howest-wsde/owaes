@@ -20,8 +20,8 @@
     		<div class="body content content-account-profile container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("templates/leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("templates/user.html");
+					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
  
@@ -31,7 +31,7 @@
                 //vardump($oProfile->friends()); 
                 
                     //echo "<div class=\"masonry\">";
-                    echo $oGroup->html("templates/group.html"); 
+                    echo $oGroup->html("group.html"); 
                     //echo "</div>";
                 ?>
  

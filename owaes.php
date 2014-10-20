@@ -49,8 +49,8 @@
     	<div class="container body content content-owaes">
         	
         <div class="row">
-					<? /*echo $oSecurity->me()->html("templates/leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("templates/user.html");
+					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
         
@@ -62,7 +62,7 @@
                 
                 
                 
-					<? echo $oOwaesItem->HTML("templates/owaesdetail.html");  ?>
+					<? echo $oOwaesItem->HTML("owaesdetail.html");  ?>
 				 	
                     <div class="messages">
                              <? 
@@ -117,8 +117,8 @@
             	</div>
                 <!-- <div class="sideright">
                 	<? 
-						if ($iStatus != JOB_CREATOR) echo $oOwaesItem->author()->html("templates/leftuserprofile.html");
-                        if (!is_null($oRightcolumnUser)) echo $oRightcolumnUser->html("templates/leftuserprofile.html"); 
+						if ($iStatus != JOB_CREATOR) echo $oOwaesItem->author()->html("leftuserprofile.html");
+                        if (!is_null($oRightcolumnUser)) echo $oRightcolumnUser->html("leftuserprofile.html"); 
 					 ?>
                 </div> -->
             <? echo $oPage->endTabs(); ?>

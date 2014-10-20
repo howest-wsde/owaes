@@ -5,7 +5,7 @@
                 <div class="col-sm-2 profielafbeelding">
                     <img src="[profileimg:155x155]" width="155" class="mainprofile img-responsive" />
                 </div>
-                <div class="[me]col-sm-10[/me] [notme]col-sm-8[/notme] basisgegevens">
+                <div class="[if:me]col-sm-10[/if:me] [if:notme]col-sm-8[/if:notme] basisgegevens">
                     <h2 class="naam">
                     	[naam] 
                     	[if:rights:editpage]<a href="[editlink]"><span class="icon icon-settings"></span></a>[/if:rights:editpage]
@@ -25,21 +25,16 @@
                 <h3>Leden <span class="badge">[members:count]</span></h3>
     
                 <div class="list-group">
-                    [members]
-                        <a href="[url]" class="list-group-item">
-                            <div class="media">
-                                <img class="media-object pull-left" src="[img:src:70x70]"> 
-                                <div class="media-body">
-                                    <h4 class="media-heading">[name]</h4>
-                                    level [level]
-                                </div>
-                            </div>
-                        </a>
-                    [/members]  
+                    [members:3][file:group.members.html][/members:3]  
+                    <a name="moremembers"></a>
                 </div>
+                [if:members>3]
+                    <p class="meer"><a href="#moremembers" class="loadmore" start="4" group="[id]" list="members" count="5" template="group.members.html">meer...</a></p>
+                [/if:members>3]
             </div>
 		[/if:members]
-    	  
+    	 
+         <!--
         <div class="well well-volgers">
             <h3>Volgers <span class="badge">xx</span></h3>
 
@@ -64,6 +59,8 @@
 
             <p class="meer"><a href="#">meer...</a></p>
         </div>
+        -->
+        
     </div>
     <div class="col-md-8"> 
             [admin]
@@ -89,23 +86,11 @@
     
                     <div class="list-group">
                         [market:5]
-                            <a href="[link]" class="list-group-item">
-                                <div class="media">
-                                    <img class="media-object pull-left" src="[author:img:64x64]">
-                                    <div class="media-body">
-                                        <h4 class="media-heading">[title]</h4>
-        
-                                        <div class="development odd">[development]</div>
-        
-                                        <span class="icon icon-lg">[soortIcon]</span>
-                                    </div>
-                                </div>
-                            </a>
+							[file:group.market.html]
                         [/market:5] 
+                    	<a name="moremarket"></a>
                     </div>
-    
-                    <p class="meer"><a href="#">meer...</a></p>
-    
+  					[if:market>5]<p class="meer"><a href="#moremarket" class="loadmore" group="[id]" start="6" list="market" count="5" template="group.market.html">meer...</a></p>[/if:market>5] 
                 </div>
 			[/if:market]
         </div>

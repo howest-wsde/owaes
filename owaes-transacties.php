@@ -55,10 +55,10 @@
     	<div class="body">
         	<? echo $oPage->startTabs(); ?>
             	<div class="sideleft">
-					<? echo $oSecurity->me()->html("templates/leftuserprofile.html"); ?>
+					<? echo $oSecurity->me()->html("leftuserprofile.html"); ?>
                 </div>
                 <div class="sidecenterright"> 
-					<? echo $oOwaesItem->HTML("templates/owaesdetail.html");  ?> 
+					<? echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
 					<?
 						echo ("<form method=\"post\">");  
 								echo ("<div class=\"box\" >
@@ -69,7 +69,7 @@
 											case SUBSCRIBE_CONFIRMED: 
 												$oUser = user($iUser);
 												echo ("<div id='user" . $oUser->id() . "'>");  
-												echo ($oUser->html("templates/userid.html")); 
+												echo ($oUser->html("userid.html")); 
 												echo ("</div>"); 
 												break;  
 										}

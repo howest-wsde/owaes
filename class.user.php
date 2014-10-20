@@ -1283,190 +1283,135 @@
 			$strHTML .= "<li class=\"social\" title=\"Sociaal: " . $this->social() . "%\" style=\"background-position: center " . $this->developmentBoxesHeight($this->social()) . "px; \"><span></span></li>"; 
 			$strHTML .= "</ul>"; 
 			return $strHTML;  
-		}
-         
-	
-		public function HTML($strTemplate = "", $bFile = TRUE) { // vraagt pad van template (of HTML if bFile==FALSE) en returns de html met replaced [tags] 
-			$strHTML = $bFile ? content($strTemplate) : $strTemplate;  
-			
-			/* START LUSSEN [friends]xxx[/friends] */ 
-			$arLoopStrings = array("friends", "groups", "activities", "payments", "files");
-			foreach ($arLoopStrings as $strLoop) {
-				$arCheckRegXs = array(
-					"/\[if:$strLoop\]([\s\S]*?)\[\/if:$strLoop\]/", // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]
-					"/\[if:$strLoop(>([0-9]+){0,1})\]([\s\S]*?)\[\/if:$strLoop\\1\]/", // bv. [if:friends>3]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends>3]  
-					"/\[$strLoop((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/$strLoop\\1\]/",  // bv. [friends]loop[/friends] 
-					"/\[$strLoop:count\]/" // bv. [friends:count]
-				); 
-				$bSet = FALSE; 
-				foreach ($arCheckRegXs as $strCheckRX) { 
-					if(preg_match($strCheckRX, $strHTML)) $bSet = TRUE;  
-				}
-				 
-				if ($bSet)  {
-				
-					switch($strLoop) {
-						case "friends": 
-							$arList = $this->friends(); 
-							break; 
-						case "groups": 
-							$arList = $this->groups(); 
-							break; 
-						case "activities": 
-							$oList = new owaeslist(); 
-							$oList->filterByUser($this->id());  
-							$arList = $oList->getList(); 
-							break; 
-						case "payments": 
-							$arList = $this->payments("all");
-							break; 
-						case "files": 
-							$arList = $this->files();
-							break; 
-						default: 
-							$arList = array(); 
-					}  
-					
-					preg_match_all("/\[$strLoop:count\]/", $strHTML, $arResult);   // bv. [data:facebook] 
-					for ($i=0;$i<count($arResult[0]);$i++) { // [friends:count]  
-						$strHTML = str_replace($arResult[0][$i], count($arList), $strHTML); 
-					} 
-					
-					preg_match_all("/\[if:$strLoop\]([\s\S]*?)\[\/if:$strLoop\]/", $strHTML, $arResult);  // regex opnieuw runnen want kan aangepast zijn in vorige loop
-					for ($i=0;$i<count($arResult[0]);$i++) { // run trough [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]  
-						if (count($arList)>0) {
-							$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
-						} else {
-							$strHTML = str_replace($arResult[0][$i], "", $strHTML);
-						} 
-					} 
-					
-					preg_match_all("/\[if:$strLoop(\>([0-9]+)){0,1}\]([\s\S]*?)\[\/if:$strLoop\\1\]/", $strHTML, $arResult); 
-					for ($i=0;$i<count($arResult[0]);$i++) { // run trough [if:friends>3]<a href="loadmore">meer...</a>[/if:friends>3]  
-						if (count($arList)>intval($arResult[2][$i])) {
-							$strHTML = str_replace($arResult[0][$i], $arResult[3][$i], $strHTML);
-						} else {
-							$strHTML = str_replace($arResult[0][$i], "", $strHTML);
-						} 
-					}  
-					 
-					preg_match_all("/\[$strLoop((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/$strLoop\\1\]/", $strHTML, $arResult);   // regex opnieuw runnen want kan aangepast zijn in vorige loop
-					for ($i=0;$i<count($arResult[1]);$i++) { // run trough [friends]loop[/friends] 
-						$strSubHTML = ""; 
-						$iTeller = 0; 
-						$iMax = intval($arResult[2][$i]); 
-						foreach ($arList as $oItem) {  
-							if ($iMax == 0 || ++$iTeller <= $iMax) {
-								switch($strLoop) {
-									case "friends": 
-										$strSubHTML .= $oItem->html($arResult[3][$i], FALSE);
-										break; 
-									case "groups": 
-										$strSubHTML .= $oItem->html($arResult[3][$i], FALSE);
-										break; 
-									case "activities": 
-										$strSubHTML .= $oItem->html($arResult[3][$i], FALSE); 
-										break; 
-									case "payments": 
-										$strSubHTML .= $oItem->html($arResult[3][$i]); 
-										break; 
-									case "files": 
-										$strSubHTML .= $arResult[3][$i];  
-										$strSubHTML = str_replace("[icon:64x64]", icon($oItem["filename"], 64, 64), $strSubHTML);  
-										$strSubHTML = str_replace("[select:visible:file]", showDropdown("xfilevisibility-" . $oItem["key"], $oItem["visible"], "<option value='-1'> Bestand verwijderen</option>"), $strSubHTML);   
-										foreach($oItem as $strKey=>$strVal) {
-											$strSubHTML = str_replace("[$strKey]", $strVal, $strSubHTML); 
-										}
-										break; 
-									default: 
-										$strSubHTML .= $arResult[3][$i]; 
-										break; 
-								}
-							} 
-						}
-						$strHTML = str_replace($arResult[0][$i], $strSubHTML, $strHTML); 
-					}  
-
-				}
-			}
-			/* EIND LUSSEN [friends]xxx[/friends] */  
+		} 
+	 
+		
+		public function HTML($strTemplate = "") { // vraagt pad van template (of HTML if bFile==FALSE) en returns de html met replaced [tags] 
+			$oHTML = template($strTemplate);  
 			 
+			foreach (array("me", "notme", "friend", "nofriend", "nofriend:asked", "nofriend:requested", "nofriend:noconnection") as $strTag) $oHTML->tag($strTag, FALSE);  // will be overruled in next lines
 			if ($this->id() == me()) {   
-				$strHTML = filterTag("me", $strHTML, TRUE); 
-				$strHTML = filterTag("notme", $strHTML, FALSE);  
-				$strHTML = filterTag("nofriend", $strHTML, FALSE); 
-				$strHTML = filterTag("nofriend:asked", $strHTML, FALSE); 
-				$strHTML = filterTag("nofriend:requested", $strHTML, FALSE); 
-				$strHTML = filterTag("nofriend:noconnection", $strHTML, FALSE); 
-				$strHTML = filterTag("friend", $strHTML, FALSE);   
-				$strHTML = str_replace("[link:addfriend]", "#", $strHTML); 
+				foreach (array("me") as $strTag) $oHTML->tag($strTag, TRUE); 
+				$oHTML->tag("link:addfriend", "#");  
 			} else {
-				$strHTML = filterTag("me", $strHTML, FALSE); 
-				$strHTML = filterTag("notme", $strHTML, TRUE);  
+				$oHTML->tag("notme", TRUE);  
+				
 				if (is_null($this->iFriendStatus)) $this->loadFriendship(); 
 				switch($this->iFriendStatus) {
 					case FRIEND_FRIENDS: 
-						$strHTML = filterTag("friend", $strHTML, TRUE);  
-						$strHTML = str_replace("[link:addfriend]", fixPath("addfriend.php?action=del&u=" . $this->id()), $strHTML); 
+						$oHTML->tag("friend", TRUE);  
+						$oHTML->tag("link:addfriend", fixPath("addfriend.php?action=del&u=" . $this->id()));   
 						break; 
 					case FRIEND_ASKED: 
-						$strHTML = filterTag("nofriend", $strHTML, TRUE);  
-						$strHTML = filterTag("nofriend:asked", $strHTML, TRUE); 
-						$strHTML = str_replace("[link:addfriend]", fixPath("addfriend.php?action=add&u=" . $this->id()), $strHTML); 
+						$oHTML->tag("nofriend", TRUE);  
+						$oHTML->tag("nofriend:asked", TRUE); 
+						$oHTML->tag("link:addfriend", fixPath("addfriend.php?action=add&u=" . $this->id())); 
 						break; 
 					case FRIEND_REQUESTED:  
-						$strHTML = filterTag("nofriend", $strHTML, TRUE);  
-						$strHTML = filterTag("nofriend:requested", $strHTML, TRUE); 
-						$strHTML = str_replace("[link:addfriend]", fixPath("addfriend.php?action=add&u=" . $this->id()), $strHTML); 
+						$oHTML->tag("nofriend", TRUE); 
+						$oHTML->tag("nofriend:requested", TRUE);  
+						$oHTML->tag("link:addfriend", fixPath("addfriend.php?action=add&u=" . $this->id()));  
 						break; 
 					case FRIEND_NOFRIENDS: 
 					default:  
-						$strHTML = filterTag("nofriend", $strHTML, TRUE);  
-						$strHTML = filterTag("nofriend:noconnection", $strHTML, TRUE); 
-						$strHTML = str_replace("[link:addfriend]", fixPath("addfriend.php?action=add&u=" . $this->id()), $strHTML);  
+						$oHTML->tag("nofriend", TRUE); 
+						$oHTML->tag("nofriend:noconnection", TRUE); 
+						$oHTML->tag("link:addfriend", fixPath("addfriend.php?action=add&u=" . $this->id()));    
 						break; 
-				}  
-				// overschot invisible
-				$strHTML = filterTag("friend", $strHTML, FALSE); 
-				$strHTML = filterTag("nofriend", $strHTML, FALSE);  
-				$strHTML = filterTag("nofriend:asked", $strHTML, FALSE); 
-				$strHTML = filterTag("nofriend:requested", $strHTML, FALSE); 
-				$strHTML = filterTag("nofriend:noconnection", $strHTML, FALSE);    
+				} 
+			} 
+			
+			foreach ($oHTML->loops() as $strTag=>$arLoops) {
+				switch($strTag) {
+					case "friends":  
+						$arList = $this->friends();  
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$arResults[$strSubHTML][] = $oItem->html( $strSubHTML);
+							}
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("friends", $strSubHTML, $strResult); 
+						}
+						break;  	
+					case "groups":  
+						$arList = $this->groups(); 
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$arResults[$strSubHTML][] = $oItem->html( $strSubHTML);
+							}
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("groups", $strSubHTML, $strResult); 
+						}
+						break;  
+					case "activities":  
+						$oList = new owaeslist(); 
+						$oList->filterByUser($this->id());  
+						$arList = $oList->getList(); 
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$arResults[$strSubHTML][] = $oItem->html( $strSubHTML);
+							}
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("activities", $strSubHTML, $strResult); 
+						}
+						break; 
+							
+					case "payments":  
+						$arList = $this->payments("all");
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$arResults[$strSubHTML][] = $oItem->html( $strSubHTML);
+							}
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("payments", $strSubHTML, $strResult); 
+						}
+						break;  
+						
+						
+					case "files":  
+						$arList = $this->files();  
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							foreach ($arResults as $strSubHTML=>$arDummy) { 
+								$strTemp = $strSubHTML;  
+								$strTemp = str_replace("[icon:64x64]", icon($oItem["filename"], 64, 64), $strTemp);  
+								$strTemp = str_replace("[select:visible:file]", showDropdown("xfilevisibility-" . $oItem["key"], $oItem["visible"], "<option value='-1'> Bestand verwijderen</option>"), $strTemp);   
+								foreach($oItem as $strKey=>$strVal) {
+									$strTemp = str_replace("[$strKey]", $strVal, $strTemp); 
+								}
+								$arResults[$strSubHTML][] = $strTemp; 
+							}
+						}  
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("files", $strSubHTML, $strResult);  
+						}
+						break;  	
+					default: 
+						//vardump($strTag); 
+				}
 			}
 			
-			$strHTML = preg_replace_callback('/\[profileimg\:([0-9]*x[0-9]*)\]/', array(&$this, "imageregreplace"), $strHTML);  
-			
-			// data-values
-			preg_match_all("/\[data:([a-zA-Z0-9-]+)\]/", $strHTML, $arResult);   // bv. [data:facebook]
-			if (isset($arResult[1])) foreach ($arResult[1] as $strK){
-				$strHTML = str_replace("[data:$strK]", $this->data($strK), $strHTML); 
-			} 
-			preg_match_all("/\[if:data:([a-zA-Z0-9-]+)\]([\s\S]*?)\[\/if:data:\\1\]/", $strHTML, $arResult);   // bv. [?data:facebook]heeft FB[/?data:facebook]  
-			for ($i=0;$i<count($arResult[0]);$i++) {
-				if ($this->data($arResult[1][$i]) != "") {
-					$strHTML = str_replace($arResult[0][$i],$arResult[2][$i], $strHTML); 					
-				} else {
-					$strHTML = str_replace($arResult[0][$i], "", $strHTML); 
-				}
-			} 
-			preg_match_all("/\[select:visible:data:([a-zA-Z0-9-]+)\]/", $strHTML, $arResult);   // bv. [select:visible:data:facebook]
-			if (isset($arResult[1])) foreach ($arResult[1] as $strK){ 
-				$strHTML = str_replace("[select:visible:data:$strK]", showDropdown("showdata-$strK", $this->datavisible($strK)), $strHTML); 
-			}  
-			
- 			preg_match_all("/\[if:([a-zA-Z0-9-_:#]+)\]([\s\S]*?)\[\/if:\\1\]/", $strHTML, $arResult);   // bv. [if:firstname]firstname ingevuld en zichtbaar[/if:firstname]  
-			for ($i=0;$i<count($arResult[0]);$i++) {
-				$strResult = $this->HTMLvalue($arResult[1][$i]);  
-				if (!is_null($strResult)) $strHTML = str_replace($arResult[0][$i], (($strResult == "") ? "" : $arResult[2][$i]), $strHTML); 	
-			} 
-			preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]/", $strHTML, $arResult);   // alle tags (zonder whitespace)
-			if (isset($arResult[1])) foreach ($arResult[1] as $strTag){ 
+			foreach ($oHTML->tags() as $strTag) {
 				$strResult = $this->HTMLvalue($strTag);  
-				if (!is_null($strResult)) $strHTML = str_replace("[$strTag]", $strResult, $strHTML); 
-			} 
-
-			return specialHTMLtags($strHTML); 
+				if (!is_null($strResult)) $oHTML->tag($strTag, $strResult); 
+			}
+			
+			return $oHTML;   
 		} 
+		
 		private function imageregreplace(&$matches) { 
 			return $this->getImage($matches[1], FALSE);  
 		} 
@@ -1593,22 +1538,6 @@
 					if ($this->birthdate() != 0) $arUserDetails[] = "<dt>Geboortedatum</dt><dd>" . str_date($this->birthdate()) . "</dd>"; 
 					if ($this->location() != "") $arUserDetails[] = "<dt>Woonplaats</dt><dd>" .$this->location() . "</dd>"; 
 					return "<dl class=\"userinfo\">" . implode("", $arUserDetails) . "</dl>";
-				case "select:visible:location":  
-					return showDropdown("showlocation", $this->visible("location"));  
-				case "select:visible:email":  
-					return showDropdown("showemail", $this->visible("email"));  
-				case "select:visible:telephone":  
-					return showDropdown("showtelephone", $this->visible("telephone"));  
-				case "select:visible:birthdate":  
-					return showDropdown("showbirthdate", $this->visible("birthdate"));  
-				case "select:visible:gender":  
-					return showDropdown("showgender", $this->visible("gender"));  
-				case "select:visible:firstname":  
-					return showDropdown("showfirstname", $this->visible("firstname"));  
-				case "select:visible:lastname":  
-					return showDropdown("showlastname", $this->visible("lastname"));  
-				case "select:visible:img":  
-					return showDropdown("showimg", $this->visible("img"));
 				case "options:gender":  
 					$arGenderOptions = array(
 						"male" => "Man", 
@@ -1636,6 +1565,26 @@
 					return implode("", $arActions); 
 
 				default: 
+					$arTag = explode(":", $strTag, 2); 
+					switch($arTag[0]) {
+						case "data": 
+							if (count($arTag)==2) return $this->data($arTag[1]); 
+							break; 
+						case "profileimg": 
+							return $this->getImage($arTag[1], FALSE); 	
+						case "select": 
+							$arTag = explode(":", $strTag, 4);
+							if ($arTag[1] == "visible") {
+								switch(count($arTag)) {
+									case 3:  
+							 			return showDropdown("show" . $arTag[2], $this->visible($arTag[2])); 
+										break; 
+									case 4: 
+										if ($arTag[2] == "data") return showDropdown("showdata-" . $arTag[3], $this->datavisible($arTag[3])); 
+										break; 
+								} 
+							} 
+					} 
 					return NULL; 
 			}
 		}

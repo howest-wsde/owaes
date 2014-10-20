@@ -7,6 +7,6 @@
     <head> 
     </head>
     <body id="profile">  
-		<? echo $oGroup->html("templates/grouppopup.html"); ?> 
+		<? echo $oGroup->html("grouppopup.html"); ?> 
     </body>
 </html>

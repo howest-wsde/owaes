@@ -5,10 +5,10 @@
                 <div class="col-sm-2 profielafbeelding">
                     <img src="[profileimg:155x155]" width="155" class="mainprofile img-responsive" />
                 </div>
-                <div class="[me]col-sm-10[/me] [notme]col-sm-8[/notme] basisgegevens">
+                <div class="[if:me]col-sm-10[/if:me] [if:notme]col-sm-8[/if:notme] basisgegevens">
                     <h2 class="naam"> 
                     	[firstname] [lastname] 
-                    	[me]<span data-toggle="modal" data-target="#editBasisgegevens" class="icon icon-settings"></span>[/me]
+                    	[if:me]<span data-toggle="modal" data-target="#editBasisgegevens" class="icon icon-settings"></span>[/if:me]
                     </h2>
                     <h3 class="level-stars"><span class="level">Level [level]</span><span class="stars">[stars]</span></h3>
 
@@ -19,15 +19,15 @@
                         [if:data:plus]<li><a href="[data:plus]" target="_blank"><span class="icon-googleplus"></span></a></li>[/if:data:plus] 
                     </ul>
                 </div>
-                [notme]
+                [if:notme]
                	 <div class="col-sm-2">
                     <div class="btn-group-vertical pull-right">
                         <a href="#" class="btn btn-default btn-sm"><span class="icon icon-volgen"></span><span class="title">Volgen</span></a>
                         
-                    [friend]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Ontvrienden</span></a>[/friend]
-                    [nofriend:requested]<a href="#" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap aangevraagd</span></a>[/nofriend:requested]
-                    [nofriend:asked]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap bevestigen</span></a>[/nofriend:asked]
-                    [nofriend:noconnection]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriend toevoegen</span></a>[/nofriend:noconnection]
+                    [if:friend]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Ontvrienden</span></a>[/if:friend]
+                    [if:nofriend:requested]<a href="#" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap aangevraagd</span></a>[/if:nofriend:requested]
+                    [if:nofriend:asked]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap bevestigen</span></a>[/if:nofriend:asked]
+                    [if:nofriend:noconnection]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriend toevoegen</span></a>[/if:nofriend:noconnection]
   
                         <a href="[link:contact]" class="btn btn-default btn-sm"><span class="icon icon-berichtsturen"></span><span class="title">Bericht sturen</span></a>
 
@@ -45,7 +45,7 @@
                         </div>
                     </div>
                 </div>
-                [/notme]
+                [/if:notme]
 
             </div>
         </div>
@@ -58,24 +58,37 @@
                 <h3>Vrienden <span class="badge">[friends:count]</span></h3>
     
                 <div class="list-group">
-                    [friends:3]
-                        <a href="[url]" class="list-group-item">
-                            <div class="media">
-                                <img class="media-object pull-left" src="[img:src:70x70]"> 
-                                <div class="media-body">
-                                    <h4 class="media-heading">[name]</h4>
-                                    level [level]
-                                </div>
-                            </div>
-                        </a>
-                    [/friends:3]  
+                    [for:friends:3][file:userprofile.friend.html][/for:friends:3]  
+                    <a name="morefriends"></a>
                 </div>
    				[if:friends>3]
-                	<p class="meer"><a href="[friends:url]">meer...</a></p>
+                    <p class="meer"><a href="#morefriends" class="loadmore" start="4" user="[id]" list="friends" count="5" template="userprofile.friend.html">meer...</a></p>
                 [/if:friends>3]
             </div>
 		[/if:friends]
         
+
+        [if:groups]
+            <div class="well well-bedrijven">
+                <h3>Groepen <span class="badge">[groups:count]</span></h3>
+    
+                <div class="list-group">
+                    [for:groups]
+                        <a href="[link]" class="list-group-item">
+                            <div class="media">
+                                <img class="media-object pull-left" src="[profileimg:70x70]"> 
+                                <div class="media-body">
+                                    <h4 class="media-heading">[naam]</h4>
+                                    <p>[description:short]</p>
+                                </div>
+                            </div>
+                        </a>
+                    [/for:groups]  
+                </div> 
+            </div>
+        [/if:groups]
+        
+<!-- 
         <div class="well well-volgend">
             <h3>Volgend <span class="badge">xx</span></h3>
 
@@ -100,7 +113,7 @@
 
             <p class="meer"><a href="#">meer...</a></p>
         </div>
-
+        
         <div class="well well-volgers">
             <h3>Volgers <span class="badge">xx</span></h3>
 
@@ -125,24 +138,17 @@
 
             <p class="meer"><a href="#">meer...</a></p>
         </div>
+        -->
         
 		[if:payments]
             <div class="well well-transacties">
                 <h3>Transactie's <span class="badge">[payments:count]</span></h3>
     
                 <div class="list-group">
-                    [payments:10]
-                    <a href="[owaes:url]" class="list-group-item">
-                        <div class="media [in-out]">
-                            <img class="mini" src="[img:src:30x30]" />
-                            <div class="inout">[in-out]</div>
-                            <div class="credits">[credits]</div>
-                            <div class="owaes">[owaes]</div>
-                        </div>
-                    </a>
-                    [/payments:10] 
+                    [for:payments:5][file:userprofile.payments.html][/for:payments:5] 
+                    <a name="morepayments"></a>
                 </div> 
-                [if:payments>10]<p class="meer"><a href="#">meer...</a></p>[/if:payments>10] 
+                [if:payments>5]<p class="meer"><a href="#morepayments" class="loadmore" user="[id]" start="6" list="payments" count="5" template="userprofile.payments.html">meer...</a></p>[/if:payments>5] 
             </div>
 		[/if:payments]
     </div> 
@@ -150,54 +156,34 @@
             <div class="well well-intro">
                 <h3>
                     Info
-                    [me]<span data-toggle="modal" data-target="#editPersoonlijkeInformatie" class="icon icon-settings"></span>[/me]
+                    [if:me]<span data-toggle="modal" data-target="#editPersoonlijkeInformatie" class="icon icon-settings"></span>[/if:me]
                 </h3>
                 <p>[showurls][description][/showurls]</p>
                 [userdetails] 
             </div>
            
-           [notme]
+           [if:notme]
                [if:files]
                <div class="well well-intro"> 
                     <h3>Bestanden</h3>
                     <ul class="varia">
-                        [files]<li><img src="[icon:64x64]" /> <a href="[link]" target="_blank">[title]</a></li>[/files]
+                        [for:files]<li><img src="[icon:64x64]" /> <a href="[link]" target="_blank">[title]</a></li>[/for:files]
                     </ul>
                 </div>
                 [/if:files]
-            [/notme]
-            [me]
+            [/if:notme]
+            [if:me]
                <div class="well well-intro"> 
                     <h3>
                         Bestanden
                         <span data-toggle="modal" data-target="#editBestanden" class="icon icon-settings"></span>
                     </h3>
                     <ul class="varia">
-                        [files]<li><img src="[icon:64x64]" /> <a href="[link]" target="_blank">[title]</a></li>[/files]
+                        [for:files]<li><img src="[icon:64x64]" /> <a href="[link]" target="_blank">[title]</a></li>[/for:files]
                     </ul>
                 </div> 
-            [/me]
-             
-            [if:groups]
-                <div class="well well-bedrijven">
-                    <h3>Groepen <span class="badge">[groups:count]</span></h3>
-        
-                    <div class="list-group">
-                        [groups]
-                            <a href="[link]" class="list-group-item">
-                                <div class="media">
-                                    <img class="media-object pull-left" src="[profileimg:70x70]"> 
-                                    <div class="media-body">
-                                        <h4 class="media-heading">[naam]</h4>
-                                        <p>[description:short]</p>
-                                    </div>
-                                </div>
-                            </a>
-                        [/groups]  
-                    </div> 
-                </div>
-            [/if:groups]
-            
+            [/if:me]
+              
             
             <div class="well well-badges">
                 <h3>Badges <span class="badge">[badges:count]</span></h3>
@@ -218,27 +204,17 @@
                     <h3>Activiteiten <span class="badge">[activities:count]</span></h3>
     
                     <div class="list-group">
-                        [activities:5]
-                            <a href="[link]" class="list-group-item">
-                                <div class="media">
-                                    <img class="media-object pull-left" src="[author:img:64x64]">
-                                    <div class="media-body">
-                                        <h4 class="media-heading">[title]</h4>
-                                        <div class="development">[development]</div>
-                                        <span class="icon [iconclass] icon-lg"></span>
-                                    </div>
-                                </div>
-                            </a>
-                        [/activities:5] 
+                        [for:activities:5][file:userprofile.activities.html][/for:activities:5] 
+                  		<a name="moreactivities"></a>
                     </div> 
-                    [if:activities>5]<p class="meer"><a href="#">meer...</a></p>[/if:activities>5]
+                    [if:activities>5]<p class="meer"><a href="#moreactivities" class="loadmore" user="[id]" start="6" list="activities" count="5" template="userprofile.activities.html">meer...</a></p>[/if:activities>5]
                 </div>
             [/if:activities]
             
         </div>
     </div>
     
-[me]
+[if:me]
     <!-- Edit Modals -->
     <!--editBasisgegevens-->
     <div class="modal fade" id="editBasisgegevens" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -436,7 +412,7 @@
                         <fieldset>
                             <h4>Bestanden</h4>
                             <div class="files">
-                                [files] 
+                                [for:files] 
 									<div class="form-group file-uploaden"> 
                                     
                                         <input type="hidden" name="existingfiles[]" class="existingfiles" value="xfiletitle-[key],xfilename-[key],xfilevisibility-[key],[key]" />
@@ -450,7 +426,7 @@
                                         	[select:visible:file] 
                                         </div>
 									</div>
-                                [/files]
+                                [/for:files]
                                 
                                 <div class="form-group file-uploaden">
                                 	<input type="hidden" name="files[]" class="veldnamen" value="bestandtitel0,bestand0,zichtbaar0" />
@@ -480,4 +456,4 @@
             </div>
         </div>
     </div>
-[/me]
+[/if:me]

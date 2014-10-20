@@ -5,7 +5,7 @@
 	$oSecurity = new security();  
 	
 	$strFormat = $_GET["format"]; 
-	$strFile = $_GET["file"]; 
+	$strTemplate = $_GET["file"]; 
 	$arInfo = array();
 	$arInfo["timestamp"] = owaesTime(); 
 	 
@@ -177,8 +177,7 @@
 	foreach ((isset($_POST["show"])?$_POST["show"]:array()) as $iCat) $oOwaesList->hasCategory($iCat); 
 	foreach ((isset($_POST["hide"])?$_POST["hide"]:array()) as $iCat) $oOwaesList->notCategory($iCat); 
 	foreach ((isset($_POST["waarden"])?$_POST["waarden"]:array()) as $strWaarde) $oOwaesList->hasWaarde($strWaarde); 
-
-	$strTemplate = "templates/" . $strFile; 
+ 
 	foreach ($oOwaesList->getList() as $oItem) {  
 		$arItem = array(
 			"id" => $oItem->id(), 
@@ -202,14 +201,14 @@
 			), 
 			"credits" => $oItem->credits(), 
 		);  
-		if ($strFile != "") $arItem["html"] = $oItem->html($strTemplate); 
+		if ($strTemplate != "") $arItem["html"] = $oItem->html($strTemplate); 
 		$arResult[] = $arItem; 
-		// echo $oItem->HTML("templates/owaeskort.html"); 
+		// echo $oItem->HTML("owaeskort.html"); 
 	}
 
-	output (array("info" => $arInfo, "result" => $arResult), $strFormat, $strFile); 
+	output (array("info" => $arInfo, "result" => $arResult), $strFormat, $strTemplate); 
 	
-	function output($arOutput, $strFormat = "txt", $strFile = "") { 
+	function output($arOutput, $strFormat = "txt", $strTemplate = "") { 
 		switch(strtolower($strFormat)) {
 			case "json": 
 				echo json_encode($arOutput); 
@@ -225,7 +224,7 @@
 			case "": 
 			case "htm": 
 			case "html": 
-				echo (outputHTML($arOutput, $strFile));
+				echo (outputHTML($arOutput, $strTemplate));
 				break; 
 			 
 			default: 
@@ -246,9 +245,8 @@
 		}
 		return $strResult; 
 	}
-	function outputHTML($arOutput, $strFile) {
-		if (isset($arOutput["result"]) && ($strFile != "")) {
-			$strTemplate = "template/" . $strFile; 
+	function outputHTML($arOutput, $strTemplate) {
+		if (isset($arOutput["result"]) && ($strTemplate != "")) { 
 			$strResult = ""; 
 			foreach ($arOutput["result"] as $arItem) {
 				$strResult .= $arItem["html"]; 
@@ -259,7 +257,7 @@
 				$strResult .= "<dt>" . $strKey . "</dt>"; 
 				$strResult .= "<dd>"; 
 				if (is_array($strValue)) {
-					$strResult .= outputHTML($strValue, $strFile); 
+					$strResult .= outputHTML($strValue, $strTemplate); 
 				} else {
 					$strResult .= $strValue; 
 				}  

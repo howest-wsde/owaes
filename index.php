@@ -73,8 +73,8 @@
     	<div class="body content content-market container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("templates/leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("templates/user.html");
+					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                  <!-- <div class="container sidecenterright"> -->
@@ -89,7 +89,7 @@
                         <div id="results">
                         <? 
                             foreach ($oOwaesList->getList() as $oItem) {  
-                                echo $oItem->HTML("templates/owaeskort.html"); 
+                                echo $oItem->HTML("owaeskort.html"); 
                             }
                         ?>
                         </div>

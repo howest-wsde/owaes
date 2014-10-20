@@ -111,13 +111,20 @@
 			
 		</script></script>
     </head>
-    <body id="index">             
+    <body id="index">          
+    <?
+    /*
+		$oActions = new actions(me()); 
+		vardump($oActions->getList()); 
+		*/
+	
+	?>   
         <? echo $oPage->startTabs(); ?> 
     	<div class="body content content-home container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("templates/leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("templates/user.html");
+					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                 <div class="sidecenterright home">
@@ -434,6 +441,9 @@
                          */ ?>
 
                         <?
+						
+						
+						
                             $oOwaesList = new owaeslist(); 
                             $oOwaesList->filterByState(STATE_RECRUTE);  
                             $oOwaesList->filterPassedDate(owaesTime());  
@@ -453,7 +463,7 @@
                                         <div class="list-group">
                                         <?		
                                         foreach ($oOwaesList->getList() as $oItem) {  
-                                            echo $oItem->HTML("templates/owaes.main-full.html");  
+                                            echo $oItem->HTML("owaes.main-full.html");  
                                         } 
                                         ?>
 
@@ -483,7 +493,7 @@
                                                 
                                                 <?				
                                                 foreach ($oOwaesList->getList() as $oItem) {  
-                                                    echo $oItem->HTML("templates/owaes.main-full.html");  
+                                                    echo $oItem->HTML("owaes.main-full.html");  
                                                 } 
                                                 ?> 
                                             </div>
@@ -511,7 +521,7 @@
                                                 
                                                 <?				
                                                 foreach ($oOwaesList->getList() as $oItem) {  
-                                                    echo $oItem->HTML("templates/owaes.main-full.html");  
+                                                    echo $oItem->HTML("owaes.main-full.html");  
                                                 } 
                                                 ?> 
                                             </div>
@@ -538,7 +548,7 @@
                                                 
                                                 <?				
                                                 foreach ($oOwaesList->getList() as $oItem) {  
-                                                    echo $oItem->HTML("templates/owaes.main-full.html");  
+                                                    echo $oItem->HTML("owaes.main-full.html");  
                                                 } 
                                                 ?> 
                                             </div>
@@ -565,7 +575,7 @@
                                                 
                                                 <?				
                                                 foreach ($oOwaesList->getList() as $oItem) {  
-                                                    echo $oItem->HTML("templates/owaes.main-full.html");  
+                                                    echo $oItem->HTML("owaes.main-full.html");  
                                                 } 
                                                 ?> 
                                             </div>
@@ -593,7 +603,7 @@
                                                 
                                                 <?				
                                                 foreach ($oSubscriptions->result() as $oItem) { 
-                                                    echo $oItem->market()->HTML("templates/owaes.main-full.html"); 
+                                                    echo $oItem->market()->HTML("owaes.main-full.html"); 
                                                 } 
                                                 ?> 
                                             </div>
@@ -676,7 +686,7 @@
 												<h4 class="modal-title">Feedback</h4>
 											  </div>
 											  <div class="modal-body">
-												<div>' . $oItem->HTML("templates/owaes.main-full.html") . '</div>
+												<div>' . $oItem->HTML("owaes.main-full.html") . '</div>
 												<p>Hoe tevreden ben je over de samenwerking met ' . user($arAction["to"])->getName() . '</p>
 												<ol class="stars">
 													<li><a href="#1" rel="1" class="next-modal stars">Helemaal niet tevreden</a></li>
