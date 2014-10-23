@@ -3,8 +3,9 @@
 	$oSecurity = new security(TRUE);   
 	if ($_SESSION['views'] ++ % 5 == 1) { 
 		$oExperience = new experience(me());  
-		$oExperience->detail("reason", "ping");   
-		$oExperience->add(0.1); 
+		$oExperience->detail("reason", "ping");  
+		$oExperience->sleutel(str_date(owaestime(), "j M y") , TRUE);   
+		$oExperience->add(0.1);  
 	}   
 	
 	$oNotification = new notification(me()); 

@@ -68,7 +68,7 @@
 						break; 
 					case PAGE: 
 					default: 
-						header("Location: login.php?p=" . urlencode($oPage->filename())); 
+						redirect("login.php?p=" . urlencode($oPage->filename())); 
 						break; 	
 				}  
 				exit();  
@@ -169,7 +169,7 @@
 						break; 
 					case PAGE: 
 					default: 
-						header("Location: login.php"); 
+						redirect("login.php"); 
 						break; 	
 				}   
 			}

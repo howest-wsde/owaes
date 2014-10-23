@@ -5,6 +5,6 @@
 	
 	$oSecurity->doLogout(); 
 	
-	header("Location: main.php"); 
+	redirect("main.php"); 
 	
 ?>

@@ -5,6 +5,11 @@
 	
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
 	$oPage->addJS("script/masonry.js"); 
+	
+	
+	$oPage->addJS("script/flot/jquery.flot.js"); 
+	$oPage->addJS("script/flot/jquery.flot.time.js"); 
+    $oPage->addJS("script/flot/jquery.flot.symbol.js");
     
     $oPage->tab("home");
 	
@@ -159,7 +164,7 @@
                                 <span class="sr-only"><? echo $iPercent1; ?>% Complete</span>
                             </div>
                         </div>
-                        <p class="pull-right"><a href="#">Tips</a></p>
+                        <!--<p class="pull-right"><a href="#">Tips</a></p>-->
                     </div>
                    
                     <div class="col-md-4">
@@ -170,7 +175,7 @@
                                     <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->social(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->social(); ?>%;">
                                         <span class="sr-only"><? echo $oMe->social(); ?>% Sociaal</span>
                                     </div>
-                                    <span class="progressIndicator">+2%</span>
+                                    <span class="progressIndicator"><!--+2%--></span>
                                 </div>
                             </div>
                             
@@ -180,7 +185,7 @@
                                     <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->physical(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->physical(); ?>%;">
                                         <span class="sr-only"><? echo $oMe->physical(); ?>% Fysiek</span>
                                     </div>
-                                     <span class="progressIndicator">+4%</span>
+                                     <span class="progressIndicator"><!--+4%--></span>
                                 </div>
                             </div>
                             
@@ -190,7 +195,7 @@
                                     <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->mental(); ?>" aria-valuemin="0" aria-valuemax="100" style="width:<? echo $oMe->mental(); ?>%;">
                                         <span class="sr-only"><? echo $oMe->mental(); ?>% Kennis</span>
                                     </div>
-                                     <span class="progressIndicator">+5%</span>
+                                     <span class="progressIndicator"><!--+5%--></span>
                                 </div>
                             </div>
                             
@@ -200,7 +205,7 @@
                                     <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->emotional(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->emotional(); ?>%;">
                                         <span class="sr-only"><? echo $oMe->emotional(); ?>% Welzijn</span>
                                     </div>
-                                     <span class="progressIndicator">+1%</span>
+                                     <span class="progressIndicator"><!--+1%--></span>
                                 </div>
                             </div>
                         </div>
@@ -217,23 +222,118 @@
                   
                     
                  </div>
-                    
                     <div id="collapseGraph" class="panel-collapse collapse">
                          <div class="panel-body">
                             <div class="row grafiekenHome">
                             <h2>Vooruitgang:</h2>
                                 <div class="col-md-4">
-                                    <h3>Punten</h3>
-                                    <img class="size" src="img/expMeter.png" alt="" />
+                                    <h3>Ervaring</h3>
+                                    <? 
+										$oExp = $oMe->experience(); 
+										$arExp = $oExp->timeline(); // / SLOW 
+										foreach ($arExp as $i=>$arV) $arExp[$i][0]*=1000;  
+										$arLevels = array();  
+										foreach (settings("levels") as $iLevel=>$arSettings) { 
+											if ($iLevel <= $oExp->level()+1) $arLevels[] = $arSettings["threshold"]; 
+										}  
+										$arLevelBounds = array(
+											"from"=> $arLevels[count($arLevels)-2], 
+											"to"=> $arLevels[count($arLevels)-1],  
+											"color"=> "#fceeb4",  
+										);  
+										$arTicks = array(); 
+										$arTicks[] = array($arLevels[count($arLevels)-2], "level " . (count($arLevels)-2)); 
+										$arTicks[] = array($arLevels[count($arLevels)-1], "level " . (count($arLevels)-1));  
+									?> 
+                                    <script>
+	$(function() {
+		
+		var dataExp = <? echo json_encode($arExp); ?>; 
+		var optionsExp = {
+			xaxis: {
+				mode: "time",
+				tickLength: 5, 
+			},
+			series: {
+                lines: { show: true, lineWidth: 3 },
+                shadowSize: 0
+            }, 
+			grid: {
+				backgroundColor: "#ffffff", 
+				markings:  [{ yaxis: <? echo json_encode($arLevelBounds); ?> } ],  
+			},
+			yaxis: {
+				min: 0,
+				max: <? echo round($arLevels[count($arLevels)-1]*1.1);  ?>,
+				color:"#e3e3e3",  
+				ticks: <? echo json_encode($arTicks); ?>, 
+			},
+		};
+		
+		$.plot("#expMeter", [ dataExp ], optionsExp);  
+		
+		var optionsIndi = {
+			xaxis: {
+				mode: "time",
+				tickLength: 5
+			},
+			yaxis: {
+				min: 0,
+				max: 100,
+				color:"#e3e3e3",   
+			}, 
+			series: {
+                lines: { show: true, lineWidth: 3 },
+                shadowSize: 0
+            },
+			grid: {
+				backgroundColor: "#ffffff",  
+			},
+		};
+		
+		<?
+			$arIndicatoren = $oMe->indicatorenTimeline(); 
+			$arShow = array(
+						array(
+							"label" => "&nbsp;Welzijn",
+							"data" => $arIndicatoren["emotional"]["data"], 
+							"color" => "#8dc63f",
+						),  
+						array(
+							"label" => "&nbsp;Fysiek",
+							"data" => $arIndicatoren["physical"]["data"], 
+							"color" => "#ff3131",
+						), 
+						array(
+							"label" => "&nbsp;Kennis",
+							"data" => $arIndicatoren["mental"]["data"], 
+							"color" => "#0072bc",
+						), 
+						array(
+							"label" => "&nbsp;Sociaal",
+							"data" => $arIndicatoren["social"]["data"], 
+							"color" => "#ffcc00",
+						), 
+					); 
+			foreach ($arShow as $strKey=>$arData) foreach ($arData["data"] as $i=>$arVal) $arShow[$strKey]["data"][$i][0]*=1000; 
+		?>
+		
+		$.plot("#indicatorenMeter", <? echo json_encode($arShow); ?>, optionsIndi);  
+	});
+									</script> 
+                                    <div id="expMeter" style="width: 350px; height: 205px;display: block; "></div>
+                                    <img class="size" src="img/expMeter.png" alt="" style="display: none; " />
                                 </div>
                                 <div class="col-md-4">
                                     <h3>Indicatoren</h3>
-                                    <img class="size" src="img/graphIndicatoren.png" alt="" />
+                                    <div id="indicatorenMeter" style="width: 350px; height: 205px;display: block; "></div> 
+                                    <img class="size" src="img/graphIndicatoren.png" alt="" style="display: none; " />
                                 </div>
                                 <div class="col-md-4 creditmeter">
                                     <h3>Credits</h3>
                                     <!-- <img class="size" src="img/creditMeter.png"/> -->
-                                    <img class="creditmetermeter size" src="img/creditmetermeter.png" alt="" /><img class="creditmeterpointer size" src="img/creditmeterpointer.png" alt="" />
+                                    <img class="creditmetermeter size" src="img/creditmetermeter.png" alt="" />
+                                    <img class="creditmeterpointer size" src="img/creditmeterpointer.png" alt="" />
                                 </div>
                             </div>
                        </div>
@@ -439,7 +539,7 @@
                             </div>
                          </div>
                          */ ?>
-
+ 
                         <?
 						
 						
@@ -719,7 +819,7 @@
 		?>
         <script>
             $(document).ready(function () {
-                initCreditmeter();
+                initCreditmeter(<? echo intval(($oMe->credits()-settings("credits", "min"))/(settings("credits", "max")-settings("credits", "min"))*100) ; ?>);
 				<? if (count($arModals)>0) { ?>
 					arModals = ["<? echo implode('", "', $arModals); ?>"];
 					nextModal(); 

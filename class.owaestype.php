@@ -48,6 +48,11 @@
 		public function key() {
 			return $this->arTypes[$this->iType]["key"]; 
 		}
+		
+		public function __toString() {
+			return $this->arTypes[$this->iType]["title"]; 
+		}
+		
 		public function id() {
 			return $this->iType; 
 		}

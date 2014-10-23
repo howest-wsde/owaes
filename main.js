@@ -36,20 +36,16 @@ jQuery.removeFromArray = function (value, arr) {
     });
 };
 
-function initCreditmeter() {
-    var $pointer = $(".content-home .creditmeterpointer");
-    var $credits = parseInt($(".panel-profile-sm .credits .title").text());
-    var $totalcredits = 9600;
-    var $totaldegrees = 286; //niet 360, want dan zou de teller terug op nul staan, op 286° staat de teller op 9600
-    var $creditsperdegrees = $totalcredits / $totaldegrees;
-    var $degrees = $credits / $creditsperdegrees;
+function initCreditmeter(iPercentage) { 
+    var iMaxHoek = 289; //niet 360, want dan zou de teller terug op nul staan, op 289° staat de teller op 9600
+	var iDegrees = iMaxHoek / 100 * iPercentage;  
     
-    $pointer.css({
-        "-moz-transform": "rotate(" + $degrees + "deg)",
-        "-ms-transform": "rotate(" + $degrees + "deg)",
-        "-o-transform": "rotate(" + $degrees + "deg)",
-        "-webkit-transform": "rotate(" + $degrees + "deg)",
-        "transform": "rotate(" + $degrees + "deg)",
+    $(".content-home .creditmeterpointer").css({
+        "-moz-transform": "rotate(" + iDegrees + "deg)",
+        "-ms-transform": "rotate(" + iDegrees + "deg)",
+        "-o-transform": "rotate(" + iDegrees + "deg)",
+        "-webkit-transform": "rotate(" + iDegrees + "deg)",
+        "transform": "rotate(" + iDegrees + "deg)",
     });
 }
  

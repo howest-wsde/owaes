@@ -5,7 +5,7 @@
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	if (!isset($_GET["t"])) {
-		header("Location: main.php?start"); 
+		redirect("main.php?start"); 
 	} else {
 		$strType = $_GET["t"]; 
 	}

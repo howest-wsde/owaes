@@ -105,7 +105,7 @@
 		$oOwaesItem->update();   
 		//switch($oOwaesItem->task())  {
 		//	case TRUE: 
-				header("Location: index.php?t=" . $oOwaesItem->type()->key());  
+				redirect("index.php?t=" . $oOwaesItem->type()->key());  
 				exit(); 
 		//		break; 	
 		//	case FALSE:  

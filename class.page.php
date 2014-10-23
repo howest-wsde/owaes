@@ -39,6 +39,8 @@
 			$this->addJS("owaes.js?v4");  
             $this->addJS("main.js?v4");
 			
+//			if (strrpos("http://nu", settings("domain", "absroot")) === false)  redirect("link");  
+			
 			switch ($this->filename(FALSE)) {
 				case "index.php": 
 					if( isset($_GET["t"])) $this->tab("market." . $_GET["t"]);  

@@ -62,7 +62,7 @@
                 
                 
                 
-					<? echo $oOwaesItem->HTML("owaesdetail.html");  ?>
+					<? echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
 				 	
                     <div class="messages">
                              <? 

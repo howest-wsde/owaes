@@ -4,7 +4,8 @@
 		private $arDetails = array(); 
 		private $arTotal = NULL; 
 		private $iLevel = NULL;
-		private $strKey = NULL;  
+		private $strKey = NULL; 
+		private $bAdd = FALSE;  
 		
 		public function experience($iUser = NULL) { 
 			$this->user( (is_null($iUser)) ? me() : $iUser ); 
@@ -16,8 +17,12 @@
 			} else return user($this->iUser);  
 		}
 		
-		public function sleutel($strKey = NULL) { // get / set key (een key is leeg of uniek, gebruik een key als een experience maar 1x gegeven mag worden aan een user: bv. "owaes.30" of "quest.8")
+		public function sleutel($strKey = NULL, $bAdd = NULL) { /*
+		- get / set key (een key is leeg of uniek, gebruik een key als een experience maar 1x gegeven mag worden aan een user: bv. "owaes.30" of "quest.8".
+		- als bAdd==true : als item met key bestaat wordt waarde ++
+		 */
 			if (!is_null($strKey)) $this->strKey = $strKey; 
+			if (!is_null($bAdd)) $this->bAdd = $bAdd;   
 			return $this->strKey;  
 		}
 		
@@ -33,12 +38,20 @@
 			$iNumber *= $iMultiplier; 
 
 			$oDB = new database(); 
-			
+			 
 			$strKey = (is_null($this->sleutel()) ? "" : $this->sleutel()); 
-			if ($strKey != "") {
+			if ($strKey != "") { 
 				$strSQL = "select * from tblExperience where user = '" . $this->iUser . "' and idk = '" . $this->sleutel() . "';"; 
 				$oDB->execute($strSQL);  
-				if ($oDB->length() > 0) return FALSE; 
+				if ($oDB->length() > 0) {
+					if ($this->bAdd) {
+						$strSQL = "update tblExperience set experience = " . ($oDB->get("experience")+$iNumber) . "  where id = " . $oDB->get("id") . " and user = '" . $this->iUser . "' and idk = '" . $this->sleutel() . "'; ";   
+						$oDB->execute($strSQL);  
+						if (isset($this->arTotal["all"])) $this->arTotal["all"] += $iNumber; 
+						if (isset($this->arTotal["confirmed"]) && $bConfirmed) $this->arTotal["confirmed"] += $iNumber; 
+					}
+					return FALSE; 
+				} 
 			}
 			 
 			$strSQL = "insert into tblExperience (idk, user, experience, datum, details, confirmed) values ('" . $strKey . "', '" . $this->iUser . "', '" . $iNumber . "', '" . owaestime() . "', '" . $oDB->escape(json_encode($this->arDetails)) . "', '" . ($bConfirmed?1:0) . "'); ";
@@ -75,6 +88,26 @@
 					$this->arTotal["confirmed"] = $this->arTotal["all"]; 
 				} else unset($this->arTotal["confirmed"]); 
 			}
+		}
+		
+		public function timeline($iDays = 60) {
+			$oDB = new database(); 
+			$oDB->execute("select * from tblExperience where user = '" . $this->iUser . "' and confirmed = 1 and datum > " . (owaestime()-($iDays*24*60*60)) . ";"); 
+			$arTimeline = array(); 
+			$iStart = 0; 
+			$iPrev = -1; 
+			$dPrev = 0; 
+			while ($oDB->nextRecord()) {
+				$iStart+=$oDB->get("experience"); 
+				if (round($iStart) > $iPrev) {
+					if (date('d M Y', $dPrev) == date('d M Y', intval($oDB->get("datum")))) array_pop($arTimeline); 
+					$arTimeline[] = array(intval($oDB->get("datum")), round($iStart)); 
+					$dPrev = intval($oDB->get("datum")); 
+					$iPrev = round($iStart); 
+				} 
+			} 
+			$arTimeline[] = array(owaestime(), $arTimeline[count($arTimeline)-1][1]); 
+			return $arTimeline;
 		}
 		
 		public function total($bShowNotConfirmed = FALSE, $iValue = NULL) { // als parameter bShowNotConfirmed == TRUE > ook punten die nog niet bevestigd werden door gebruiker

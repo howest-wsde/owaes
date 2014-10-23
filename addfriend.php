@@ -25,6 +25,6 @@
 	if (isset($_GET["ajax"])) { 
 		echo $oUser->HTML("userfromlist.html");  
 	} else {  
-		header("location:" . $_SERVER["HTTP_REFERER"]);
+		redirect($_SERVER["HTTP_REFERER"]);
 	}
 ?>

@@ -154,7 +154,7 @@
 					$this->iID = 0;
 					if (is_null($this->strTitle)) $this->title(""); 
 					if (is_null($this->strBody)) $this->body(""); 
-					if (is_null($this->iAuthor)) $this->author(me()); 
+					if (is_null($this->iAuthor)) $this->author(me());  
 					if (is_null($this->iGroup)) $this->group(0); 
 					if (is_null($this->iCredits)) $this->credits(0);   
 					if (is_null($this->iPhysical)) $this->physical(25);   
@@ -354,35 +354,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$oNotification->link(fixPath($this->getLink())); 
 					$oNotification->send(); 
 					break; 
-			}
-			/*
-			$oDB = new database("update tblMarketSubscriptions set active = 0 where market = " . $this->iID . " and user = " . $iUser . ";", TRUE); 
-			$oDB = new database("insert into tblMarketSubscriptions (market, user, mtype, doneby, clickdate) values (" . $this->iID . ", " . $iUser . ", " . $iType . ", " . $iDoneBy . ", " . owaesTime() . "); ", TRUE); 
-			/*
-			if ($iType == SUBSCRIBE_CONFIRMED) {
-				$oTransaction = new transaction($this->id(), $iUser); 
-				$oTransaction->update(); 
-			}
-*/			
-		}
-		/*
-		public function transactions($iSpecificUser = NULL) { /* 
-		returns array van class.transaction's
-		als $iSpecificUser gedefinieerd: returns FALSE / class.transaction
-		indien niet gedefinieerd: returns array[met user-ID's als keys] van class.transaction's
-		*/ /*
-			if (is_null($this->arTransactions))	{
-				$this->arTransactions = array(); 
-				foreach($this->subscriptions() as $iUser=>$oSubscription) {
-					if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) {
-						$oTransaction = new transaction($this->id(), $iUser); 
-						$this->arTransactions[$iUser] = $oTransaction; 
-					}
-				}
 			} 
-			if (!is_null($iSpecificUser)) return (isset($this->arTransactions[$iSpecificUser])?$this->arTransactions[$iSpecificUser]:FALSE); 
-			return $this->arTransactions; 
-		}*/
+		} 
 		 
 		public function developmentBoxes() { // returns HTML met code van 4 indicatoren voor dit item
 			$strHTML = "<ul>";
@@ -520,6 +493,35 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		
 		private function HTMLvalue($strTag) {
 			switch($strTag) { 
+				case "flow":
+					$arFlow = array(); 
+					$arFlow["Werkervaring"] = ""; 
+					if ($this->author()->id() == me()) {
+						$arFlow["Inschrijvingen"] = ""; 
+					} else {
+						$iMyValue = (isset($arSubscriptions[me()])) ? $arSubscriptions[me()]->state() : SUBSCRIBE_CANCEL;
+						switch ($iMyValue) {
+							case "": 
+							/*
+define ("SUBSCRIBE_CANCEL", -1);
+define ("SUBSCRIBE_SUBSCRIBE", 0);
+define ("SUBSCRIBE_NEGOTIATE", 1);
+define ("SUBSCRIBE_CONFIRMED", 2);
+define ("SUBSCRIBE_DECLINED", 3);
+*/	
+						}
+					}
+					$arFlow = array(
+						"open" => array(), 
+						"inschrijven" => array(), 
+						"bevestigd" => array(), 
+						"credittransactie" => array(), 
+						"feedback" => array(), 
+					);  
+					$strFlow = "<ol class=\"flow\">"; 
+					foreach ($arFlow as $strSub=>$arD) $strFlow .= "<li><a href=\"#$strSub\">$strSub</a></li>"; 
+					$strFlow .= "</ol>"; 
+					return $strFlow; 
 				case "id": 
 					return $this->id();  
 				case "classes": 
@@ -918,7 +920,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		public function update() { // save 
 			$oDB = new database();   
 			if ($this->iID == 0) {
-				$strSQL = "insert into tblMarket (author, groep, mtype, title, body, date, lastupdate, img, location, location_lat, location_long, timingtype, timing, physical, mental, emotional, social, credits, details, state) values(" . $this->iAuthor . ", " . $this->iGroup . ", '" . ($this->type()->id()) . "', '" . $oDB->escape($this->strTitle) . "', '" . $oDB->escape($this->strBody) . "', '" . $this->iDate . "', '" . owaesTime() . "' , 'img', '" . $oDB->escape($this->strLocation) . "', '" . $oDB->escape($this->iLocationLat) . "', '" . $oDB->escape($this->iLocationLong) . "', '" . $this->strTiming . "', '" . $this->iTiming . "', '" . $this->physical() . "', '" . $this->mental() . "', '" . $this->emotional() . "', '" . $this->social() . "', '" . $this->iCredits . "', 'details', '" . ($this->state()) . "'); "; 
+				$strSQL = "insert into tblMarket (author, createdby, groep, mtype, title, body, date, lastupdate, img, location, location_lat, location_long, timingtype, timing, physical, mental, emotional, social, credits, details, state) values(" . $this->iAuthor . ", " . me() . ", " . $this->iGroup . ", '" . ($this->type()->id()) . "', '" . $oDB->escape($this->strTitle) . "', '" . $oDB->escape($this->strBody) . "', '" . $this->iDate . "', '" . owaesTime() . "' , 'img', '" . $oDB->escape($this->strLocation) . "', '" . $oDB->escape($this->iLocationLat) . "', '" . $oDB->escape($this->iLocationLong) . "', '" . $this->strTiming . "', '" . $this->iTiming . "', '" . $this->physical() . "', '" . $this->mental() . "', '" . $this->emotional() . "', '" . $this->social() . "', '" . $this->iCredits . "', 'details', '" . ($this->state()) . "'); "; 
 				$oDB->execute($strSQL); 
 				$this->iID = $oDB->lastInsertID();  
 			} else { 

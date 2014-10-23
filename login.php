@@ -15,7 +15,7 @@
 	if (isset($_POST["dosignup"])) {
 		$bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
 		if ($bResult == TRUE) { 
-			header("Location: " . $strRedirect); 
+			redirect($strRedirect); 
 			exit(); 
 		}
 		
@@ -41,7 +41,7 @@
 												"login" => $oUser->getName(),  
 											)); 
 			$bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
-			header("Location: " . $strRedirect); 
+			redirect($strRedirect); 
 			exit(); 
 		}
 	}
@@ -122,7 +122,7 @@
                 if (isset($_POST["dologin"])) {
 		            $bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
 		            if ($bResult == TRUE) {
-			            header("Location: " . $strRedirect); 
+			            redirect($strRedirect); 
 			            exit(); 
 		            } else {
                         $strErrorLogin = "<div class=\"alert alert-dismissable alert-danger\">";

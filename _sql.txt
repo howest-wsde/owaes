@@ -1,7 +1,2 @@
-tblMarket
-
-ALTER TABLE `tblGroups` ADD `website` VARCHAR( 255 ) NOT NULL AFTER `naam` ;
-
-
-check folders voor upload files
-
+ALTER TABLE `tblMarket` ADD `createdby` BIGINT NOT NULL DEFAULT '0' AFTER `groep` ;
+update tblMarket set createdby = author; 
