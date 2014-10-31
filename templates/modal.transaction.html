@@ -1,0 +1,21 @@
+<div class="modal fade" id="transaction-[market:id]-[user:id]">
+  <div class="modal-dialog">
+    <form action="[currentfile]">
+        <input type="hidden" name="market" value="[market:id]" />
+        <input type="hidden" name="receiver" value="[user:id]" />
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Creditoverdracht</h4>
+          </div>
+          <div class="modal-body">
+            <h3>[title]</h3> 
+            <p>Draag [credits] credits over naar [firstname]. </p> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success save-form" data-dismiss="modal">versturen</button>
+            <button type="button" class="btn btn-cancel later-form" data-dismiss="modal">niet nu</button>
+          </div>
+        </div><!-- /.modal-content -->
+    </form>
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

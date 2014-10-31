@@ -48,6 +48,9 @@
 		public function key() {
 			return $this->arTypes[$this->iType]["key"]; 
 		}
+		public function title() {
+			return $this->arTypes[$this->iType]["title"]; 
+		}
 		
 		public function __toString() {
 			return $this->arTypes[$this->iType]["title"]; 

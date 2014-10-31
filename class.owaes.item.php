@@ -320,7 +320,7 @@
 			$strSubscription .= "</div>";  
 			return $strSubscription; 
 		}
-		
+		 
 		public function addSubscription ($iUser, $iType) { /* 
 		wijzig status inschrijving voor user $iUser naar $iType 
 $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
@@ -334,7 +334,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			$this->arSubscriptions = $arSubscriptions;
 			
 			switch ($iType) {
-				case STATE_RECRUTE: 
+				case SUBSCRIBE_SUBSCRIBE: 
 					$oNotification = new notification($this->author()->id(), "owaes." . $this->id()); 
 					switch (count($arSubscriptions)) { 
 						case 1: 
@@ -354,6 +354,18 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$oNotification->link(fixPath($this->getLink())); 
 					$oNotification->send(); 
 					break; 
+
+				case SUBSCRIBE_CONFIRMED: 
+					$oAction = new action( $this->task() ? $this->author()->id() : $iUser );  
+					$iReceiver = $this->task() ? $iUser : $this->author()->id();
+					$oAction->type("transaction"); 
+					$oAction->data("market", $this->id()); 
+					$oAction->data("user", $iReceiver); 
+					$iDate = owaestime() + (3*24*60*60); // default: vandaag + 3 dagen
+					foreach ($this->data() as $iSubDate) $iDate = $iSubDate + (2*24*60*60); // laatste uitvoerdatum + 2 dagen
+					$oAction->tododate($iDate); 
+					$oAction->update(); 
+					break;  
 			} 
 		} 
 		 
@@ -470,14 +482,14 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 							if ($this->task()) { // ik moet betalen 
 								$arActions[] = array(
 									"type" => "transaction",  
-									"to" => $oPayment->receiver(), 
+									"to" => $oSubscription->payment()->receiver(), 
 									"credits" => 0,   
 								); 
 							} else { // ik moet nog ontvangen
 								$arActions[] = array(
 									"type" => "remind", 
 									"reason" => "transaction",  
-									"to" => $oPayment->sender(), 
+									"to" => $oSubscription->payment()->sender(), 
 									"credits" => 0,   
 								); 
 							}
@@ -491,35 +503,131 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			return $arActions; 	
 		}
 		
-		private function HTMLvalue($strTag) {
+	
+		public function subscriptionLink() { 
+			$arSubScriptions = $this->subscriptions(); 
+			$iState = (isset($arSubScriptions[me()])) ? $arSubScriptions[me()]->state() : SUBSCRIBE_CANCEL;
+			switch($iState) { 
+				case SUBSCRIBE_SUBSCRIBE: 
+					return "subscribe.php?m=" . $this->id() . "&t=" . SUBSCRIBE_CANCEL; 
+					break; 
+				case SUBSCRIBE_NEGOTIATE: 
+					return "subscribe.php?m=" . $this->id() . "&t=" . SUBSCRIBE_SUBSCRIBE;  
+					break; 
+				case SUBSCRIBE_CONFIRMED:  
+				case SUBSCRIBE_DECLINED:
+					return FALSE; 
+					break; 
+				default: 
+					return "subscribe.php?m=" . $this->id() . "&t=" . SUBSCRIBE_SUBSCRIBE;   
+					break; 
+			} 
+		}
+		
+		private function HTMLvalue($strTag) { 
 			switch($strTag) { 
 				case "flow":
-					$arFlow = array(); 
-					$arFlow["Werkervaring"] = ""; 
-					if ($this->author()->id() == me()) {
-						$arFlow["Inschrijvingen"] = ""; 
-					} else {
-						$iMyValue = (isset($arSubscriptions[me()])) ? $arSubscriptions[me()]->state() : SUBSCRIBE_CANCEL;
-						switch ($iMyValue) {
-							case "": 
-							/*
-define ("SUBSCRIBE_CANCEL", -1);
-define ("SUBSCRIBE_SUBSCRIBE", 0);
-define ("SUBSCRIBE_NEGOTIATE", 1);
-define ("SUBSCRIBE_CONFIRMED", 2);
-define ("SUBSCRIBE_DECLINED", 3);
-*/	
-						}
-					}
 					$arFlow = array(
-						"open" => array(), 
-						"inschrijven" => array(), 
-						"bevestigd" => array(), 
-						"credittransactie" => array(), 
-						"feedback" => array(), 
+						//10 => array(
+						//	"title" => $this->type()->title(), // "Werkervaring / Opleiding / Delen", 
+						//	"href" => "index.php?t=" . $this->type()->key(), 
+						//	"class" => array("done"), 
+						//), 
+						20 => array(
+							"title" => "Inschrijvingen",  
+							"href" => $this->getLink(),  
+							"class" => array(), 
+						), 
+						30 => array(
+							"title" => "Bevestiging", 
+							"class" => array(), 
+						), 
+						40 => array(
+							"title" => "Creditoverdracht", 
+							"class" => array(),  
+						), 
+						50 => array(
+							"title" => "Feedback",  
+							"class" => array(), 
+						), 
 					);  
+
+					$arSubScriptions = $this->subscriptions(); 
+					if ($this->author()->id() == me()) { // MIJN item
+						if (count($arSubScriptions) > 0) {
+							$arFlow[20]["class"][] = "done"; 
+							$arFlow[30]["href"] = $this->getLink(); 
+							if (count($this->subscriptions(array("state"=>SUBSCRIBE_SUBSCRIBE))) == 0) { // niemand "gewoon ingeschreven" (excl. bevestigd / geweigerd)
+								if (count($this->subscriptions(array("state"=>SUBSCRIBE_CONFIRMED))) > 0) { // minimum 1 persoon confirmed
+									$arFlow[30]["class"][] = "done"; 
+									$arFlow[40]["class"][] = "current"; 
+									//if ($this->task()) { // ik moet betalen
+										$arFlow[40]["href"] = $this->getLink(); 
+									//} else {
+									//	$arFlow[40]["href"] = $this->getLink(); 
+									//}
+								}  
+							} else {
+								$arFlow[30]["class"][] = "current";  
+							}
+						}
+					} else {   // item van iemand anders
+						$iMyValue = (isset($arSubScriptions[me()])) ? $arSubScriptions[me()]->state() : SUBSCRIBE_CANCEL; 
+						switch ($iMyValue) {
+							case SUBSCRIBE_SUBSCRIBE: 
+							case SUBSCRIBE_NEGOTIATE: 
+							case SUBSCRIBE_CONFIRMED: 
+							case SUBSCRIBE_DECLINED: 
+								$arFlow[20]["title"] = "Ingeschreven"; 
+								$arFlow[20]["class"][] = "done";  
+								if ($this->subscriptionLink())  $arFlow[20]["href"] = $this->getLink(); 
+								break; 
+							default: 
+								$arFlow[20]["title"] = "Inschrijven"; 
+								$arFlow[20]["class"][] = "current";  
+								if ($this->subscriptionLink())  $arFlow[20]["href"] = $this->subscriptionLink(); 
+								break;  
+						}
+						
+						switch ($iMyValue) {
+							case SUBSCRIBE_CONFIRMED: 
+								$arFlow[30]["title"] = "Inschrijving bevestigd"; 
+								$arFlow[30]["class"][] = "done";  
+								$arFlow[30]["href"] = $this->getLink();
+								if ($this->task()) { // ik moet betalen
+									$arFlow[40]["href"] = "modal.transaction.php?m=" . $this->id() . "&u=" . $this->author()->id() . "&refresh"; 
+									$arFlow[40]["class"][] = "domodal";   
+								} else { // ik moet betaald worden
+									
+								}
+								$arFlow[40]["class"][] = "current";   
+								break;  
+							case SUBSCRIBE_SUBSCRIBE: 
+							case SUBSCRIBE_NEGOTIATE: 
+								$arFlow[30]["title"] = "Wachten op bevestiging"; 
+								$arFlow[30]["class"][] = "current";  
+								$arFlow[30]["href"] = $this->getLink();   
+								break;  
+							case SUBSCRIBE_DECLINED: 
+								$arFlow[30]["title"] = "Afgewezen"; 
+								$arFlow[30]["class"][] = "stop";  
+								$arFlow[30]["href"] = $this->getLink();   
+								break; 
+							default:  
+								break;  
+						}
+					}  
+					
 					$strFlow = "<ol class=\"flow\">"; 
-					foreach ($arFlow as $strSub=>$arD) $strFlow .= "<li><a href=\"#$strSub\">$strSub</a></li>"; 
+					foreach ($arFlow as $iID=>$arFlowDetails) { 
+						$strFlow .= "<li class=\"" . implode(" ", $arFlowDetails["class"]) . "\">"; 
+						if (isset($arFlowDetails["href"])) { 
+							$strFlow .= "<a href=\"" . $arFlowDetails["href"] . "\" class=\"" . implode(" ", $arFlowDetails["class"]) . "\">" . $arFlowDetails["title"] . "</a>"; 
+						} else {
+							$strFlow .= $arFlowDetails["title"]; 
+						}
+						$strFlow .= "</li>"; 
+					}
 					$strFlow .= "</ol>"; 
 					return $strFlow; 
 				case "id": 
@@ -719,6 +827,8 @@ define ("SUBSCRIBE_DECLINED", 3);
  
  
 				default: 
+					$arSplit = explode(":", $strTag, 2);  
+					if ($arSplit[0]=="market") return $this->HTMLvalue($arSplit[1]); 
 					return NULL; 
 			}
 		}
@@ -839,6 +949,7 @@ define ("SUBSCRIBE_DECLINED", 3);
 				return TRUE; 
 			} else return FALSE;  
 		} 
+		
 		public function data() { // returns Array van unix-times
 			$arData = array();
 			if (is_null($this->arMomenten)) $this->loadMomenten();  

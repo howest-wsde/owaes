@@ -152,7 +152,7 @@
 		
 		public function escape($strTekst) { // mysql_real_escape_string
 			//echo ($strTekst); 
-			//echo "<br />" . mysql_real_escape_string($strTekst); 	
+			//echo "<br />" . mysql_real_escape_string($strTekst); 	 
 			return mysql_real_escape_string($strTekst); 	
 		}
 		

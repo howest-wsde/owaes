@@ -35,6 +35,7 @@ class subscription {
 		return $this->iStatus; 
 	}
 	
+	
 	public function payment() {
 		if (is_null($this->oPayment)) $this->oPayment = new payment(array(
 															"sender" => ($this->market()->task() ? $this->market()->author()->id() : $this->user()->id()), 

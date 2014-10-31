@@ -7,8 +7,7 @@
 	$iType = intval($_GET["t"]); 
  
  	$oOwaes = owaesitem($iOwaes);
-	$oOwaes->addSubscription($oSecurity->getUserID(), $iType); 
-	
+	$oOwaes->addSubscription($oSecurity->getUserID(), $iType);  
 	
 	if (isset($_GET["ajax"])) {
 		echo $oOwaes->subscriptionDiv(); 

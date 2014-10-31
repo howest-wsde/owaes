@@ -1616,6 +1616,9 @@
 				default: 
 					$arTag = explode(":", $strTag, 2); 
 					switch($arTag[0]) {
+						case "user": 
+							return $this->htmlValue($arTag[1]); 
+							break; 
 						case "data": 
 							if (count($arTag)==2) return $this->data($arTag[1]); 
 							break; 

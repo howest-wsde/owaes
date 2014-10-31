@@ -33,16 +33,6 @@
 			$oConversation = new conversation($iUser); 
 			$oConversation->add($_POST["mailgoedgekeurd"], $oOwaesItem->id() ); 
 			
-			$oAction = new action($oOwaesItem->task() ? me() : $iUser);
-			$oAction->type("transaction");  
-			$iDatum = owaestime() + (7*24*60*60); // 7 dagen  
-			foreach ($oOwaesItem->data() as $iTijd) {
-				if ($iTijd > 0) $iDatum = $iTijd + (24*60*60); // 1 dag
-			}
-			$oAction->data("owaes", $iID); 
-			$oAction->data("user", $oOwaesItem->task() ? $iUser : me()); 
-			$oAction->tododate($iDatum);  
-			$oAction->update(); 
 			
 		}
 		if (isset($_POST["afgekeurd"])) foreach ($_POST["afgekeurd"] as $iUser){  
@@ -116,7 +106,7 @@
                     ?>
                 </div>
                 <!-- <div class="sidecenterright">  -->
-                <div class="ownerDetail"> 
+                <div class="ownerDetail">  
 					<? echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
 					
                     <? echo ("<form method=\"post\">"); ?>

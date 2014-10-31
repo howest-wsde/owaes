@@ -49,6 +49,29 @@ $(document).ready(function() {
 		}
 	});  
 	
+	// start ACTION MODAL BUTTONS
+
+	$(document).on("click", ".later-form", function(){  
+		oForm = $(this).parentsUntil("form").parent(); 
+		arData = oForm.serialize(); 
+		arData = "cancel=1&" + arData;  
+		$.post(oForm.attr("action"), arData);  
+	})
+	
+
+	$(document).on("click", ".save-form", function(){  
+		oForm = $(this).parentsUntil("form").parent(); 
+		arData = oForm.serialize(); 
+		$.post(oForm.attr("action"), arData);  
+	}) 
+	
+	$(document).on("click", "a.domodal", function(){ 
+		loadModals(Array($(this).attr("href")));
+		return false; 
+	}); 
+				
+	// END ACTION MODAL BUTTONS
+	
 	$(":input").on("blur", function() {
 		$(this).addClass("gepasseerd");
 	}).on("change", function() {
@@ -312,8 +335,25 @@ $(document).ready(function() {
 
  
 });
- 
-
+  
+function loadModals(arURLs) {
+	if (arURLs.length > 0) {
+		strURL = arURLs.shift();  
+		 $("body").append(
+			$("<div />").load(strURL, function(){
+				console.log($(this)); 
+				$(this).find(":first").modal({
+					show: true,
+					backdrop: "static",
+					keyboard: false
+				}).on('hide.bs.modal', function (e) {
+					// do something...
+					loadModals(arURLs); 
+				})
+			})
+		); 	
+	}
+}
 
 function sameHeight() {
 	$(".sameheight").css('height', '').each(function(){ // maakt alle siblings met .sameheight even hoog

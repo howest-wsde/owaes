@@ -1,0 +1,19 @@
+<!-- MODALS -->
+<div class="modal fade" id="expModal">
+  <div class="modal-dialog">
+  <form action="[currentfile]"> 
+  	<input type="hidden" name="add" value="1" />
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Gefeliciteerd!</h4>
+      </div>
+      <div class="modal-body">
+        <p>U hebt sinds uw laatste aanmelding [newcredits] ervaringspunt(en) verdiend!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default save-form" id="btn-credits" data-dismiss="modal" onclick="raiseExp([newcredits]);">Ok</button>
+      </div>
+    </div><!-- /.modal-content -->
+    </form>
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

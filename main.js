@@ -341,14 +341,9 @@ function raiseExp($exp) {
     $progressbar.attr("aria-valuenow", $newExp);
 
     setTimeout(function () {
-        if ($newExp >= $valuemax) {
-			/*
-            $("#lvlModal").modal({
-                show: true,
-                backdrop: "static",
-                keyboard: false
-            });
-			*/
+        if ($newExp >= $valuemax) { 
+			alert($newExp); 
+			alert($valuemax); 
 
             $progressbar.css({
                 "width": "0%",

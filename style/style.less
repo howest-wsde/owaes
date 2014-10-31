@@ -24,6 +24,17 @@
 @fontsmall: 18px;
 @fontextrasmall: 14px;
 
+// color flow: 
+@cfDoneBG: #b5df7a;
+@cfDoneText: #96c557;
+@cfCurrentBG: #96c557; 
+@cfCurrentText: white; 
+@cfLaterBG: #efefef; 
+@cfLaterText: #b3abab; 
+@cfStopBG: #ff855a; 
+@cfStopText: white; 
+
+
 /*#endregion*/
 
 
@@ -250,6 +261,46 @@ span.icon-minus:before {
 }
 
 /*#endregion*/
+
+
+ol.flow {
+	display: block; 
+	overflow: auto; 
+	
+	li { 
+		float: left;
+		background-color: @cfLaterBG;
+		/* border-radius: 0 25px 25px 0; */
+		padding: 4px 15px 6px 8px;
+		margin-top: -5px;
+		font-weight: bold;
+		color: @cfLaterText;
+		position: relative;
+		margin: 20px 20px  20px  0;  
+	} 
+	li::after {
+		content: "";
+		display: block;
+		position: absolute;
+		top: 0;
+		left: 100%;
+		border-style: solid;
+		border-color: rgba(0, 0, 0, 0) @cfLaterBG;
+		border-width: 15px 0 15px 15px;
+		width: 0; 
+		height: 0;
+	}
+	
+	li.done {background-color: @cfDoneBG; color: @cfDoneText; }
+	li.done a {color: @cfDoneText;}
+	li.done::after {border-color: rgba(0, 0, 0, 0) @cfDoneBG;}
+	li.current {background-color: @cfCurrentBG; color: @cfCurrentText; }
+	li.current a {color: @cfCurrentText;}
+	li.current::after {border-color: rgba(0, 0, 0, 0) @cfCurrentBG;}
+	li.stop {background-color: @cfStopBG; color: @cfStopText; }
+	li.stop a {color: @cfStopText;}
+	li.stop::after {border-color: rgba(0, 0, 0, 0) @cfStopBG;}
+}
 
 // --- Menu --- //
 /*#region Menu*/
