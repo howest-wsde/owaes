@@ -1,7 +1,6 @@
 <?
 define ("SUBSCRIBE_CANCEL", -1);
-define ("SUBSCRIBE_SUBSCRIBE", 0);
-define ("SUBSCRIBE_NEGOTIATE", 1);
+define ("SUBSCRIBE_SUBSCRIBE", 0); 
 define ("SUBSCRIBE_CONFIRMED", 2);
 define ("SUBSCRIBE_DECLINED", 3);
  
@@ -81,9 +80,7 @@ class subscription {
 				$oDB->execute("update tblIndicators set actief = 0 where user = " . $this->iUser . " and link = " . $this->iMarket . "; "); 
 				// TODO: eventuele vorige timeouts moeten gecompenseerd worden
 				$oDB->execute("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values (" . $this->iUser . ", " . owaesTime() . ", 0, 0, 0, 0, " . TIMEOUT_CLICKED . ", " . $this->iMarket . "); "); 
-				break; 
-			case SUBSCRIBE_NEGOTIATE:  
-				break; 
+				break;  
 			case SUBSCRIBE_CONFIRMED:  
 				$oMarket = owaesitem($this->iMarket);  
 				$oDB->execute("insert into tblIndicators 

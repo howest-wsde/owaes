@@ -59,7 +59,7 @@
 		}
 		 
 		public function getTags() {
-			if (is_null($this->arTags)) $this->loadTags(); ;
+			if (is_null($this->arTags)) $this->loadTags(); 
 			$arTags = array(); 
 			foreach ($this->arTags as $strTag => $arDetails) {
 				switch($arDetails["state"]) {
@@ -241,6 +241,11 @@
 							if ($oSubscription->state() != $oValue) unset($arResult[$iUser]); 	
 						}
 						break; 	
+					case "notstate": 
+						foreach ($arResult as $iUser=>$oSubscription) {
+							if ($oSubscription->state() == $oValue) unset($arResult[$iUser]); 	
+						}
+						break; 	
 				}
 			}
 			return $arResult; 
@@ -248,6 +253,8 @@
 		 
 		
 		public function subscriptionDiv() { // returns de html met de "schrijf in / onderhandel"-knop (of status-tekst)
+			// TODO: depreacted
+			return ""; 
 			$arSubscriptions = $this->subscriptions(); 
 			$strSubscription = "<div id=\"subsc" . $this->iID . "\" class=\"sub\">";
 			//$strCount = (count($arSubscriptions)==1) ? "1 inschrijving " : count($arSubscriptions) . " inschrijvingen "; 
@@ -268,31 +275,25 @@
 						case STATE_SELECTED: 
 						case STATE_FINISHED: 
 							switch($iMyValue) {
-								case SUBSCRIBE_SUBSCRIBE:  
-								case SUBSCRIBE_NEGOTIATE: 
-									$strSubscription .= "<p>Inschrijven niet meer mogelijk, uw inschrijving werd nog niet beoordeeld</p>";
+								case SUBSCRIBE_SUBSCRIBE:   
+									//$strSubscription .= "<p>Inschrijven niet meer mogelijk, uw inschrijving werd nog niet beoordeeld</p>";
 									break; 
 								case SUBSCRIBE_CONFIRMED: 
-									$strSubscription .= "<p>Inschrijven niet meer mogelijk, uw inschrijving werd bevestigd</p>";
+									//$strSubscription .= "<p>Inschrijven niet meer mogelijk, uw inschrijving werd bevestigd</p>";
 									break; 
 								case SUBSCRIBE_DECLINED:
-									$strSubscription .= "<p>Inschrijven niet meer mogelijk, uw inschrijving werd afgezen</p>";
+									//$strSubscription .= "<p>Inschrijven niet meer mogelijk, uw inschrijving werd afgezen</p>";
 									break; 
 								default: 
-									$strSubscription .= "<p>Inschrijven niet meer mogelijk</p>"; 
+									//$strSubscription .= "<p>Inschrijven niet meer mogelijk</p>"; 
 							} 
 							break;
 						default: // STATE_RECRUTE
 							$strSubscription .= $strCount; 
 							switch($iMyValue) {
 								case SUBSCRIBE_SUBSCRIBE: 
-									$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_CANCEL . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-close\"></span>uitschrijven</a> ";
-									//$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_NEGOTIATE . "\" class=\"subscribe\">onderhandel</a> ";
-									break; 
-								case SUBSCRIBE_NEGOTIATE: 
-									$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn-sm btn btn-default pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";
-									//$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_CANCEL . "\" class=\"active subscribe\">onderhandelend</a> ";
-									break; 
+									$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_CANCEL . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-close\"></span>uitschrijven</a> "; 
+									break;  
 								case SUBSCRIBE_CONFIRMED: 
 									//$strSubscription .= "<p>Uw inschrijving werd bevestigd</p>";
 									
@@ -309,8 +310,7 @@
 								case SUBSCRIBE_DECLINED:
 									$strSubscription .= "<p>Uw inschrijving werd afgezen</p>";
 								default: 
-									$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";
-									//$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_NEGOTIATE . "\" class=\"subscribe\">onderhandel</a> ";
+									$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> "; 
 							} 
 							break; 	
 					}
@@ -362,7 +362,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$oAction->data("market", $this->id()); 
 					$oAction->data("user", $iReceiver); 
 					$iDate = owaestime() + (3*24*60*60); // default: vandaag + 3 dagen
-					foreach ($this->data() as $iSubDate) $iDate = $iSubDate + (2*24*60*60); // laatste uitvoerdatum + 2 dagen
+					foreach ($this->data() as $iSubDate) if ($iSubDate>0 && $iSubDate>$iDate) $iDate = $iSubDate + (2*24*60*60); // laatste uitvoerdatum + 2 dagen
 					$oAction->tododate($iDate); 
 					$oAction->update(); 
 					break;  
@@ -406,11 +406,18 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		}
 		
 		public function html($strTemplate) { // vraagt pad van template en returns de html met replaced [tags]  
-			$strHTML = template($strTemplate); 
+			$oHTML = template($strTemplate); 
 			
+			foreach ($oHTML->tags() as $strTag) {
+				$strResult = $this->HTMLvalue($strTag);  
+				if (!is_null($strResult)) $oHTML->tag($strTag, $strResult); 
+			}
+			
+			$strHTML = $oHTML->html(); 
+			/*
  			preg_match_all("/\[if:([a-zA-Z0-9-_:#]+)\]([\s\S]*?)\[\/if:\\1\]/", $strHTML, $arResult);   // bv. [if:firstname]firstname ingevuld en zichtbaar[/if:firstname]  
 			for ($i=0;$i<count($arResult[0]);$i++) {
-				$strResult = $this->HTMLvalue($arResult[1][$i]);  
+				$strResult = $this->HTMLvalue($arResult[1][$i]);
 				if (!is_null($strResult)) $strHTML = str_replace($arResult[0][$i], (($strResult == "") ? "" : $arResult[2][$i]), $strHTML); 	
 			} 
 			preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]/", $strHTML, $arResult);   // alle tags (zonder whitespace)
@@ -418,7 +425,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				$strResult = $this->HTMLvalue($strTag);  
 				if (!is_null($strResult)) $strHTML = str_replace("[$strTag]", $strResult, $strHTML); 
 			} 
-              
+              */
  			if ($this->group()){   
 				$strHTML = preg_replace_callback('/\[author\:img\:([0-9]*x[0-9]*)\]/', array(&$this, "imagegroupregreplace"), $strHTML); 
 			} else {   
@@ -441,7 +448,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			if ($this->iAuthor != me()) {
 				if (isset($arSubscriptions[me()])) {
 					$oSubscription = $arSubscriptions[me()];  
-					if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) { // SUBSCRIBE_CANCEL, SUBSCRIBE_SUBSCRIBE, SUBSCRIBE_NEGOTIATE, SUBSCRIBE_CONFIRMED, SUBSCRIBE_DECLINED 
+					if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) { // SUBSCRIBE_CANCEL, SUBSCRIBE_SUBSCRIBE, SUBSCRIBE_CONFIRMED, SUBSCRIBE_DECLINED 
 						$oPayment = $oSubscription->payment();   
 						if (!$oPayment->signed()) { 
 							if ($oPayment->sender() == me()) {
@@ -510,10 +517,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			switch($iState) { 
 				case SUBSCRIBE_SUBSCRIBE: 
 					return "subscribe.php?m=" . $this->id() . "&t=" . SUBSCRIBE_CANCEL; 
-					break; 
-				case SUBSCRIBE_NEGOTIATE: 
-					return "subscribe.php?m=" . $this->id() . "&t=" . SUBSCRIBE_SUBSCRIBE;  
-					break; 
+					break;  
 				case SUBSCRIBE_CONFIRMED:  
 				case SUBSCRIBE_DECLINED:
 					return FALSE; 
@@ -524,102 +528,248 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			} 
 		}
 		
-		private function HTMLvalue($strTag) { 
-			switch($strTag) { 
-				case "flow":
-					$arFlow = array(
-						//10 => array(
-						//	"title" => $this->type()->title(), // "Werkervaring / Opleiding / Delen", 
-						//	"href" => "index.php?t=" . $this->type()->key(), 
-						//	"class" => array("done"), 
-						//), 
-						20 => array(
-							"title" => "Inschrijvingen",  
-							"href" => $this->getLink(),  
-							"class" => array(), 
-						), 
-						30 => array(
-							"title" => "Bevestiging", 
-							"class" => array(), 
-						), 
-						40 => array(
-							"title" => "Creditoverdracht", 
-							"class" => array(),  
-						), 
-						50 => array(
-							"title" => "Feedback",  
-							"class" => array(), 
-						), 
-					);  
-
-					$arSubScriptions = $this->subscriptions(); 
-					if ($this->author()->id() == me()) { // MIJN item
-						if (count($arSubScriptions) > 0) {
-							$arFlow[20]["class"][] = "done"; 
-							$arFlow[30]["href"] = $this->getLink(); 
-							if (count($this->subscriptions(array("state"=>SUBSCRIBE_SUBSCRIBE))) == 0) { // niemand "gewoon ingeschreven" (excl. bevestigd / geweigerd)
-								if (count($this->subscriptions(array("state"=>SUBSCRIBE_CONFIRMED))) > 0) { // minimum 1 persoon confirmed
-									$arFlow[30]["class"][] = "done"; 
-									$arFlow[40]["class"][] = "current"; 
-									//if ($this->task()) { // ik moet betalen
+		public function flow() {
+			$arFlow = array(
+				//10 => array(
+				//	"title" => $this->type()->title(), // "Werkervaring / Opleiding / Delen", 
+				//	"href" => "index.php?t=" . $this->type()->key(), 
+				//	"class" => array("done"), 
+				//), 
+				20 => array(
+					"title" => "Inschrijvingen",  
+					"count" => 0,  
+					"href" => $this->getLink(),  
+					"class" => array(), 
+				), 
+				30 => array(
+					"title" => "Bevestiging", 
+					"count" => 0,  
+					"class" => array(), 
+				), 
+				40 => array(
+					"title" => "Creditoverdracht", 
+					"count" => 0,  
+					"class" => array(),  
+				), 
+				50 => array(
+					"title" => "Feedback",  
+					"count" => 0,  
+					"class" => array("last"), 
+				), 
+			);  
+	
+			$arSubScriptions = $this->subscriptions();  
+			// vardump($arSubScriptions); 
+			foreach ($arSubScriptions as $iUser=>$oSubscription) {
+				switch($oSubscription->state()) {
+					case SUBSCRIBE_SUBSCRIBE: 
+						$arFlow[20]["count"] ++; 
+						break; 
+					case SUBSCRIBE_CONFIRMED: 
+						$arFlow[30]["count"] ++; 
+						break; 
+					default:  
+				}
+			}
+			
+			if ($this->author()->id() == me()) { // MIJN item
+				if (count($arSubScriptions) > 0) { 
+					$arFlow[20]["class"][] = "done"; 
+					$arFlow[30]["href"] = $this->getLink(); 
+					if (count($this->subscriptions(array("state"=>SUBSCRIBE_SUBSCRIBE))) == 0) { // niemand "gewoon ingeschreven" (excl. bevestigd / geweigerd)
+						$arConfirmedUsers = $this->subscriptions(array("state"=>SUBSCRIBE_CONFIRMED));  
+						if (count($arConfirmedUsers) > 0) { // minimum 1 persoon confirmed
+							$arFlow[30]["class"][] = "done"; 
+							if ($this->task()) { // ik moet betalen  
+								$arNotPayed = array();
+								$arNotRated = array();
+								foreach ($arConfirmedUsers as $iUser=>$oSubscription) {
+									//$oPayment = new payment(array("receiver"=>me(), "sender"=>$iUser, "market"=>$this->id())); 
+									//if (!$oPayment->signed()) $arNotPayed[] = $iUser; 
+									//$oRating = new rating(array("receiver"=>me(), "sender"=>$iUser, "market"=>$this->id())); 
+									//if (!$oRating->rated()) $arNotRated[] = $iUser;  
+									if (!$oSubscription->payment()->signed()) $arNotPayed[] = $iUser;  
+									if (!$oSubscription->rating()->rated()) $arNotRated[] = $iUser;  
+								}
+								switch(count($arNotPayed)) {
+									case 0: // iedereen is betaald 
+										$arFlow[40]["class"][] = "done"; 
+										switch(count($arNotRated)) {
+											case 0:  // alle ratings zijn gebeurd
+												$arFlow[50]["class"][] = "done"; 
+												break; 
+											case 1: 
+												$oRating = new rating(array(
+													"market" => $this->id(), 
+													"sender" => me(), 
+													"receiver" => $arNotRated[0],
+												));   
+												if (!$oRating->rated()) {
+													$arFlow[50]["href"] = "modal.feedback.php?m=" . $this->id() . "&u=" . $arNotRated[0] . "&refresh=1"; 
+													$arFlow[50]["class"][] = "domodal";   
+													$arFlow[50]["class"][] = "current"; 
+												} 
+												break; 
+											default: 
+												$arFlow[50]["href"] = $this->getLink(); 
+												$arFlow[50]["class"][] = "current";  
+										} 
+										break;  
+									case 1:  // ik moet (nog) precies één iemand betalen
+									
+										$arFlow[40]["href"] = "modal.transaction.php?m=" . $this->id() . "&u=" . $arNotPayed[0] . "&refresh=1"; 
+										$arFlow[40]["class"][] = "domodal";   
+										$arFlow[40]["class"][] = "current"; 
+										break; 
+									default: // nog verschillende personen moeten betaald worden
 										$arFlow[40]["href"] = $this->getLink(); 
-									//} else {
-									//	$arFlow[40]["href"] = $this->getLink(); 
-									//}
+										$arFlow[40]["class"][] = "current";  
+										break; 
+								} 
+								/*
+								if (count($arConfirmedUsers) == 1) { // als er maar één iemand betaald moet worden
+									$oPayment = new payment(array("sender"=>me(), "receiver"=>key($arConfirmedUsers), "market"=>$this->id())); 
+									if ($oPayment->signed()) { // 1 persoon, betaling gebeurd
+										$arFlow[40]["href"] = $this->getLink(); 
+										$arFlow[40]["class"][] = "done"; 
+										$oRating = new rating(array("sender"=>me(), "receiver"=>key($arConfirmedUsers), "market"=>$this->id())); 
+										if ($oRating->rated()) { 
+											$arFlow[50]["class"][] = "done"; 
+										} else {
+											$arFlow[50]["href"] = "modal.feedback.php?m=" . $this->id() . "&u=" . key($arConfirmedUsers) . "&refresh=1"; 
+											$arFlow[50]["class"][] = "domodal";   
+											$arFlow[50]["class"][] = "current"; 
+										}
+									} else { // 1 persoon, betaling moet nog gebeuren
+										$arFlow[40]["href"] = "modal.transaction.php?m=" . $this->id() . "&u=" . key($arConfirmedUsers) . "&refresh=1"; 
+										$arFlow[40]["class"][] = "domodal";   
+										$arFlow[40]["class"][] = "current"; 
+									} 
+								} else { // verschillende personen confirmed
+									$arFlow[40]["href"] = $this->getLink(); 
+									$arFlow[40]["class"][] = "current"; 
+								}*/
+							} else { // ik moet betaald worden 
+								$arNotPayed = array();
+								$arNotRated = array();
+								foreach ($arConfirmedUsers as $iUser=>$oSubscription) {
+									//$oPayment = new payment(array("receiver"=>me(), "sender"=>$iUser, "market"=>$this->id())); 
+									//if (!$oPayment->signed()) $arNotPayed[] = $iUser; 
+									//if (!$oSubscription->payment()->signed()) $arNotPayed[] = $iUser;  
+									//$oRating = new rating(array("sender"=>me(), "receiver"=>$iUser, "market"=>$this->id())); 
+									//if (!$oRating->rated()) $arNotRated[] = $iUser; 
+									if (!$oSubscription->payment()->signed()) $arNotPayed[] = $iUser;  
+									if (!$oSubscription->rating()->rated()) $arNotRated[] = $iUser;  
+								}
+								switch(count($arNotPayed)) {
+									case 0: // iedereen heeft betaald 
+										$arFlow[40]["class"][] = "done"; 
+										switch(count($arNotRated)) {
+											case 0:  // alle ratings zijn gebeurd
+												$arFlow[50]["class"][] = "done"; 
+												break; 
+											case 1: 
+												$oRating = new rating(array(
+													"market" => $this->id(), 
+													"sender" => me(), 
+													"receiver" => $arNotRated[0],
+												));  
+												if (!$oRating->rated()) {
+													$arFlow[50]["href"] = "modal.feedback.php?m=" . $this->id() . "&u=" . $arNotRated[0] . "&refresh=1"; 
+													$arFlow[50]["class"][] = "domodal";   
+													$arFlow[50]["class"][] = "current"; 
+												}
+												break; 
+											default: 
+												$arFlow[50]["href"] = $this->getLink(); 
+												$arFlow[50]["class"][] = "current"; 
+												
+										} 
+										break;  
+									default: // nog verschillende personen moeten betalen
+										$arFlow[40]["href"] = $this->getLink(); 
+										$arFlow[40]["class"][] = "current";  
+										break; 
 								}  
-							} else {
-								$arFlow[30]["class"][] = "current";  
+							}
+						}  
+					} else { // minimum één persoon staat nog gewoon "ingeschreven" zonder bevesigd of afgewezen te zijn
+						$arFlow[30]["class"][] = "current";  
+						$arFlow[30]["href"] = $this->getLink(); 
+					}
+				} else $arFlow[20]["class"][] = "current";  // nog geen reactie's op item (geen inschrijvingen)
+			} else {   // item van iemand anders
+				$iMyValue = (isset($arSubScriptions[me()])) ? $arSubScriptions[me()]->state() : SUBSCRIBE_CANCEL; 
+				switch ($iMyValue) {
+					case SUBSCRIBE_SUBSCRIBE: 
+						$arFlow[20]["class"][] = "notconfirmed";  
+						$arFlow[20]["href"] = $this->subscriptionLink();  
+					case SUBSCRIBE_CONFIRMED: 
+					case SUBSCRIBE_DECLINED: 
+						$arFlow[20]["title"] = "Ingeschreven"; 
+						$arFlow[20]["class"][] = "done"; 
+						break; 
+					default: 
+						$arFlow[20]["title"] = "Inschrijven"; 
+						$arFlow[20]["class"][] = "current";  
+						if ($this->subscriptionLink())  $arFlow[20]["href"] = $this->subscriptionLink(); 
+						break;  
+				}
+				
+				switch ($iMyValue) {
+					case SUBSCRIBE_CONFIRMED: 
+						$arFlow[30]["title"] = "Inschrijving bevestigd"; 
+						$arFlow[30]["class"][] = "done";  
+						$arFlow[30]["href"] = $this->getLink();
+						if (!$this->task()) { // ik moet betalen 
+							$oPayment = new payment(array("sender"=>me(), "receiver"=>$this->author()->id(), "market"=>$this->id())); 
+							if ($oPayment->signed()) { // is al betaald
+								$arFlow[40]["href"] = $this->getLink(); 
+								$arFlow[40]["class"][] = "done"; 
+								$arFlow[50]["href"] = "modal.feedback.php?m=" . $this->id() . "&u=" . $this->author()->id() . "&refresh=1"; 
+								$arFlow[50]["class"][] = "domodal";   
+								$arFlow[50]["class"][] = "current";   
+							} else { // nog niet betaald
+								$arFlow[40]["href"] = "modal.transaction.php?m=" . $this->id() . "&u=" . $this->author()->id() . "&refresh=1"; 
+								$arFlow[40]["class"][] = "domodal";   
+								$arFlow[40]["class"][] = "current";   
+							}
+						} else { // ik moet betaald worden 
+							$arFlow[40]["href"] = $this->getLink(); 
+							$oPayment = new payment(array("receiver"=>me(), "sender"=>$this->author()->id(), "market"=>$this->id()));  
+							if ($oPayment->signed()) { // is al betaald
+								$arFlow[40]["class"][] = "done"; 
+								$arFlow[50]["href"] = "modal.feedback.php?m=" . $this->id() . "&u=" . $this->author()->id() . "&refresh=1"; 
+								$arFlow[50]["class"][] = "domodal";   
+								$arFlow[50]["class"][] = "current";   
+							} else { // nog niet betaald
+								$arFlow[40]["class"][] = "current";   
 							}
 						}
-					} else {   // item van iemand anders
-						$iMyValue = (isset($arSubScriptions[me()])) ? $arSubScriptions[me()]->state() : SUBSCRIBE_CANCEL; 
-						switch ($iMyValue) {
-							case SUBSCRIBE_SUBSCRIBE: 
-							case SUBSCRIBE_NEGOTIATE: 
-							case SUBSCRIBE_CONFIRMED: 
-							case SUBSCRIBE_DECLINED: 
-								$arFlow[20]["title"] = "Ingeschreven"; 
-								$arFlow[20]["class"][] = "done";  
-								if ($this->subscriptionLink())  $arFlow[20]["href"] = $this->getLink(); 
-								break; 
-							default: 
-								$arFlow[20]["title"] = "Inschrijven"; 
-								$arFlow[20]["class"][] = "current";  
-								if ($this->subscriptionLink())  $arFlow[20]["href"] = $this->subscriptionLink(); 
-								break;  
-						}
-						
-						switch ($iMyValue) {
-							case SUBSCRIBE_CONFIRMED: 
-								$arFlow[30]["title"] = "Inschrijving bevestigd"; 
-								$arFlow[30]["class"][] = "done";  
-								$arFlow[30]["href"] = $this->getLink();
-								if ($this->task()) { // ik moet betalen
-									$arFlow[40]["href"] = "modal.transaction.php?m=" . $this->id() . "&u=" . $this->author()->id() . "&refresh"; 
-									$arFlow[40]["class"][] = "domodal";   
-								} else { // ik moet betaald worden
-									
-								}
-								$arFlow[40]["class"][] = "current";   
-								break;  
-							case SUBSCRIBE_SUBSCRIBE: 
-							case SUBSCRIBE_NEGOTIATE: 
-								$arFlow[30]["title"] = "Wachten op bevestiging"; 
-								$arFlow[30]["class"][] = "current";  
-								$arFlow[30]["href"] = $this->getLink();   
-								break;  
-							case SUBSCRIBE_DECLINED: 
-								$arFlow[30]["title"] = "Afgewezen"; 
-								$arFlow[30]["class"][] = "stop";  
-								$arFlow[30]["href"] = $this->getLink();   
-								break; 
-							default:  
-								break;  
-						}
-					}  
-					
+						break;  
+					case SUBSCRIBE_SUBSCRIBE:  
+						$arFlow[30]["title"] = "Wachten op bevestiging"; 
+						$arFlow[30]["class"][] = "current";   
+						break;  
+					case SUBSCRIBE_DECLINED: 
+						$arFlow[30]["title"] = "Afgewezen"; 
+						$arFlow[30]["class"][] = "stop";  
+						$arFlow[30]["href"] = $this->getLink();   
+						break; 
+					default:  
+						break;  
+				}
+			} 
+			$arFlow[20]["title"] .= " (" . $arFlow[20]["count"] . ")"; 
+			$arFlow[30]["title"] .= " (" . $arFlow[30]["count"] . ")"; 
+			return $arFlow;  
+		}
+		
+		private function HTMLvalue($strTag) { 
+			switch($strTag) { 
+				case "flow": 
 					$strFlow = "<ol class=\"flow\">"; 
-					foreach ($arFlow as $iID=>$arFlowDetails) { 
+					foreach ($this->flow()  as $iID=>$arFlowDetails) { 
 						$strFlow .= "<li class=\"" . implode(" ", $arFlowDetails["class"]) . "\">"; 
 						if (isset($arFlowDetails["href"])) { 
 							$strFlow .= "<a href=\"" . $arFlowDetails["href"] . "\" class=\"" . implode(" ", $arFlowDetails["class"]) . "\">" . $arFlowDetails["title"] . "</a>"; 
@@ -727,9 +877,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "development":
 					return $this->developmentBoxes(); 
 				case "credits":
-					return ($this->iCredits==0) ? "aantal credits n.o.t.k." : $this->iCredits . " credits"; 
+					return ($this->iCredits==0) ? "" : $this->iCredits;   
+					//return $this->iCredits; 
+					//return ($this->iCredits==0) ? "aantal credits n.o.t.k." : $this->iCredits . " credits";   
 				case "subscribe":
-					return $this->subscriptionDiv();
+					return ""; // $this->subscriptionDiv();
 				case "author:box":
 					return $this->author()->userBox(); 
 				case "state":
@@ -748,7 +900,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					foreach ($this->getTags() as $strTag) $arTags[] = "<span>" . htmlentities($strTag) . "</span>"; 
 					return implode("", $arTags); 
 				case "aantalInschrijvingen":  
-					$arSubscriptions = $this->subscriptions(); 
+					$arSubscriptions = $this->subscriptions(array("notstate"=>SUBSCRIBE_DECLINED)); 
 					return (count($arSubscriptions)==1) ? "1 inschrijving " : count($arSubscriptions) . " inschrijvingen ";
 				//case "status": 
 				//	$arStatus = array(); 
@@ -760,18 +912,17 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$arSubscriptions = $this->subscriptions();  
 					if ($this->iAuthor != me()) {
 						$iMyValue = (isset($arSubscriptions[me()])) ? $arSubscriptions[me()]->state() : SUBSCRIBE_CANCEL;
-						if ($iMyValue == SUBSCRIBE_CONFIRMED) { 
+						//if ($iMyValue == SUBSCRIBE_CONFIRMED) { 
+						/*
 							$oPayment = $arSubscriptions[me()]->payment();   
 							if (!$oPayment->signed()) { 
 								if ($oPayment->sender() == me()) {
-									$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>"; 
+									//$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>"; 
 								} else {
 									
-									if (filename(FALSE) != "owaes.php") $arActions[] = "<a href=\"" . $this->getLink() . "\"><img src=\"" . fixPath("img/contact.png") . "\" alt=\"neem contact op\" align=\"right\" /></a>"; 
-								}
-								$arActions[] = $oPayment->html(); 
-							} else {
-								$arActions[] = "credits-overdracht OK"; 
+									//if (filename(FALSE) != "owaes.php") $arActions[] = "<a href=\"" . $this->getLink() . "\"><img src=\"" . fixPath("img/contact.png") . "\" alt=\"neem contact op\" align=\"right\" /></a>"; 
+								} 
+							} else { 
 								$oRating = $arSubscriptions[me()]->rating(me()); 
 								if ($oRating->stars()) {
 									$arActions[] =  ("<div>" . $oRating->html() . "</div>"); 
@@ -780,7 +931,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 								}
 								
 							}   
-						} 
+							*/
+						//} 
 						if (admin()) $arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" class=\"btn btn-default btn-sm pull-right edit\" align=\"right\" /></a>"; 
 					} else { // ik == author
 						$iCount = count($arSubscriptions); 
@@ -793,9 +945,10 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 									if ($oSubscription->payment()->signed()) $iPayed ++; 
 								} 
 							}
+							/*
 							if ($this->task()) { // ik moet betalen
 								if ($iConfirmed > $iPayed) {
-									$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>"; 
+									$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>";  // modal.transaction.php?m=" . $this->id() . "&u=" . key($arConfirmedUsers) . "&refresh
 								} else { 
 									if ($iConfirmed > 0) $arActions[] = "credits-overdracht allemaal OK"; 
 								}
@@ -806,6 +959,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 									$arActions[] = "credits-overdracht allemaal OK"; 
 								}
 							} 	
+							/*
 							foreach ($arSubscriptions as $iUser=>$oSubscription) {
 								if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) { 
 									if ($oSubscription->payment()->signed()) {
@@ -816,10 +970,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 											$arActions[] =  ("<li>" . $oRating->html() . "</li>"); 	
 										} 
 									} else {
-										$arActions[] = $oSubscription->payment()->html(); 
+										//$arActions[] = $oSubscription->payment()->html(); 
 									}
 								} 
 							}
+							*/
 						}
 						$arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img class=\"btn btn-default btn-sm pull-right\" src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" align=\"right\" /></a>"; 
 					}
@@ -1038,7 +1193,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				$strSQL = "update tblMarket set lastupdate = '" . owaesTime() . "', author = " . $this->author()->id() . ", groep = " . $this->iGroup . ", mtype = '" . ($this->type()->id()) . "', title = '" . $oDB->escape($this->title()) . "', body = '" . $oDB->escape($this->body()) . "', img = 'img', location = '" . $oDB->escape($this->strLocation) . "', location_lat = '" . $this->iLocationLat . "', location_long = '" . $this->iLocationLong . "', timing = '" . $this->timing() . "', timingtype = '" . $this->timingtype() . "', physical = '" . $this->physical() . "', mental = '" . $this->mental() . "', emotional = '" . $this->emotional() . "', social = '" . $this->social() . "', credits = '" . $this->credits() . "', details = 'details', state = '" . ($this->state()) . "' where id = " . $this->iID . ";";  
 				$oDB->execute($strSQL); 
 			} 
-			foreach ($this->arTags as $strTag=>$arDetails) {
+			if (!is_null($this->arTags)) foreach ($this->arTags as $strTag=>$arDetails) {
 				switch($arDetails["state"]){
 					case "DB": 
 						// no change
@@ -1054,7 +1209,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						vardump($this);  
 				}
 			}
-			foreach ($this->arMomenten as $iDate=>$arDetails) {
+			if (!is_null($this->arMomenten)) foreach ($this->arMomenten as $iDate=>$arDetails) {
 				switch($arDetails["status"]) {
 					case "DB": 
 						// no change

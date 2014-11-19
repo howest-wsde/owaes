@@ -9,7 +9,7 @@
 		private $iID = NULL;  
 		private $bSigned = NULL; 
 		
-		public function payment($arArguments) { 
+		public function payment($arArguments) {  // payment(array("sender"=>$x, "receiver"=>$y, "market"=>$z))
 			foreach ($arArguments as $strKey=>$oValue) {
 				switch(strtolower($strKey)) {
 					case "sender": 
@@ -144,7 +144,7 @@
 							<input type=\"hidden\" name=\"score\" value=\"\" />
 						<fieldset>
 										<dl class=>";
-						$strHTML .= "<dt>Draag " . $this->credits() . " credits over naar " . user($this->receiver())->getName() . " voor dit item</dt>";    
+						$strHTML .= "<dt>XXXDraag " . $this->credits() . " credits over naar " . user($this->receiver())->getName() . " voor dit item</dt>";    
 						$strHTML .= "</dl>
 										</fieldset> 
 								"; 

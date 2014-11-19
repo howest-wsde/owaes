@@ -44,8 +44,7 @@
 			}
 			return $this->arActions[$strKey]; 
 		}
-	}
- 
+	} 
 
 	class action {
 		private $iID = 0; 
@@ -98,6 +97,17 @@
 			$this->arData = json_decode($oRecord["data"], TRUE); 
 		}
 		
+		public function checkID() {
+			$iUser = $this->iUser;
+			$strActie = $this->strType; 
+			$strData = json_encode($this->arData);  
+			$oDB = new database(); 
+			
+			$oDB->execute("select * from tblActions where user = " . $iUser . " and actie = '" . $oDB->escape($strActie) . "' and data = '" . $oDB->escape($strData) . "'; "); 
+			if ($oDB->nextRecord()) $this->iID = $oDB->get("id"); 
+	
+		}
+		
 		public function update() {
 			$arVelden = array(
 				"created" => $this->iCreated, 
@@ -107,8 +117,10 @@
 			if (!is_null($this->iDoneDate)) $arVelden["completed"] = $this->iDoneDate; 
 			if (!is_null($this->strType)) $arVelden["actie"] = $this->strType; 
 			if (!is_null($this->arData)) $arVelden["data"] = json_encode($this->arData); 
+		
+			if ($this->iID == 0) $this->checkID(); 
 
-			$oDB = new database(); 
+			$oDB = new database();  
 			if ($this->iID == 0) {
 				$arFields = array(); 
 				$arValues = array(); 

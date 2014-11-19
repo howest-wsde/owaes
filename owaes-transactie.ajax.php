@@ -71,6 +71,7 @@
     <body>
     	<script>
 			function transactie(oObj) { 
+				alert("FUNCTIE WEG");  /* TODO */
 				if (isNaN(oObj)) {  // oObj = Form  
 					frm = oObj; 
 					$.post("owaes-transactie.ajax.php?user=<? echo $iUser; ?>", {"message":frm.message.value, "credits":frm.credits.value, "type":"donate"}, function(data){ 

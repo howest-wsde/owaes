@@ -49,6 +49,15 @@ $(document).ready(function() {
 		}
 	});  
 	
+	
+	$("ol.flow li.notconfirmed").mouseover(function(){
+		oA = $(this).find("a");
+		oA.attr("oud", oA.html()); 
+		$(this).find("a").html("Uitschrijven");
+	}).mouseout(function(){
+		$(this).find("a").html(oA.attr("oud"));
+	});  
+	
 	// start ACTION MODAL BUTTONS
 
 	$(document).on("click", ".later-form", function(){  
@@ -62,7 +71,10 @@ $(document).ready(function() {
 	$(document).on("click", ".save-form", function(){  
 		oForm = $(this).parentsUntil("form").parent(); 
 		arData = oForm.serialize(); 
-		$.post(oForm.attr("action"), arData);  
+		bRefresh = (oForm.find("input[name='refresh']").val()==1); 
+		$.post(oForm.attr("action"), arData, function(){
+			if (bRefresh) location.reload(); 
+		});  
 	}) 
 	
 	$(document).on("click", "a.domodal", function(){ 
@@ -340,14 +352,12 @@ function loadModals(arURLs) {
 	if (arURLs.length > 0) {
 		strURL = arURLs.shift();  
 		 $("body").append(
-			$("<div />").load(strURL, function(){
-				console.log($(this)); 
+			$("<div />").load(strURL, function(){ 
 				$(this).find(":first").modal({
 					show: true,
 					backdrop: "static",
 					keyboard: false
 				}).on('hide.bs.modal', function (e) {
-					// do something...
 					loadModals(arURLs); 
 				})
 			})

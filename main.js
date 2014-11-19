@@ -341,9 +341,7 @@ function raiseExp($exp) {
     $progressbar.attr("aria-valuenow", $newExp);
 
     setTimeout(function () {
-        if ($newExp >= $valuemax) { 
-			alert($newExp); 
-			alert($valuemax); 
+        if ($newExp >= $valuemax) {   
 
             $progressbar.css({
                 "width": "0%",

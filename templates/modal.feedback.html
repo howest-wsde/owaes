@@ -1,7 +1,8 @@
-<div class="modal fade" id="strModalID">
+<div class="modal fade modalfeedback" id="feedback-[market:id]-[user:id]">
   <div class="modal-dialog">
   
     <form action="[currentfile]"> 
+        <input type="hidden" name="refresh" value="[qry:refresh]" />
         <input type="hidden" name="score" class="stars" value="5" />
         <input type="hidden" name="market" value="[market:id]" />
         <input type="hidden" name="receiver" value="[user:id]" /> 
@@ -10,8 +11,8 @@
             <h4 class="modal-title">Feedback</h4>
           </div>
           <div class="modal-body">
-            <div>huppeldepup</div>
-            <p>Hoe tevreden ben je over de samenwerking met sqdfqdsf</p>
+            <h3>[market:title]</h3>
+            <p>Hoe tevreden ben je over de samenwerking met [user:name]</p>
             <ol class="stars">
                 <li><a href="#1" rel="1" class="stars">Helemaal niet tevreden</a></li>
                 <li><a href="#2" rel="2" class="stars">Onvoldoende tevreden</a></li>
@@ -24,7 +25,7 @@
           <div class="modal-body">  
                 <label for="description" class="control-label col-lg-12">Jouw feedback:</label>
                 <div class="col-lg-12">
-                    <textarea name="comment" class="form-control" placeholder="Geef je feedback voor dsqfsdqf"></textarea>
+                    <textarea name="comment" class="form-control" placeholder="Geef je feedback voor [user:name]"></textarea>
                 </div>  
           </div>
           <div class="modal-footer">

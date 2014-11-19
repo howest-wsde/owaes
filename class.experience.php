@@ -92,7 +92,7 @@
 		
 		public function timeline($iDays = 60) {
 			$oDB = new database(); 
-			$oDB->execute("select * from tblExperience where user = '" . $this->iUser . "' and confirmed = 1 and datum > " . (owaestime()-($iDays*24*60*60)) . ";"); 
+			$oDB->execute("select * from tblExperience where user = '" . $this->iUser . "' and confirmed = 1 order by datum;"); 
 			$arTimeline = array(); 
 			$iStart = 0; 
 			$iPrev = -1; 
@@ -100,8 +100,10 @@
 			while ($oDB->nextRecord()) {
 				$iStart+=$oDB->get("experience"); 
 				if (round($iStart) > $iPrev) {
-					if (date('d M Y', $dPrev) == date('d M Y', intval($oDB->get("datum")))) array_pop($arTimeline); 
-					$arTimeline[] = array(intval($oDB->get("datum")), round($iStart)); 
+					if ($oDB->get("datum") > (owaestime()-($iDays*24*60*60))) {
+						if (date('d M Y', $dPrev) == date('d M Y', intval($oDB->get("datum")))) array_pop($arTimeline); 
+						$arTimeline[] = array(intval($oDB->get("datum")), round($iStart)); 
+					}
 					$dPrev = intval($oDB->get("datum")); 
 					$iPrev = round($iStart); 
 				} 

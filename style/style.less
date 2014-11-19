@@ -24,15 +24,13 @@
 @fontsmall: 18px;
 @fontextrasmall: 14px;
 
-// color flow: 
-@cfDoneBG: #b5df7a;
-@cfDoneText: #96c557;
-@cfCurrentBG: #96c557; 
-@cfCurrentText: white; 
-@cfLaterBG: #efefef; 
-@cfLaterText: #b3abab; 
-@cfStopBG: #ff855a; 
-@cfStopText: white; 
+// color flow:  
+@cfDoneText: #2c7c42; 
+@cfCurrentText: #333333;  
+@cfLaterText: #a39b79;  
+@cfStopText: #e33500; 
+@cFlowBGleft: #ffec9e; 
+@cFlowBGright: #ffcd04; 
 
 
 /*#endregion*/
@@ -262,44 +260,43 @@ span.icon-minus:before {
 
 /*#endregion*/
 
-
+.modaltransaction input.credits {margin: 2px 7px; width: 70px; padding: 0 5px; }
+.modalmailconfirm textarea {height: 180px;  }
+ 
 ol.flow {
 	display: block; 
 	overflow: auto; 
+	margin: 10px 0; 
+	background: @cFlowBGleft; /* Old browsers */
+	background: -moz-linear-gradient(left, @cFlowBGleft 0%, @cFlowBGright 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@cFlowBGleft), color-stop(100%,@cFlowBGright)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, @cFlowBGleft 0%,@cFlowBGright 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, @cFlowBGleft 0%,@cFlowBGright 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left, @cFlowBGleft 0%,@cFlowBGright 100%); /* IE10+ */
+	background: linear-gradient(to right, @cFlowBGleft 0%,@cFlowBGright 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@cFlowBGleft', endColorstr='@cFlowBGright',GradientType=1 ); /* IE6-9 */
 	
 	li { 
-		float: left;
-		background-color: @cfLaterBG;
-		/* border-radius: 0 25px 25px 0; */
-		padding: 4px 15px 6px 8px;
-		margin-top: -5px;
+		float: left; 
+		background: url("flow.png") no-repeat right center; 
+		padding: 5px 35px 5px 10px;  
 		font-weight: bold;
 		color: @cfLaterText;
-		position: relative;
-		margin: 20px 20px  20px  0;  
-	} 
-	li::after {
-		content: "";
-		display: block;
-		position: absolute;
-		top: 0;
-		left: 100%;
-		border-style: solid;
-		border-color: rgba(0, 0, 0, 0) @cfLaterBG;
-		border-width: 15px 0 15px 15px;
-		width: 0; 
-		height: 0;
-	}
+		margin: 0;  
+		width: 25%; 
+		text-align: center; 
+		font-weight: normal; 
+	}  
+	li.last {background-image: url("flow-last.png"); margin-right: 0; }
 	
-	li.done {background-color: @cfDoneBG; color: @cfDoneText; }
-	li.done a {color: @cfDoneText;}
-	li.done::after {border-color: rgba(0, 0, 0, 0) @cfDoneBG;}
-	li.current {background-color: @cfCurrentBG; color: @cfCurrentText; }
-	li.current a {color: @cfCurrentText;}
-	li.current::after {border-color: rgba(0, 0, 0, 0) @cfCurrentBG;}
-	li.stop {background-color: @cfStopBG; color: @cfStopText; }
-	li.stop a {color: @cfStopText;}
-	li.stop::after {border-color: rgba(0, 0, 0, 0) @cfStopBG;}
+	li.done, li.done a {color: @cfDoneText; }
+	li.current, li.current a {color: @cfCurrentText; font-weight: bold;   }
+	li.stop, li.stop a {color: @cfStopText; font-weight: bold;  } 
+}
+
+
+#expMeter { /* flot  */
+	.flot-y-axis .flot-tick-label { margin-left: 46px; margin-top: -22px;  } 
 }
 
 // --- Menu --- //
@@ -619,7 +616,7 @@ dl.userinfo {
     transition: height 0.02s;
 }
 
-h1, h2, h3, h4, h5, p, strong, a {
+h1, h2, h3, h4, h5, p, strong, a, * {
     font-family: Raleway;
 }
 
@@ -947,12 +944,12 @@ input[type="number"] {
 
     .container .whitePart img {
         float: right;
-        margin-top: 10px;
+        margin-top: -5px;
         margin-right: 20px;
     }
 
     .container .whitePart .esfLogoFooter {
-        margin-top: -51px;
+        margin-top: -78px;
         margin-right: -20px;
     }
 
@@ -1708,6 +1705,7 @@ input[type="number"] {
         }
     }
 }
+
 
 //Detail owaes-items (jij bent de eigenaar)
 .ownerDetail {

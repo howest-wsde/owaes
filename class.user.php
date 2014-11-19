@@ -838,7 +838,7 @@
 			} 
 		}
 		
-		public function indicatorenTimeline($iMaxSteps = 100) {
+		public function indicatorenTimeline($iMaxSteps = 100, $iDays = 60) {
 			$arChart = array(); 
 			foreach (array("physical", "mental", "emotional", "social") as $strKey) {
 				$arChart[$strKey] = array(
@@ -851,38 +851,8 @@
 			while ($oDB->nextRecord()) {
 				foreach ($arChart as $strKey=>$arData) {
 					$arChart[$strKey]["current"] += $oDB->get($strKey); 
-					$arChart[$strKey]["data"][] = array($oDB->get("datum"), $arChart[$strKey]["current"]); 	
-				}
-				/*
-				 var datasets ={
-        "Welzijn" : {
-            label:"Welzijn",
-            data: [[1411309811000,59],[1411396211000,58],[1411482611000,57],[1411569011000,56],[1411655411000,55],[1411741811000,54],[1411828211000,53],[1411914611000,52],[1412001011000,51],[1412087411000,50],[1412173811000,49],[1412260211000,48],[1412346611000,47],[1412433011000,46],[1412519411000,45],[1412605811000,44],[1412692211000,43],[1412778611000,42],[1412865011000,41],[1412951411000,40],[1413037811000,39],[1413124211000,38],[1413210611000,37],[1413297011000,36],[1413383411000,35],[1413469811000,34],[1413556211000,33],[1413642611000,32],[1413729011000,31],[1413815411000,30],[1413896465000,30]]        },
-         "Kennis" : {
-            label:"Kennis",
-            data: [[1411309811000,59],[1411396211000,58],[1411482611000,57],[1411569011000,56],[1411655411000,55],[1411741811000,54],[1411828211000,53],[1411914611000,52],[1412001011000,51],[1412087411000,50],[1412173811000,49],[1412260211000,48],[1412346611000,47],[1412433011000,46],[1412519411000,45],[1412605811000,44],[1412692211000,43],[1412778611000,42],[1412865011000,41],[1412951411000,40],[1413037811000,39],[1413124211000,38],[1413210611000,37],[1413297011000,36],[1413383411000,35],[1413469811000,34],[1413556211000,33],[1413642611000,32],[1413729011000,31],[1413815411000,30],[1413896465000,30]]        },
-        "Fysiek" : {
-            label:"Fysiek",
-            data: [[1411309811000,59],[1411396211000,58],[1411482611000,57],[1411569011000,56],[1411655411000,55],[1411741811000,54],[1411828211000,53],[1411914611000,52],[1412001011000,51],[1412087411000,50],[1412173811000,49],[1412260211000,48],[1412346611000,47],[1412433011000,46],[1412519411000,45],[1412605811000,44],[1412692211000,43],[1412778611000,42],[1412865011000,41],[1412951411000,40],[1413037811000,39],[1413124211000,38],[1413210611000,37],[1413297011000,36],[1413383411000,35],[1413469811000,34],[1413556211000,33],[1413642611000,32],[1413729011000,31],[1413815411000,30],[1413896465000,30]]        },
-        "Sociaal" : {
-            label:"Sociaal",
-            data: [[1411309811000,59],[1411396211000,58],[1411482611000,57],[1411569011000,56],[1411655411000,55],[1411741811000,54],[1411828211000,53],[1411914611000,52],[1412001011000,51],[1412087411000,50],[1412173811000,49],[1412260211000,48],[1412346611000,47],[1412433011000,46],[1412519411000,45],[1412605811000,44],[1412692211000,43],[1412778611000,42],[1412865011000,41],[1412951411000,40],[1413037811000,39],[1413124211000,38],[1413210611000,37],[1413297011000,36],[1413383411000,35],[1413469811000,34],[1413556211000,33],[1413642611000,32],[1413729011000,31],[1413815411000,30],[1413896465000,30]]        },
-         "Credits" : {
-            label:"Credits",
-            data: [[1413896465000,4800]],
-            yaxis:2
-      },
-    };
-				*/
-
-/*				$iStart+=$oDB->get("experience"); 
-				if (round($iStart) > $iPrev) {
-					if (date('d M Y', $dPrev) == date('d M Y', intval($oDB->get("datum")))) array_pop($arTimeline); 
-					$arTimeline[] = array(intval($oDB->get("datum")), round($iStart)); 
-					$dPrev = intval($oDB->get("datum")); 
-					$iPrev = round($iStart); 
+					if ($oDB->get("datum") >= owaestime()-($iDays*24*60*60)) $arChart[$strKey]["data"][] = array($oDB->get("datum"), $arChart[$strKey]["current"]); 	
 				} 
-				*/
 			} 
 			return $arChart; 
 		}
@@ -1601,13 +1571,30 @@
 					$arActions = array(); 
 					if (!$this->isCurrentUser()) { 
 						$arActions[] = "<li><a href=\"" . $this->messageLink("", FALSE) . "\"><span class=\"icon icon-berichtsturen\"></span><span class=\"title\">Bericht versturen</span></a></li>";
-						$arActions[] = "<li><a href=\"" . $this->donateLink("", TRUE) . "\" class=\"transactie\"><span class=\"icon icon-credits\"></span><span class=\"title\">Credits versturen</span></a></li> ";
+						$arActions[] = "<li><a href=\"" . $this->donateLink("", TRUE) . "\" class=\"transactie\"><span class=\"icon icon-credits\"></span><span class=\"title\">Credits schenken</span></a></li> ";
+						if (count(user(me())->groups())>0) $arActions[] = "<li class=\"divider\"></li>"; 
 						foreach (user(me())->groups() as $oGroup) { 
 							if ($oGroup->userrights()->useradd()) {
 								if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toevoegen aan " . $oGroup->naam() . "</span></a></li> ";
 							}
 							if ($oGroup->userrights()->userdel()) {
 								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> ";
+							}
+						}
+					}
+					return implode("", $arActions); 
+				case "actions:noicon": 
+					$arActions = array(); 
+					if (!$this->isCurrentUser()) { 
+						$arActions[] = "<li><a href=\"" . $this->messageLink("", FALSE) . "\">Bericht versturen</a></li>";
+						$arActions[] = "<li><a href=\"" . $this->donateLink("", TRUE) . "\" class=\"transactie\">Credits schenken</a></li> ";
+						if (count(user(me())->groups())>0) $arActions[] = "<li class=\"divider\"></li>"; 
+						foreach (user(me())->groups() as $oGroup) { 
+							if ($oGroup->userrights()->useradd()) {
+								if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\">Toevoegen aan " . $oGroup->naam() . "</a></li> ";
+							}
+							if ($oGroup->userrights()->userdel()) {
+								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\">Verwijderen uit " . $oGroup->naam() . "</a></li> ";
 							}
 						}
 					}

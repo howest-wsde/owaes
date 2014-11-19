@@ -20,7 +20,7 @@
 		if ($oAction) {
 			$oAction->tododate(owaestime() + (2*24*60*60)); // 2 dagen
 			$oAction->update();  
-		}
+		} 
 		exit(); 
 	} else if (isset($_POST["market"])) {  
 		$iStars = intval(isset($_POST["score"]) ? $_POST["score"] : $_GET["score"]);  
@@ -42,7 +42,7 @@
 				"type" => "feedback", 
 				"user" => $iUser, 
 				"market" => $iMarket, 
-			));  
+			)); 
 		if ($oAction) {
 			$oAction->done(owaestime()); 
 			$oAction->update();  

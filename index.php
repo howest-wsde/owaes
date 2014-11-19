@@ -30,6 +30,22 @@
 
 	// $oOwaesList->setUser($oUser); 
 	
+
+	$arModalURLs = array(); 
+	$oActions = new actions(me());  
+	foreach ($oActions->getList() as $oAction) {
+		switch($oAction->type()) {
+			case "transaction": 
+				$arModalURLs[] = "modal.transaction.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
+				break; 
+			case "feedback": 
+				$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
+				break; 
+		} 
+	}  
+	
+	 
+	
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -64,6 +80,8 @@
 					});
 					$("div#results").load("index.ajax.php", {"t": "<? echo $strType; ?>", "show": arYes, "hide": arNo, "waarden": arWaarden}); 
 				}
+				
+				loadModals(<? echo json_encode($arModalURLs); ?>);  
 				
 			})
 		</script>

@@ -14,6 +14,7 @@
     $oPage->tab("home");
 	
 	$oMe = user(me()); 
+	
 	 
  
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -685,7 +686,7 @@
 						<?
 							$oSubscriptions = new subscriptions(); 
 							$oSubscriptions->filter("user", me()); 
-							$oSubscriptions->filter("state", array(SUBSCRIBE_NEGOTIATE, SUBSCRIBE_SUBSCRIBE));  
+							$oSubscriptions->filter("state", array(SUBSCRIBE_SUBSCRIBE));  
                             if (count($oSubscriptions->result()) > 0) { 
                                 ?>
                                     <!-- Recent aangemaakte activiteiten --> 

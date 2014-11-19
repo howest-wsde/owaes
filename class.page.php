@@ -36,8 +36,8 @@
             $this->addJS("script/fullcalendar.min.js"); 
             $this->addCSS("style/fullcalendar.css");
 			
-			$this->addJS("owaes.js?v4");  
-            $this->addJS("main.js?v4");
+			$this->addJS("owaes.js?v5");  
+            $this->addJS("main.js?v5");
 			
 //			if (strrpos("http://nu", settings("domain", "absroot")) === false)  redirect("link");  
 			

@@ -58,7 +58,7 @@
 			if (isset($arResult[1])) foreach ($arResult[1] as $strTag){  
 				if (!isset($arLoops[$strTag])) $arLoops[$strTag] = array();
 				$arLoops[$strTag][] = "";  
-			}  
+			}   
 			
 			preg_match_all("/\[([^\]\/]+?):count\]/", $strHTML, $arResult); 
 			if (isset($arResult[1])) foreach ($arResult[1] as $strTag){  
@@ -117,6 +117,18 @@
 	
 			return $strHTML; 
 		}
+		
+		public function queryTags($strHTML = NULL) { /* [htmlencode]huppeldepup<script>alert("test"); </script>[/htmlencode]  */
+			if (is_null($strHTML)) $strHTML = $this->html(); 
+			
+			preg_match_all("/\[qry:([a-zA-Z0-9-_]+)\]/", $strHTML, $arResult);   // bv. [qry:querystring]  
+			for ($i=0;$i<count($arResult[1]);$i++) { 
+				$strQRY = $arResult[1][$i]; 
+				$strHTML = str_replace($arResult[0][$i], (isset($_GET[$strQRY]) ? $_GET[$strQRY] : ""), $strHTML); 
+			} 
+			
+			return $strHTML; 
+		}
 
 		public function html($strHTML = NULL, $bXtraFunctions = TRUE) {
 			if (!is_null($strHTML)) $this->strHTML = $strHTML; 
@@ -146,23 +158,27 @@
 				}  
 			} 
 			
-			foreach ($this->arTags as $strTag=>$strReplace) {
-				preg_match_all("/\[if:$strTag\]([\s\S]*?)\[\/if:$strTag\]/", $strHTML, $arResult);   // bv. [if:firstname]firstname ingevuld en zichtbaar[/if:firstname]  
+			foreach ($this->arTags as $strTag=>$strReplace) { 
+				preg_match_all("/\[if:$strTag\]([\s\S]*?)(\[else:$strTag\]([\s\S]*?))?\[\/if:$strTag\]/", $strHTML, $arResult);   // bv. [if:firstname]firstname ingevuld en zichtbaar[/if:firstname]   
 				for ($i=0;$i<count($arResult[0]);$i++) { 
 					switch($strReplace) {
 						case "": 
 						case NULL: 
 						case FALSE: 
-							$strHTML = str_replace($arResult[0][$i], "", $strHTML); 	
+							$strHTML = str_replace($arResult[0][$i], $arResult[3][$i], $strHTML); 	
 							break; 
 						default: 
 							$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML); 	
 					}
 				} 
-
+				
 				$strHTML = str_replace("[$strTag]", $strReplace, $strHTML); 
 			}
-			if ($bXtraFunctions) $strHTML = $this->specialHTMLtags($strHTML); 
+			
+			if ($bXtraFunctions) {
+				$strHTML = $this->specialHTMLtags($strHTML); 
+				$strHTML = $this->queryTags($strHTML); 
+			}
 			return $strHTML; 
 		}
 		
