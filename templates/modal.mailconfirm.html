@@ -1,0 +1,26 @@
+<div class="modal fade modalmailconfirm" id="mailconfirm-[market:id]">
+  <div class="modal-dialog">
+  
+    <form action="[currentfile]"> 
+        <input type="hidden" name="market" value="[market:id]" />
+        <input type="hidden" name="users" value="[userids]" /> 
+        <input type="hidden" name="confirm" value="[qry:s]" /> 
+        <input type="hidden" name="refresh" value="[qry:refresh]" />
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Bevestiging versturen</h4>
+          </div>
+          <div class="modal-body">
+            <p>Deze mail wordt gestuurd naar [users]</p> 
+            <label for="msg" class="control-label col-lg-12">Bericht:</label>
+            <div class="col-lg-12">
+                <textarea name="msg" id="msg" class="form-control" placeholder="[defaultmail]">[defaultmail]</textarea>
+            </div>  
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success save-form"  data-dismiss="modal">versturen</button> 
+          </div>
+        </div><!-- /.modal-content -->
+    </form>
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

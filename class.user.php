@@ -288,6 +288,16 @@
 			if (is_null($this->iLocationLat)||is_null($this->iLocationLong)) $this->load();
 			return array($this->iLocationLat, $this->iLocationLong); 	
 		}
+		public function latitude($iLocationLat = NULL) {
+			if (!is_null($iLocationLat)) $this->iLocationLat = $iLocationLat; 
+			if (is_null($this->iLocationLat)) $this->load();
+			return $this->iLocationLat; 
+		}
+		public function longitude($iLocationLong = NULL) {
+			if (!is_null($iLocationLong)) $this->iLocationLong = $iLocationLong; 
+			if (is_null($this->iLocationLong)) $this->load();
+			return $this->iLocationLong; 
+		}
 		
 		public function posts() { // returns count posts from this user
 			if (is_null($this->iPosts)){
@@ -1528,6 +1538,10 @@
 					return $this->emotional(); 
 				case "location": 
 					return $this->location(); 
+				case "latitude": 
+					return $this->latitude(); 
+				case "longitude": 
+					return $this->longitude(); 
 				case "stars": 
 					return $this->userStars(); 	
 				case "editprofile-key": 

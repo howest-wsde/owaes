@@ -192,8 +192,7 @@
 					"classes" => array("menu-item", "login"), 
 				); 
 			}
-			if (isset($arTabs[$this->tab()]["classes"])) $arTabs[$this->tab()]["classes"][] = "active";
-            console("class.page.php", "current tab: " . $this->tab());
+			if (isset($arTabs[$this->tab()]["classes"])) $arTabs[$this->tab()]["classes"][] = "active"; 
             
             $strHTML = "";
             $strHTML .= "<nav class=\"navbar navbar-default\">";

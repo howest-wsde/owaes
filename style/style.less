@@ -260,8 +260,16 @@ span.icon-minus:before {
 
 /*#endregion*/
 
+.owaesdetails {
+	overflow: auto; 
+	.icon {float: left; display: inline-block;  }
+	.value {padding-left: 38px; width: 100%; display: block; padding-bottom: 15px;  }
+}
+.info {margin: 15px 0; }
+
 .modaltransaction input.credits {margin: 2px 7px; width: 70px; padding: 0 5px; }
 .modalmailconfirm textarea {height: 180px;  }
+.oa {overflow: auto; }
  
 ol.flow {
 	display: block; 
@@ -1023,10 +1031,7 @@ input[type="number"] {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05) inset;
 }
 
-.home {
-    .col-md-2, .col-md-4, .col-md-1, .col-md-5 {
-        padding: 15px;
-    }
+.home { 
 
     .col-md-5 {
         .gebruikers-naam {
@@ -1235,19 +1240,6 @@ input[type="number"] {
         .iconPos {
             margin-top: 5px;
         }
-
-        .development ul {
-            margin: 3px 0 0 0;
-
-            > li {
-                float: left;
-
-                > img {
-                    height: 30px;
-                    width: auto;
-                }
-            }
-        }
     }
 
     .masonry {
@@ -1383,6 +1375,53 @@ input[type="number"] {
     }
 }
 
+
+.tags {
+	min-height: 20px;
+	margin: 0 0 0 5px;
+
+	span {
+		background: none repeat scroll 0 0 #EFEFEF;
+		border-radius: 2px;
+		color: #808080;
+		font-size: 10px;
+		margin: 0 5px 0 0px;
+		padding: 3px 5px;
+	}
+}
+
+.development ul {
+	margin: 5px;
+	overflow: auto; 
+	> li {
+		float: left;
+		width: 50%; 
+		padding: 5%; 
+		> img { 
+			width: 100%;
+		}
+	}
+}
+.development.nexttoeachother ul { /* main.php */
+	margin: 3px 0 0 0;
+
+	> li {
+		float: left;
+		width: 30px;
+		padding: 0;  
+		margin-right: 10px; 
+		> img {
+			height: 30px;
+			width: auto;
+		}
+	}
+}
+
+.soortIcon {
+	float: right;
+	color: @cSecundary;
+}
+
 .owaeslisstyle {
     width: 100%;
     margin: 20px 0 0 0;
@@ -1463,13 +1502,13 @@ input[type="number"] {
     }
 
     .locationbox {
-        width: 80%;
-        float: right;
-        max-width: 204px;
+        width: 100%;
+        float: right; 
         margin: 0 0 0 0;
     }
 
     .location {
+		position: relative; 
         span {
             background-color: rgba(255, 255, 255, 0.7);
             border-bottom: 1px solid #D3D6DB;
@@ -1478,9 +1517,8 @@ input[type="number"] {
             font-weight: bold;
             padding: 3px 8px;
             position: absolute;
-            width: 72%;
-            right: 0px;
-            max-width: 204px;
+            width: 100%;
+            right: 0px; 
         }
     }
 
@@ -1512,22 +1550,6 @@ input[type="number"] {
         }
     }
 
-    .development {
-
-        ul {
-            width: 90px;
-            margin: 15px 0 0 5px;
-        }
-
-        li {
-            float: left;
-            margin: 0 10px 15px 0;
-        }
-
-        li:nth-child(even) {
-            margin-right: 0;
-        }
-    }
 
     .col-md-4 {
         .even {
@@ -1551,19 +1573,6 @@ input[type="number"] {
         }
     }
 
-    .tags {
-        min-height: 20px;
-        margin: 0 0 0 5px;
-
-        span {
-            background: none repeat scroll 0 0 #EFEFEF;
-            border-radius: 2px;
-            color: #808080;
-            font-size: 10px;
-            margin: 0 5px 0 0px;
-            padding: 3px 5px;
-        }
-    }
 
     .right {
         .info {
@@ -1573,10 +1582,7 @@ input[type="number"] {
         }
     }
 
-    .soortIcon {
-        float: right;
-        color: @cSecundary;
-    }
+
 }
 
 .col-md-4, .col-md-8 {
@@ -2294,19 +2300,6 @@ input[type="number"] {
             //padding: 8px 8px 8px 8px;
             h4.media-heading {
                 margin: -5px 0 0 0;
-            }
-        }
-
-        .development ul {
-            margin: 3px 0 0 0;
-
-            > li {
-                float: left;
-
-                > img {
-                    height: 30px;
-                    width: auto;
-                }
             }
         }
 

@@ -25,6 +25,25 @@
 			$this->arOrder[] = $strOrder; 
 		}
 		
+		
+		public function search($strSearch) {  
+			$arSearchQRY = array();  
+			$arFields = array(
+				"g.naam", 
+				"g.website", 
+				"g.info", 
+			); 
+			preg_match_all("/[a-zA-Z0-9_-]+/", $strSearch, $arMatches, PREG_SET_ORDER);      
+			if(count($arMatches)>0) {
+				foreach ($arMatches as $arSearch) { 
+					$arFieldSearches = array(); 
+					foreach ($arFields as $strField) $arFieldSearches[] = "$strField like '%" . $arSearch[0] . "%'";  
+					$arSearchQRY[] = "(" . implode(" or ", $arFieldSearches) . ")"; 
+				} 
+				$this->arWhere[] = implode(" and ", $arSearchQRY);  
+			}
+		}
+		
 		public function load() { /* lijst creeren (moet niet perse aangeroepen worden, wordt ook aangeroepen vanuit 'getList') 
 		 	TODO: Checken of dit niet private mage
 		*/

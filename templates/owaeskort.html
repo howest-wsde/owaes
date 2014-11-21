@@ -19,26 +19,49 @@
                         <div class="short">[body:short]</div> 
                     </div>
 
-                     <div class="row detailInfoItem">
-                     
+                     <div class="row detailInfoItem"> 
 
-                        <div class="col-md-4 veld naam "><span class="icon icon-user"></span><span>[author]</span></div>
-                        <div class="col-md-4 veld data "><span class="icon icon-calendar"></span><span>[data]</span></div> 
-                        <div class="col-md-4 veld credits "><span class="icon icon-credits"></span><span>[credits]</span></div>
-                        <div class="col-md-4 veld adres "><div><span class="icon icon-position"></span></div><div class="adresDetails"><span>[author:adress]</span></div></div>
-                       	<div class="col-md-4 veld timing "><span class="icon icon-timing"></span> <span>[timing]</span></div>
-                        <div class="col-md-4 veld inschrijvingen "><span class="icon icon-inschrijvingen"></span><span>[aantalInschrijvingen]</span></div>
+                        <div class="col-sm-4 owaesdetails">
+                            <span class="icon icon-user"></span>
+                            <span class="value">[author]</span>
+                        </div>
+                        
+                        <div class="col-sm-4 owaesdetails">
+                            <span class="icon icon-timing"></span>
+                            <span class="value">[timing]</span>
+                        </div>
+                        
+                        <div class="col-sm-4 owaesdetails">
+                            <span class="icon icon-position"></span>
+                            <span class="value">[location]</span>
+                        </div>
+                        
+                        <div class="col-sm-4 owaesdetails">
+                            <span class="icon icon-credits"></span>
+                            <span class="value">[if:credits][credits] credits[else:credits]overeen te komen[/if:credits]</span>
+                        </div>
+                        
+                        <div class="col-sm-4 owaesdetails">
+                            <span class="icon icon-calendar"></span>
+                            <span class="value">[data]</span>
+                        </div>
+                        
+                        <div class="col-sm-4 owaesdetails">
+                            <span class="icon icon-inschrijvingen"></span>
+                            <span class="value">[aantalInschrijvingen] 
+                        </div> 
                        
             		</div>
+                            
+                    <div class="row tagsRow">
+                         <div class="tags">[tags]</div>
+                    </div> 
 
                 </div>
                 <div class="col-md-3"> 
                     <div class="location">[locationimg:100x100]</div>
                 </div>
 
-            </div> 
-            <div class="row tagsRow">
-                 <div class="tags">[tags]</div>
             </div> 
         </div>
     </div>

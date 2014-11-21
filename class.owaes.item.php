@@ -401,7 +401,12 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$arClasses[] = "closed"; 
 					break; 
 			} 			
-			$arClasses[] = ($this->uptodate() && ($this->state()!=STATE_FINISHED)) ? "listed" : "unlisted";   		
+			$arClasses[] = ($this->uptodate() && ($this->state()!=STATE_FINISHED)) ? "listed" : "unlisted"; 
+			if ($this->physical()>0) $arClasses[] = "physical"; 
+			if ($this->mental()>0) $arClasses[] = "mental"; 
+			if ($this->emotional()>0) $arClasses[] = "emotional"; 
+			if ($this->social()>0) $arClasses[] = "social"; 
+			 	
 			return $arClasses; 
 		}
 		
@@ -807,9 +812,14 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						return (($this->group()->alias() == "")?$this->group()->id():$this->group()->alias());  // of id als er geen username is
 					} else {
 						return (($this->author()->alias() == "")?$this->author()->iID:$this->author()->alias());  // of id als er geen username is
-					} 
-				case "author:adress": 
-					return $this->location(); 
+					}  
+				case "location": 
+					$strLocation = $this->location(); 
+					return ($strLocation == "") ? "geen locatie opgegeven" : $strLocation; 
+				case "latitude": 
+					return $this->latitude(); 
+				case "longitude": 
+					return $this->longitude(); 
 				case "data": 
 					if (count($this->data()) > 0) {
 						$strSub = "<ul class=\"data\">"; 
@@ -864,7 +874,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					}
 					return "vrij te kiezen"; 
 				case "timing": 
-					return $this->timing();
+					$iTiming = $this->timing();  
+					return ($iTiming >0) ? $iTiming . " uur" : "geen tijdsduur ingesteld"; 
 				case "locationimg:100x100": 
 					switch ($this->location()) {
 						case "":  
