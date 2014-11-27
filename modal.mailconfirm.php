@@ -7,7 +7,7 @@
 	$bGoedgekeurd = ($_GET["s"]==1); 
 	$oMarket = owaesitem($iMarket); 
 	
-	if ($oMarket->author()->id() != $oSecurity->me()->id()) exit();  // check if rights to be here
+	if (!$oMarket->userrights("select", me())) exit();  // check if rights to be here
 	
 	if (isset($_POST["msg"])) {  
 		foreach ($arUsers as $iUser) { 

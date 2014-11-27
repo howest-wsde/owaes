@@ -1298,6 +1298,11 @@
 			return $this->iLevel; 
 		}
 		
+		
+		public function reportLink() {
+			return "modal.report.php?u=" . $this->id(); 
+		}
+		
 		private function developmentBoxesHeight($iValue) {
 			// 3 tot 32
 			$iMin = 3;
@@ -1595,6 +1600,9 @@
 								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> ";
 							}
 						}
+						$arActions[] = "<li class=\"divider\"></li>"; 
+						$arActions[] = "<li><a href=\"" . $this->reportLink() . "\" class=\"domodal\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Gebruiker rapporteren</span></a></li> ";
+
 					}
 					return implode("", $arActions); 
 				case "actions:noicon": 

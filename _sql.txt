@@ -1,8 +1,1 @@
-
-
-  ALTER TABLE `tblUsers` CHANGE `deleted` `deleted` BIT( 1 ) NOT NULL DEFAULT b'0' AFTER `data` ;
-  ALTER TABLE `tblUsers` ADD `demo` INT NOT NULL DEFAULT '0';
-
-
-  RENAME TABLE tblTransactions TO _tblTransactions ;
-
+ALTER TABLE `tblAbuse` ADD `reason` VARCHAR( 50 ) NOT NULL AFTER `created` ;

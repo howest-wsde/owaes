@@ -5,7 +5,7 @@
 	$iID = intval($_GET["owaes"]); 
 	$oOwaesItem = owaesitem($iID);  
 	
-	if ($oOwaesItem->author() != $oSecurity->me()->id()) {
+	if (!$oOwaesItem->userrights("pay", me())) {
 		$oSecurity->doLogout(); 
 		exit(); 
 	}

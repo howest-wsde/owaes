@@ -196,7 +196,8 @@
 			return $this->url(); 
 		}
 		public function url() { // link to article details-URL (filename)
-			if ($this->author()->id() == me()) {
+			//if ($this->author()->id() == me()) {
+			if ($this->userrights("select", me())) {
 				return "owaes-selecteer.php?owaes=" . $this->iID; 
 			} else {
 				return "owaes.php?owaes=" . $this->iID; 
@@ -212,6 +213,32 @@
 				default: 
 					
 			}
+		}
+		
+		public function userrights($strWat, $iUser = NULL) { // $strWat = "edit", "del", "select", "pay" , als iUser==0: me
+			if (is_null($iUser)) $iUser = me(); 
+			if (!$this->group()) {
+				return $this->author()->id() == me(); 
+			} else { 
+				$oRechten = $this->group()->userrights($iUser);
+				switch($strWat) {
+					case "edit": 
+						return $oRechten->owaesedit(); 
+						break; 	
+					case "del": 
+					case "delete": 
+						return $oRechten->owaesedit(); 
+						break; 	
+					case "select": 
+						return $oRechten->owaesselect(); 
+						break; 	
+					case "pay": 
+						return $oRechten->owaespay(); 
+						break; 	
+					default: 
+						error ($strWat . " is een ongeldige waarde (class.owaes.item, line __LINE__"); 
+				}
+			}	
 		}
 		
 		public function group($iGroup = NULL) { /* get or set groupID (als item gelinkt is aan groep in plaats van gebruiker)
@@ -770,6 +797,10 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			return $arFlow;  
 		}
 		
+		public function reportLink() {
+			return "modal.report.php?m=" . $this->id(); 	
+		}
+		
 		private function HTMLvalue($strTag) { 
 			switch($strTag) { 
 				case "flow": 
@@ -787,6 +818,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					return $strFlow; 
 				case "id": 
 					return $this->id();  
+				case "report": 
+					return $this->reportLink(); 
 				case "classes": 
 					return implode(" ", $this->classes());  
 				case "title": 
@@ -876,6 +909,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "timing": 
 					$iTiming = $this->timing();  
 					return ($iTiming >0) ? $iTiming . " uur" : "geen tijdsduur ingesteld"; 
+				case "createdate": 
+					return str_date($this->iDate, "datum"); 
 				case "locationimg:100x100": 
 					switch ($this->location()) {
 						case "":  

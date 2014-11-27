@@ -156,7 +156,10 @@
                 $arTabs["lijsten"]["sub"]["gebruikers"] = array("users.php", "gebruikers");
                 $arTabs["lijsten"]["sub"]["vrienden"] = array("friends.php", "friends");
 				$arTabs["lijsten"]["sub"]["badges"] = array("badges.php", "badges");
-				if ($oSecurity->admin()) $arTabs["lijsten"]["sub"]["admin"] = array("admin.php", "admin");
+				if ($oSecurity->admin()) {
+					$arTabs["lijsten"]["sub"]["admin"] = array("admin.php", "admin");
+					$arTabs["lijsten"]["sub"]["groepen"] = array("admin.groepen.php", "groups");
+				}
                 
                 $arTabs["account"] = array (
                     "title" => "account", 

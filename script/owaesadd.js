@@ -36,6 +36,7 @@ $(document).ready(function () {
 				$(this).addClass("selected");
 				if (arDatums[""]) delete arDatums[""]; 
 			}
+			console.log(arDatums); 
 			
 			printDates();  
         }, 
@@ -326,7 +327,8 @@ function compareDates(a, b) {
 }
 function dateval(strDate) {
 	arDate = strDate.split("/"); 
-	return arDate[2]*400 + arDate[1]*40 + arDate[0];
+	console.log(arDate + " - " + ((arDate[2]-2000)*400 + arDate[1]*40 + arDate[0])); 
+	return arDate[2]*1000 + arDate[1]*40 + arDate[0]; 
 }
 
 

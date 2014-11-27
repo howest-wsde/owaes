@@ -9,7 +9,7 @@
 	$oNotification = new notification(); 
 	$oNotification->read("subscription." . $iID );  
 	
-	if ($oOwaesItem->author()->id() != $oSecurity->me()->id()) {
+	if (!$oOwaesItem->userrights("select", me())) {  
 		redirect("owaes.php?owaes=" . $iID); 
 		exit(); 
 	}
@@ -162,9 +162,8 @@
 																echo ("<li><a href=\"modal.transaction.php?m=" . $iID . "&u=" . $iUser . "&refresh=1\" class=\"domodal\">Transactie uitvoeren</a></li>"); 
 																echo ("<li class=\"divider\"></li>"); 
 															}
-															echo ("<li><a href=\"#\">Annulatie met akkoord</a></li>"); 
-															echo ("<li><a href=\"#\">Afspraak niet nagekomen</a></li>"); 
-															echo ("<li class=\"divider\"></li>"); 
+															echo ("<li><a href=\"#\">Annulatie met akkoord</a></li>");  
+															echo ("<li><a href=\"modal.report.php?u=" . $iUser . "&m=" . $iID . "&reason=twist\" class=\"domodal\">Afspraak niet nagekomen</a></li>");  
 														}  
 														echo $oUser->html("[actions:noicon]"); 
 														//echo ("<li><a href=\"#\">Toevoegen aan groep</a></li>"); 

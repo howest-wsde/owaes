@@ -44,6 +44,7 @@ $(document).ready(function() {
 			arExt = $(this).attr("ext").toLowerCase().split(","); 
 			strFile = $(this).val().match(/\.([^\.]+)$/)[1]; 
 			if(arExt.indexOf(strFile.toLowerCase())<0) {
+				modalalert("<p>De extentie '" + strFile + "' wordt niet ondersteund. </p><p>Ondersteunde bestandsextenties: " + arExt.join(", ") + "</p>"); 
 				$(this).val(""); 
 			}
 		}
@@ -353,7 +354,7 @@ $(document).ready(function() {
 function loadModals(arURLs) {
 	if (arURLs.length > 0) {
 		strURL = arURLs.shift();  
-		 $("body").append(
+		$("body").append(
 			$("<div />").load(strURL, function(){ 
 				$(this).find(":first").modal({
 					show: true,
@@ -546,4 +547,15 @@ function distance(lat1, lon1, lat2, lon2) {
 	dist = dist * 60 * 1.1515
 	dist = dist * 1.609344 ;  
 	return dist
+}
+
+function modalalert(strT1, strT2) { 
+	if (typeof strT2 === "undefined") {
+		strTitle = "Foutmelding"; 
+		strTekst = strT1; 
+	} else {
+		strTitle = strT1; 
+		strTekst = strT2;  
+	}
+	loadModals(Array("modal.alert.php?t=" + escape(strTitle) + "&a=" + escape(strTekst)));
 }

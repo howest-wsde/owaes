@@ -6,7 +6,8 @@
 	$iID = intval($_GET["owaes"]); 
 	$oOwaesItem = owaesitem($iID);  
 	
-	if ($oOwaesItem->author()->id() == $oSecurity->me()->id()) {
+	//if ($oOwaesItem->author()->id() == $oSecurity->me()->id()) {
+	if ($oOwaesItem->userrights("select", me())) {
 		redirect("owaes-selecteer.php?owaes=" . $iID); 
 		exit(); 
 	}

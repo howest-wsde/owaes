@@ -235,7 +235,7 @@ function introOpslaan() {
         $("#editIntro .filetitle").focus();
     }
     if ($(".filedata").val() == "") {
-        $errors.push("U hebt een titel gegeven aan een bestand die u nog niet opgeladen hebt. Gelieve de titel te verwijderen of het bestand op te laden.");
+        $errors.push("U hebt een titel gegeven aan een bestand dat u nog niet opgeladen hebt. Gelieve de titel te verwijderen of het bestand op te laden.");
         $("#editIntro .filedata").parent("div").addClass("has-error");
         //no focus here
     }

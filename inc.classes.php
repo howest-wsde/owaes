@@ -31,4 +31,5 @@
 	require_once 'fb/facebook.php'; 
 	
 	require_once 'class.notification.php';
+	require_once 'class.reports.php';
 ?>
