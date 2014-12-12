@@ -29,6 +29,7 @@
 				from tblUsers u 
 				left join ( $strLastUserrecordsSQL ) i2 on u.id = i2.user 
 				left join tblIndicators i on i.user = i2.user and i.datum = i2.datum and i.actief = 1 
+				where u.actief = 1 
 				having (i.datum < " . (owaesTime()-$iRefreshTijd) . " or i.datum is null)
 			"; 
 			  

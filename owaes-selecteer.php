@@ -119,14 +119,15 @@
                             <div class="col-md-6">
                                 <div class="row geweigerd">
                                 	<div class="bucket box sameheight col-md-4" id="geweigerd">
-                                    	<h2>Geweigerd</h2>
+                                    	<h2>Niet geselecteerd</h2>
 										<? 
                                             foreach ($oOwaesItem->subscriptions() as $iUser=>$oValue) {
                                                 switch ($oValue->state()) {
                                                     case SUBSCRIBE_DECLINED: 
+													case SUBSCRIBE_ANNULATION: 
                                                         $oUser = user($iUser);
                                                         echo ("<div id='user" . $oUser->id() . "'>");  
-                                                        echo ($oUser->html("userid.html")); 
+                                                        echo ($oUser->html("userid.html"));  
                                                         echo ("</div>"); 
                                                         break;  
                                                 }
@@ -162,7 +163,7 @@
 																echo ("<li><a href=\"modal.transaction.php?m=" . $iID . "&u=" . $iUser . "&refresh=1\" class=\"domodal\">Transactie uitvoeren</a></li>"); 
 																echo ("<li class=\"divider\"></li>"); 
 															}
-															echo ("<li><a href=\"#\">Annulatie met akkoord</a></li>");  
+															echo ("<li><a href=\"owaes-annulation.php?u=" . $iUser . "&m=" . $iID . "\">Annulatie met akkoord</a></li>");  
 															echo ("<li><a href=\"modal.report.php?u=" . $iUser . "&m=" . $iID . "&reason=twist\" class=\"domodal\">Afspraak niet nagekomen</a></li>");  
 														}  
 														echo $oUser->html("[actions:noicon]"); 

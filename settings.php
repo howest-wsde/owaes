@@ -94,6 +94,30 @@
 				$("input#location").change(function() { 
 					geozoek(); 
 				})
+				$("#frmprofile").submit(function() {
+					$("div.foutmelding").remove(); 
+					bValidated = true; 
+					arMeldingen = {}; 
+					
+					strPW1 = $("#password1").val(); 
+					strPW2 = $("#password2").val(); 
+					if ((strPW1 != "")||(strPW2 != "")) if (strPW1 != strPW2) arMeldingen["#password2"] = "wachtwoord komt niet overeen"; 
+					
+					if ($("#email").val() == "") arMeldingen["#email"] = "E-mailadres is verplicht"; 
+					if (!validateEmail($("#email").val())) arMeldingen["#email"] = "Het opgegeven e-mailadres is incorrect"; 
+
+					
+					for (var strKey in arMeldingen){ 
+						$(strKey).after($("<div>").addClass("foutmelding alert alert-dismissable alert-danger").html(arMeldingen[strKey]));  
+					}
+
+					if (Object.keys(arMeldingen).length == 0) {
+						return true; 
+					} else {
+						$('html,body').animate({scrollTop: $(Object.keys(arMeldingen)[0]).offset().top-50});
+						return false; 
+					}
+				})
 			})
 			
 			function geozoek() {
@@ -304,97 +328,10 @@
                             <div class="col-lg-12">
                                 <input type="submit" value="Gegevens opslaan" id="profile" class="btn btn-default pull-right" name="profile" />
                             </div>
-                        </div>
-                            <!-- <dt>Zichtbaar: </dt>
-                            <dd><input type="checkbox" name="visible" id="visible" value="1" <? if ($oProfile->visible()) echo 'checked="checked"' ?> /> <label for="visible">Dit profiel mag getoond worden in het overzicht van gebruikers</label></dd>
-                         -->
-                        
-                        
-                        
-                        
-                        <!-- <dl> -->
-                        
-                            <!-- <dt>Alias of schuilnaam:</dt>
-                            <dd><input type="text" name="alias" id="alias" value="<? //echo inputfield($oProfile->alias()); ?>" /></dd>
-                            <dd class="visibility">- altijd zichtbaar -</dd>
-                            
-                            <dt>Naam:</dt>
-                            <dd><input type="text" name="lastname" id="lastname" value="<? //echo inputfield($oProfile->lastname()); ?>" /></dd>
-                            <dd class="visibility">
-                            	<? //echo showDropdown("showlastname", $oProfile->visible("lastname")); ?> 
-                            </dd>
-
-                            <dt>Voornaam:</dt>
-                            <dd><input type="text" name="firstname" id="firstname" value="<? //echo inputfield($oProfile->firstname()); ?>"  /></dd>
-                            <dd class="visibility">
-                            	<? //echo showDropdown("showfirstname", $oProfile->visible("firstname")); ?>  
-                            </dd> -->
-
-                            <!-- <dt>Login:</dt>
-                            <dd><input type="text" name="username" id="username" value="<? //echo inputfield($oProfile->login()); ?>" /></dd>
-                            <?
-                            	//if (isset($arErrors["username"])) echo "<dd class=\"fout\">" . $arErrors["username"] . "</dd>"; 
-							?>
-                            <dd class="visibility">- altijd verborgen -</dd> -->
-                            
-                            <!-- <dt>Paswoord:</dt>
-                            <dd><input type="password" name="password1" id="password1" /></dd>
-                            <dd><input type="password" name="password2" id="password2" /></dd>
-                            <dd class="visibility">- altijd verborgen -</dd> -->
-                            
-                            <!-- <dt>E-mail:</dt>
-                            <dd><input type="email" name="email" id="email" value="<? //echo inputfield($oProfile->email()); ?>" /></dd>
-                            <?
-                            	//if (isset($arErrors["email"])) echo "<dd class=\"fout\">" . $arErrors["email"] . "</dd>"; 
-							?>
-                            <dd class="visibility">
-                            	<? //echo showDropdown("showemail", $oProfile->visible("email")); ?>  
-                            </dd> -->
-                            
-                            <!-- <dt>Omschrijving: </dt>
-                            <dd><textarea name="description" id="description"><? //echo textarea($oProfile->description()); ?></textarea></dd>
-                            <dd class="visibility">
-                            	<? //echo showDropdown("showdescription", $oProfile->visible("description")); ?>  
-                            </dd> -->
-                            
-                            <!-- <dt>Foto: </dt>
-                            <dd><input type="file" name="img" id="img" value="" class="image" /></dd>
-                            <dd><? //echo $oProfile->getImage(); ?></dd>
-                            <dd class="visibility">
-                            	<? //echo showDropdown("showimg", $oProfile->visible("img")); ?>  
-                            </dd> -->
-                            
-                            
-                            <!-- <dt><label for="location">Woonplaats</label></dt> 
-                            <dd class="location">
-                                <input type="text" name="location" id="location" value="<? //echo inputfield($oProfile->location()); ?>" />
-                                <input type="hidden" name="locationlat" id="locationlat" value="<? //echo $iLat; ?>" />
-                                <input type="hidden" name="locationlong" id="locationlong" value="<? //echo $iLong; ?>" />
-                            </dd>
-                            <dd class="location"><div id="map-canvas" style="height: 200px; "></div></dd>
-                            <dd class="visibility">
-                            	<? //echo showDropdown("showlocation", $oProfile->visible("location")); ?>
-                            </dd>  -->
-                            
-                           <!--  <dt>Zichtbaar: </dt>
-                            <dd><input type="checkbox" name="visible" id="visible" value="1" <? //if ($oProfile->visible()) echo 'checked="checked"' ?> /> <label for="visible">Dit profiel mag getoond worden in het overzicht van gebruikers</label></dd>
-
-                        </dl> 
-                        <input type="submit" value="save" id="profile" name="profile" /> -->
+                        </div> 
                         </fieldset>
 					</form>
-                </div>
-                <!-- <div class="sideright">
-                    <div class="search box">
-                        <form method="get">
-                            <input type="text" name="search" id="search" />
-                            <input type="submit" value="zoeken" />
-                        </form>
-                    </div>
-                    <div class="add box">
-                        <a href="owaesadd.php">add</a>
-                    </div>
-                </div> -->
+                </div> 
         	<? echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">

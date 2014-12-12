@@ -67,7 +67,7 @@
 				 	
                     <div class="messages">
                              <? 
-                   		        $oConversation = new conversation(array($oOwaesItem->author()->id(), me()));  
+                   		        $oConversation = new conversation($oOwaesItem->author()->id());  
 						        $oConversation->filter("owaes", $iID); 
 						        $oPrevUser = NULL; 
                                  echo('<div class="bericht">');
@@ -97,17 +97,7 @@
 						        $oMe = user(me());  
                             ?>
                             <hr/>
-                            <div class="message">
-                    	        <?/* if ($oPrevUser != $oMe) { ?>
-                                    <div class="user">
-                                        <div class="img"><? echo $oMe->getImage("90x90", TRUE); ?></div>
-                                        <div class="name"><a href="<? echo $oMe->getURL(); ?>"><? echo $oMe->getName(); ?></a></div>
-                                    </div>
-                                 <? } */?>
-                                  <div class="user">
-                                        <div class="img"><? echo $oMe->getImage("90x90", TRUE); ?></div>
-                              <!--           <div class="name"><a href="<? /* echo $oMe->getURL(); ?>"><? echo $oMe->getName(); */?></a></div> -->
-                                    </div>
+                            <div class="message"> 
                                 <form method="post">
                                     <textarea name="message" placeholder="Type hier uw bericht..."></textarea>
                                     <input class="btn btn-default pull-right" type="submit" name="addmessage" value="Verzenden" />

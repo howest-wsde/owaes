@@ -330,7 +330,8 @@
 		fclose($fh);
 	}
 	
-	function redirect($strURL) {
+	function redirect($strURL = NULL) {
+		if (is_null($strURL)) $strURL = $_SERVER['HTTP_REFERER']; 
 		header("Location: " . $strURL); 
 		exit(); 
 	}

@@ -626,34 +626,7 @@
                                      </div>
                                 <?
                             }
-                        ?>  
-                         
-						<? /*
-                            $oOwaesList = new owaeslist(); 
-							$oOwaesList->payment(me(), "yes");
-							$oOwaesList->rated(me(), "no"); 
-                            if (count($oOwaesList->getList()) > 0) { 
-                                ?>
-                                    <!-- Recent aangemaakte activiteiten --> 
-                                     <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
-                                        <div class="layoutBlocks border">
-                                            <h2>Vergeet niet feedback te geven</h2>
-            
-                                            <div class="list-group">
-                                                
-                                                <?				
-                                                foreach ($oOwaesList->getList() as $oItem) {  
-                                                    echo $oItem->HTML("owaes.main-full.html");  
-                                                } 
-                                                ?> 
-                                            </div>
-            
-                                            <!-- <p class="meer"><a href="#">meer...</a></p> -->
-                                        </div>
-                                     </div>
-                                <?
-                            }
-                        */ ?>  
+                        ?>   
                          
 						<?
                             $oOwaesList = new owaeslist(); 
@@ -718,7 +691,7 @@
         <div class="footer">
         	<? echo $oPage->footer(); ?> 
         </div>
-         <?
+       <?
 	 	$arModalURLs = array(); 
 		$oActions = new actions(me());  
 		foreach ($oActions->getList() as $oAction) {
@@ -727,7 +700,9 @@
 					$arModalURLs[] = "modal.transaction.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
 					break; 
 				case "feedback": 
-					$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
+					if ((user(me)->level()>=3)&&($oAction->tododate() > owaestime()-(7*24*60*60))) {
+						$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
+					}
 					break; 
 			} 
 		}  

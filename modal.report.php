@@ -1,26 +1,18 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security();
-	
-	
-	/* POST: 
-	comment	test
-m	91
-market	[market:id]
-reason	twist
-refresh	
-user	[user:id]
-
-*/  
+	 
 	if (isset($_POST["reason"])) {
 		$oReport = new report($_POST["reason"]); 
-		$oReport->user(intval($_POST["u"]));
-		$oReport->market(intval($_POST["m"]));
+		$oReport->user(isset($_POST["u"]) ? intval($_POST["u"]) : 0);
+		$oReport->market(isset($_POST["m"]) ? intval($_POST["m"]) : 0);
 		$oReport->data("comment", $_POST["comment"]);
 		$oReport->update(); 
 		echo "ok"; 
 		exit(); 
 	}
+	
+	$strSetReason = isset($_GET["reason"])?$_GET["reason"]:""; 
 	
 	$arData = array(); 
 	$arReasons = array(); 
@@ -34,19 +26,25 @@ user	[user:id]
 	
 	$arReasons["foutgebruik"] = "Oneigenlijk gebruik van het platform"; 
 	
+	switch($strSetReason) {
+		case "annulation": 	
+			$arReasons["foutgebruik"] = "De inschrijving werd zonder afspraak geannuleerd"; 
+			break; 
+	}
+	
 	if (isset($_GET["u"])) {
 		$arData[] = "<strong>Gebruiker:</strong> " . user($_GET["u"])->getName() . "<input type=\"hidden\" name=\"u\" value=\"" . $_GET["u"] . "\" />";
 		$arReasons["unrealperson"] =  user($_GET["u"])->getName() . " is geen echt persoon"; 
-		$arReasons["twist"] =  "Heeft een belofte niet nagekomen"; 
+		$arReasons["twist"] =  "Heeft een afspraak niet nagekomen"; 
 	}
 	if (isset($_GET["m"])) {
 		$arData[] = "<strong>Aanbod:</strong> " . owaesitem($_GET["m"])->title() . "<input type=\"hidden\" name=\"m\" value=\"" . $_GET["m"] . "\" />";
-		$arReasons["twist"] = "Belofte werd niet nagekomen"; 
+		$arReasons["twist"] = "Een gemaakte afspraak werd niet nagekomen"; 
 	}
 	
 	$strDropdown = "<strong>Reden:</strong> <select name=\"reason\" class=\"form-control\">"; 
 	foreach ($arReasons as $strKey=>$strReason) {
-		if ((isset($_GET["reason"])?$_GET["reason"]:"") == $strKey) {
+		if ($strSetReason == $strKey) {
 			$strDropdown .= "<option selected=\"selected\" value=\"$strKey\">$strReason</option>"; 
 		} else {
 			$strDropdown .= "<option value=\"$strKey\">$strReason</option>"; 

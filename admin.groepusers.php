@@ -58,6 +58,49 @@
         <?
         	echo $oPage->getHeader(); 
 		?>
+        <script>
+			function persoonZoeken() { 
+				strSearch = $("#persoonzoeken").val();
+				if (strSearch.length > 2) {
+					$("div#persoonzoekenresult").load("admin.groepusers.list.php", {"f": strSearch});  
+				} else {
+					$("div#persoonzoekenresult").html(""); 
+				}
+			}
+			var arTimerPersoonZoeken; 
+			$(document).ready(function(e) {
+                $("#persoonzoeken").keydown(function(event){
+					if (arTimerPersoonZoeken) window.clearTimeout(arTimerPersoonZoeken); 
+					switch(event.keyCode) {
+						case 13: 
+							persoonZoeken();
+							event.preventDefault();
+							return false; 
+							break; 
+						default:  
+							arTimerPersoonZoeken = window.setTimeout(function() {
+								persoonZoeken();
+							}, 500); 
+							break; 	
+					}
+				})
+			
+				$(document).on("click", "a.userrights", function() { // admin.groepusers
+					$(this).parent().load($(this).attr("href")); 
+					return false; 	
+				});  
+				$(document).on("click", "a.adduser", function() { // admin.groepusers
+					$("#adduser").val($(this).attr("rel")); 
+					$("#admingroupform").submit(); 
+					return false; 	
+				});  
+				
+				$("a#personenzoeken").click(function(){
+					$("div#persoonzoekenresult").load("admin.groepusers.list.php", {"f": $("#persoonzoeken").val()}); 
+					return false; 
+				}); 
+            });
+		</script>
     </head>
     <body id="index">
     <? echo $oPage->startTabs(); ?> 
@@ -119,8 +162,8 @@
                                 <input type="hidden" name="adduser" id="adduser" value="0" />
                                 <div class="form-group">
                                     <label for="username" class="control-label col-lg-2">Persoon zoeken:</label>
-                                    <div class="col-lg-10">
-                                    	<textarea name="persoonzoeken" id="persoonzoeken" class="form-control" placeholder="Tik een naam in"></textarea>
+                                    <div class="col-lg-10"> 
+                                    	<input name="persoonzoeken" id="persoonzoeken" class="form-control" placeholder="Tik een naam in" />
                                     </div> 
                                 </div>
                                 <div class="form-group">

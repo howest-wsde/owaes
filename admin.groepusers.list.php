@@ -12,6 +12,7 @@
 //		$arResult[] = "<li><button value=\"" . $oUser->id() . "\" name=\"adduser\">" . $oUser->getName() . "</button></li>";  
 	}
     
-	echo implode("<br>", $arResult); 
+	echo implode("", $arResult); 
+	if (count($arResult) == 0) echo ("<p>Geen personen gevonden met deze zoekterm</p>");
 	
 ?>

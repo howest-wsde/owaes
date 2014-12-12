@@ -6,6 +6,7 @@
 	
 	$strFilename = "upload/profiles/id/" . $iID . ".png"; 
 	if (!file_exists($strFilename)) $strFilename = "upload/profiles/noprofileimg.png"; 
+	if ($iID == 0) $strFilename = "upload/profiles/owaes.png"; 
 	
 	$oSource = imagecreatefrompng($strFilename);
 	$iProp = imagesx($oSource)/imagesy($oSource);

@@ -71,16 +71,26 @@
 					$oDB->execute("update tblMarketDates set datum = datum + $iAddToAll where datum > 0; "); 
 					demodone("alle data " . ($iAddToAll/24/60/60) . " dagen opschuiven "); 
 							
-					$oDB->execute("select count(*) as aantal from tblUsers ;"); 
-					$iTiende = round($oDB->get("aantal") / 10); 
+					//$oDB->execute("select count(*) as aantal from tblUsers ;"); 
+					//$iTiende = round($oDB->get("aantal") / 10); 
 								
 					$oDBusers = new database(); 
-					$oDBusers->execute("select id from tblUsers order by rand() limit $iTiende; "); 
+					$oDBusers->execute("select id from tblUsers order by rand(); "); //  limit $iTiende; "); 
 					while ($oDBusers->nextRecord()) {
 							$iUser = $oDBusers->get("id"); 
 							$iMarket = 0; 
-							switch(rand(0, 2)) {
+							switch(rand(0, 20)) {
 								case 0:
+								case 1:
+								case 2:
+								case 3:
+									$oDB->execute("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values (" . $iUser . ", " . owaesTime() . ", 0, 0, 0, 0, " . TIMEOUT_CLICKED . ", $iMarket); "); // inschrijving 
+									break; 
+								case 4:
+								case 5:
+								case 6:
+								case 7:
+								case 8:
 									$arValues = array(0,0,0,0); 
 									for ($i=0;$i<4;$i++) $arValues[rand(0,3)]++; 
 									$oDB->execute("insert into tblIndicators 
@@ -89,9 +99,20 @@
 										" . $arValues[1] . ", " . $arValues[2] . ", 
 										" . $arValues[3] . ", " . TIMEOUT_CONFIRMED . ", " . $iMarket . "); ");   // bevestiging 
 									break; 
-								default: 
-									$oDB->execute("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values (" . $iUser . ", " . owaesTime() . ", 0, 0, 0, 0, " . TIMEOUT_CLICKED . ", $iMarket); "); // inschrijving
-									break; 
+
+								case 9: 
+									$arValues = array(0,0,0,0); 
+									$iMax = rand(1, 10);
+									for ($i=0; $i<= rand(1, 10); $i++) {
+										$arValues[rand(0,3)]++; 
+									} 
+									$oDB->execute("insert into tblIndicators 
+										(user, datum, physical, mental, emotional, social, reason, link)
+										values (" . $iUser . ", " . owaesTime() . ", " . $arValues[0] . ", 
+										" . $arValues[1] . ", " . $arValues[2] . ", 
+										" . $arValues[3] . ", " . TIMEOUT_DEFAULT . ", " . $iMarket . "); ");   // cadeautje 
+									// geen break; 
+									 
 									
 							}
 							

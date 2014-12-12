@@ -69,6 +69,9 @@
 		private $arData = NULL; 
 		private $iFriendStatus = NULL; 
 		private $bAdmin = NULL; 
+		private $arFollowed = NULL; 
+		private $arFollowers = NULL; 
+		private $iActief = NULL; 
 		
 		private $bNEW = TRUE; 
 		 
@@ -112,6 +115,9 @@
 							break; 	
 						case "birthdate":  
 							$this->birthdate(ddmmyyyyTOdate($strVal));  
+							break; 	
+						case "actief":  
+							$this->actief($strVal);  
 							break; 	
 						case "location": 
 							$this->location($strVal, 0, 0); 
@@ -326,6 +332,25 @@
 		public function experience() {
 			if (is_null($this->oExperience)) $this->oExperience = new experience($this->id());  
 			return $this->oExperience; 	
+		}
+		
+		public function follows($iUser, $bValue = NULL) {
+			$arFollowed = $this->followed(); 
+			$bFollowed = FALSE; 
+			foreach ($arFollowed as $oUser) if ($oUser->id() == $iUser) $bFollowed = TRUE; 
+			if (isset($bValue)) {
+				if ($bFollowed != $bValue) {
+					$oDB = new database(); 
+					if ($bValue) {
+						$oDB->execute("insert into tblFollowers (user, followed, startdate) values ('" . $this->id() . "', '$iUser', '" . owaestime() . "'); "); 
+					} else {
+						$oDB->execute("delete from tblFollowers where user = '" . $this->id() . "' and followed = '$iUser'; "); 
+					}
+					$this->arFollowed = NULL; 
+				}
+				return $bValue; 
+			}
+			return $bFollowed; 
 		}
 		
 		public function isFriend() { // GET boolean
@@ -655,6 +680,17 @@
 			return ($this->visible4me("birthdate")) ? $this->ibirthdate : 0;    
 		}
 		
+		public function actief($iActief = NULL) { // get / set birthdate (integer) 
+			if (!is_null($iActief)) {
+				if (is_null($this->iActief)) {
+					$this->iActief = $iActief;  
+				} else {
+					if (user(me())->admin()) $this->iActief = $iActief;  // actief-value kan enkel aangepast worden door admins
+				} 
+			}
+			if (is_null($this->iActief)) $this->load();
+			return ($this->iActief==1);    
+		}
 		public function description($strDescription = NULL) { // get / set omschrijving 
 			if (!is_null($strDescription)) {
 				$this->strDescription = $strDescription; 
@@ -710,6 +746,9 @@
 					break; 	
 				case "birthdate": 
 					if (is_null($this->ibirthdate)) $this->birthdate($strValue);
+					break; 	
+				case "actief": 
+					if (is_null($this->iActief)) $this->actief($strValue);
 					break; 	
 				case "gender": 
 					if (is_null($this->strGender)) $this->gender($strValue);
@@ -915,6 +954,7 @@
 					"description" => $this->description(), 
 					"img" => $this->img(), 
 					"mail" => $this->email(), 
+					"actief" => ($this->actief()?1:0), 
 					"birthdate" => $this->birthdate(), 
 					"gender" => $this->gender(), 
 					"telephone" => $this->telephone(), 
@@ -972,6 +1012,7 @@
 		}
 		
 		public function getName() { // returns firstname lastname 
+			if ($this->id() == 0) return "Owaes sitebeheerders"; 
 			if ($this->visible4me("firstname") && $this->visible4me("lastname")) {
 				return $this->firstname() . " " . $this->lastname();
 			} else if ($this->visible4me("firstname")) {
@@ -988,7 +1029,7 @@
 			global $oPage; 
 			$strLink = "#";  
 			if ($oPage->isLoggedIn()) {
-				$strLink = fixpath("conversation.php?users=" .  $this->iID); 
+				$strLink = fixpath("conversation.php?u=" .  $this->iID); 
 				if ($bHTML) {
 					$strHTML = "<a href=\"" . $strLink . "\" class=\"contact\"><img src=\"" . fixpath("img/contact.png") . "\" alt=\"Contacteer " . $this->getName() . "\" /></a>"; 	
 				} else {
@@ -997,7 +1038,6 @@
 			} else $strHTML = ""; 
 			return $strHTML; 
 		}
-		
 		
 		public function donateLink($strSubject = "", $bHTML = TRUE) { /*
 		returns een link naar de contactpagina van deze user (if $bHTML == TRUE => <a href=link.html>Naam</a> / anders: enkel link.html)
@@ -1016,6 +1056,10 @@
 				}
 			} else $strHTML = ""; 
 			return $strHTML; 
+		}
+		
+		public function block($bValue) {
+			
 		}
 		
 		public function getImage($strPreset = "thumbnail", $bHTML = TRUE) { /*
@@ -1184,9 +1228,8 @@
 		}
 		
 		public function credits() {
-			if (is_null($this->iCredits)) {
-				global $arConfig; 
-				$iCredits = $arConfig["startvalues"]["credits"]; 
+			if (is_null($this->iCredits)) { 
+				$iCredits = settings("startvalues", "credits"); 
 				$oDB = new database(); 
 				$oDB->sql("select * from tblPayments where sender = '" . $this->id() . "' or receiver = '" . $this->id() . "' and actief = 1; "); 	
 				$oDB->execute(); 
@@ -1323,13 +1366,20 @@
 		public function HTML($strTemplate = "") { // vraagt pad van template (of HTML if bFile==FALSE) en returns de html met replaced [tags] 
 			$oHTML = template($strTemplate);  
 			 
-			foreach (array("me", "notme", "friend", "nofriend", "nofriend:asked", "nofriend:requested", "nofriend:noconnection") as $strTag) $oHTML->tag($strTag, FALSE);  // will be overruled in next lines
+			foreach (array("me", "notme", "friend", "nofriend", "nofriend:asked", "nofriend:requested", "nofriend:noconnection", "isfollowed", "notfollowed") as $strTag) $oHTML->tag($strTag, FALSE);  // will be overruled in next lines
 			if ($this->id() == me()) {   
 				foreach (array("me") as $strTag) $oHTML->tag($strTag, TRUE); 
 				$oHTML->tag("link:addfriend", "#");  
+				$oHTML->tag("link:follow", "#");  
 			} else {
 				$oHTML->tag("notme", TRUE);  
-				
+				if (user(me())->follows($this->id())) {
+					$oHTML->tag("isfollowed", TRUE); 
+					$oHTML->tag("link:follow", fixPath("follow.php?action=del&u=" . $this->id()));   
+				} else {
+					$oHTML->tag("notfollowed", TRUE);  
+					$oHTML->tag("link:follow", fixPath("follow.php?action=add&u=" . $this->id()));  
+				}
 				if (is_null($this->iFriendStatus)) $this->loadFriendship(); 
 				switch($this->iFriendStatus) {
 					case FRIEND_FRIENDS: 
@@ -1369,7 +1419,36 @@
 						foreach ($arResults as $strSubHTML=>$strResult) {	
 							$oHTML->setLoop("friends", $strSubHTML, $strResult); 
 						}
+						break; 
+					
+					case "followers":  
+						$arList = $this->followers();  
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$arResults[$strSubHTML][] = $oItem->html( $strSubHTML);
+							}
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("followers", $strSubHTML, $strResult); 
+						}
+						break;  
+							
+					case "followed":  
+						$arList = $this->followed();  
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$arResults[$strSubHTML][] = $oItem->html( $strSubHTML);
+							}
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("followed", $strSubHTML, $strResult); 
+						}
 						break;  	
+						
 					case "groups":  
 						$arList = $this->groups(); 
 						$arResults = array();  
@@ -1594,14 +1673,23 @@
 						if (count(user(me())->groups())>0) $arActions[] = "<li class=\"divider\"></li>"; 
 						foreach (user(me())->groups() as $oGroup) { 
 							if ($oGroup->userrights()->useradd()) {
-								if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toevoegen aan " . $oGroup->naam() . "</span></a></li> ";
+								//if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toevoegen aan " . $oGroup->naam() . "</span></a></li> ";
+								if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add\" class=\"addtogroup\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toevoegen aan " . $oGroup->naam() . "</span></a></li> ";
 							}
 							if ($oGroup->userrights()->userdel()) {
-								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> ";
+								//if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> "								
+								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"addtogroup\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> ";
 							}
 						}
 						$arActions[] = "<li class=\"divider\"></li>"; 
 						$arActions[] = "<li><a href=\"" . $this->reportLink() . "\" class=\"domodal\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Gebruiker rapporteren</span></a></li> ";
+						if (user(me())->admin()) {
+							if ($this->actief()) {
+								$arActions[] = "<li><a href=\"#freeze.php?u=" . $this->id() . "&a=0\" class=\"freeze\"><span class=\"icon icon-freeze\"></span><span class=\"title\">Account bevriezen</span></a></li> ";
+							} else {
+								$arActions[] = "<li><a href=\"#freeze.php?u=" . $this->id() . "&a=1\" class=\"freeze\"><span class=\"icon icon-freeze\"></span><span class=\"title\">Account ontvriezen</span></a></li> ";
+							}
+						}
 
 					}
 					return implode("", $arActions); 
@@ -1677,6 +1765,24 @@
 			$oList = new userlist(); 
 			$oList->filter("friends", $this->id()); 
 			return $oList->getList(); 	
+		}
+		
+		public function followers() {
+			if (is_null($this->arFollowers)){
+				$oList = new userlist(); 
+				$oList->filter("followers", $this->id()); 
+				$this->arFollowers = $oList->getList(); 
+			}
+			return $this->arFollowers; 	
+		}
+		
+		public function followed() {
+			if (is_null($this->arFollowed)){
+				$oList = new userlist(); 
+				$oList->filter("followed", $this->id()); 
+				$this->arFollowed = $oList->getList(); 
+			}
+			return $this->arFollowed; 	
 		}
 		
 

@@ -65,6 +65,7 @@
     src: local('Raleway Bold'), local('Raleway-Bold'), url(https://themes.googleusercontent.com/static/fonts/raleway/v7/JbtMzqLaYbbbCL9X6EvaIxsxEYwM7FgeyaSgU71cLG0.woff) format('woff');
 }
 
+
 /*#endregion*/
 
 .modal-body {overflow: auto; }
@@ -92,6 +93,9 @@ span.icon-werkervaring:before {
     content: "\e604";
 }
 
+span.icon-meldingen:before {
+    content: "\e642";
+}
 span.icon-opleiding:before {
     content: "\e620";
 }
@@ -262,6 +266,8 @@ span.icon-minus:before {
 }
 
 /*#endregion*/
+
+#persoonzoekenresult div.userpopup {margin: 0 10px 10px 0; float: left; }
 
 .owaesdetails {
 	overflow: auto; 
@@ -929,10 +935,32 @@ input[type="number"] {
             }
         }
     }
+	
 
     .container .whitePart {
         background-color: @cWhite;
         float: right;
+		
+		 
+		.xtralinks { 
+			float: left; margin-top: 10px; margin-right: 15px; 
+			a {
+				color: black; text-decoration: none; display: block; 
+				&:hover {color: #263692; }
+			}
+		}
+		.logos {
+			float: right; 
+			
+			img {
+				margin-right: 20px;
+				margin-top: 20px; 
+				float: right; 
+			}
+			.esfLogoFooter {
+				margin-top: -30px; 
+			}
+		}
 
         span {
             float: left;
@@ -952,17 +980,7 @@ input[type="number"] {
             }
         }
     }
-
-    .container .whitePart img {
-        float: right;
-        margin-top: -5px;
-        margin-right: 20px;
-    }
-
-    .container .whitePart .esfLogoFooter {
-        margin-top: -78px;
-        margin-right: -20px;
-    }
+ 
 
     .block {
         height: 72px;
@@ -1649,56 +1667,75 @@ input[type="number"] {
     padding: 0px 0px 0px 0px;
 }
 
-//Detail owaes-items (eigenaar is iemand anders)
-.message {
-    overflow: hidden;
-    margin: 15px 10px 0 10px;
-
-    .user {
-        .img {
-            float: left;
-        }
-
-        .name {
-            float: left;
-            margin-left: 10px;
-            font-size: 15px;
-        }
-    }
-
-    .date {
-        float: right;
-    }
-
-    .msg {
-        clear: right;
-        float: left;
-        margin: 10px 10px 0 15px;
-        width: 80%;
-    }
-
-    textarea {
-        float: left;
-        resize: none;
-        width: 99%;
-        min-height: 150px;
-        margin: 0 0 10px 10px;
-        border: 2px solid @cDefault;
-        padding: 10px;
-    }
-
-    form {
-        float: left;
-        width: 99%;
-        margin-top: 5px;
-    }
-
-    input[type='submit'] {
-        clear: both;
-        margin: 0 0 10px 0;
-    }
+.conversation-subject {
+	clear: both;  
+	div.clear {clear: both; }
+	h2 {margin: 20px 0; }
+	.user {float: left; width: 100px; position: relative;  } 	
+	.message {
+		margin-left: 120px; 
+		.msg {margin: 10px 0; }
+		dl.well {clear: both; }
+		form.reactieform {
+			textarea {height: 50px; min-height: 0px; border-color: #e3e3e3; width: 100%; margin: 0 0 10px 0; }
+			input.btn {display: none; }
+		}
+		form.reactieform.focus {
+			textarea {height: auto; min-height: 150px; border: 2px solid #fc0; }
+			input.btn {display: block; }
+		} 
+	}
 }
 
+//Detail owaes-items (eigenaar is iemand anders) 
+.message {
+	overflow: hidden;
+	margin: 15px 10px 0 10px;
+
+	.user {
+		.img {
+			float: left;
+		}
+
+		.name {
+			float: left;
+			margin-left: 10px;
+			font-size: 15px;
+		}
+	}
+
+	.date {
+		float: right;
+	}
+
+	.msg {
+		clear: right;
+		float: left;
+		margin: 10px 10px 0 15px;
+		width: 80%;
+	}
+
+	textarea {
+		float: left;
+		resize: none;
+		width: 99%;
+		min-height: 150px;
+		margin: 0 0 10px 10px;
+		border: 2px solid @cDefault;
+		padding: 10px;
+	}
+
+	form {
+		float: left;
+		width: 99%;
+		margin-top: 5px;
+	}
+
+	input[type='submit'] {
+		clear: both;
+		margin: 0 0 10px 0;
+	}
+} 
 
 .messages {
     margin: 20px 0 20px 0;
@@ -1786,6 +1823,9 @@ input[type="number"] {
         }
     }
 
+	.geweigerd .afkeuren {display: none; }
+	.geselecteerd .goedkeuren {display: none; }
+	
     .goedkeuren, .afkeuren {
         margin-left: 10px;
 
@@ -2407,7 +2447,21 @@ input[type="number"] {
         color: #808080;
         margin-top: 10px;
     }
-
+	
+	.bericht {
+		dl  {
+            float: left;
+            width: 80%;
+            margin-left: 20px;
+            clear: left;
+			dt {font-weight: normal; width: 20%; text-align: right; float: left; }
+			dd {padding-left: 20%; margin-left: 10px; }
+        }
+        .msg {
+            width: 80%;
+        }
+	}
+/*
     .bericht.even {
         margin-top: 30px;
 
@@ -2427,15 +2481,14 @@ input[type="number"] {
             margin-left: 20px;
         }
 
-        .msg {
-            float: left;
-            width: 80%;
+        .msg  {
+            float: left; 
             margin-left: 20px;
             clear: left;
         }
-    }
+    }*/
 
-    .bericht.odd {
+    .bericht {
         margin-bottom: 30px;
 
         .message {
@@ -2448,9 +2501,6 @@ input[type="number"] {
             margin-right: 20px;
         }
 
-        .msg {
-            width: 80%;
-        }
     }
 }
 

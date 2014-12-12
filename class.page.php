@@ -158,6 +158,7 @@
 				$arTabs["lijsten"]["sub"]["badges"] = array("badges.php", "badges");
 				if ($oSecurity->admin()) {
 					$arTabs["lijsten"]["sub"]["admin"] = array("admin.php", "admin");
+					$arTabs["lijsten"]["sub"]["reports"] = array("meldingen.php", "meldingen");
 					$arTabs["lijsten"]["sub"]["groepen"] = array("admin.groepen.php", "groups");
 				}
                 
@@ -282,11 +283,16 @@
 			return "<section class='block block-block contextual-links-region clearfix'>
                         <div class='container'>
 	                        <div class='yellowPart'><span>OWAES &ndash; Online Werk Activatie EcoSysteem &ndash; is een <a href='http://www.esf-agentschap.be/' tabindex='-1'>ESF</a> ondersteund onderzoeksproject onder leiding van Howest.</span></div>
-							<div class='algemenevoorwaarden'><a href='" . fixPath("algemenevoorwaarden.php") . "'>algemene voorwaarden</a></div>
 	                        <div class='whitePart'>
-                            <img src='" . fixPath("img/footer/pub_leeuw.png") . "' alt='' />
-                            <img src='" . fixPath("img/footer/logo_eu_.png") . "' alt='' />
-                            <a href='http://www.esf-agentschap.be' tabindex='-1' target='_blank'><img class='esfLogoFooter' src='" . fixPath("img/footer/esfLogo.png") . "' alt='ESF' /></a>
+								<div class='xtralinks'>
+									<a href='" . fixPath("algemenevoorwaarden.php") . "'>- algemene voorwaarden</a>
+									<a href='" . fixPath("conversation.php?u=0") . "'>- contacteer OWAES</a>
+								</div>
+								<div class='logos'>
+									<img src='" . fixPath("img/footer/pub_leeuw.png") . "' alt='' />
+									<img src='" . fixPath("img/footer/logo_eu_.png") . "' alt='' />
+									<a href='http://www.esf-agentschap.be' tabindex='-1' target='_blank'><img class='esfLogoFooter' src='" . fixPath("img/footer/esfLogo.png") . "' alt='ESF' /></a>
+								</div>
                             </div>
                         </div>
                      </section>";

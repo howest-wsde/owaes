@@ -4,6 +4,8 @@
 	$oSecurity = new security(FALSE); 
 	$oSecurity->doLogout(FALSE);  
 	
+	$strLogin = ""; 
+	
 	$oUser = new user(); 
 	
 	if (isset($_GET["p"])) {
@@ -87,7 +89,7 @@
 					$("#paswoordvergeten").modal({
 						show: true,
 						backdrop: "static",
-						keyboard: false
+						keyboard: true
 					});
 					$("#requestwachtwoordbody div.modal-body").html("<p>bezig met laden...</p>"); 
 					$("#requestwachtwoordbody").load("recover.php", {"code": "<? echo $_GET["recover"]; ?>"}); 
@@ -120,6 +122,7 @@
             <?
             
                 if (isset($_POST["dologin"])) {
+					$strLogin = $_POST["username"]; 
 		            $bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
 		            if ($bResult == TRUE) {
 			            redirect($strRedirect); 
@@ -143,7 +146,7 @@
                     <div class="form-group">
                             <!-- <label for="username" class="col-lg-3 control-label">Gebruikersnaam</label> -->
                             <div class="col-lg-12">
-                                <input type="text" name="username" class="username form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" autofocus />
+                                <input type="text" name="username" class="username form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" autofocus value="<? echo inputfield($strLogin); ?>" />
                             </div>
                         </div>
                     <div class="form-group">
@@ -295,6 +298,7 @@
               <div class="modal-dialog">
                 <div class="modal-content" id="requestwachtwoordbody">
                   <div class="modal-header">
+                  	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
                     <h4 class="modal-title">Wachtwoord vergeten</h4>
                   </div>
                   <div class="modal-body">
@@ -303,7 +307,7 @@
                     <!-- <label for="username" class="col-lg-3 control-label">Gebruikersnaam</label> -->
                     <div class="col-lg-12">
                     	<input type="hidden" name="recover" value="y" />
-	                    <input type="text" name="search" class="search form-control" id="mailpaswoordlost" placeholder="E-mailadres of gebruikersnaam" autofocus />
+	                    <input type="text" name="search" class="search form-control" id="mailpaswoordlost" placeholder="E-mailadres of gebruikersnaam" autofocus value="<? echo inputfield($strLogin); ?>" />
                     </div>
                     </div> 
      

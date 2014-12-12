@@ -12,7 +12,7 @@
 		if ($oUser->id() != 0) {
 			$oUser->unlock(); // als e-mailadres hidden staat kan deze anders niet gezien worden
 			$strPass = uniqueKey(); 
-			$iExpires = (owaesTime()+60*15); 
+			$iExpires = (owaesTime()+60*60*24); 
 			$oDB = new database();  
 			$oDB->execute("insert into tblUserRecover (user, timeasked, timeexpires, ipasked, conf, passcode) values ('" . $oUser->id() . "', '" . owaesTime() . "', '" . $iExpires . "', '" . $_SERVER['REMOTE_ADDR'] . "', '" . $_SERVER['HTTP_USER_AGENT'] . "', '" . $strPass . "'); "); 
 			$oMail = new email(); 
@@ -67,6 +67,7 @@
 ?>
 
 <div class="modal-header">
+	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 	<h4 class="modal-title">Wachtwoord vergeten</h4>
 </div>
 <?
@@ -74,7 +75,7 @@
 		case "MAILED": 
 			?>
 				<div class="modal-body">
-					<p>Er werd een link gestuurd naar uw e-mailadres. Via deze link kunt u uw wachtwoord aanpassen. De link blijft 15 minuten geldig. </p> 
+					<p>Er werd een link gestuurd naar uw e-mailadres. Via deze link kunt u uw wachtwoord aanpassen. De link blijft 24 uur geldig. </p> 
 				</div>
 				<div class="modal-footer"> 
 					<button type="button" class="btn btn-default" id="btn-ok-pwd" data-dismiss="modal">Ok</button>
@@ -86,7 +87,7 @@
 		case "PASSNOCHANGED": 
 			switch($strPage) {
 				case "INVALIDCODE": 
-					$strZin = "Er werd een ongeldige code doorgestuurd of de tijd is verstreken. De 'paswoord-vergeten'-link blijft slechts 15 minuten geldig."; 
+					$strZin = "Er werd een ongeldige code doorgestuurd of de tijd is verstreken. De 'paswoord-vergeten'-link blijft slechts 24 uur geldig."; 
 					break; 
 				case "PASSCHANGED": 
 					$strZin = "Je paswoord werd aangepast. "; 

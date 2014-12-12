@@ -2,7 +2,7 @@
 	define ("STATE_RECRUTE", 0); 
 	define ("STATE_SELECTED", 1); 
 	define ("STATE_FINISHED", 2); 
-	define ("STATE_DELETED", -1); 
+	define ("STATE_DELETED", -1);  
 	
  	$ar_GLOBAL_owaesitems= array(); 
 	
@@ -129,7 +129,7 @@
 					break; 	
 				case "timing": 
 					if (is_null($this->iTiming)) $this->timing($strValue);  
-					break; 	
+					break; 	 
 				case "timingtype": 
 					if (is_null($this->strTiming)) $this->timingtype($strValue);  
 					break; 	 
@@ -203,7 +203,8 @@
 				return "owaes.php?owaes=" . $this->iID; 
 			} 
 		}
-		public function link($strHTML) { // maakt een link naar de detailspagina van $strHTML (bv. "test" wordt "<a href='link.html'>test</a>"
+		public function link($strHTML = NULL) { // maakt een link naar de detailspagina van $strHTML (bv. "test" wordt "<a href='link.html'>test</a>"
+			if (is_null($strHTML)) $strHTML = $this->title(); 
 			return "<a href=\"" . $this->getLink() . "\" class=\"owaes\">" . $strHTML . "</a>"; 
 		}
 		
@@ -854,26 +855,27 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "longitude": 
 					return $this->longitude(); 
 				case "data": 
+				case "data:short": 
 					if (count($this->data()) > 0) {
-						$strSub = "<ul class=\"data\">"; 
+						$arSub = array();  
 						foreach ($this->data() as $iDate) {
 							$oMoment = $this->getMoment($iDate);  
 							if ($iDate == 0) { // om het even welke dag
 								if ($oMoment["tijd"] == 0) {
 									if ($oMoment["start"] == 0) {
-										$strSub .= "<li>willekeurige datum</li>"; 
+										$arSub[] = "<li>willekeurige datum</li>"; 
 									} else {
-										$strSub .= "<li>willekeurige datum, om " . minutesTOhhmm($oMoment["start"]) . "</li>"; 
+										$arSub[] = "<li>willekeurige datum, om " . minutesTOhhmm($oMoment["start"]) . "</li>"; 
 									}
 								} else {
 									if ($oMoment["start"] == 0) {
-										$strSub .= "<li>willekeurige datum, gedurende " . minutesTOhhmm($oMoment["tijd"]) . "</li>"; 
+										$arSub[] = "<li>willekeurige datum, gedurende " . minutesTOhhmm($oMoment["tijd"]) . "</li>"; 
 									} else {
 										if ($oMoment["start"]+$oMoment["tijd"] > 60*24) {
-											$strSub .= "<li>willekeurige datum, vanaf " . minutesTOhhmm($oMoment["start"]) . 
+											$arSub[] = "<li>willekeurige datum, vanaf " . minutesTOhhmm($oMoment["start"]) . 
 															"  gedurende " . minutesTOhh($oMoment["tijd"]) . "</li>"; 
 										} else {
-											$strSub .= "<li>willekeurige datum, van " . minutesTOhhmm($oMoment["start"]) . 
+											$arSub[] = "<li>willekeurige datum, van " . minutesTOhhmm($oMoment["start"]) . 
 															" tot " . minutesTOhhmm($oMoment["start"]+$oMoment["tijd"]) . "</li>"; 
 										}
 									} 
@@ -881,27 +883,30 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 							} else {
 								if ($oMoment["tijd"] == 0) {
 									if ($oMoment["start"] == 0) {
-										$strSub .= "<li>" . str_date($iDate, "datum") . "</li>"; 
+										$arSub[] = "<li>" . str_date($iDate, "datum") . "</li>"; 
 									} else {
-										$strSub .= "<li>" . str_date($iDate, "datum") . " om " . minutesTOhhmm($oMoment["start"]) . "</li>"; 
+										$arSub[] = "<li>" . str_date($iDate, "datum") . " om " . minutesTOhhmm($oMoment["start"]) . "</li>"; 
 									}
 								} else {
 									if ($oMoment["start"] == 0) {
-										$strSub .= "<li>" . str_date($iDate, "datum") . " gedurende " . minutesTOhh($oMoment["tijd"]) . "</li>"; 
+										$arSub[] = "<li>" . str_date($iDate, "datum") . " gedurende " . minutesTOhh($oMoment["tijd"]) . "</li>"; 
 									} else {
 										if ($oMoment["start"]+$oMoment["tijd"] > 60*24) {
-											$strSub .= "<li>" . str_date($iDate, "datum") . " vanaf " . minutesTOhhmm($oMoment["start"]) . 
+											$arSub[] = "<li>" . str_date($iDate, "datum") . " vanaf " . minutesTOhhmm($oMoment["start"]) . 
 														" gedurende " . minutesTOhh($oMoment["tijd"]) . "</li>"; 
 										} else {
-											$strSub .= "<li>" . str_date($iDate, "datum") . " van " . minutesTOhhmm($oMoment["start"]) . 
+											$arSub[] = "<li>" . str_date($iDate, "datum") . " van " . minutesTOhhmm($oMoment["start"]) . 
 														" tot " . minutesTOhhmm($oMoment["start"]+$oMoment["tijd"]) . "</li>"; 
 										}
 									} 
 								} 
 							} 
 						}
-						$strSub .= "</ul>"; 
-						return $strSub; 
+						if (($strTag == "data:short")&&(count($arSub)>5)) {
+							$arSub[3] = "<li>... en " . (count($arSub)-3) . " andere data</li>"; 
+							array_splice($arSub, 4);
+						}
+						return "<ul class=\"data\">" . implode("", $arSub) . "</ul>"; 
 					} else {
 						return "willekeurige datum"; 
 					}

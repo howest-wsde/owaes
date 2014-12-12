@@ -20,6 +20,17 @@
 					$iSource = is_null($value) ? me() : $value; 
 					$this->arSQLjoin["friends"] = " inner join tblFriends f on (f.user = " . $iSource . " and friend = u.id and confirmed = 1) "; 
 					break; 
+				case "followed":
+					$iSource = is_null($value) ? me() : $value;  // user // follower // startdate
+					$this->arSQLjoin["followed"] = " inner join tblFollowers fd on (fd.user = " . $iSource . " and fd.followed = u.id) "; 
+					break; 
+				case "followers":
+					$iSource = is_null($value) ? me() : $value;  // user // follower // startdate
+					$this->arSQLjoin["followers"] = " inner join tblFollowers fw on (fw.user = u.id and fw.followed = " . $iSource . ") "; 
+					break; 
+				case "admin":
+					$this->arSQLwhere["admin"] = "u.admin = 1"; 
+					break; 
 			}
 		}
 		

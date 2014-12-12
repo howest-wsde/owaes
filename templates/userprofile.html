@@ -21,9 +21,11 @@
                 </div>
                 [if:notme]
                	 <div class="col-sm-2">
-                    <div class="btn-group-vertical pull-right">
-                        <a href="#" class="btn btn-default btn-sm"><span class="icon icon-volgen"></span><span class="title">Volgen</span></a>
-                        
+                    <div class="btn-group-vertical pull-right"> 
+                    [if:notfollowed]<a href="[link:follow]" class="btn btn-default btn-sm"><span class="icon icon-volgen"></span><span class="title">Volgen</span></a>[/if:notfollowed]
+                    [if:isfollowed]<a href="[link:follow]" class="btn btn-default btn-sm"><span class="icon icon-volgen"></span><span class="title">Ontvolgen</span></a>[/if:isfollowed]
+
+
                     [if:friend]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Ontvrienden</span></a>[/if:friend]
                     [if:nofriend:requested]<a href="#" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap aangevraagd</span></a>[/if:nofriend:requested]
                     [if:nofriend:asked]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap bevestigen</span></a>[/if:nofriend:asked]
@@ -79,57 +81,29 @@
             </div> 
         </div>
         
-<!-- 
         <div class="well well-volgend">
-            <h3>Volgend <span class="badge">xx</span></h3>
+            <h3>Volgend <span class="badge">[followed:count]</span></h3>
 
             <div class="list-group">
-                <a href="#" class="list-group-item">
-                    <div class="media">
-                        <img class="media-object pull-left" src="upload/profiles/a968da0c59bf39309b47ca1d284a511e.png">
-                        <div class="media-body">
-                            <h4 class="media-heading">Katrien Janssens</h4>level 3
-                        </div>
-                    </div>
-                </a>
-                <a href="#" class="list-group-item">
-                    <div class="media">
-                        <img class="media-object pull-left" src="upload/profiles/4d04dacc91b21440b0c9713d55880374.jpg">
-                        <div class="media-body">
-                            <h4 class="media-heading">Lucas Nijkerke</h4>level 11
-                        </div>
-                    </div>
-                </a>
+                [for:followed:3][file:userprofile.friend.html][/for:followed:3]  
+                <a name="morefollowed"></a>
             </div>
-
-            <p class="meer"><a href="#">meer...</a></p>
-        </div>
+            [if:followed>3]
+                <p class="meer"><a href="#morefollowed" class="loadmore" start="4" user="[id]" list="followed" count="5" template="userprofile.friend.html">meer...</a></p>
+            [/if:followed>3]
+        </div>  
         
-        <div class="well well-volgers">
-            <h3>Volgers <span class="badge">xx</span></h3>
+        <div class="well well-volgend">
+            <h3>Volgers <span class="badge">[followers:count]</span></h3>
 
             <div class="list-group">
-                <a href="#" class="list-group-item">
-                    <div class="media">
-                        <img class="media-object pull-left" src="upload/profiles/janne.jpg">
-                        <div class="media-body">
-                            <h4 class="media-heading">Moniek Hoenders</h4>level 2
-                        </div>
-                    </div>
-                </a>
-                <a href="#" class="list-group-item">
-                    <div class="media">
-                        <img class="media-object pull-left" src="upload/profiles/fa33f5eb68e16912f13c885923c987d6.jpg">
-                        <div class="media-body">
-                            <h4 class="media-heading">Donald Hinderiks</h4>level 3
-                        </div>
-                    </div>
-                </a>
+                [for:followers:3][file:userprofile.friend.html][/for:followers:3]  
+                <a name="morefollowers"></a>
             </div>
-
-            <p class="meer"><a href="#">meer...</a></p>
-        </div>
-        -->
+            [if:followers>3]
+                <p class="meer"><a href="#morefollowers" class="loadmore" start="4" user="[id]" list="followers" count="5" template="userprofile.friend.html">meer...</a></p>
+            [/if:followers>3]
+        </div>  
         
 		[if:payments]
             <div class="well well-transacties">
