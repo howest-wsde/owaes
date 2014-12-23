@@ -8,13 +8,33 @@
 		public function crons() { // instellingen voor automatische gebeurtenissen: bv. automatische aftrek indicatoren
 			$arCrons = json("settings/crons.json");  
 			$bChanged = FALSE; 
+			$ar2DO = array(
+				array(
+					"sleutel" => "indicators", 
+					"refresh" => 30*60 // check elke 30 minuten 
+				), 
+				array(
+					"sleutel" => "status", 
+					"refresh" => 3*60 // check elke 3 minuten 
+				)
+			); 
+			shuffle($ar2DO); // wordt geshuffled voor moest er een fout of timeout gebeuren in één van bovenstaande
 			
-			if (owaesTime() - $arCrons["indicators"] > 30*60) { // ) { // check elke 30 minuten 
-				$this->indicators(); 
-				$bChanged = TRUE; 
-				$arCrons["indicators"] = owaesTime(); 
+			foreach ($ar2DO as $arCron) {
+				if (owaesTime() - $arCrons[$arCron["sleutel"]] > $arCron["refresh"]) { // ) { // check elke 30 minuten 
+					$this->indicators();  
+					$arCrons[$arCron["sleutel"]] = owaesTime(); 
+					switch($arCron["sleutel"]) {
+						case "indicators": 
+							$this->indicators(); 
+							break; 
+						case "status": 
+							$this->checkStatus();
+							break; 
+					}
+					json("settings/crons.json", $arCrons);
+				}  
 			}  
-			if ($bChanged) json("settings/crons.json", $arCrons);
 		}
 		 
 		
@@ -87,6 +107,16 @@
 			}
 			echo ("<li>cron indicators done</li>"); 
 			// echo $oDB->table(TRUE); 
+		}
+		
+		public function checkStatus() {
+			$oDB = new database(); 
+			$oDB->sql("select id from tblUsers where statusdate < " . (owaestime()-60*60*24) . " order by statusdate; "); 
+			$oDB->execute(); 
+			while ($oDB->nextRecord()) {
+				user($oDB->get("id"))->status(TRUE); 
+			}
+			echo ("<li>cron status done</li>"); 
 		}
 	}
 	

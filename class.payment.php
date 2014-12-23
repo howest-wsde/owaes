@@ -9,7 +9,7 @@
 		private $iID = NULL;  
 		private $bSigned = NULL; 
 		
-		public function payment($arArguments) {  // payment(array("sender"=>$x, "receiver"=>$y, "market"=>$z))
+		public function payment($arArguments = array()) {  // payment(array("sender"=>$x, "receiver"=>$y, "market"=>$z))
 			foreach ($arArguments as $strKey=>$oValue) {
 				switch(strtolower($strKey)) {
 					case "sender": 

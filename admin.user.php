@@ -29,12 +29,9 @@
 					<? 
                     echo $oSecurity->me()->html("user.html");
                     ?>
-                </div>
-                
+                </div> 
                     <div class="main market admin-user"> 
-                     	<ul>
-                        	<li><a href="admin.php">Admin</a></li><li><a href="admin.users.php">Gebruikers</a></li>
-                        </ul>
+                     	<? include "admin.menu.xml"; ?>
                         <?   
 							$arChart = array(
 								"Fysiek" => array(

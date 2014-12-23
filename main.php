@@ -630,8 +630,8 @@
                          
 						<?
                             $oOwaesList = new owaeslist(); 
-							$oOwaesList->subscribed(me(), "confirmed");
-							$oOwaesList->payment(me(), "no");
+							$oOwaesList->subscribed(me(), "confirmed"); 
+							$oOwaesList->payment(me(), "no"); 
                             if (count($oOwaesList->getList()) > 0) { 
                                 ?>
                                     <!-- Recent aangemaakte activiteiten --> 
@@ -700,7 +700,7 @@
 					$arModalURLs[] = "modal.transaction.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
 					break; 
 				case "feedback": 
-					if ((user(me)->level()>=3)&&($oAction->tododate() > owaestime()-(7*24*60*60))) {
+					if ((user(me())->level()>=3)&&($oAction->tododate() > owaestime()-(7*24*60*60))) {
 						$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
 					}
 					break; 

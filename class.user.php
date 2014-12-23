@@ -59,8 +59,7 @@
 		private $arGroups = NULL; 
 		private $iPosts = NULL; 
 		private $iSubscriptions = NULL; 
-		private $arBestanden = NULL; 
-		private $strStatus = NULL; 
+		private $arBestanden = NULL;  
 		private $iLevel = NULL; 
 		private $bVisible = NULL; 
 		private $oExperience = NULL;
@@ -72,6 +71,8 @@
 		private $arFollowed = NULL; 
 		private $arFollowers = NULL; 
 		private $iActief = NULL; 
+		private $iStatus = NULL; 
+		private $arStatus = NULL; 
 		
 		private $bNEW = TRUE; 
 		 
@@ -239,6 +240,67 @@
 					"visible" => intval($iPrivacy), 
 				); 
 			} 
+		}
+		
+		public function status($bForce = FALSE) { 
+			if (is_null($this->arStatus)) $this->load(); 
+			if (!isset($this->arStatus["updated"]))	{ // nog geen status gechecked
+				$bForce = TRUE;  
+			} else {
+				if ($this->arStatus["updated"] < owaestime()-2*24*60*60) $bForce = TRUE; // ouder dan 2 dagen
+			}
+			if ($bForce) {
+				$this->arStatus["updated"] = owaestime(); 
+				
+				$oDB = new database(); 
+				$oDB->execute("select count(distinct vPartners.pB) as partnercount, count(vPartners.pB) as transcount from ((select id, receiver as pA, sender as pB from tblPayments) union (select id, sender as pA, receiver as pB from tblPayments)) as vPartners where vPartners.pA = " . $this->id()); 
+				$this->arStatus["partnercount"] = $oDB->get("partnercount"); 
+				$this->arStatus["transactiecount"] = $oDB->get("transcount"); 
+				$this->arStatus["diversiteit"] = ($this->arStatus["transactiecount"]==0) ? 1 : ($this->arStatus["partnercount"] / $this->arStatus["transactiecount"]); 
+
+				$oDB->execute("select count(id) as schenkingen from tblPayments where sender = " . $this->id() . " and market = 0 and datum > " . (owaestime()-60*24*60*60) . "; "); 
+				$this->arStatus["schenkingen"] = $oDB->get("schenkingen"); 
+
+				$oDB->execute("select sum(if(market=0,1,0)) as straffen, count(id) as aantalwaarderingen, sum(stars) as waardering from tblStars where receiver = " . $this->id() . "; "); 
+			//	$this->arStatus["straffen"] = $oDB->get("straffen"); 
+			//	$this->arStatus["waarderingen"] = $oDB->get("aantalwaarderingen"); 
+			//	$this->arStatus["sterren"] = $oDB->get("waardering") / ($this->arStatus["waarderingen"] - $this->arStatus["straffen"]); 
+				
+				$this->iStatus = 0; 
+				foreach (settings("warnings") as $iStatus => $arTresholds) {
+					if ($this->arStatus["schenkingen"] >= $arTresholds["schenkingen"] 
+						|| $this->arStatus["diversiteit"] <= $arTresholds["transactiediversiteit"] 
+						|| abs($this->credits()-settings("startvalues", "credits")) > $arTresholds["credits"]  
+						|| $this->stars() <= $arTresholds["waardering"] 
+						|| $this->social() <= $arTresholds["social"] 
+						|| $this->physical() <= $arTresholds["physical"] 
+						|| $this->mental() <= $arTresholds["mental"] 
+						|| $this->emotional() <= $arTresholds["emotional"] 
+						|| ($this->social()+$this->physical()+$this->mental()+$this->emotional()) <= $arTresholds["indicatorsom"] 
+					) $this->iStatus = $iStatus; 
+				} 
+				$arMails = array(); 
+				if ($this->arStatus["status"] != $this->iStatus) {
+					switch($this->iStatus) {
+						case 0: 
+							if ($this->arStatus["status"] > 0) $arMails["owner"] = "proficiat, "; 
+							break; 	
+						case 1:
+							// We merken dat ...  op waarde .. zit. Probeer deze boven de x te houden
+						
+						case 2: 
+//							opgelet, we zien dat je waarden verder achteruit gaan. Het wordt tijd hier iets aan te doen
+
+						case 3: 
+							// opgelet! we merken dat xx kritisch lage waarden heeft. Zorg dat deze verhogen of de toegang tot OWAES kan geblokkeerd worden
+					}
+				}
+				
+				$this->arStatus["status"] = $this->iStatus; 
+				 
+				$oDB->execute("update tblUsers set statusinfo = '" . $oDB->escape(json_encode($this->arStatus)) . "', status = '$iStatus', statusdate = '" . owaestime() . "' where id = '" . $this->id() . "'; ");   
+			} 
+			return $this->iStatus; 
 		}
 		
 		public function files($strKey = NULL) { // if $strKEY defined: returns filepath of FALSE / else: returns array met alle files
@@ -680,7 +742,7 @@
 			return ($this->visible4me("birthdate")) ? $this->ibirthdate : 0;    
 		}
 		
-		public function actief($iActief = NULL) { // get / set birthdate (integer) 
+		public function actief($iActief = NULL) { 
 			if (!is_null($iActief)) {
 				if (is_null($this->iActief)) {
 					$this->iActief = $iActief;  
@@ -804,6 +866,12 @@
 				case "lastupdate": 
 					if (is_null($this->iLastUpdate)) $this->lastupdate($strValue);  
 					break;
+				case "status": 
+					if (is_null($this->iStatus)) $this->iStatus=$strValue; 
+					break;
+				case "statusinfo": 
+					if (is_null($this->arStatus)) $this->arStatus = json_decode($strValue, TRUE); 
+					break;
 			}
 		}
 		
@@ -831,6 +899,7 @@
 				} else {
 					if (is_null($this->iID)) $this->id(0);
 					
+					if (is_null($this->iActief)) $this->actief(1);
 					if (is_null($this->strAlias)) $this->alias("");
 					if (is_null($this->strLogin)) $this->login("", FALSE);
 					if (is_null($this->strFirstname)) $this->firstname("");
@@ -844,6 +913,9 @@
 					if (is_null($this->bAdmin)) $this->admin(FALSE);
 					if (is_null($this->arData)) $this->arData = array();
 					if (is_null($this->arBestanden)) $this->arBestanden = array(); 
+
+					if (is_null($this->iStatus)) $this->iStatus=0;  
+					if (is_null($this->arStatus)) $this->arStatus = array(); 
 					
 					if (is_null($this->bVisible)) $this->visible(TRUE);
 					if (!isset($this->arVisible["firstname"])) $this->visible("firstname", VISIBILITY_VISIBLE);
@@ -945,7 +1017,7 @@
 		}
 		
 		public function update() {  
-			if ($this->bUnlocked || $this->bNEW || ($this->id() == me())) {
+			if ($this->bUnlocked || $this->bNEW || ($this->id() == me()) || user(me())->admin()) {
 				$arVelden = array(
 					"login" => $this->login(), 
 					"firstname" => $this->firstname(), 
@@ -1019,7 +1091,7 @@
 				return $this->firstname() ;
 			} else if ($this->visible4me("lastname")) {
 				return $this->lastname();
-			} else return "x";  
+			} else return $this->alias();  
 		}
 		
 		public function messageLink($strSubject = "", $bHTML = TRUE) { /*
@@ -1047,10 +1119,12 @@
 			$strLink = "#";  
 			if ($oPage->isLoggedIn()) {
 				$strLink = fixpath("donate.php?users=" .  $this->iID); 
+				$strLink = fixpath("/modal.schenking.php?u=" .  $this->iID); 
 				if ($bHTML) { 
                     //$strHTML = "<a href=\"" . fixPath("owaes-transactie.ajax.php?user=" .  $this->iID) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" /></a>";
                     //$strHTML = "<a href='".fixPath("owaes-transactie.ajax.php?user=".$this->iID)."' class='transactie'><img src='".fixPath("img\handshake.png")."' alt='start transactie' /></a>";
                     $strHTML = fixPath("owaes-transactie.ajax.php?user=".$this->iID);
+					$strHTML = fixpath("/modal.schenking.php?u=" .  $this->iID); 
 				} else {
 					$strHTML = $strLink; 	
 				}
@@ -1313,32 +1387,83 @@
 				$arUsers = loadedUsers();  // voert query uit voor alle users die in memory zitten
 				if (!in_array($this->id(), $arUsers)) $arUsers[] = $this->id(); 
 				foreach ($arUsers as $iID) user($iID)->stars(0); 
-				$oDB->sql("select receiver, count(id) as aantal, sum(stars) as som from tblStars where receiver in (" . implode(",", $arUsers) . ") and actief = 1 group by receiver; ");  
+				$oDB->sql("select s.receiver, count(m.id) as aantal, sum(s.stars) as som 
+							from tblStars s 
+							left join tblMarket m on s.market = m.id
+							where s.receiver in (" . implode(",", $arUsers) . ") and s.actief = 1 
+							group by s.receiver; ");  
 				$oDB->execute(); 
 				while ($oDB->nextRecord()) user($oDB->get("receiver"))->stars( ($oDB->get("som") > 15) ? $oDB->get("som") / $oDB->get("aantal") : 0 );  
 			}	
 			return round($this->iStars); 
 		}
 		
-		public function status() {
-			switch($this->level()) {
-				case 1: 
-					return "Level 1: starter";  
-					break; 	
-				case 2: 
-					return "Level 2: begonnen";  
-					break; 	
-				case 3: 
-					return "Level 3: goed bezig";  
-					break; 	
-				default: 
-					return "Level x";  
-			} 
-		}
-		
 		public function level() {
 			if (is_null($this->iLevel)) $this->iLevel = $this->experience()->level(); 
 			return $this->iLevel; 
+		}
+		
+		public function actions() {
+			$arActions = array(); 
+			if (!$this->isCurrentUser()) { 
+				$arActions[] = array(	
+						"href" => $this->messageLink("", FALSE), 
+						"title" => "Bericht versturen", 
+						"icon" => "icon-berichtsturen", 
+						"class" => array(), 
+					); 
+				$arActions[] = array(	
+						"href" => $this->donateLink("", TRUE), 
+						"title" => "Credits schenken", 
+						"icon" => "icon-credits", 
+						"class" => array("domodal"), 
+					);  
+				if (count(user(me())->groups())>0) $arActions[] = array(); // splitter 
+				foreach (user(me())->groups() as $oGroup) { 
+					if ($oGroup->userrights()->useradd()) {
+						if (!$oGroup->users($this->id())) $arActions[] = array(	
+															"href" => "group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add", 
+															"title" => "Toevoegen aan " . $oGroup->naam(), 
+															"icon" => "icon-addtogroup", 
+															"class" => array("addtogroup"), 
+														);  
+					}
+					if ($oGroup->userrights()->userdel()) { 						
+						if ($oGroup->users($this->id())) $arActions[] = array(	
+															"href" => "group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del", 
+															"title" => "Verwijderen uit " . $oGroup->naam(), 
+															"icon" => "icon-addtogroup", 
+															"class" => array("addtogroup"), 
+														);   
+					}
+				}
+				$arActions[] = array(); // splitter 
+				$arActions[] = array(	
+						"href" => $this->reportLink(), 
+						"title" => "Gebruiker rapporteren", 
+						"icon" => "icon-addtogroup", 
+						"class" => array("domodal"), 
+					); 
+				if (user(me())->admin()) {
+					if ($this->actief()) {
+						$arActions[] = array(	
+							"href" => "freeze.php?u=" . $this->id() . "&a=0", 
+							"title" => "Account bevriezen", 
+							"icon" => "icon-freeze", 
+							"class" => array("freeze"), 
+						);  
+					} else {
+						$arActions[] = array(	
+							"href" => "freeze.php?u=" . $this->id() . "&a=1", 
+							"title" => "Account ontdooien", 
+							"icon" => "icon-freeze", 
+							"class" => array("freeze"), 
+						); 
+					}
+				}
+
+			}	
+			return $arActions; 
 		}
 		
 		
@@ -1666,49 +1791,25 @@
 					return $strGender;  
 					
 				case "actions": 
-					$arActions = array(); 
-					if (!$this->isCurrentUser()) { 
-						$arActions[] = "<li><a href=\"" . $this->messageLink("", FALSE) . "\"><span class=\"icon icon-berichtsturen\"></span><span class=\"title\">Bericht versturen</span></a></li>";
-						$arActions[] = "<li><a href=\"" . $this->donateLink("", TRUE) . "\" class=\"transactie\"><span class=\"icon icon-credits\"></span><span class=\"title\">Credits schenken</span></a></li> ";
-						if (count(user(me())->groups())>0) $arActions[] = "<li class=\"divider\"></li>"; 
-						foreach (user(me())->groups() as $oGroup) { 
-							if ($oGroup->userrights()->useradd()) {
-								//if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toevoegen aan " . $oGroup->naam() . "</span></a></li> ";
-								if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add\" class=\"addtogroup\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Toevoegen aan " . $oGroup->naam() . "</span></a></li> ";
-							}
-							if ($oGroup->userrights()->userdel()) {
-								//if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> "								
-								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"addtogroup\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Verwijderen uit " . $oGroup->naam() . "</span></a></li> ";
-							}
-						}
-						$arActions[] = "<li class=\"divider\"></li>"; 
-						$arActions[] = "<li><a href=\"" . $this->reportLink() . "\" class=\"domodal\"><span class=\"icon icon-addtogroup\"></span><span class=\"title\">Gebruiker rapporteren</span></a></li> ";
-						if (user(me())->admin()) {
-							if ($this->actief()) {
-								$arActions[] = "<li><a href=\"#freeze.php?u=" . $this->id() . "&a=0\" class=\"freeze\"><span class=\"icon icon-freeze\"></span><span class=\"title\">Account bevriezen</span></a></li> ";
-							} else {
-								$arActions[] = "<li><a href=\"#freeze.php?u=" . $this->id() . "&a=1\" class=\"freeze\"><span class=\"icon icon-freeze\"></span><span class=\"title\">Account ontvriezen</span></a></li> ";
-							}
-						}
-
+					$arActions = array();  
+					foreach ($this->actions() as $arAction) {
+						if (isset($arAction["href"])) {
+							$arActions[] = "<li><a href=\"" . $arAction["href"] . "\" class=\"" . implode(" ", $arAction["class"]) . "\"><span class=\"icon " . $arAction["icon"] . "\"></span><span class=\"title\">" . $arAction["title"] . "</span></a></li>";
+						} else {
+							$arActions[] = "<li class=\"divider\"></li>"; 
+						} 
 					}
 					return implode("", $arActions); 
 				case "actions:noicon": 
-					$arActions = array(); 
-					if (!$this->isCurrentUser()) { 
-						$arActions[] = "<li><a href=\"" . $this->messageLink("", FALSE) . "\">Bericht versturen</a></li>";
-						$arActions[] = "<li><a href=\"" . $this->donateLink("", TRUE) . "\" class=\"transactie\">Credits schenken</a></li> ";
-						if (count(user(me())->groups())>0) $arActions[] = "<li class=\"divider\"></li>"; 
-						foreach (user(me())->groups() as $oGroup) { 
-							if ($oGroup->userrights()->useradd()) {
-								if (!$oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=add\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\">Toevoegen aan " . $oGroup->naam() . "</a></li> ";
-							}
-							if ($oGroup->userrights()->userdel()) {
-								if ($oGroup->users($this->id())) $arActions[] = "<li><a href=\"group.useradd.php?g=" . $oGroup->id() . "&u=" . $this->id() . "&action=del\" class=\"ajax addtogroup\" rel=\"user-" . $this->id() . "\">Verwijderen uit " . $oGroup->naam() . "</a></li> ";
-							}
-						}
+					$arActions = array();  
+					foreach ($this->actions() as $arAction) {
+						if (isset($arAction["href"])) {
+							$arActions[] = "<li><a href=\"" . $arAction["href"] . "\" class=\"" . implode(" ", $arAction["class"]) . "\">" . $arAction["title"] . "</a></li>";
+						} else {
+							$arActions[] = "<li class=\"divider\"></li>"; 
+						} 
 					}
-					return implode("", $arActions); 
+					return implode("", $arActions);  
 
 				default: 
 					$arTag = explode(":", $strTag, 2); 

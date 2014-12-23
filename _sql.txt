@@ -10,3 +10,9 @@ CREATE TABLE IF NOT EXISTS `tblFollowers` (
   PRIMARY KEY (`user`,`followed`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
+
+
+ALTER TABLE `tblUsers` ADD `status` INT NOT NULL DEFAULT '0' AFTER `admin` ,
+ADD `statusinfo` TEXT NOT NULL AFTER `status` ;
+
+ ALTER TABLE `tblUsers` ADD `statusdate` BIGINT UNSIGNED NOT NULL DEFAULT '0' AFTER `statusinfo` ;

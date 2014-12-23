@@ -9,6 +9,15 @@
 		$oReport->data("comment", $_POST["comment"]);
 		$oReport->update(); 
 		echo "ok"; 
+		
+		switch($_POST["reason"]) {
+			case "twist": 
+				if (isset($_POST["u"]) && isset($_POST["m"])) {
+					owaesitem($_POST["m"])->addSubscription($_POST["u"], SUBSCRIBE_ANNULATION); 
+				} 
+				break; 	
+		}
+			
 		exit(); 
 	}
 	
@@ -31,6 +40,8 @@
 			$arReasons["foutgebruik"] = "De inschrijving werd zonder afspraak geannuleerd"; 
 			break; 
 	}
+	
+	if ((isset($_GET["reason"])?$_GET["reason"]:"") == "twist") $arData[] = "<p><strong>Indien u kiest voor de optie \"afspraak niet nagekomen\" betekent dit dat er geen prestatie geleverd is. Deze taak wordt afgesloten voor deze gebruiker en er gebeurt geen transactie of waardering.</strong></p>"; 
 	
 	if (isset($_GET["u"])) {
 		$arData[] = "<strong>Gebruiker:</strong> " . user($_GET["u"])->getName() . "<input type=\"hidden\" name=\"u\" value=\"" . $_GET["u"] . "\" />";

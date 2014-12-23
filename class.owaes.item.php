@@ -394,6 +394,17 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$oAction->tododate($iDate); 
 					$oAction->update(); 
 					break;  
+					
+				case SUBSCRIBE_ANNULATION:  
+					$iReceiver = $this->task() ? $iUser : $this->author()->id();
+					$oAction = new action( $this->task() ? $this->author()->id() : $iUser );  
+					$oAction->type("transaction"); 
+					$oAction->data("market", $this->id()); 
+					$oAction->data("user", $iReceiver); 
+					$oAction->checkID(); 
+					$oAction->done(owaestime()); 
+					$oAction->update(); 
+					break;  
 			} 
 		} 
 		 
@@ -616,11 +627,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 							if ($this->task()) { // ik moet betalen  
 								$arNotPayed = array();
 								$arNotRated = array();
-								foreach ($arConfirmedUsers as $iUser=>$oSubscription) {
-									//$oPayment = new payment(array("receiver"=>me(), "sender"=>$iUser, "market"=>$this->id())); 
-									//if (!$oPayment->signed()) $arNotPayed[] = $iUser; 
-									//$oRating = new rating(array("receiver"=>me(), "sender"=>$iUser, "market"=>$this->id())); 
-									//if (!$oRating->rated()) $arNotRated[] = $iUser;  
+								foreach ($arConfirmedUsers as $iUser=>$oSubscription) { 
 									if (!$oSubscription->payment()->signed()) $arNotPayed[] = $iUser;  
 									if (!$oSubscription->rating()->rated()) $arNotRated[] = $iUser;  
 								}
@@ -658,39 +665,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 										$arFlow[40]["href"] = $this->getLink(); 
 										$arFlow[40]["class"][] = "current";  
 										break; 
-								} 
-								/*
-								if (count($arConfirmedUsers) == 1) { // als er maar één iemand betaald moet worden
-									$oPayment = new payment(array("sender"=>me(), "receiver"=>key($arConfirmedUsers), "market"=>$this->id())); 
-									if ($oPayment->signed()) { // 1 persoon, betaling gebeurd
-										$arFlow[40]["href"] = $this->getLink(); 
-										$arFlow[40]["class"][] = "done"; 
-										$oRating = new rating(array("sender"=>me(), "receiver"=>key($arConfirmedUsers), "market"=>$this->id())); 
-										if ($oRating->rated()) { 
-											$arFlow[50]["class"][] = "done"; 
-										} else {
-											$arFlow[50]["href"] = "modal.feedback.php?m=" . $this->id() . "&u=" . key($arConfirmedUsers) . "&refresh=1"; 
-											$arFlow[50]["class"][] = "domodal";   
-											$arFlow[50]["class"][] = "current"; 
-										}
-									} else { // 1 persoon, betaling moet nog gebeuren
-										$arFlow[40]["href"] = "modal.transaction.php?m=" . $this->id() . "&u=" . key($arConfirmedUsers) . "&refresh=1"; 
-										$arFlow[40]["class"][] = "domodal";   
-										$arFlow[40]["class"][] = "current"; 
-									} 
-								} else { // verschillende personen confirmed
-									$arFlow[40]["href"] = $this->getLink(); 
-									$arFlow[40]["class"][] = "current"; 
-								}*/
+								}  
 							} else { // ik moet betaald worden 
 								$arNotPayed = array();
 								$arNotRated = array();
-								foreach ($arConfirmedUsers as $iUser=>$oSubscription) {
-									//$oPayment = new payment(array("receiver"=>me(), "sender"=>$iUser, "market"=>$this->id())); 
-									//if (!$oPayment->signed()) $arNotPayed[] = $iUser; 
-									//if (!$oSubscription->payment()->signed()) $arNotPayed[] = $iUser;  
-									//$oRating = new rating(array("sender"=>me(), "receiver"=>$iUser, "market"=>$this->id())); 
-									//if (!$oRating->rated()) $arNotRated[] = $iUser; 
+								foreach ($arConfirmedUsers as $iUser=>$oSubscription) { 
 									if (!$oSubscription->payment()->signed()) $arNotPayed[] = $iUser;  
 									if (!$oSubscription->rating()->rated()) $arNotRated[] = $iUser;  
 								}
@@ -928,9 +907,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "development":
 					return $this->developmentBoxes(); 
 				case "credits":
-					return ($this->iCredits==0) ? "" : $this->iCredits;   
-					//return $this->iCredits; 
-					//return ($this->iCredits==0) ? "aantal credits n.o.t.k." : $this->iCredits . " credits";   
+					return ($this->iCredits==0) ? "" : $this->iCredits;    
 				case "subscribe":
 					return ""; // $this->subscriptionDiv();
 				case "author:box":
@@ -952,38 +929,12 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					return implode("", $arTags); 
 				case "aantalInschrijvingen":  
 					$arSubscriptions = $this->subscriptions(array("notstate"=>SUBSCRIBE_DECLINED)); 
-					return (count($arSubscriptions)==1) ? "1 inschrijving " : count($arSubscriptions) . " inschrijvingen ";
-				//case "status": 
-				//	$arStatus = array(); 
-				//	$arStatus[] = "<div class=\"transaction\">creditoverdracht: ok</div>"; 
-				//	$arStatus[] = "<div class=\"subscription\">inschrijving: ok</div>"; 
-				//	return implode("", $arStatus); 
+					return (count($arSubscriptions)==1) ? "1 inschrijving " : count($arSubscriptions) . " inschrijvingen "; 
 				case "actions":  
 					$arActions = array(); 
 					$arSubscriptions = $this->subscriptions();  
 					if ($this->iAuthor != me()) {
-						$iMyValue = (isset($arSubscriptions[me()])) ? $arSubscriptions[me()]->state() : SUBSCRIBE_CANCEL;
-						//if ($iMyValue == SUBSCRIBE_CONFIRMED) { 
-						/*
-							$oPayment = $arSubscriptions[me()]->payment();   
-							if (!$oPayment->signed()) { 
-								if ($oPayment->sender() == me()) {
-									//$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>"; 
-								} else {
-									
-									//if (filename(FALSE) != "owaes.php") $arActions[] = "<a href=\"" . $this->getLink() . "\"><img src=\"" . fixPath("img/contact.png") . "\" alt=\"neem contact op\" align=\"right\" /></a>"; 
-								} 
-							} else { 
-								$oRating = $arSubscriptions[me()]->rating(me()); 
-								if ($oRating->stars()) {
-									$arActions[] =  ("<div>" . $oRating->html() . "</div>"); 
-								} else {
-									$arActions[] =  ("<div>" . $oRating->html() . "</div>"); 	
-								}
-								
-							}   
-							*/
-						//} 
+						$iMyValue = (isset($arSubscriptions[me()])) ? $arSubscriptions[me()]->state() : SUBSCRIBE_CANCEL; 
 						if (admin()) $arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" class=\"btn btn-default btn-sm pull-right edit\" align=\"right\" /></a>"; 
 					} else { // ik == author
 						$iCount = count($arSubscriptions); 
@@ -995,37 +946,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 									$iConfirmed++; 
 									if ($oSubscription->payment()->signed()) $iPayed ++; 
 								} 
-							}
-							/*
-							if ($this->task()) { // ik moet betalen
-								if ($iConfirmed > $iPayed) {
-									$arActions[] = "<a href=\"" . fixPath("owaes-transactie.ajax.php?owaes=" . $this->id()) . "\" class=\"transactie\"><img src=\"" . fixPath("img/handshake.png") . "\" alt=\"start transactie\" align=\"right\" /></a>";  // modal.transaction.php?m=" . $this->id() . "&u=" . key($arConfirmedUsers) . "&refresh
-								} else { 
-									if ($iConfirmed > 0) $arActions[] = "credits-overdracht allemaal OK"; 
-								}
-							} else { // ik moet ontvangen
-								if ($iConfirmed > $iPayed) {
-									$arActions[] = "TODO: ik moet nog van sommige betaling krijgen";  
-								} else {
-									$arActions[] = "credits-overdracht allemaal OK"; 
-								}
-							} 	
-							/*
-							foreach ($arSubscriptions as $iUser=>$oSubscription) {
-								if ($oSubscription->state() == SUBSCRIBE_CONFIRMED) { 
-									if ($oSubscription->payment()->signed()) {
-										$oRating = $oSubscription->rating(me()); 
-										if ($oRating->stars()) {
-											$arActions[] =  ("<li>" . $oRating->html() . "</li>"); 
-										} else {
-											$arActions[] =  ("<li>" . $oRating->html() . "</li>"); 	
-										} 
-									} else {
-										//$arActions[] = $oSubscription->payment()->html(); 
-									}
-								} 
-							}
-							*/
+							} 
 						}
 						$arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img class=\"btn btn-default btn-sm pull-right\" src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" align=\"right\" /></a>"; 
 					}

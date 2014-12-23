@@ -9,6 +9,7 @@
 		 
 		public function userlist() { 
 			$this->arOrder[] = "u.lastname"; 
+			$this->arSQLwhere["actief"] = " actief = 1 "; 
 		}
 		
 		public function filter($strType, $value = NULL) {
@@ -30,6 +31,9 @@
 					break; 
 				case "admin":
 					$this->arSQLwhere["admin"] = "u.admin = 1"; 
+					break; 
+				case "frozen":
+					$this->arSQLwhere["actief"] = " actief = 0 "; 
 					break; 
 			}
 		}

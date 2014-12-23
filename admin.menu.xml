@@ -1,0 +1,6 @@
+<ul>
+	<li><a href="admin.groepen.php">Groepen</a></li>
+	<li><a href="admin.php">Gebruikers</a></li>
+	<li><a href="admin.blocked.php">Bevroren gebruikers</a></li>
+	<li><a href="meldingen.php">Meldingen</a></li>
+</ul>

@@ -26,8 +26,9 @@
 					<? 
                     	echo $oSecurity->me()->html("user.html");
                     ?>
-                </div>
-                    <div class="meldingen"> 
+                </div>  
+                    <div class="meldingen admin"> 
+                    	<? include "admin.menu.xml"; ?>
                     	<ol class="table">
                         	<li class="titles">
                             	<div>Datum</div>

@@ -46,9 +46,7 @@
                         ?>
                     </div>
                     <div class="main market admin-groepen"> 
-                        <ul>
-                        	<li><a href="admin.php">Admin</a></li><li><a href="admin.users.php">Gebruikers</a></li>
-                        </ul>
+                        <? include "admin.menu.xml"; ?>
                     	<h1>Groepsbeheer </h1>
                         <form method="post" class="groepToevoegenForm form-horizontal" enctype="multipart/form-data"> 
 
