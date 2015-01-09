@@ -220,7 +220,7 @@
                                     foreach ($oLeden->getList() as $oUser) {
                                     //	$oRechten = $oGroep->userrights($oUser->id());  
                                         echo "<tr class=\"confirmed" . ($oGroep->userrights($oUser->id())->value("confirmed") ? 1:0) . "\">";  
-                                        $oUser->unlock(); 
+                                        $oUser->unlocked(TRUE); 
                                         echo "<td>" . $oUser->firstname() . "</td>"; 
                                         echo "<td>" . $oUser->lastname() . "</td>";   
                                         if ($oMijnRechten->userrights()) {

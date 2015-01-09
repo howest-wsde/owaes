@@ -10,7 +10,7 @@
 		$oUser = new user(); 
 		$oUser->search(array("mail" => $_POST["search"], "login" => $_POST["search"]), false);  
 		if ($oUser->id() != 0) {
-			$oUser->unlock(); // als e-mailadres hidden staat kan deze anders niet gezien worden
+			$oUser->unlocked(TRUE); // als e-mailadres hidden staat kan deze anders niet gezien worden
 			$strPass = uniqueKey(); 
 			$iExpires = (owaesTime()+60*60*24); 
 			$oDB = new database();  
@@ -48,7 +48,7 @@
 			$oDB->sql("select * from tblUserRecover where passcode = '" . $oDB->escape($strCode) . "' and timeexpires > " . owaesTime() . "; ");
 			if ($oDB->execute() == 1) {
 				$oUser = user($oDB->get("user")); 
-				$oUser->unlock(); 
+				$oUser->unlocked(TRUE); 
 				$oUser->password($_POST["pass1"]); 
 				$oUser->update(); 
 				$strPage = "PASSCHANGED"; 

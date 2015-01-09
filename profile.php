@@ -37,8 +37,7 @@
 					<?  
                     echo $oSecurity->me()->html("user.html");
                     ?>
-                </div>
- 
+                </div> 
 
 					<?  
 					

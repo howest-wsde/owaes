@@ -192,15 +192,15 @@
 			}
 		}
 		
-		public function unlock($bValue = TRUE) { // als een user unlocked is kan ook een niet-aangemelde gebruiker bv. emailadres opvragen of aanpassingen doen (nodig voor "paswoord vergeten")
-			$this->bUnlocked = $bValue; 
-		}
-		
+		public function unlocked($bValue = NULL) { // als een user unlocked is kan ook een niet-aangemelde gebruiker bv. emailadres opvragen of aanpassingen doen (nodig voor "paswoord vergeten")
+			if(!is_null($bValue)) $this->bUnlocked = $bValue; 
+			return $this->bUnlocked || user(me())->admin(); 
+		} 
 		public function admin($bAdmin = NULL) {
 			if (!is_null($bAdmin)) $this->bAdmin = $bAdmin; 
 			if (is_null($this->bAdmin)) $this->load();
 			return $this->bAdmin; 	
-		}
+		} 
 		
 		public function id($iID = NULL) { // get / set ID (enkel set via DB)
 			if (!is_null($iID)) $this->iID = $iID; 
@@ -261,38 +261,123 @@
 				$oDB->execute("select count(id) as schenkingen from tblPayments where sender = " . $this->id() . " and market = 0 and datum > " . (owaestime()-60*24*60*60) . "; "); 
 				$this->arStatus["schenkingen"] = $oDB->get("schenkingen"); 
 
-				$oDB->execute("select sum(if(market=0,1,0)) as straffen, count(id) as aantalwaarderingen, sum(stars) as waardering from tblStars where receiver = " . $this->id() . "; "); 
+				$this->arStatus["social"] = $this->social(); 
+				$this->arStatus["physical"] = $this->physical(); 
+				$this->arStatus["mental"] = $this->mental(); 
+				$this->arStatus["emotional"] = $this->emotional(); 
+				
+				$this->arStatus["indictatorensom"] = $this->social() + $this->physical() + $this->mental() + $this->emotional(); 
+				
+				$this->arStatus["credits"] = abs($this->credits()-settings("startvalues", "credits")); 
+				
+				$this->arStatus["waarderingen"] = $this->stars();
+
+			//	$oDB->execute("select sum(if(market=0,1,0)) as straffen, count(id) as aantalwaarderingen, sum(stars) as waardering from tblStars where receiver = " . $this->id() . "; "); 
+				$this->arStatus["score"] = $this->arStatus["diversiteit"] * ((settings("startvalues", "credits")-$this->arStatus["credits"]) + 10*($this->social()+$this->physical()+$this->mental()+$this->emotional())) - $this->arStatus["schenkingen"]; 
+				
 			//	$this->arStatus["straffen"] = $oDB->get("straffen"); 
 			//	$this->arStatus["waarderingen"] = $oDB->get("aantalwaarderingen"); 
 			//	$this->arStatus["sterren"] = $oDB->get("waardering") / ($this->arStatus["waarderingen"] - $this->arStatus["straffen"]); 
 				
 				$this->iStatus = 0; 
+				$arWarnings = array(); 
 				foreach (settings("warnings") as $iStatus => $arTresholds) {
-					if ($this->arStatus["schenkingen"] >= $arTresholds["schenkingen"] 
-						|| $this->arStatus["diversiteit"] <= $arTresholds["transactiediversiteit"] 
-						|| abs($this->credits()-settings("startvalues", "credits")) > $arTresholds["credits"]  
-						|| $this->stars() <= $arTresholds["waardering"] 
-						|| $this->social() <= $arTresholds["social"] 
-						|| $this->physical() <= $arTresholds["physical"] 
-						|| $this->mental() <= $arTresholds["mental"] 
-						|| $this->emotional() <= $arTresholds["emotional"] 
-						|| ($this->social()+$this->physical()+$this->mental()+$this->emotional()) <= $arTresholds["indicatorsom"] 
-					) $this->iStatus = $iStatus; 
-				} 
+					
+					if ($this->arStatus["schenkingen"] >= $arTresholds["schenkingen"]) $arWarnings[$iStatus][] = "schenkingen"; 
+					if ($this->arStatus["diversiteit"] <= $arTresholds["transactiediversiteit"] ) $arWarnings[$iStatus][] = "diversiteit"; 
+					if ($this->arStatus["credits"] > $arTresholds["credits"]  ) $arWarnings[$iStatus][] = "credits"; 
+					if ($this->stars()>0 && $this->stars() <= $arTresholds["waardering"] ) $arWarnings[$iStatus][] = "waardering"; 
+					if ($this->social() <= $arTresholds["social"] ) $arWarnings[$iStatus][] = "indicatoren.social"; 
+					if ($this->physical() <= $arTresholds["physical"] ) $arWarnings[$iStatus][] = "indicatoren.physical"; 
+					if ($this->mental() <= $arTresholds["mental"] ) $arWarnings[$iStatus][] = "indicatoren.mental"; 
+					if ($this->emotional() <= $arTresholds["emotional"] ) $arWarnings[$iStatus][] = "indicatoren.emotional"; 
+					if ($this->arStatus["indictatorensom"] <= $arTresholds["indicatorsom"] ) $arWarnings[$iStatus][] = "indicatoren.som";  
+				}  
+				$this->arStatus["warnings"] = $arWarnings; 
+				foreach ($arWarnings as $iWarning => $arValues) $this->iStatus = $iWarning; 
 				$arMails = array(); 
 				if ($this->arStatus["status"] != $this->iStatus) {
-					switch($this->iStatus) {
-						case 0: 
-							if ($this->arStatus["status"] > 0) $arMails["owner"] = "proficiat, "; 
-							break; 	
-						case 1:
-							// We merken dat ...  op waarde .. zit. Probeer deze boven de x te houden
-						
-						case 2: 
-//							opgelet, we zien dat je waarden verder achteruit gaan. Het wordt tijd hier iets aan te doen
-
-						case 3: 
-							// opgelet! we merken dat xx kritisch lage waarden heeft. Zorg dat deze verhogen of de toegang tot OWAES kan geblokkeerd worden
+					if ($this->arStatus["status"] > $this->iStatus) { // heeft het nu beter gedaan
+						switch($this->iStatus) {
+							case 0: 
+								$arMails["owner"] = "Proficiat, je waarden zijn terug op peil!"; 
+								break; 	
+							case 1:
+								$arMails["owner"] = "Proficiat, je waarden zijn al een stuk beter. Nog even volhouden en ze zijn terug volledig op peil. ";  
+								break; 	
+							case 2: 
+								$arMails["owner"] = "Proficiat, je waarden zijn uit alarmniveau. Probeer deze nog iets beter te krijgen. "; 
+								break; 	
+							case 3: 
+								$arMails["owner"] = "Proficiat, je werd gedeblokkeerd. Let op: je waarden staan nog in alarmniveau, probeer deze zo snel mogelijk te verbeteren om een nieuwe blokkering tegen te gaan. "; 
+								// unfreeze 
+								break; 	
+						} 
+					} else { // nu slechtere status
+						switch($this->iStatus) { 
+							case 1:
+								if (count($arWarnings[$this->iStatus]) == 1) {
+									$arReden = explode(".", $arWarnings[$this->iStatus][0]); 
+									switch($arReden[0]) {
+										case "indicatoren": 
+											$arMails["owner"] = "We merken dat je indicatoren te laag zakken. Probeer deze boven de 60 te houden."; 
+											break; 	
+										case "waardering": 
+											$arMails["owner"] = "We merken dat je gemiddeld een lage waardering krijgt. Probeer te zorgen dat deze betert."; 
+											break; 	
+										case "schenkingen": 
+											$arMails["owner"] = "We merken dat je veel schenkingen uitvoert. Probeer deze te beperken."; 
+											break; 	
+										case "diversiteit": 
+											$arMails["owner"] = "We merken dat je vaak met dezelfde personen werkt. Probeer hier af te wisselen. "; 
+											break; 	
+										case "credits": 
+											$arMails["owner"] = "We merken dat je credits uit balans staan. Probeer dit te herstellen. "; 
+											break; 		 
+									}
+								} else {
+									//foreach ($arWarnings[$this->iStatus] as $strWarnings) {
+									//}
+									$arMails["owner"] = "We merken dat verschillende waarden te laag zakken. Probeer deze op peil te houden"; 
+								} 
+								break; 
+							case 2: 
+	 							$arMails["owner"] = "Opgelet, we zien dat je waarden verder achteruit gaan. Het wordt tijd hier iets aan te doen"; 
+								break; 
+							case 3: 
+								$arMails["owner"] = "Opgelet! we merken dat waarden kritisch laag staan. Zorg dat deze verhogen of de toegang tot OWAES kan geblokkeerd worden"; 
+								$arMails["owaes"] = $arMails["owner"]; 
+								break; 
+							case 4: 
+								// FREEZE
+								$this->unlocked(TRUE); 
+								$this->actief(0); 
+								$this->update(); 
+								$arMails["owaes"] = "Gebruiker " . $this->getName() . " werd geblokkeerd wegens te lage waarden (" . implode(", ", $arWarnings[$this->iStatus]) . ")";
+	 						}  
+					}
+					foreach ($arMails as $strTo=>$strMelding) {
+						switch($strTo) {
+							case "owner": 
+								$oMessage = new message(); 
+								$oMessage->sender(0); 
+								$oMessage->receiver($this->id()); 
+								$oMessage->body($strMelding);   
+								$oMessage->update(); 
+								break; 
+							case "owaes":  
+								$arAdmins = new userlist(); 
+								$arAdmins->filter("admin"); 
+								foreach ($arAdmins->getList() as $oAdmin) {
+									$oMessage = new message(); 
+									$oMessage->sender(0); 
+									$oMessage->receiver($oAdmin->id()); 
+									$oMessage->body($strMelding);   
+									$oMessage->data("user", $this->id());    
+									$oMessage->update(); 
+								}
+								break; 	
+						}
 					}
 				}
 				
@@ -452,6 +537,8 @@
 					$oNotification->sender($iMe); 
 					$oNotification->send(); 
 					$this->iFriendStatus = FRIEND_FRIENDS; 
+					$this->addbadge("1friend"); 
+					user($iFriend)->addbadge("1friend");
 					break; 
 
 				case FRIEND_NOFRIENDS:  // nothing asked yet
@@ -471,9 +558,9 @@
 		public function visible4me($oSelector) { /* get visible-value (TRUE/FALSE) van specifiek veld voor actieve gebruiker 
 				bv. $oUser->visible4me("firstname") => checkt of actieve gebruiker de voornaam van $oUser kan zien (afhankelijk van settings  en al dan niet friend zijn )
 			*/  
-			if ($this->bUnlocked) return TRUE; 
+			if ($this->unlocked()) return TRUE; 
 			if ($this->id() == me()) return TRUE; 
-			if (user(me())->admin()) return TRUE; 
+			//if (user(me())->admin()) return TRUE; 
 			$arParts = explode(":", $oSelector, 2);  
 			switch ($arParts[0]) {
 				case "file": 
@@ -615,35 +702,35 @@
 		}
 
 
-		public function physical($iValue = NULL) {
+		public function physical($iValue = NULL, $bBoundaries = TRUE) {
 			if (!is_null($iValue)) $this->iPhysical = $iValue; 
 			if (is_null($this->iPhysical)) $this->loadIndicators(); 
-			if ($this->iPhysical > 100) return 100; 
-			if ($this->iPhysical < 0) return 0; 		
+			if ($this->iPhysical > 100 && $bBoundaries) return 100; 
+			if ($this->iPhysical < 0 && $bBoundaries) return 0; 		
 			return $this->iPhysical; 
 		}
 		
-		public function mental($iValue = NULL) {
+		public function mental($iValue = NULL, $bBoundaries = TRUE) {
 			if (!is_null($iValue)) $this->iMental = $iValue; 
 			if (is_null($this->iMental)) $this->loadIndicators(); 
-			if ($this->iMental > 100) return 100; 
-			if ($this->iMental < 0) return 0; 	
+			if ($this->iMental > 100 && $bBoundaries) return 100; 
+			if ($this->iMental < 0 && $bBoundaries) return 0; 	
 			return $this->iMental; 
 		}
 		
-		public function emotional($iValue = NULL) {
+		public function emotional($iValue = NULL, $bBoundaries = TRUE) {
 			if (!is_null($iValue)) $this->iEmotional = $iValue; 
 			if (is_null($this->iEmotional)) $this->loadIndicators(); 	
-			if ($this->iEmotional > 100) return 100; 
-			if ($this->iEmotional < 0) return 0; 
+			if ($this->iEmotional > 100 && $bBoundaries) return 100; 
+			if ($this->iEmotional < 0 && $bBoundaries) return 0; 
 			return $this->iEmotional; 
 		}
 		
-		public function social($iValue = NULL) {
+		public function social($iValue = NULL, $bBoundaries = TRUE) {
 			if (!is_null($iValue)) $this->iSocial = $iValue; 
 			if (is_null($this->iSocial)) $this->loadIndicators(); 
-			if ($this->iSocial > 100) return 100; 
-			if ($this->iSocial < 0) return 0; 
+			if ($this->iSocial > 100 && $bBoundaries) return 100; 
+			if ($this->iSocial < 0 && $bBoundaries) return 0; 
 			return $this->iSocial; 
 		}
 		
@@ -747,7 +834,10 @@
 				if (is_null($this->iActief)) {
 					$this->iActief = $iActief;  
 				} else {
-					if (user(me())->admin()) $this->iActief = $iActief;  // actief-value kan enkel aangepast worden door admins
+					if ($this->unlocked()) {
+						$this->iActief = $iActief;  // actief-value kan enkel aangepast worden door admins
+						if ($iActief == 1) $oDB = new database("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values ('" . $$this->id() . "', '" . owaestime() . "', 0, 0, 0, 0, 0, 0); ", TRUE); // bij ontdooien
+					}
 				} 
 			}
 			if (is_null($this->iActief)) $this->load();
@@ -983,7 +1073,7 @@
 			$oDB = new database();
 			$oDB->execute("select sum(emotional) as emotional, sum(social) as social, sum(physical) as physical, sum(mental) as mental from tblIndicators where user = " . $this->iID . " and actief = 1; "); 
 			if ($oDB->record()) {
-				//echo $oDB->table(TRUE); 
+				//var_dump($oDB->record()); 
 				if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"] + $oDB->get("social"));
 				if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"] + $oDB->get("emotional"));
 				if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"] + $oDB->get("physical"));
@@ -1017,7 +1107,7 @@
 		}
 		
 		public function update() {  
-			if ($this->bUnlocked || $this->bNEW || ($this->id() == me()) || user(me())->admin()) {
+			if ($this->unlocked() || $this->bNEW || $this->id() == me()) {
 				$arVelden = array(
 					"login" => $this->login(), 
 					"firstname" => $this->firstname(), 
@@ -1265,14 +1355,21 @@
 			if (!isset($arBadges[$strBadge])) {
 				$oDB = new database(); 
 				$oDB->execute("select * from tblBadges where mkey = '" . $oDB->escape($strBadge) . "'; "); 
-				if ($oDB->record()) {
+				if ($oDB->length() == 1) {
 					$arBadges[$strBadge] = array(
 						"img" => $oDB->get("img"), 
 						"info" => $oDB->get("info"), 
 						"title" => $oDB->get("title"), 
 					);
-					$oDB->sql("insert into tblUserBadges (user, badge, date) values ('" . $this->id() . "', '" . $oDB->get("id") . "', '" . owaesTime() . "'); "); 	
+					$iBadge = $oDB->get("id"); 
+					$oDB->sql("insert into tblUserBadges (user, badge, date) values ('" . $this->id() . "', '" . $iBadge . "', '" . owaesTime() . "'); "); 	
 					$oDB->execute(); 
+					 
+					$oAction = new action(me());   
+					$oAction->type("badge");  
+					$oAction->data("type", $iBadge); 
+					$oAction->tododate(owaestime()); 
+					$oAction->update(); 
 				}
 			}
 		}

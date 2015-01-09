@@ -119,7 +119,7 @@
 				$oDB = new database();
 				if ($bShowNotConfirmed) { 
 					$oDB->execute("select round(sum(experience)) as totaal from tblExperience where user = " . $this->iUser . ";"); 
-					$this->arTotal["all"] = intval($oDB->get("totaal")); 
+					if ($oDB->record()) $this->arTotal["all"] = intval($oDB->get("totaal")); 
 				} else {
 
 					$arUsers = loadedUsers();  // voert query uit voor alle users die in memory zitten

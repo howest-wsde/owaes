@@ -108,6 +108,9 @@
 				
 				imagedestroy($oProfileIMG); 
 				if (!$bKeepOld) unlink($strLocation); 	
+				
+				user($iUserID)->addbadge("photo"); 
+		
 				return TRUE; 
 				break;  
 			default: 
@@ -427,6 +430,12 @@
 						return "$strDagKort $iDag $strMaand";
 					} else return "$strDagKort $iDag $strMaand $strJaar"; 
 				}
+				break; 
+			case "shortago": 
+				$iTerug = owaestime() - $dDate; 
+				if ($iTerug < 60) return $iTerug . " sec."; 
+				if ($iTerug < 3600) return round($iTerug/60) . " min.";
+				return round($iTerug/60/60) . " uur."; 
 				break; 
 			case "datumtijd": 
 			case "": 

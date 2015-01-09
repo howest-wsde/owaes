@@ -55,7 +55,7 @@
 				};
 				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-				<? 
+				<?  
 					$oOwaesList = new owaeslist(); 
 					$oOwaesList->filterByState(STATE_RECRUTE);  
 					$oOwaesList->filterPassedDate(owaesTime()); 
@@ -197,7 +197,7 @@
                             <div class="indicator">
                              <img src="img/userSocialIcon.png" alt="Welzijn" title="Welzijn: <? echo $oMe->emotional(); ?>%" />
                                 <div class="progress progress-welzijn" title="Welzijn: <? echo $oMe->emotional(); ?>%">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->emotional(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->emotional(); ?>%;">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->emotional(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->emotional(); ?>%;"> 
                                         <span class="sr-only"><? echo $oMe->emotional(); ?>% Welzijn</span>
                                     </div>
                                      <span class="progressIndicator"><!--+1%--></span>
@@ -703,6 +703,9 @@
 					if ((user(me())->level()>=3)&&($oAction->tododate() > owaestime()-(7*24*60*60))) {
 						$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
 					}
+					break; 
+				case "badge": 
+					$arModalURLs[] = "modal.badge.php?m=" . $oAction->data("badge"); 
 					break; 
 			} 
 		}  

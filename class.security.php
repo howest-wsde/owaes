@@ -115,29 +115,34 @@
 			$arWhere[] = (strrpos($strUser, "@") === false) 
 				? "login = '" . $strUser . "'" 
 				: "mail = '" . $strUser . "'"; 
-			$oDBquery = new database("select * from tblUsers where " . implode(" and ", $arWhere) . " limit 0, 1; "); 
+			$oDBquery = new database("select * from tblUsers where " . implode(" and ", $arWhere) . " limit 0, 1; ");  
 			if ($oDBquery->execute() > 0) {
-				if (($oDBquery->get("pass") == $strPass) || (is_null($strPass)))  {
-					session_start();
-					$iUser = $oDBquery->get("id");  
-					$_SESSION['userid'] = $iUser; 
-					$_SESSION['session'] = $strSession;
-					
-					$iStart = owaesTime(); 
-					$iStop = owaesTime() + 60*60*24*14; // session valid for 2 weeks 
-					$strIP = $_SERVER['REMOTE_ADDR']; 
-					$strConf = mysql_escape_string($_SERVER['HTTP_USER_AGENT']); 
-					$oDBinsert = new database("insert into tblUserSessions (user, start, stop, sessionpass, active, ip, conf) values ($iUser, $iStart, $iStop, '$strSession', 1, '$strIP', '$strConf'); ", true); 
-					$this->setLoggedIn(TRUE); 
-					setcookie("user", $iUser, $iStop);
-					setcookie("session", $strSession, $iStop);
-					return true; 
-				} else {
-					// echo $oDBquery->table(); 
-					// echo $strPass; 
-                    console("class.security", "dologin() - Incorrect password.");
-					$this->strError = "Je gaf een verkeerd wachtwoord in"; 
+				if (($oDBquery->get("actief")==0)||($oDBquery->get("deleted")==1)) {
+					$this->strError = "Deze account werd geblokkeerd"; 
 					return false; 
+				} else {
+					if (($oDBquery->get("pass") == $strPass) || (is_null($strPass)))  {
+						session_start();
+						$iUser = $oDBquery->get("id");  
+						$_SESSION['userid'] = $iUser; 
+						$_SESSION['session'] = $strSession;
+						
+						$iStart = owaesTime(); 
+						$iStop = owaesTime() + 60*60*24*14; // session valid for 2 weeks 
+						$strIP = $_SERVER['REMOTE_ADDR']; 
+						$strConf = mysql_escape_string($_SERVER['HTTP_USER_AGENT']); 
+						$oDBinsert = new database("insert into tblUserSessions (user, start, stop, sessionpass, active, ip, conf) values ($iUser, $iStart, $iStop, '$strSession', 1, '$strIP', '$strConf'); ", true); 
+						$this->setLoggedIn(TRUE); 
+						setcookie("user", $iUser, $iStop);
+						setcookie("session", $strSession, $iStop);
+						return true; 
+					} else {
+						// echo $oDBquery->table(); 
+						// echo $strPass; 
+						console("class.security", "dologin() - Incorrect password.");
+						$this->strError = "Je gaf een verkeerd wachtwoord in"; 
+						return false; 
+					}
 				}
 			} else {
                 console("class.security", "dologin() - Incorrect username.");

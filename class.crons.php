@@ -42,7 +42,6 @@
 			$oDB = new database(); 
 			$oInsertDB = new database();  
 			$iRefreshTijd = settings("crons", "indicators"); 
-			 
 			
 			$strLastUserrecordsSQL = "select user, max(datum) as datum from tblIndicators where actief = 1 group by user";
 			$strSQL = "select u.id as user, i.datum, i.reason, i.link 
@@ -111,7 +110,8 @@
 		
 		public function checkStatus() {
 			$oDB = new database(); 
-			$oDB->sql("select id from tblUsers where statusdate < " . (owaestime()-60*60*24) . " order by statusdate; "); 
+			$iTimeOut = 60*60*24; //  // 24 uur
+			$oDB->sql("select id from tblUsers where statusdate < " . (owaestime()-$iTimeOut) . " order by statusdate; "); 
 			$oDB->execute(); 
 			while ($oDB->nextRecord()) {
 				user($oDB->get("id"))->status(TRUE); 

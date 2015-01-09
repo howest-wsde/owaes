@@ -38,9 +38,7 @@
 			createProfilePicture($strTmp, $oProfile->id()); 
 		}
 
-		$oProfile->update(); 
-		
-		if ($bImageUploaded) $oProfile->addbadge("photo"); 
+		$oProfile->update();  
 	}
 
 	list($iLat, $iLong) = $oProfile->LatLong(); 

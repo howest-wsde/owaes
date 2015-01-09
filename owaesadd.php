@@ -85,7 +85,7 @@
 			$oOwaesItem->addTag($strTag);  
 		}   
 		
-		$oOwaesItem->timing($_POST["timingtime"]); 
+		$oOwaesItem->timing(isset($_POST["timingtime"])?$_POST["timingtime"]:0); 
 		$oOwaesItem->physical($_POST["physical"]); 
 		$oOwaesItem->mental($_POST["mental"]); 
 		$oOwaesItem->emotional($_POST["emotional"]); 
@@ -103,6 +103,11 @@
 		} 
 			
 		$oOwaesItem->update();   
+		
+		$oOwaesItem->type($_POST["type"]); 
+		user(me())->addbadge($_POST["type"]); 
+		
+		
 		//switch($oOwaesItem->task())  {
 		//	case TRUE: 
 				redirect("index.php?t=" . $oOwaesItem->type()->key());  

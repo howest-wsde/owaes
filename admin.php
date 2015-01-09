@@ -2,7 +2,9 @@
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
 	if (!$oSecurity->admin()) $oSecurity->doLogout(); 
- 
+	
+	if (isset($_GET["u"]))  user($_GET["u"])->status(TRUE); 
+	
     //Variables for pages
     if(isset($_GET["start"])){
        $start = $_GET["start"];
@@ -46,10 +48,64 @@
                     	<? include "admin.menu.xml"; ?>
                          
                         <?
+							$arFields = array(
+										// fieldname = array (title, warningkey)
+											"score" => array("Score", ""), 
+											"status" => array("!", ""), 
+											"partnercount" => array("Partners", ""), 
+											"transactiecount" => array("Transactie's", ""), 
+											"diversiteit" => array("Diversiteit", "diversiteit"), 
+											"schenkingen" => array("Schenkingen", "schenkingen"), 
+										//	"straffen" => array("Straffen", ""), 
+											"waarderingen" => array("Sterren", "waardering"), 
+										//	"sterren" => array("Sterren", ""), 
+											"credits" => array("Credits", "credits"), 
+											"social" => array("Social", "indicatoren.social"), 
+											"physical" => array("Physical", "indicatoren.physical"), 
+											"mental" => array("Mental", "indicatoren.mental"), 
+											"emotional" => array("Emotional", "indicatoren.emotional"), 
+											"indictatorensom" => array("Som", "indicatoren.som"), 
+										);  	
+				
                         	$oDB = new database(); 
+							$oDB->execute("select * from tblUsers order by status desc; "); 
+							echo ("<table class=\"database\">"); 
+							echo ("<tr>"); 
+							echo ("<th>Naam </th>");  
+							foreach ($arFields as $strField=>$arField) {
+								echo ("<th>" . $arField[0] . "</th>"); 
+							}
+							echo ("<th>updated</th>");  
+							echo ("<th>actie</th>");  
+
+							echo ("</tr>");  
+							while ($oDB->nextRecord()) {
+								$arStatus = json_decode($oDB->get("statusinfo"), TRUE); 
+								echo ("<tr title='"); 
+								if (isset($arStatus["warnings"])) var_dump($arStatus["warnings"]); 
+								echo ("'>"); 
+								echo ("<td class=\"status" . (isset($arStatus["status"])?$arStatus["status"]:"") . "\">" . $oDB->get("firstname") . " " . $oDB->get("lastname") . "</td>");
+								foreach ($arFields as $strField=>$arField) {
+									$iWarning = 0; 
+									foreach ($arStatus["warnings"] as $iSeverity=>$arWarning) {
+										if ($arField[1] != "") if (in_array($arField[1], $arWarning)) $iWarning = $iSeverity; 
+										
+									}
+									echo ("<td class=\"status$iWarning\">" . (isset($arStatus[$strField])?round($arStatus[$strField]*100)/100:"") . "</td>"); 
+								}
+								echo ("<td>" . str_date($oDB->get("statusdate"), "shortago") . "</td>");
+								//echo ("<td>"); 
+								//var_dump($arStatus["warnings"]); 
+								//echo ("<td>"); 
+								echo ("<td>
+											<a href=\"admin.php?u=" . $oDB->get("id") . "\">refresh</a>
+											<a href=\"admin.user.php?u=" . $oDB->get("id") . "\">meer</a>
+										</td>");  
+								echo ("</tr>"); 
+							}
+							echo ("</table>"); 
                             
-                            
-                            //aantal users "/*<th>alias</th>*/."
+                            /* 
                             $oDB->sql( "SELECT COUNT(*) AS aantal FROM tblUsers");
                             $oDB-> execute();
                             $count = $oDB->get("aantal"); 
@@ -149,6 +205,7 @@
 								echo ("</tr>"); 
 							}
 							echo ("</table>"); 
+							*/
                               
                             function checkIndicator($indicator){
                                 global $limitIndicators;

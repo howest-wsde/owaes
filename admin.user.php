@@ -11,6 +11,12 @@
 	
 	$iUser = intval($_GET["u"]); 
 	$oUser = user($iUser);  
+	
+	if (isset($_POST["changeindicatoren"])) {
+		$oDB = new database(); 	
+		$oDB->execute("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason) values ('" . $iUser . "', '" . owaestime() . "', '" . (intval($_POST["physical"]) - $oUser->physical(NULL, FALSE)) . "', '" . (intval($_POST["mental"]) - $oUser->mental(NULL, FALSE)) . "', '" . (intval($_POST["emotional"]) - $oUser->emotional(NULL, FALSE)) . "', '" . (intval($_POST["social"]) - $oUser->social(NULL, FALSE)) . "', '" . 0 . "'); ");
+		redirect(filename());  // refresh om values up te daten
+	}
   
  
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -75,7 +81,7 @@
                             
                             $oDB = new database("select u.id, u.firstname, u.lastname,  (SELECT l.datum  from tblLog l WHERE user=$iUser ORDER BY `datum` desc LIMIT 1) as lastlogin from tblUsers u where u.id =$iUser");
 							$oDB->execute();
-				            $lastLogin = $oDB->get("lastlogin");
+				           // $lastLogin = $oDB->get("lastlogin");
                             //echo(vardump($arrGebruiker));
                             
 							$oDB = new database("select * from tblPayments where (sender = $iUser or receiver = $iUser) and actief = 1 order by datum; ", TRUE);  
@@ -217,7 +223,42 @@ function plotAccordingToChoices() {
                             <div id="chart" ></div>
                             <div id="choices"></div>
                             <!-- style="width: 900px; height: 500px;" -->
-                            <div class="aanradenContainer">
+                            
+                            
+                            <div class="well" style="clear: both; ">
+                                <form method="post">
+                                    <fieldset>
+                                        <h4>Indicatoren aanpassen: </h4>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-1" for="mental">mental:</label>
+                                            <div class="col-lg-2">
+                                                <input type="text" value="<? echo $oUser->mental(NULL, FALSE);  ?>" placeholder="mental" id="mental" class="form-control" name="mental" />
+                                            </div>
+                                            
+                                            <label class="control-label col-lg-1" for="mental">physical:</label>
+                                            <div class="col-lg-2">
+                                                <input type="text" value="<? echo $oUser->physical(NULL, FALSE);  ?>" placeholder="physical" id="physical" class="form-control" name="physical" />
+                                            </div>
+                                            
+                                            <label class="control-label col-lg-1" for="mental">emotional:</label>
+                                            <div class="col-lg-2">
+                                                <input type="text" value="<? echo $oUser->emotional(NULL, FALSE);  ?>" placeholder="emotional" id="emotional" class="form-control" name="emotional" />
+                                            </div>
+                                            
+                                            <label class="control-label col-lg-1" for="mental">social:</label>
+                                            <div class="col-lg-2">
+                                                <input type="text" value="<? echo $oUser->social(NULL, FALSE);  ?>" placeholder="social" id="social" class="form-control" name="social" />
+                                            </div>
+                                         </div>
+                                         <div class="form-group"> 
+                                            <input type="submit" value="Opslaan" name="changeindicatoren" class="btn btn-default btn-save" />
+                                        </div>
+                                     </fieldset>
+                                </form>
+                                
+                            </div>
+                            
+                            <div class="aanradenContainer" style="display: none; ">
                                 <div class="aanraden"><span data-toggle="modal" data-target="#popupOpleiding" class="icon icon-opleiding aanradenPopup">   Raad een Opleiding aan</span></div>
                                 <div class="aanraden"><span data-toggle="modal" data-target="#popupWerkervaring" class="icon icon-werkervaring aanradenPopup">   Raad een Werkervaring aan</span></div>
                                 <div class="aanraden"><span data-toggle="modal" data-target="#popupQuest" class="icon icon-trophy aanradenPopup">   Raad een Quest aan</span></div>

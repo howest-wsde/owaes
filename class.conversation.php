@@ -209,7 +209,7 @@
 					$oNotification->message($this->sender()->getName() . " stuurde een berichtje"); 
 					$oNotification->sender($this->iSender); 
 					$oNotification->link(fixPath("conversation.php?u=" . $this->iSender)); 
-					$oNotification->send(); 
+					$oNotification->send();  
 				} 
 								
 			} else {
