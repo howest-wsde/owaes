@@ -78,6 +78,9 @@
 						$oAction->data("user", $iUser); 
 						$oAction->tododate(owaestime() + (3*24*60*60));  
 						$oAction->update(); 
+						 
+						user($iParty)->addbadge("done-" . $oMarket->type()->key()); 
+							  
 					} 
 				}
 			} 		 

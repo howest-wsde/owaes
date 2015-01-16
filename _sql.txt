@@ -1,3 +1,6 @@
 
 
 BADGES overzetten! 
+
+ALTER TABLE `tblBadges` ADD `zichtbaar` SMALLINT( 2 ) NOT NULL DEFAULT '0';
+

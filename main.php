@@ -705,7 +705,9 @@
 					}
 					break; 
 				case "badge": 
-					$arModalURLs[] = "modal.badge.php?m=" . $oAction->data("badge"); 
+					$arModalURLs[] = "modal.badge.php?m=" . $oAction->data("type"); 
+					$oAction->done(owaestime()); 
+					$oAction->update();  
 					break; 
 			} 
 		}  

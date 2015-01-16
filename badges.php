@@ -27,161 +27,62 @@
                 
                 <h2>Badges</h2>
                 <p>Hier zie je de verzameling badges die je hebt verdient, alsook de badges die je nog kan verdienen. Zijn er geen resterende badges meer? Dan zijn er nog steeds de verborgen badges...</p>
-                <h3>Behaalde badges</h3>
-                <div class="row sidecenterright behaaldebadges">
                         <? 
-                            //foreach ($oBadgesList->getList() as $oBadge) { 
-                            //    echo $oBadge->HTML("badgesfromlist.html");  
-                            //}
-                            
-                            //for ($i = 1; $i <= 10; $i++) {
-                            //    readfile("badgesfromlist.html");
-                            //}
+							$arMyBadges = user(me())->getBadges(); 
+							
+							$arBadges = array(); 
+							$oDB = new database("select * from tblBadges where zichtbaar = 1;", TRUE); 
+							while ($oDB->nextRecord()) {
+								$arBadges[$oDB->get("mkey")] = array(
+																	"img" => $oDB->get("img"), 
+																	"title" => $oDB->get("title"), 
+																	"info" => $oDB->get("info"), 
+																); 	
+							} 
+							
+							if (count($arMyBadges)>0) {
+								echo ('<h3>Behaalde badges</h3>
+               							<div class="row sidecenterright behaaldebadges">'); 
+								foreach ($arMyBadges as $strKey=>$arBadge) {
+									echo ('<div class="col-md-6 badgeslistitem">
+												<div class="row">
+													<div class="col-xs-2">
+														<img src="img/badges/' . $arBadge["img"] . '" alt="' . $arBadge["title"] . '" width="57" height="57">
+													</div>
+													<div class="col-xs-10">
+														<h2>' . $arBadge["title"] . '</h2>
+														<p class="badgedescription">' . $arBadge["info"] . '</p>
+													</div>
+												</div>
+										</div>'); 
+									if (isset($arBadges[$strKey])) unset($arBadges[$strKey]);  
+								}
+								echo ('</div>'); 
+							}
+							
+							if (count($arBadges)>0) {
+								echo ('<h3>Nog niet behaalde badges</h3>
+                					<div class="row sidecenterright resterendebadges">'); 
+								
+								foreach ($arBadges as $strKey=>$arBadge) {
+										echo ('
+										<div class="col-md-6 badgeslistitem">
+												<div class="row">
+													<div class="col-xs-2">
+														<img src="img/badges/' . $arBadge["img"] . '" alt="' . $arBadge["title"] . '" width="57" height="57">
+													</div>
+													<div class="col-xs-10">
+														<h2>' . $arBadge["title"] . '</h2>
+														<p class="badgedescription">' . $arBadge["info"] . '</p>
+													</div>
+												</div>
+										</div>'); 
+								} 
+								echo ('</div>'); 
+							}
                         ?>
-                        
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/photo.png" alt="Profielfoto" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Profielfoto</h2>
-                                        <p class="badgedescription">Deze gebruiker heeft een profielfoto ingesteld. Way to go! </p>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/cupcake.png" alt="Eten" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Eten</h2>
-                                        <p class="badgedescription">Werk in de categorie "eten". </p>
-                                    </div>
-                                </div>
-                                
-                        </div>
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/earlybird.png" alt="Earlybird" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Earlybird</h2>
-                                        <p class="badgedescription">U was als een van de eerste bij OWAES! </p>
-                                    </div>
-                                </div>
-                                
-                        </div>
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/power.png" alt="power" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Power</h2>
-                                        <p class="badgedescription">Verkrijg 5x een indicator in fysiek.</p>
-                                    </div>
-                                </div>
-                                
-                        </div>
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/trans1.png" alt="trans1" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Transactie x1</h2>
-                                        <p class="badgedescription">Voer uw eerste transactie uit.</p>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/trans10.png" alt="trans10" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Transactie x10</h2>
-                                        <p class="badgedescription">Voer 10 transacties uit.</p>
-                                    </div>
-                                </div>
-                        </div>
-                        
-                </div>
-                
-                <h3>Resterende badges</h3>
-                <div class="row sidecenterright resterendebadges">
-                        <? 
-                            //foreach ($oBadgesList->getList() as $oBadge) { 
-                            //    echo $oBadge->HTML("badgesfromlist.html");  
-                            //}
-                            
-                            //for ($i = 1; $i <= 20; $i++) {
-                            //    readfile("badgesfromlist.html");
-                            //}
-                            
-                            
-                        ?>
-                        
-                        
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/car.png" alt="car" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Reiziger</h2>
-                                        <p class="badgedescription">Leg in totaal 100km af onderweg naar een actviteit. </p>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/trans25.png" alt="trans25" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Transactie x25</h2>
-                                        <p class="badgedescription">Voer 25 transacties uit.</p>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/trans50.png" alt="trans50" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Transactie x50</h2>
-                                        <p class="badgedescription">Voer 50 transacties uit.</p>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/tie.png" alt="wergever" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Werkgever</h2>
-                                        <p class="badgedescription">Bied 10 werkaanbiedingen aan.</p>
-                                    </div>
-                                </div>
-                        </div>
-                        <div class="col-md-6 badgeslistitem">
-                                <div class="row">
-                                    <div class="col-xs-2">
-                                        <img src="img/badges/play.png" alt="play" width="57" height="57">
-                                    </div>
-                                    <div class="col-xs-10">
-                                        <h2>Tutorial</h2>
-                                        <p class="badgedescription">Overloop succesvol de tutorial.</p>
-                                    </div>
-                                </div>
-                        </div>
-                </div>
+                      
+                 
                 
         	<? echo $oPage->endTabs(); ?>
         </div>

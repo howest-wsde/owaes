@@ -490,6 +490,7 @@
 					$oDB = new database(); 
 					if ($bValue) {
 						$oDB->execute("insert into tblFollowers (user, followed, startdate) values ('" . $this->id() . "', '$iUser', '" . owaestime() . "'); "); 
+						$this->addbadge("follower");   
 					} else {
 						$oDB->execute("delete from tblFollowers where user = '" . $this->id() . "' and followed = '$iUser'; "); 
 					}
@@ -536,9 +537,23 @@
 					$oNotification->link(user($iMe)->getURL());
 					$oNotification->sender($iMe); 
 					$oNotification->send(); 
-					$this->iFriendStatus = FRIEND_FRIENDS; 
-					$this->addbadge("1friend"); 
-					user($iFriend)->addbadge("1friend");
+					$this->iFriendStatus = FRIEND_FRIENDS;  
+					switch(count($this->friends())) {
+						case 1: 
+							$this->addbadge("1friend");   
+							break; 	
+						case 10: 
+							$this->addbadge("10friends"); 
+							break; 	
+					} 
+					switch(count(user($iMe)->friends())) {
+						case 1: 
+							user($iMe)->addbadge("1friend");   
+							break; 	
+						case 10: 
+							user($iMe)->addbadge("10friends"); 
+							break; 	
+					}  
 					break; 
 
 				case FRIEND_NOFRIENDS:  // nothing asked yet
@@ -836,13 +851,14 @@
 				} else {
 					if ($this->unlocked()) {
 						$this->iActief = $iActief;  // actief-value kan enkel aangepast worden door admins
-						if ($iActief == 1) $oDB = new database("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values ('" . $$this->id() . "', '" . owaestime() . "', 0, 0, 0, 0, 0, 0); ", TRUE); // bij ontdooien
+						if ($iActief == 1) $oDB = new database("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values ('" . $this->id() . "', '" . owaestime() . "', 0, 0, 0, 0, 0, 0); ", TRUE); // bij ontdooien
 					}
 				} 
 			}
 			if (is_null($this->iActief)) $this->load();
 			return ($this->iActief==1);    
 		}
+		
 		public function description($strDescription = NULL) { // get / set omschrijving 
 			if (!is_null($strDescription)) {
 				$this->strDescription = $strDescription; 
@@ -1067,6 +1083,15 @@
 			} 
 			return $arChart; 
 		}
+		/*
+		public function addIndicators($arValues = array(), $iReason = 0, $iLink = 0) {
+			$iPhysical = isset($arValues["physical"]) ? $arValues["physical"] : 0; 
+			$iMental = isset($arValues["mental"]) ? $arValues["mental"] : 0; 
+			$iEmotional = isset($arValues["emotional"]) ? $arValues["emotional"] : 0; 
+			$iSocial = isset($arValues["social"]) ? $arValues["social"] : 0; 
+			$oDB = new database("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values ('" . $this->id() . "', '" . owaestime() . "', $iPhysical, $iMental, $iEmotional, $iSocial, $iReason, $iLink); ", TRUE); 
+		}
+		*/
 		
 		private function loadIndicators() {
 			global $arConfig; 
@@ -1138,6 +1163,15 @@
 					"data" => json_encode($this->arData), 
 					"bestanden" => json_encode($this->arBestanden), 
 				);   
+				
+				$arForBadgeFullProfile = array("login", "firstname", "lastname", "alias", "description", "img", "mail", "birthdate", "gender", "telephone", ); 
+				foreach($arForBadgeFullProfile as $strForBadge) {
+					if (strlen(trim($arVelden[$strForBadge]))>2) {
+						unset ($arForBadgeFullProfile[array_search($strForBadge, $arForBadgeFullProfile)]);
+					}
+				}
+				if (count($arForBadgeFullProfile) == 0) $this->addBadge("profile"); 
+				
 				if (user(me())->admin()) $arVelden["admin"] = ($this->admin()?1:0); 
 				$oUser = new database();
 				if ($this->bNEW) {
@@ -1349,7 +1383,7 @@
 			$this->arBadges = $arBadges; 
 			return $arBadges; 
 		}
-		
+
 		function addBadge($strBadge) {
 			$arBadges = $this->getBadges(); 
 			if (!isset($arBadges[$strBadge])) {
@@ -1365,15 +1399,15 @@
 					$oDB->sql("insert into tblUserBadges (user, badge, date) values ('" . $this->id() . "', '" . $iBadge . "', '" . owaesTime() . "'); "); 	
 					$oDB->execute(); 
 					 
-					$oAction = new action(me());   
+					$oAction = new action($this->id());   
 					$oAction->type("badge");  
-					$oAction->data("type", $iBadge); 
+					$oAction->data("type", $strBadge); 
 					$oAction->tododate(owaestime()); 
 					$oAction->update(); 
 				}
 			}
 		}
-		
+
 		public function getCertificates() { // returns array (key => details) met certificaten van deze gebruiker 
 			if (is_array($this->arCertificates)) return $this->arCertificates; 
 			$arCertificates = array(); 
@@ -1542,6 +1576,13 @@
 						"class" => array("domodal"), 
 					); 
 				if (user(me())->admin()) {
+					$arActions[] = array(); // splitter 
+					$arActions[] = array(	
+						"href" => "admin.user.php?u=" . $this->id(), 
+						"title" => "Bekijken in admin", 
+						"icon" => "icon-admin", 
+						"class" => array("admin"), 
+					); 
 					if ($this->actief()) {
 						$arActions[] = array(	
 							"href" => "freeze.php?u=" . $this->id() . "&a=0", 
@@ -1556,7 +1597,7 @@
 							"icon" => "icon-freeze", 
 							"class" => array("freeze"), 
 						); 
-					}
+					} 
 				}
 
 			}	

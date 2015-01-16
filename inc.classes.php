@@ -26,6 +26,7 @@
 	require_once "class.experience.php";   
 	require_once "class.actions.php";   
 	require_once "class.template.php";   
+	require_once "class.badge.php";   
 
 	require_once 'class.openid.php';
 	require_once 'fb/facebook.php'; 
