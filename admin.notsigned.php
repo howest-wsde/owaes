@@ -5,7 +5,7 @@
 	if (!$oSecurity->admin()) stop("admin"); 
  
 	$oUserList = new userlist();   
-	$oUserList->filter("frozen"); 
+	$oUserList->filter("algemenevoorwaarden", FALSE); 
     
     $oPage->tab("lijsten");
 	
@@ -23,7 +23,7 @@
             	<div class="row">
 					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
                     echo $oSecurity->me()->html("user.html");
-                    ?>
+                    ?> 
                 </div>
                 <div class="usersfromlist row sidecenterright">
                  

@@ -1,7 +1,7 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = security(TRUE); 
-	if (!$oSecurity->admin()) $oSecurity->doLogout(); 
+	if (!$oSecurity->admin()) stop("admin"); 
 	
 	$oPage->addJS("script/admin.js"); 
 	$oPage->addCSS("style/admin.css"); 

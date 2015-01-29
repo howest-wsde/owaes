@@ -15,7 +15,8 @@
 		public function filter($strType, $value = NULL) {
 			switch(strtolower($strType)) {
 				case "visible":
-					$this->arSQLwhere["visible"] = " visible = 1 "; 
+					$iValue = is_null($value) ? "1" : ($value?1:0); 
+					$this->arSQLwhere["visible"] = " visible = $iValue "; 
 					break; 
 				case "friends":
 					$iSource = is_null($value) ? me() : $value; 
@@ -30,10 +31,16 @@
 					$this->arSQLjoin["followers"] = " inner join tblFollowers fw on (fw.user = u.id and fw.followed = " . $iSource . ") "; 
 					break; 
 				case "admin":
-					$this->arSQLwhere["admin"] = "u.admin = 1"; 
+					$iValue = is_null($value) ? "1" : ($value?1:0); 
+					$this->arSQLwhere["admin"] = "u.admin = $iValue"; 
 					break; 
 				case "frozen":
-					$this->arSQLwhere["actief"] = " actief = 0 "; 
+					$iValue = is_null($value) ? "0" : ($value?0:1); 
+					$this->arSQLwhere["actief"] = " actief = $iValue "; 
+					break; 
+				case "algemenevoorwaarden":
+					$iValue = is_null($value) ? "1" : ($value?1:0); 
+					$this->arSQLwhere["algemenevoorwaarden"] = " algemenevoorwaarden = $iValue "; 
 					break; 
 			}
 		}

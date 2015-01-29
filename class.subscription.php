@@ -70,9 +70,11 @@ class subscription {
 		if (is_null($this->iMarket)) error("Market niet gedefinieerd (class.subscriptions.php)");
 		if (is_null($this->iUser)) error("User niet gedefinieerd (class.subscriptions.php)"); 
 		if (is_null($this->iStatus)) error("Status niet gedefinieerd (class.subscriptions.php)"); 
+		$oItem = owaesitem($this->iMarket); 
+		$oItem->load(); 
 		$oDB = new database(); 
 		$oDB->execute("update tblMarketSubscriptions set overruled = 1 where market = " . $this->iMarket . " and user = " . $this->iUser . ";");  
-		$oDB->execute("insert into tblMarketSubscriptions (market, user, status, doneby, clickdate) values (" . $this->iMarket . ", " . $this->iUser . ", " . $this->iStatus . ", " . me() . ", " . owaesTime() . "); ");  
+		$oDB->execute("insert into tblMarketSubscriptions (market, user, status, doneby, clickdate, snap) values (" . $this->iMarket . ", " . $this->iUser . ", " . $this->iStatus . ", " . me() . ", " . owaesTime() . ", '" . $oDB->escape(json_encode($oItem->snap())) . "'); ");  
 		$iSaveID = $oDB->lastInsertID(); 
 		switch($this->state()) {
 			case SUBSCRIBE_CANCEL:  

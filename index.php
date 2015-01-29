@@ -96,12 +96,20 @@
                     ?>
                 </div>
                  <!-- <div class="container sidecenterright"> -->
-               
-                <div class="row">
-                    <a href="owaesadd.php?t=<? echo $strType; ?>" class="btn btn-default">
-                        <span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
-                    </a>
-                </div>
+				<? //if (user(me())->level()>=2) { ?>
+                    <div class="row">
+                    	<? if (user(me())->algemenevoorwaarden()) { ?> 
+                            <a href="owaesadd.php?t=<? echo $strType; ?>" class="btn btn-default">
+                                <span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
+                            </a>
+                        <? } else { ?>
+                            <a href="modal.voorwaarden.php" class="domodal btn btn-default">
+                                <span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
+                            </a>
+                        <? } ?>
+                    </div>
+                <? //} ?>
+                
                 <div class="row">
                     <div class="main market"> 
                         <div id="results">

@@ -6,6 +6,11 @@
 		return $i_GLOBAL_userid; 
 	}
 	
+	function stop($strReason) {
+		redirect("error.php?e=" . $strReason); 
+		exit(); 	
+	}
+	
 	
 	function specialHTMLtags($strHTML) { /* [htmlencode]huppeldepup<script>alert("test"); </script>[/htmlencode]  */
 		preg_match_all("/\[htmlencode\]([\s\S]*?)\[\/htmlencode\]/", $strHTML, $arResult); 
@@ -484,7 +489,7 @@
 	function minutesTOhhmm($iTijd) { 
 		if ($iTijd > 0) {
 			$iUren = floor($iTijd/60);  
-			return ($iUren%24) . "u" . substr("00" . ($iTijd-($iUren*60)), -2); 
+			return ($iUren) . "u" . substr("00" . ($iTijd-($iUren*60)), -2); 
 		} else return "";  
 	}
 	function minutesTOhh($iTijd) { 

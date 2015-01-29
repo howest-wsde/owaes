@@ -73,6 +73,7 @@
 		private $iActief = NULL; 
 		private $iStatus = NULL; 
 		private $arStatus = NULL; 
+		private $bAlgemeneVoorwaarden = NULL; 
 		
 		private $bNEW = TRUE; 
 		 
@@ -116,10 +117,7 @@
 							break; 	
 						case "birthdate":  
 							$this->birthdate(ddmmyyyyTOdate($strVal));  
-							break; 	
-						case "actief":  
-							$this->actief($strVal);  
-							break; 	
+							break; 	 
 						case "location": 
 							$this->location($strVal, 0, 0); 
 							break; 	
@@ -196,6 +194,7 @@
 			if(!is_null($bValue)) $this->bUnlocked = $bValue; 
 			return $this->bUnlocked || user(me())->admin(); 
 		} 
+		
 		public function admin($bAdmin = NULL) {
 			if (!is_null($bAdmin)) $this->bAdmin = $bAdmin; 
 			if (is_null($this->bAdmin)) $this->load();
@@ -859,6 +858,18 @@
 			return ($this->iActief==1);    
 		}
 		
+		public function algemenevoorwaarden($bAlgemeneVoorwaarden = NULL) { 
+			if (!is_null($bAlgemeneVoorwaarden)) {
+				if (is_null($this->bAlgemeneVoorwaarden)) {
+					$this->bAlgemeneVoorwaarden = $bAlgemeneVoorwaarden; 
+				} else {
+					if ($this->unlocked()) $this->bAlgemeneVoorwaarden = $bAlgemeneVoorwaarden;  
+				}
+			}
+			if (is_null($this->bAlgemeneVoorwaarden)) $this->load(); 
+			return ($this->bAlgemeneVoorwaarden==1);    
+		}
+		
 		public function description($strDescription = NULL) { // get / set omschrijving 
 			if (!is_null($strDescription)) {
 				$this->strDescription = $strDescription; 
@@ -873,10 +884,12 @@
 				if ($bCheck) {
 					$oDB = new database();  
 					$oDB->execute("select count(id) as aantal from tblUsers where mail='" . $oDB->escape($strEmail) . "' and id != "  . $this->id() . ";"); 
-					if ($oDB->get("aantal") > 0) $strEmail = ""; 
+					if ($oDB->get("aantal") > 0) return FALSE; 
 				}
-				$this->strEmail = $strEmail; 
-				return ($strEmail != ""); 
+				if ($strEmail != "") {
+					$this->strEmail = $strEmail; 
+					// return TRUE; 
+				} else return FALSE; 
 			}
 			if (is_null($this->strEmail)) $this->load();
 			return ($this->visible4me("email")) ? $this->strEmail : ""; 
@@ -893,6 +906,9 @@
 			switch($strKey) {
 				case "id": 
 					$this->id($strValue); 
+					break; 	
+				case "algemenevoorwaarden": 
+					if (is_null($this->bAlgemeneVoorwaarden)) $this->algemenevoorwaarden($strValue); 
 					break; 	
 				case "alias":  
 					if (is_null($this->strAlias)) $this->alias($strValue);  
@@ -1097,7 +1113,7 @@
 			global $arConfig; 
 			$oDB = new database();
 			$oDB->execute("select sum(emotional) as emotional, sum(social) as social, sum(physical) as physical, sum(mental) as mental from tblIndicators where user = " . $this->iID . " and actief = 1; "); 
-			if ($oDB->record()) {
+			if ($oDB->length()>0) {
 				//var_dump($oDB->record()); 
 				if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"] + $oDB->get("social"));
 				if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"] + $oDB->get("emotional"));
@@ -1142,6 +1158,7 @@
 					"img" => $this->img(), 
 					"mail" => $this->email(), 
 					"actief" => ($this->actief()?1:0), 
+					"algemenevoorwaarden" => ($this->algemenevoorwaarden()?1:0), 
 					"birthdate" => $this->birthdate(), 
 					"gender" => $this->gender(), 
 					"telephone" => $this->telephone(), 
@@ -1163,6 +1180,7 @@
 					"data" => json_encode($this->arData), 
 					"bestanden" => json_encode($this->arBestanden), 
 				);   
+				if (user(me())->admin()) $arVelden["admin"] = ($this->admin()?1:0); 
 				
 				$arForBadgeFullProfile = array("login", "firstname", "lastname", "alias", "description", "img", "mail", "birthdate", "gender", "telephone", ); 
 				foreach($arForBadgeFullProfile as $strForBadge) {
@@ -1172,7 +1190,6 @@
 				}
 				if (count($arForBadgeFullProfile) == 0) $this->addBadge("profile"); 
 				
-				if (user(me())->admin()) $arVelden["admin"] = ($this->admin()?1:0); 
 				$oUser = new database();
 				if ($this->bNEW) {
 					$arVeldKeys = array(); 
@@ -1194,7 +1211,7 @@
 				}  
 			} else {
 				error ("Geen rechten om deze gebruiker aan te passen (class.user, lijn " . __LINE__ . ")"); 	
-			} 
+			}  
 		}
 		
 		 
@@ -1393,11 +1410,23 @@
 					$arBadges[$strBadge] = array(
 						"img" => $oDB->get("img"), 
 						"info" => $oDB->get("info"), 
-						"title" => $oDB->get("title"), 
+						"title" => $oDB->get("title"),  
 					);
+					$arBeloning = json_decode($oDB->get("beloning"), TRUE); 
 					$iBadge = $oDB->get("id"); 
 					$oDB->sql("insert into tblUserBadges (user, badge, date) values ('" . $this->id() . "', '" . $iBadge . "', '" . owaesTime() . "'); "); 	
 					$oDB->execute(); 
+					
+					foreach ($arBeloning as $strBeloning=>$iVal) {
+						switch ($strBeloning) {
+							case "mental": 
+							case "physical":  
+							case "emotional": 
+							case "social": 
+								$oDB->execute("insert into tblIndicators (user, datum, $strBeloning) values (" . $this->id() . ", " . owaesTime() . ", $iVal); "); 	
+								break; 	
+						}
+					}
 					 
 					$oAction = new action($this->id());   
 					$oAction->type("badge");  
@@ -1537,13 +1566,22 @@
 		public function actions() {
 			$arActions = array(); 
 			if (!$this->isCurrentUser()) { 
+				if ((!$this->algemenevoorwaarden()) && user(me())->admin()) {
+					$arActions[] = array(	
+						"href" => "admin.algemenevoorwaarden.php?u=" . $this->id(), 
+						"title" => "Activeren", 
+						"icon" => "icon-freeze", 
+						"class" => array("algemenevoorwaarden"), 
+					);  
+					$arActions[] = array(); // splitter  
+				}
 				$arActions[] = array(	
 						"href" => $this->messageLink("", FALSE), 
 						"title" => "Bericht versturen", 
 						"icon" => "icon-berichtsturen", 
 						"class" => array(), 
 					); 
-				$arActions[] = array(	
+				if ($this->algemenevoorwaarden()) $arActions[] = array(	
 						"href" => $this->donateLink("", TRUE), 
 						"title" => "Credits schenken", 
 						"icon" => "icon-credits", 

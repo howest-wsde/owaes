@@ -147,7 +147,7 @@
 		
 		public function get($strID) { // used to get record values (bv. $iID = $oDB->get("id"); )
 			$arRecord = $this->record(); 
-			//if (is_null($arRecord[$strID])) return NULL; 
+			if (is_null($arRecord[$strID])) return NULL; 
 			return (isset($arRecord[$strID])) ? $arRecord[$strID] : NULL; 
 		} 
 		

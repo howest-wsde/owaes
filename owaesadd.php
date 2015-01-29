@@ -9,14 +9,18 @@
 	//$oPage->addJS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.js"); 
 	//$oPage->addCSS("http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"); 
 	//$oPage->addCSS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.css"); 
-	 
+	
+	if (!user(me())->algemenevoorwaarden()) { 
+		stop("algemenevoorwaarden"); 
+	} 
+	 // GROEPEN MOETEN KUNNEN ZONDER LEVEL
 	
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
 	$oOwaesItem = owaesitem($iID);
 	
 	if (!$oOwaesItem->userrights("edit", me())) {
 		if (!admin()) {
-			$oSecurity->doLogout(); 
+			stop("rechten"); 
 			exit(); 
 		}
 	}
@@ -35,7 +39,7 @@
 			switch($arPoster[0]) {
 				case "g": // group
 					$iGroep = intval($arPoster[1]); ; 
-					if (!($oOwaesItem->group() && $oOwaesItem->group() == $iGroep)){
+					if (!($oOwaesItem->group() && $oOwvaesItem->group() == $iGroep)){
 						$oOwaesItem->group($iGroep);	
 						$oOwaesItem->author(group($iGroep)->admin()->id()); 
 					}
@@ -61,6 +65,7 @@
 		
 		$oOwaesItem->title($_POST["title"]); 
 		$oOwaesItem->body($_POST["description"]); 
+		$oOwaesItem->details("verzekeringen", $_POST["verzekering"]); 
 	//	switch($_POST["locationOptions"]) {
 	//		case "free": 
 	//			$oOwaesItem->location("", 0, 0); 
@@ -227,7 +232,7 @@ input.time {width: 100%; display: block; }
                           
                     <ul class="nav nav-tabs" id="tabsAdd">
                       <li class="active"><a href="#algemeen" data-toggle="tab" class="algemeen">Algemeen</a></li>
-                      <li><a href="#tijdlocatie" data-toggle="tab" class="tijdlocatie" id="tijdlocatietab" >Tijd en Locatie</a></li>
+                      <li><a href="#tijdlocatie" data-toggle="tab" class="tijdlocatie" id="tijdlocatietab" >Praktisch </a></li>
                       <li><a href="#compensatie" data-toggle="tab" class="compensatie">Compensatie</a></li>
                     </ul>
                     
@@ -408,6 +413,20 @@ input.time {width: 100%; display: block; }
                                 </div>
                             </div> <!--/row-->
                             
+                            <div class="row"> 
+                                <label for="title" class="col-lg-12">Verzekering</label>
+                                <?
+                                	$arVerzekeringen = $oOwaesItem->details("verzekeringen"); 
+									if (!is_array($arVerzekeringen)) $arVerzekeringen = array(); 
+								?>
+                                <? foreach (settings("verzekeringen") as $iVerzekering => $strVerzekering) { ?>
+                                    <div class="col-lg-4">
+                                        <input type="checkbox" name="verzekering[]" id="verzekering<? echo $iVerzekering; ?>" value="<? echo $iVerzekering; ?>" <? if (in_array($iVerzekering, $arVerzekeringen)) echo "checked=checked"; ?> />
+                                        <label for="verzekering<? echo $iVerzekering; ?>" class="checkboxlabel"><? echo $strVerzekering; ?></label>                                    
+                                    </div>
+								<? } ?> 
+                            </div> <!--/row-->
+                            
 
                             <div class="form-group"> 
                                 <div class="col-lg-12"> 
@@ -463,7 +482,12 @@ input.time {width: 100%; display: block; }
                             </div>
                            
                             <div class="row row-buttons">
-                                <div class="form-group col-lg-12">
+                            
+                                <div class="form-group col-lg-11">
+                                	<input type="checkbox" name="voorwaarden" id="voorwaarden" value="1" />
+                                    <label for="voorwaarden" class="checkboxlabel">Ik bevestig dat dit aanbod conform de <a href="modal.voorwaarden.php" class="domodal">gebruiksvoorwaarden</a> is. </label>
+                                </div>
+                                <div class="form-group col-lg-1">
                                     <input type="submit" name="owaesadd" id="owaesadd" class="auto border btn btn-default pull-right" value="opslaan" />
                                 </div>
                             </div>

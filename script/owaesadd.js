@@ -371,8 +371,7 @@ function aanbodAanpassen() {
  * Zo ja    => opslaan naar de database
  * Zo niet  => errormessage(s) weergeven
  */
-function validateAddActivity(bShowAlerts) {  
-	console.log("validateAddActivity"); 
+function validateAddActivity(bShowAlerts) { 
 	arFouten = {}; 
 	arMessage = []; 
     var $message = "";
@@ -400,6 +399,7 @@ function validateAddActivity(bShowAlerts) {
     if (!($credits > 0)) {
 		arFouten["creditsfield"] = "Gelieve meer dan 0 credits te geven/vragen."; 
 	}
+    if ($("input#voorwaarden:checked").length == 0) arFouten["voorwaarden"] = "De algemene voorwaarden moeten gevolgd worden";  
 
 
 	if (Object.keys(arFouten).length > 0) { 

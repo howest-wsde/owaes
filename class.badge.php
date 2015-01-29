@@ -17,7 +17,7 @@
 					$this->arData = array(
 						"img" => $oDB->get("img"), 
 						"title" => $oDB->get("title"),
-						"info" => $oDB->get("info"), 
+						"info" => $oDB->get("info"),  
 					); 
 				} 
 			} 

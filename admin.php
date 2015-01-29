@@ -1,7 +1,7 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
-	if (!$oSecurity->admin()) $oSecurity->doLogout(); 
+	if (!$oSecurity->admin()) stop("admin"); 
 	
 	if (isset($_GET["u"]))  user($_GET["u"])->status(TRUE); 
 	

@@ -10,7 +10,7 @@
 	$oGroep = group($iGroep); 
 	$oMijnRechten = $oGroep->userrights(me());
 	
-	if (!($oMijnRechten->userrights() || $oMijnRechten->useradd() || $oMijnRechten->userdel() || $oMijnRechten->groupinfo())) $oSecurity->doLogout(); 
+	if (!($oMijnRechten->userrights() || $oMijnRechten->useradd() || $oMijnRechten->userdel() || $oMijnRechten->groupinfo())) stop("group"); 
 	
     $groupNr = $_GET["group"];
  	if ((isset($_POST["adduser"]))&&(intval($_POST["adduser"]) != 0)) {  
@@ -28,12 +28,12 @@
 				$oGroep->admin(intval($_POST["setadmin"]));  
 				$oGroep->update(); 
 			}
-		} else $oSecurity->doLogout(); 
+		} else stop("rechten"); 
 	}
 	if (isset($_POST["deluser"])) {   
 		if ($oMijnRechten->userdel()) {
 			$oGroep->removeUser($_POST["deluser"]); 
-		} else $oSecurity->doLogout(); 
+		} else stop("rechten"); 
 	}
 	
 	if (isset($_POST["changeprops"])) {
@@ -48,7 +48,7 @@
 			}
 			
 			$oGroep->update(); 
-		} else $oSecurity->doLogout(); 
+		} else stop("rechten"); 
 	}
 	
  

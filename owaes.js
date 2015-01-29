@@ -72,17 +72,24 @@ $(document).ready(function() {
 	$(document).on("click", ".save-form", function(){  
 		oForm = $(this).parentsUntil("form").parent(); 
 		arData = oForm.serialize(); 
-		bRefresh = (oForm.find("input[name='refresh']").val()==1); 
+		bRefresh = (oForm.find("input[name='refresh']").val()==1);  
+		strRedirect = (oForm.find("input[name='redirect']").val() || false);  
+		strFake = (oForm.find("input[name='dsqfqsdf']").val() || false); 
+		
+		console.log(strRedirect);
+		console.log(strFake); 
 		$.post(oForm.attr("action"), arData, function(){
-			if (bRefresh) location.reload(); 
+			if (strRedirect) {
+				window.location=strRedirect; 
+			} else if (bRefresh) location.reload(); 
 		});  
-	}) 
+	})
 	
 	$(document).on("click", "a.domodal", function(){ 
 		loadModals(Array($(this).attr("href")));
 		return false; 
 	}); 
-				
+	
 	// END ACTION MODAL BUTTONS
 	
 	$(":input").on("blur", function() {
@@ -154,7 +161,7 @@ $(document).ready(function() {
 		})
 	})
 	
-	$("input").change(function(){
+	$("input.showhide").change(function(){
 		switch($(this).attr("type")){
 			case "checkbox": 
 				if ($(this).is(':checked')) {

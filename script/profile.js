@@ -59,6 +59,26 @@ $(document).ready(function() {
 		} 
 	})
 
+	
+	$("#editPersoonlijkeInformatie #email").change(function(){
+		$(this).addClass("loading"); 
+		$("#editPersoonlijkeInformatie .btn-save").addClass("disabled"); 
+		$.ajax({
+			type: "POST",
+			url: "checkmail.ajax.php",
+			data: {"m": $("#editPersoonlijkeInformatie #email").val()},
+			success: function(strResult){ // "yes" of "no"
+				$("#editPersoonlijkeInformatie .btn-save").removeClass("disabled"); 
+				$("#editPersoonlijkeInformatie #email").removeClass("loading").removeClass("invalid");	
+				$("#editPersoonlijkeInformatie #email").parent("div").removeClass("has-error");
+				if (strResult == "no") {
+					$("#editPersoonlijkeInformatie #email").addClass("invalid");  
+					$("#editPersoonlijkeInformatie #email").parent("div").addClass("has-error");
+				}
+			}, 
+		});
+	});
+
 
     //profile
     //$(".well-intro span.icon-settings").click(bestandenInit);
@@ -70,10 +90,13 @@ $(document).ready(function() {
         bestandenToevoegen();
     });
     $("#editIntro .btn-save").click(introOpslaan);
-    $("#editPersoonlijkeInformatie .btn-save").click(persoonlijkeGegevensOpslaan);
+    
+	//$("#editPersoonlijkeInformatie .btn-save").click(persoonlijkeGegevensOpslaan);
+	$("form.persoonlijkeinformatie").submit(persoonlijkeGegevensOpslaan); 
+	
     $("#editBasisgegevens .btn-save").click(basisGegevensOpslaan);
 
-
+ 
 
 
 }); 
@@ -110,42 +133,31 @@ function bestandenToevoegen() {
  * Valid    =>  opslaan naar de database
  * Invalid  =>  een alert tonen adhv printErrors($errors)
  */
-function persoonlijkeGegevensOpslaan() {
-    $errors = [];
-    $message = "";
+function persoonlijkeGegevensOpslaan() { 
+    arErrors = []; 
     $(".alert").remove();
     $(".has-error").removeClass("has-error");
-
-    var $email = $("#editPersoonlijkeInformatie #email").val();
-    var $phone = $("#editPersoonlijkeInformatie #telefoonnummer").val();
-
-    if (!validateEmail($email)) {
-        $errors.push("Het gegeven e-mailadres is incorrect.");
+	 
+	//$("#editPersoonlijkeInformatie #email").addClass("");
+    if (!validateEmail($("#editPersoonlijkeInformatie #email").val())) {
+        arErrors.push("Het gegeven e-mailadres is incorrect.");
         $("#editPersoonlijkeInformatie #email").parent("div").addClass("has-error");
         $("#editPersoonlijkeInformatie #email").focus();
-
-    }
-   // if (!validatePhone($phone)) {
-   //    $errors.push("Het gegeven telefoonnummer is incorrect.");
-   //     $("#editPersoonlijkeInformatie #telefoonnummer").parent("div").addClass("has-error");
-    //    $("#editPersoonlijkeInformatie #telefoonnummer").focus();
-    //}
-
-    $message = printErrors($errors);
-
-    if ($errors.length > 0) {
-        //errors printen
-        console.log("JS: [persoonlijkeGegevensOpslaan] errors: " + $errors[0] + " " + $errors[1]);
-        $($message).insertBefore("#editPersoonlijkeInformatie .modal-body fieldset");
+    }else if ($("#editPersoonlijkeInformatie #email").hasClass("invalid")) {
+		arErrors.push("E-mailadres bestaat reeds in het systeem");
+		$("#editPersoonlijkeInformatie #email").parent("div").addClass("has-error");
+		$("#editPersoonlijkeInformatie #email").focus();
+	} 
+	
+	console.log(arErrors); 
+    if (arErrors.length > 0) { 
+        $(printErrors(arErrors)).insertBefore("#editPersoonlijkeInformatie .modal-body fieldset");
 		return false; 
-    } else {
-        //opslaan in de database
-        console.log("JS: [persoonlijkeGegevensOpslaan] gegevens opslaan naar de database...");
+    } else {  
+		return true;   
     } 
-
 }
-
-
+ 
 
 
 

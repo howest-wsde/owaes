@@ -22,10 +22,15 @@
 		}
 		
 		$arErrors = array();  
+		//if (!isset($_POST["voorwaarden"])) $arErrors["voorwaarden"] = "Voorwaarden?  "; 
 		if (!$oUser->login($_POST["username"])) $arErrors["username"] = "De gekozen loginnaam is ongeldig of bestaande. Een andere werd voorgesteld "; 
 		$oUser->firstname($_POST["firstname"]); 
 		$oUser->lastname($_POST["lastname"]); 
-		if (!$oUser->email($_POST["email"])) $arErrors["email"] = "Dit e-mailadres bestaat reeds in het systeem";  
+		if ($_POST["email"] == "") {
+			$arErrors["email"] = "E-mailadres is verplicht"; 
+		} else {
+			if (!$oUser->email($_POST["email"])) $arErrors["email"] = "Dit e-mailadres bestaat reeds in het systeem";  
+		}
 		$oUser->alias("", TRUE); 
 		$oUser->password($_POST["pass"]);
 		if ($_POST["pass"] == "") $arErrors["password"] = "Paswoord is verplicht";  
@@ -279,9 +284,11 @@
                                 //if (isset($arErrors["password"])) echo ("<p>" . $arErrors["password"] . "</p>"); 
 						    ?>
                         </div>
-                    </div>
+                    </div> 
                     <div class="form-group">
-                            <div class="col-lg-12"> <!-- col-lg-offset-3 -->
+                             <div class="col-lg-3"></div>
+                             <div class="col-lg-6"><a href="modal.voorwaarden.php" class="domodal">algemene voorwaarden</a></div>
+                       		 <div class="col-lg-3"> 
                                 <button type="submit" name="dosignup" class="btn btn-default pull-right">Registreren</button>
                             </div>
                     </div>

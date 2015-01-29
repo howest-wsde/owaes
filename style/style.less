@@ -66,6 +66,8 @@
 }
 
 
+label.checkboxlabel {font-weight: normal; padding-left: 8px; }
+
 /*#endregion*/
 
 .modal-body {overflow: auto; }
@@ -176,6 +178,11 @@ span.icon-credits:before {
     //font-size: @fontextralarge;
 }
 
+span.icon-verzekeringen:before {
+    content: "\e629"; //icon: "database"
+    //font-size: @fontextralarge;
+}
+
 span.icon-addtogroup:before {
     content: "\e624"; //icon: "database" 
     //font-size: @fontextralarge;
@@ -283,7 +290,21 @@ span.icon-minus:before {
 .modaltransaction input.credits {margin: 2px 7px; width: 70px; padding: 0 5px; }
 .modalmailconfirm textarea {height: 180px;  }
 .oa {overflow: auto; }
+
+input.loading {background: url('../img/loading.gif') no-repeat 10px center; padding-left: 35px; }
  
+.algemenevoorwaarden {
+	h2, h3, h4 {font-weight: bold; margin-top: 25px;  }
+	h1 {font-size: 34px; margin-top: 25px; }
+	h3 {font-size: 23px; }
+	h4 {}
+	li {display: list-item;  
+		list-style-type: unset; 
+		margin-left: 20px;
+		padding-left: 10px;
+	}
+}
+
 ol.flow {
 	display: block; 
 	overflow: auto; 

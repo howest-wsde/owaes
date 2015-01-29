@@ -14,7 +14,7 @@
     </head>
     <body id="profile">
         <? echo $oPage->startTabs(); ?> 
-    	<div class="body content content-account-profile container">
+    	<div class="body content container">
         	
             	<div class="row">
 					<?  

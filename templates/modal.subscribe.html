@@ -1,0 +1,24 @@
+<div class="modal fade modalsubscribe" id="subscribe-[market:id]">
+  <div class="modal-dialog">
+    <form action="[currentfile]"> 
+        <input type="hidden" name="redirect" value="[market:url]" /> 
+        <input type="hidden" name="market" value="[market:id]" /> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Inschrijven</h4>
+          </div>
+          <div class="modal-body">
+            <h3>[title]</h3> 
+            <p>
+            	<input type="checkbox" name="akkoord" id="akkoord" value="1" onchange="($(this).is(':checked')) ? $('button.validate').removeClass('disabled') : $('button.validate').addClass('disabled');" />
+                <label for="akkoord" class="checkboxlabel">Ik bevestig dat ik de <a href="modal.voorwaarden.php" class="domodal">algemene voorwaarden</a> ken en respecteer. </label>
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success save-form disabled validate" data-dismiss="modal" name="subscribe">inschrijven</button>
+            <button type="button" class="btn btn-cancel later-form" data-dismiss="modal">annuleren</button>
+          </div>
+        </div><!-- /.modal-content -->
+    </form>
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

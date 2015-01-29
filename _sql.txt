@@ -1,6 +1,6 @@
+ALTER TABLE `tblBadges` ADD `beloning` TEXT NOT NULL ;
 
+ALTER TABLE `tblMarketSubscriptions` ADD `snap` TEXT NOT NULL ;
 
-BADGES overzetten! 
-
-ALTER TABLE `tblBadges` ADD `zichtbaar` SMALLINT( 2 ) NOT NULL DEFAULT '0';
+ALTER TABLE `tblUsers` ADD `algemenevoorwaarden` SMALLINT( 12 ) NOT NULL DEFAULT '0';
 

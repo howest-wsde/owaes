@@ -47,7 +47,41 @@
 		private $bTask = NULL; 
 		private $iState = NULL;  
 		private $arTags = NULL; 
-		private $iType = NULL; 
+		private $iType = NULL;  
+		private $arDetails = NULL; 
+		
+		public function snap() {
+			$arSnap = array(
+				"iID" => $this->iID, 
+				"strTitle" => $this->strTitle, 
+				"strBody" => $this->strBody, 
+				"strLocation" => $this->strLocation, 
+				"iLocationLong" => $this->iLocationLong, 
+				"iLocationLat" => $this->iLocationLat, 
+				"iDate" => $this->iDate, 
+				"iLastupdate" => $this->iLastupdate, 
+				"iTiming" => $this->iTiming, 
+				"strTiming" => $this->strTiming, 
+				"arMomenten" => $this->arMomenten, 
+				"iPhysical" => $this->iPhysical, 
+				"iMental" => $this->iMental, 
+				"iEmotional" => $this->iEmotional, 
+				"iSocial" => $this->iSocial, 
+				"iAuthor" => $this->iAuthor, 
+				"iGroup" => $this->iGroup, 
+				"strIMG" => $this->strIMG, 
+				//"oSubscriptions" => $this->oSubscriptions, 
+				//"arSubscriptions" => $this->arSubscriptions, 
+				//"arTransactions" => $this->arTransactions, 
+				"iCredits" => $this->iCredits, 
+				"bTask" => $this->bTask, 
+				"iState" => $this->iState, 
+				"arTags" => $this->arTags, 
+				"iType" => $this->iType,  
+				"arDetails" => $this->arDetails,  
+			); 
+			return $arSnap; 	
+		}
 		 
 		public function owaesitem($iID = 0) { 
 			$this->iID = $iID;  
@@ -132,6 +166,13 @@
 					break; 	 
 				case "timingtype": 
 					if (is_null($this->strTiming)) $this->timingtype($strValue);  
+					break; 	  
+				case "details": 
+					if (is_null($this->arDetails)) $this->arDetails = array(); 
+					$arDetails = json_decode($strValue, TRUE); 
+					if (is_array($arDetails)) foreach ($arDetails as $strKey=>$oVal) {
+						if (!isset($this->arDetails[$strKey])) $this->details($strKey, $oVal);  
+					}
 					break; 	 
 
 			}	
@@ -168,6 +209,7 @@
 					if (is_null($this->strLocation)) $this->location("", 0, 0);  
 					if (is_null($this->arTags)) $this->arTags = array();   
 					if (is_null($this->arMomenten)) $this->arMomenten = array();   
+					if (is_null($this->arDetails)) $this->arDetails = array();   
 				} 	 
 			}
 		}
@@ -322,23 +364,18 @@
 								case SUBSCRIBE_SUBSCRIBE: 
 									$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_CANCEL . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-close\"></span>uitschrijven</a> "; 
 									break;  
-								case SUBSCRIBE_CONFIRMED: 
-									//$strSubscription .= "<p>Uw inschrijving werd bevestigd</p>";
+								case SUBSCRIBE_CONFIRMED:  
 									
-									$strSubscription .= "<a href=\"#\" class=\"btn-sm btn btn-success pull-right\"><span class=\"icon icon-inschrijven\"></span>Inschrijving bevestigd</a> "; 
-									/*$strSubscription .= "<div class=\"btn-group pull-right\">
-  <button type=\"button\" class=\"btn btn-success dropdown-toggle\" data-toggle=\"dropdown\">
-    <span class=\"icon icon-inschrijven\"></span> Inschrijving bevestigd 
-  </button>
-  <ul class=\"dropdown-menu\" role=\"menu\"> 
-    <li><a href=\"#\">Markeren als uitgevoerd</a></li>
-  </ul>
-</div>"; */
+									$strSubscription .= "<a href=\"#\" class=\"btn-sm btn btn-success pull-right\"><span class=\"icon icon-inschrijven\"></span>Inschrijving bevestigd</a> ";  
 									break; 
 								case SUBSCRIBE_DECLINED:
 									$strSubscription .= "<p>Uw inschrijving werd afgezen</p>";
 								default: 
-									$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> "; 
+									if (user(me())->algemenevoorwaarden()) {
+										$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> "; 
+									} else {
+										$strSubscription .= "<a href=\"modal.algemenevoorwaarden.php\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> "; 
+									}
 							} 
 							break; 	
 					}
@@ -724,7 +761,17 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					default: 
 						$arFlow[20]["title"] = "Inschrijven"; 
 						$arFlow[20]["class"][] = "current";  
-						if ($this->subscriptionLink())  $arFlow[20]["href"] = $this->subscriptionLink(); 
+					
+						if (user(me())->algemenevoorwaarden()) {
+							if ($this->subscriptionLink()) {
+								//$arFlow[20]["href"] = $this->subscriptionLink();  
+								$arFlow[20]["href"] = "modal.subscribe.php?m=" . $this->id();  
+								$arFlow[20]["class"][] = "domodal"; 
+							}
+						} else {
+							$arFlow[20]["href"] = "modal.voorwaarden.php"; 
+							$arFlow[20]["class"][] = "domodal"; 
+						}
 						break;  
 				}
 				
@@ -809,6 +856,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "body:short": 
 					return nl2br(shorten($this->body(), 250, TRUE));  
 				case "link": 
+				case "url": 
 					return $this->getLink(); 
 				case "iconclass": 
 					return $this->type()->iconclass(); 
@@ -829,6 +877,13 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "location": 
 					$strLocation = $this->location(); 
 					return ($strLocation == "") ? "geen locatie opgegeven" : $strLocation; 
+				case "verzekeringen": 
+					$arVerzekeringen = $this->details("verzekeringen"); 
+					$arSettingVerzekeringen = settings("verzekeringen"); 
+					if (is_array($arVerzekeringen)) {
+						foreach ($arVerzekeringen as $iDummy=>$iVal) $arVerzekeringen[$iDummy] = $arSettingVerzekeringen[$iVal]; 
+						return implode("<br />", $arVerzekeringen); 
+					} else return "geen verzekeringen opgegeven";  
 				case "latitude": 
 					return $this->latitude(); 
 				case "longitude": 
@@ -848,11 +903,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 									}
 								} else {
 									if ($oMoment["start"] == 0) {
-										$arSub[] = "<li>willekeurige datum, gedurende " . minutesTOhhmm($oMoment["tijd"]) . "</li>"; 
+										$arSub[] = "<li>willekeurige datum</li>"; // , gedurende " . minutesTOhhmm($oMoment["tijd"]) . "</li>"; 
 									} else {
 										if ($oMoment["start"]+$oMoment["tijd"] > 60*24) {
-											$arSub[] = "<li>willekeurige datum, vanaf " . minutesTOhhmm($oMoment["start"]) . 
-															"  gedurende " . minutesTOhh($oMoment["tijd"]) . "</li>"; 
+											$arSub[] = "<li>willekeurige datum, vanaf " . minutesTOhhmm($oMoment["start"]) . "</li>"; 
+													//		"  gedurende " . minutesTOhh($oMoment["tijd"]) . "</li>"; 
 										} else {
 											$arSub[] = "<li>willekeurige datum, van " . minutesTOhhmm($oMoment["start"]) . 
 															" tot " . minutesTOhhmm($oMoment["start"]+$oMoment["tijd"]) . "</li>"; 
@@ -977,6 +1032,10 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			if (!is_null($strBody)) $this->strBody = $strBody; 
 			if (is_null($this->strBody)) $this->load();
 			return $this->strBody; 
+		}
+		public function details($strItem, $oValue = NULL) { // get / set description 
+			if (!is_null($oValue)) $this->arDetails[$strItem] = $oValue;  
+			return isset($this->arDetails[$strItem]) ? $this->arDetails[$strItem] : NULL; 
 		}
 		public function location($strLocation = NULL, $iLocationLat = NULL, $iLocationLong = NULL) { /* get / set location
 			set : strlocation en lat + long doorgeven
@@ -1158,11 +1217,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		public function update() { // save 
 			$oDB = new database();   
 			if ($this->iID == 0) {
-				$strSQL = "insert into tblMarket (author, createdby, groep, mtype, title, body, date, lastupdate, img, location, location_lat, location_long, timingtype, timing, physical, mental, emotional, social, credits, details, state) values(" . $this->iAuthor . ", " . me() . ", " . $this->iGroup . ", '" . ($this->type()->id()) . "', '" . $oDB->escape($this->strTitle) . "', '" . $oDB->escape($this->strBody) . "', '" . $this->iDate . "', '" . owaesTime() . "' , 'img', '" . $oDB->escape($this->strLocation) . "', '" . $oDB->escape($this->iLocationLat) . "', '" . $oDB->escape($this->iLocationLong) . "', '" . $this->strTiming . "', '" . $this->iTiming . "', '" . $this->physical() . "', '" . $this->mental() . "', '" . $this->emotional() . "', '" . $this->social() . "', '" . $this->iCredits . "', 'details', '" . ($this->state()) . "'); "; 
+				$strSQL = "insert into tblMarket (author, createdby, groep, mtype, title, body, date, lastupdate, img, location, location_lat, location_long, timingtype, timing, physical, mental, emotional, social, credits, details, state) values(" . $this->iAuthor . ", " . me() . ", " . $this->iGroup . ", '" . ($this->type()->id()) . "', '" . $oDB->escape($this->strTitle) . "', '" . $oDB->escape($this->strBody) . "', '" . $this->iDate . "', '" . owaesTime() . "' , 'img', '" . $oDB->escape($this->strLocation) . "', '" . $oDB->escape($this->iLocationLat) . "', '" . $oDB->escape($this->iLocationLong) . "', '" . $this->strTiming . "', '" . $this->iTiming . "', '" . $this->physical() . "', '" . $this->mental() . "', '" . $this->emotional() . "', '" . $this->social() . "', '" . $this->iCredits . "', '" . $oDB->escape(json_encode($this->arDetails)) . "', '" . ($this->state()) . "'); "; 
 				$oDB->execute($strSQL); 
 				$this->iID = $oDB->lastInsertID();  
 			} else { 
-				$strSQL = "update tblMarket set lastupdate = '" . owaesTime() . "', author = " . $this->author()->id() . ", groep = " . $this->iGroup . ", mtype = '" . ($this->type()->id()) . "', title = '" . $oDB->escape($this->title()) . "', body = '" . $oDB->escape($this->body()) . "', img = 'img', location = '" . $oDB->escape($this->strLocation) . "', location_lat = '" . $this->iLocationLat . "', location_long = '" . $this->iLocationLong . "', timing = '" . $this->timing() . "', timingtype = '" . $this->timingtype() . "', physical = '" . $this->physical() . "', mental = '" . $this->mental() . "', emotional = '" . $this->emotional() . "', social = '" . $this->social() . "', credits = '" . $this->credits() . "', details = 'details', state = '" . ($this->state()) . "' where id = " . $this->iID . ";";  
+				$strSQL = "update tblMarket set lastupdate = '" . owaesTime() . "', author = " . $this->author()->id() . ", groep = " . $this->iGroup . ", mtype = '" . ($this->type()->id()) . "', title = '" . $oDB->escape($this->title()) . "', body = '" . $oDB->escape($this->body()) . "', img = 'img', location = '" . $oDB->escape($this->strLocation) . "', location_lat = '" . $this->iLocationLat . "', location_long = '" . $this->iLocationLong . "', timing = '" . $this->timing() . "', timingtype = '" . $this->timingtype() . "', physical = '" . $this->physical() . "', mental = '" . $this->mental() . "', emotional = '" . $this->emotional() . "', social = '" . $this->social() . "', credits = '" . $this->credits() . "', details = '" . $oDB->escape(json_encode($this->arDetails)) . "', state = '" . ($this->state()) . "' where id = " . $this->iID . ";";  
 				$oDB->execute($strSQL); 
 			} 
 			if (!is_null($this->arTags)) foreach ($this->arTags as $strTag=>$arDetails) {

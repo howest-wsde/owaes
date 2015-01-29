@@ -9,8 +9,8 @@
 	
 	if (isset($_POST["profile"])) {
 		$oProfile->firstname($_POST["firstname"]); 
-		$oProfile->lastname($_POST["lastname"]); 
-		if (!$oProfile->email($_POST["email"])) $arErrors["email"] = "e-mailadres bestaat reeds in het systeem"; 
+		$oProfile->lastname($_POST["lastname"]);  
+		if (!$oProfile->email($_POST["email"])) $arErrors["email"] = "Het opgegeven e-mailadres bestaat reeds in het systeem en kan dus niet gebruikt worden voor deze account";  
 		$oProfile->alias($_POST["alias"], TRUE); 
 		if (!$oProfile->login($_POST["username"])) $arErrors["username"] = "De opgegeven gebruikersnaam bestond al. Er werd een nieuwe gegenereerd"; 
 		$oProfile->location($_POST["location"], $_POST["locationlat"], $_POST["locationlong"] ); 
@@ -210,7 +210,7 @@
                             <div class="col-lg-6">
                                 <input type="text" name="username" class="username form-control" id="username" placeholder="Login" value="<? echo inputfield($oProfile->login()); ?>" />
                                     <?
-                            	        if (isset($arErrors["username"])) echo "<dd class=\"fout\">" . $arErrors["username"] . "</dd>"; 
+                            	        if (isset($arErrors["username"])) echo "<dd><strong class=\"text-danger\">" . $arErrors["username"] . "</strong></dd>"; 
 							        ?>
                             </div>
                             <div class="col-lg-4">
@@ -244,7 +244,7 @@
                             <div class="col-lg-6">
                                 <input type="text" name="email" class="email form-control" id="email" placeholder="E-mailadres" value="<? echo inputfield($oProfile->email()); ?>" />
                                     <?
-                            	        if (isset($arErrors["email"])) echo "<dd class=\"fout\">" . $arErrors["email"] . "</dd>"; 
+                            	        if (isset($arErrors["email"])) echo "<dd><strong class=\"text-danger\">" . $arErrors["email"] . "</strong></dd>"; 
 							        ?>
                             </div>
                             <div class="col-lg-4">

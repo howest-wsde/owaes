@@ -13,10 +13,7 @@
     
     $oPage->tab("home");
 	
-	$oMe = user(me()); 
-	
-	 
- 
+	$oMe = user(me());  
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -114,7 +111,7 @@
 				$("#map-item").html("<div class='info'>Bezig met laden...</div>").show().load("get/htm/owaes/owaes-map.html?id=" + iID);
 			} 
 			
-		</script></script>
+		</script>
     </head>
     <body id="index">
         <? echo $oPage->startTabs(); ?> 
@@ -348,8 +345,8 @@
             </div>
             <div id="map-item" style="display: none; "></div>
             <div id="map-canvas" style="height: 350px; "></div>
-        </div>
-               
+        </div> 
+
                 <div class="row masonry">
                 
 				<? 
@@ -380,7 +377,6 @@
 						<?
                 	}
 				?>
-                
                 <? /*
                 <!-- Quests -->  
                 		<div class="col-md-6 clearfix masonrybox" style="z-index: 980;">

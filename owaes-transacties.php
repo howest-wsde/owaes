@@ -6,7 +6,7 @@
 	$oOwaesItem = owaesitem($iID);  
 	
 	if (!$oOwaesItem->userrights("pay", me())) {
-		$oSecurity->doLogout(); 
+		stop("rechten"); 
 		exit(); 
 	}
 	
