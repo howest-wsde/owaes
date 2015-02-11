@@ -1,6 +1,0 @@
-ALTER TABLE `tblBadges` ADD `beloning` TEXT NOT NULL ;
-
-ALTER TABLE `tblMarketSubscriptions` ADD `snap` TEXT NOT NULL ;
-
-ALTER TABLE `tblUsers` ADD `algemenevoorwaarden` SMALLINT( 12 ) NOT NULL DEFAULT '0';
-

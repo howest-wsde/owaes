@@ -121,7 +121,7 @@
             <div class="well well-intro">
                 <h3>
                     Info
-                    [if:me]<span data-toggle="modal" data-target="#editPersoonlijkeInformatie" class="icon icon-settings"></span>[/if:me]
+                    [if:me]<span data-toggle="modal" data-target="#editPersoonlijkeInformatie" class="icon icon-settings" onclick="resetPersoonlijkeInformatieForm();"></span>[/if:me]
                 </h3>
                 <p>[showurls][description][/showurls]</p>
                 [userdetails] 
@@ -289,7 +289,7 @@
     <div class="modal fade" id="editPersoonlijkeInformatie" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <form class="form-horizontal persoonlijkeinformatie" method="post">
+                <form class="form-horizontal persoonlijkeinformatie" name="FormEditPersoonlijkeInformatie" method="post">
                 	[editprofile-key]
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

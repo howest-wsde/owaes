@@ -90,8 +90,8 @@
 								$arChart["Credits"]["data"][] = array(javatime($oDB->get("datum")), $iVal); 
 								chartEvent(javatime($oDB->get("datum")), $iVal, (
 										($oDB->get("sender") == $iUser) ? 
-											($oDB->get("credits") . " credits naar " . user($oDB->get("receiver"))->getName()): 
-											($oDB->get("credits") . " credits van " . user($oDB->get("sender"))->getName())
+											($oDB->get("credits") . " " . settings("credits", "name", "x") . " naar " . user($oDB->get("receiver"))->getName()): 
+											($oDB->get("credits") . " " . settings("credits", "name", "x") . " van " . user($oDB->get("sender"))->getName())
 									) ); 
 							}
 							
@@ -126,7 +126,7 @@ $(function () {
             data: <? echo json_encode($arChart["Sociaal"]["data"]);?>
         },
          "Credits" : {
-            label:"Credits",
+            label:"<? echo ucfirst(settings("credits", "name", "x")); ?>",
             data: <? echo json_encode($arChart["Credits"]["data"]);?>,
             yaxis:2
       },
@@ -168,7 +168,7 @@ function plotAccordingToChoices() {
 			 			    tickFormatter: function (v, axis) { return v.toFixed(axis.tickDecimals) +" %" }
 			 		    },
                  y2axis: { 
-			 			    tickFormatter: function (v, axis) { return v.toFixed(axis.tickDecimals) +" credits" }
+			 			    tickFormatter: function (v, axis) { return v.toFixed(axis.tickDecimals) +" <? echo settings("credits", "name", "x"); ?>" }
 			 		    },
                  legend: { position: 'sw' }, 
 			     series: {
@@ -232,22 +232,22 @@ function plotAccordingToChoices() {
                                         <div class="form-group">
                                             <label class="control-label col-lg-1" for="mental">mental:</label>
                                             <div class="col-lg-2">
-                                                <input type="text" value="<? echo $oUser->mental(NULL, FALSE);  ?>" placeholder="mental" id="mental" class="form-control" name="mental" />
+                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<? echo $oUser->mental();  ?>" placeholder="mental" id="mental" class="form-control" name="mental" />
                                             </div>
                                             
                                             <label class="control-label col-lg-1" for="mental">physical:</label>
                                             <div class="col-lg-2">
-                                                <input type="text" value="<? echo $oUser->physical(NULL, FALSE);  ?>" placeholder="physical" id="physical" class="form-control" name="physical" />
+                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<? echo $oUser->physical();  ?>" placeholder="physical" id="physical" class="form-control" name="physical" />
                                             </div>
                                             
                                             <label class="control-label col-lg-1" for="mental">emotional:</label>
                                             <div class="col-lg-2">
-                                                <input type="text" value="<? echo $oUser->emotional(NULL, FALSE);  ?>" placeholder="emotional" id="emotional" class="form-control" name="emotional" />
+                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<? echo $oUser->emotional();  ?>" placeholder="emotional" id="emotional" class="form-control" name="emotional" />
                                             </div>
                                             
                                             <label class="control-label col-lg-1" for="mental">social:</label>
                                             <div class="col-lg-2">
-                                                <input type="text" value="<? echo $oUser->social(NULL, FALSE);  ?>" placeholder="social" id="social" class="form-control" name="social" />
+                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<? echo $oUser->social();  ?>" placeholder="social" id="social" class="form-control" name="social" />
                                             </div>
                                          </div>
                                          <div class="form-group"> 

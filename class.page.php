@@ -110,7 +110,7 @@
 			global $oSecurity; 
 			$arTabs = array( 
 				"home" => array(
-					"title" => "home", 
+					"title" => "Home", 
 					"url" => "main.php", 
 					"classes" => array("menu-item", "home"), 
 				) 
@@ -147,31 +147,32 @@
 				} 
                 */
                 $arTabs["lijsten"] = array (
-                    "title" => "lijsten", 
+                    "title" => "Lijsten", 
 					"url" => "#", 
-					"classes" => array("dropdown-toggle", "lijsten"), 
+					"classes" => array("dropdown-toggle", "lijsten", "menu-item"), 
 					"sub" => array(),
                 );
                 
-                $arTabs["lijsten"]["sub"]["gebruikers"] = array("users.php", "gebruikers");
-                $arTabs["lijsten"]["sub"]["vrienden"] = array("friends.php", "friends");
-				$arTabs["lijsten"]["sub"]["badges"] = array("badges.php", "badges");
+                $arTabs["lijsten"]["sub"]["Gebruikers"] = array("users.php", "gebruikers");
+                $arTabs["lijsten"]["sub"]["Vrienden"] = array("friends.php", "friends");
+				$arTabs["lijsten"]["sub"]["Badges"] = array("badges.php", "badges");
 				if ($oSecurity->admin()) {
-					$arTabs["lijsten"]["sub"]["admin"] = array("admin.php", "admin");
-					$arTabs["lijsten"]["sub"]["reports"] = array("meldingen.php", "meldingen");
-					$arTabs["lijsten"]["sub"]["groepen"] = array("admin.groepen.php", "groups");
+					$arTabs["lijsten"]["sub"]["Admin"] = array("admin.php", "admin");
+					$arTabs["lijsten"]["sub"]["Reports"] = array("meldingen.php", "meldingen");
+					$arTabs["lijsten"]["sub"]["Groepen"] = array("admin.groepen.php", "groups");
 				}
                 
                 $arTabs["account"] = array (
-                    "title" => "account", 
+                    "title" => "Account", 
 					"url" => "#", 
-					"classes" => array("dropdown-toggle", "account"), 
+					"classes" => array("dropdown-toggle", "account", "menu-item"), 
 					"sub" => array(),
                 );
-                $arTabs["account"]["sub"]["profiel"] = array("profile.php", "profiel");	
-				$arTabs["account"]["sub"]["berichten"] = array("conversation.php", "berichten");	
-				$arTabs["account"]["sub"]["instellingen"] = array("settings.php", "instellingen");
-				$arTabs["account"]["sub"]["afmelden"] = array("logout.php", "afmelden");	
+                $arTabs["account"]["sub"]["Profiel"] = array("profile.php", "profiel");	
+				$arTabs["account"]["sub"]["Berichten"] = array("conversation.php", "berichten");	
+				$arTabs["account"]["sub"]["Instellingen"] = array("settings.php", "instellingen");
+				$arTabs["account"]["sub"]["Paswoord aanpassen"] = array("modal.changepass.php", "paswoord domodal");
+				$arTabs["account"]["sub"]["Afmelden"] = array("logout.php", "afmelden");	
                 
 				/*$arTabs["settings"] = array(
 					"title" => "instellingen", 
@@ -209,14 +210,13 @@
                 if (!isset($arDetails["sub"])){
                     $strHTML .= "<li>";
 				    $strHTML .= "<a href=\"" . fixPath($arDetails["url"]) . "\" class=\"" . implode(" ", $arDetails["classes"]) . "\">";
-                    $strHTML .= "<span class=\"icon-" . $arDetails["title"] . "\"></span>";
+                    $strHTML .= "<span class=\"icon\"></span>";
                     $strHTML .= "<span class=\"title\">$strTitel</span></a>";
                     $strHTML .= "</li>";
-                }
-                else{
+                } else{
                     $strHTML .= "<li class=\"dropdown\">";
                     $strHTML .= "<a href=\"" . fixPath($arDetails["url"]) . "\" class=\"" . implode(" ", $arDetails["classes"]) . "\" data-toggle=\"dropdown\">";
-                    $strHTML .= "<span class=\"icon-" . $arDetails["title"] . "\"></span>";
+                    $strHTML .= "<span class=\"icon\"></span>";
                     $strHTML .= "<span class=\"title\">$strTitel</span> <span class=\"caret\"></span></a>";
                     
                     $strHTML .= "<ul class=\"dropdown-menu\">"; 

@@ -628,7 +628,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					"class" => array(), 
 				), 
 				40 => array(
-					"title" => "Creditoverdracht", 
+					"title" => settings("credits", "name", "overdracht"), 
 					"count" => 0,  
 					"class" => array(),  
 				), 

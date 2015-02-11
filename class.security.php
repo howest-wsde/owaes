@@ -61,14 +61,14 @@
 				global $oPage;  
 				switch($iType) {
 					case AJAX:  
-						echo ("<a href=\"/owaes/login.php\">U bent niet meer ingelogd. Klik hier om terug in te loggen. </a>"); 
+						echo ("<a href=\"" . fixpath("login.php") . "\">U bent niet meer ingelogd. Klik hier om terug in te loggen. </a>"); 
 						break; 
 					case SCRIPT: 
-						echo ("document.location.href = '/owaes/login.php'; ");
+						echo ("document.location.href = '" . fixpath("login.php") . "'; ");
 						break; 
 					case PAGE: 
 					default: 
-						redirect("login.php?p=" . urlencode($oPage->filename())); 
+						redirect(fixPath("login.php?p=" . urlencode($oPage->filename()))); 
 						break; 	
 				}  
 				exit();  

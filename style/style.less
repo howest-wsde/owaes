@@ -74,7 +74,7 @@ label.checkboxlabel {font-weight: normal; padding-left: 8px; }
 
 // --- Icons --- //
 /*#region Icons*/
-span[class^="icon-"], span[class*="icon-"] {
+span[class^="icon-"], span[class*="icon-"]{
     font-family: 'icomoon';
     speak: none;
     font-style: normal;
@@ -87,30 +87,32 @@ span[class^="icon-"], span[class*="icon-"] {
     -moz-osx-font-smoothing: grayscale;
 }
 
-span.icon-home:before {
+
+a.menu-item.home span.icon:before {
     content: "\e601";
 }
-
-span.icon-werkervaring:before {
+ 
+a.menu-item.ervaring span.icon:before {
     content: "\e604";
+}
+
+a.menu-item.opleiding span.icon:before {
+    content: "\e620";
+}
+
+a.menu-item.infra span.icon:before {
+    content: "\e71e";
 }
 
 span.icon-meldingen:before {
     content: "\e642";
 }
-span.icon-opleiding:before {
-    content: "\e620";
-}
 
-span.icon-delen:before {
-    content: "\e71e";
-}
-
-span.icon-lijsten:before {
+a.menu-item.lijsten span.icon:before { 
     content: "\e623";
 }
 
-span.icon-account:before {
+a.menu-item.account span.icon:before { 
     content: "\e675";
 }
 
@@ -143,6 +145,9 @@ span.icon-profiel:before {
 
 span.icon-instellingen:before {
     content: "\e68f";
+}
+span.icon-paswoord:before {
+    content: "\e689";
 }
 
 span.icon-afmelden:before {
@@ -349,12 +354,27 @@ ol.flow {
     border-bottom-color: @cWhite;
     border-top: none;
 
-    [class^="icon-"], [class*="icon-"] {
-        display: block;
+    [class^="icon-"], [class*="icon-"]  {
+        display: block; 
+		speak: none;
         text-align: center;
         vertical-align: top;
         font-size: 24px;
     }
+	
+	a.menu-item span.icon	{ 
+        display: block; 
+		speak: none;
+        text-align: center;
+        vertical-align: top;
+        font-size: 24px;
+		font-family: icomoon;
+		font-style: normal;
+		font-variant: normal;
+		font-weight: 400;
+		line-height: 1;
+		text-transform: none;
+	}
 
     .dropdown-menu {
         [class^="icon-"], [class*="icon-"] {
@@ -383,7 +403,7 @@ ol.flow {
                 color: @cSecundary;
                 width: 120px;
                 text-align: center;
-                text-transform: capitalize;
+               //  text-transform: capitalize;
 
                 &:hover, &:focus {
                     color: @cWhite;
@@ -442,7 +462,7 @@ ol.flow {
             > .dropdown-menu {
                 > li {
                     > a {
-                        text-transform: capitalize;
+                        // text-transform: capitalize;
 
                         &:hover, &:focus {
                             background-color: @cHighlight;
@@ -1984,7 +2004,7 @@ input[type="number"] {
 .content-market-add {
     legend {
         strong {
-            text-transform: capitalize;
+            // text-transform: capitalize;
             font-size: 36px;
             font-weight: 600;
         }

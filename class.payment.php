@@ -116,7 +116,7 @@
 						if ($bValue) {
 							$oDB = new database("insert into tblPayments (datum, sender, receiver, initiator, credits, reason, link, market, actief) values (" . owaesTime() . ", " . $this->sender() . ", " . $this->receiver() . ", " . $this->initiator() . ", " . $this->credits() . ", " . $this->reason() . ", 0, " . $this->market() . ", 1);" , TRUE); 
 							$oConversation = new conversation($this->receiver()); 
-							$oConversation->add("Er werden " . $this->credits() . " credits overgedragen", $this->market());  
+							$oConversation->add("Er werden " . $this->credits() . " " . settings("credits", "name", "x") . " overgedragen", $this->market());  
 						}
 					} else {
 						$oDB = new database("update tblPayments set actief = " . ($bValue ? 1 : 0) . ", reason = " . $this->reason() . " where id = " . $this->id() . ";" , TRUE); 
@@ -131,9 +131,9 @@
 				if ($this->signed()) {
 					$strHTML .= "<dl class=\"payment\">";
 					if ($this->sender() == me()) { 
-						$strHTML .= "<dt>betaald aan " . user($this->receiver())->getName() . ": " . $this->credits() . " credits</dt>"; 
+						$strHTML .= "<dt>betaald aan " . user($this->receiver())->getName() . ": " . $this->credits() . " " . settings("credits", "name", "x") . "</dt>"; 
 					} else {
-						$strHTML .= "<dt>betaald door " . user($this->sender())->getName() . ": " . $this->credits() . " credits</dt>"; 
+						$strHTML .= "<dt>betaald door " . user($this->sender())->getName() . ": " . $this->credits() . " " . settings("credits", "name", "x") . "</dt>"; 
 					}
 					$strHTML .= "</dl>"; 
 				} else {
@@ -144,7 +144,7 @@
 							<input type=\"hidden\" name=\"score\" value=\"\" />
 						<fieldset>
 										<dl class=>";
-						$strHTML .= "<dt>XXXDraag " . $this->credits() . " credits over naar " . user($this->receiver())->getName() . " voor dit item</dt>";    
+						$strHTML .= "<dt>XXXDraag " . $this->credits() . " " . settings("credits", "name", "x") . " over naar " . user($this->receiver())->getName() . " voor dit item</dt>";    
 						$strHTML .= "</dl>
 										</fieldset> 
 								"; 

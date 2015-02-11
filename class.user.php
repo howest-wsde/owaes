@@ -331,7 +331,7 @@
 											$arMails["owner"] = "We merken dat je vaak met dezelfde personen werkt. Probeer hier af te wisselen. "; 
 											break; 	
 										case "credits": 
-											$arMails["owner"] = "We merken dat je credits uit balans staan. Probeer dit te herstellen. "; 
+											$arMails["owner"] = "We merken dat je " . settings("credits", "name", "x") . " uit balans staan. Probeer dit te herstellen. "; 
 											break; 		 
 									}
 								} else {
@@ -1332,7 +1332,7 @@
 		public function userBox() { // returns html met profielfoto, naam, sterren en credits (TODO: wordt dit gebruikt? )  
 			$strHTML = "<div class=\"userbox\"><a href=\"" . $this->getURL() . "\">"; 
 			$strHTML .= "<span class=\"img\">" . $this->getImage("50x50") . "</span>"; 
-			$strHTML .= "<span class=\"stars\">" . str_repeat("<img src=\"/owaes/img/star.png\" />", $this->stars()) . "</span>";  
+			$strHTML .= "<span class=\"stars\">" . str_repeat(("<img src=\"" . fixPath("img/star.png") . "\" />"), $this->stars()) . "</span>";  
 			$iWidth = 50; 
 			$iPos = intval($iWidth * $this->credits() / 2 / settings("startvalues", "credits")); 
 			if ($iPos > 160) $iPos = 160; 
@@ -1483,9 +1483,9 @@
 			$strHTML .= "<span class=\"credits\" style=\"width: " . $iPos . "px; \"></span>"; 
 			global $oPage; 
 			if ($this->iID == $oPage->iUser) {
-				$strHTML .= "<span class=\"creditsshow\">" . $this->credits() . " credits</span>";  
+				$strHTML .= "<span class=\"creditsshow\">" . $this->credits() . " " . settings("credits", "name", "x") . "</span>";  
 			}
-			$strHTML .= "<span class=\"stars\">" . str_repeat("<img src=\"/owaes/img/star.png\" />", $this->stars()) . "</span>"; 
+			$strHTML .= "<span class=\"stars\">" . str_repeat(("<img src=\"" . fixPath("img/star.png") . "\" />"), $this->stars()) . "</span>"; 
 			$strHTML .= "<span class=\"transactions\">" . count($this->payments("all")) . " transactie" . ((count($this->payments("all"))!=1)?"s":"") . "</span>"; 
 			$strHTML .= "</div>"; 
 			return $strHTML; 
@@ -1583,7 +1583,7 @@
 					); 
 				if ($this->algemenevoorwaarden()) $arActions[] = array(	
 						"href" => $this->donateLink("", TRUE), 
-						"title" => "Credits schenken", 
+						"title" => ucfirst(settings("credits", "name", "x")) . " schenken", 
 						"icon" => "icon-credits", 
 						"class" => array("domodal"), 
 					);  
@@ -1938,7 +1938,7 @@
 				case "link:contact": 
 					return $this->isCurrentUser() ? "#" : $this->messageLink("", FALSE); 
 				case "link:credits": 
-					return $this->isCurrentUser() ?"Je kan geen credits aan jezelf schenken." : $this->donateLink("",true); 	
+					return $this->isCurrentUser() ?"Je kan geen " . settings("credits", "name", "x") . " aan jezelf schenken." : $this->donateLink("",true); 	
 				case "userdetails":  
 					$arUserDetails = array();  
 					if ($this->email() != "") $arUserDetails[] = "<dt>E-mail</dt><dd><a href=\"mailto:" . $this->email() . "\">" . $this->email() . "</a></dd>"; 

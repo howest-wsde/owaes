@@ -93,16 +93,16 @@
 					if ($oPayment->sender() == me()) {
 						if ($oPayment->signed()) {
 							?><div> 
-								<h2><? echo $oPayment->credits(); ?> credits overgedragen naar <? echo user($oPayment->receiver())->getName(); ?></h2> 
+								<h2><? echo $oPayment->credits(); ?> <? echo settings("credits", "name", "x"); ?> overgedragen naar <? echo user($oPayment->receiver())->getName(); ?></h2> 
 							</div><?
 						} else {
 							?><div> 
-								<a href="#" onclick="return transactie(<? echo $oPayment->receiver(); ?>); "><h2>Draag <? echo $oPayment->credits(); ?> credits over naar <? echo user($oPayment->receiver())->getName(); ?></h2> </a> 
+								<a href="#" onclick="return transactie(<? echo $oPayment->receiver(); ?>); "><h2>Draag <? echo $oPayment->credits(); ?> <? echo settings("credits", "name", "x"); ?> over naar <? echo user($oPayment->receiver())->getName(); ?></h2> </a> 
 							</div><?
 						}
 					} else if ($oPayment->receiver() == me()) {
 						?><div>
-							<h2>Ik moet nog <? echo $oPayment->credits(); ?> credits krijgen van <? echo user($oPayment->sender())->getName(); ?></h2> 
+							<h2>Ik moet nog <? echo $oPayment->credits(); ?> <? echo settings("credits", "name", "x"); ?> krijgen van <? echo user($oPayment->sender())->getName(); ?></h2> 
 							TODO: bericht sturen
 						</div><?
 					}
@@ -110,7 +110,7 @@
 				
 				if ($iUser != 0) {
 					echo ("
-							<div>Schenk credits aan " . $oUser->getName() .  ": </div>
+							<div>Schenk " . settings("credits", "name", "x") . " aan " . $oUser->getName() .  ": </div>
 							<textarea name=\"message\"></textarea>
 							<input type=\"number\" name=\"credits\" value=\"60\" />
 							<input type=\"submit\" value=\"schenken\" />

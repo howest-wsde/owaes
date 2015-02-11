@@ -59,7 +59,7 @@
 										//	"straffen" => array("Straffen", ""), 
 											"waarderingen" => array("Sterren", "waardering"), 
 										//	"sterren" => array("Sterren", ""), 
-											"credits" => array("Credits", "credits"), 
+											"credits" => array(settings("credits", "name", "x"), "credits"), 
 											"social" => array("Social", "indicatoren.social"), 
 											"physical" => array("Physical", "indicatoren.physical"), 
 											"mental" => array("Mental", "indicatoren.mental"), 

@@ -29,8 +29,7 @@
 		$oProfile->visible("telephone", $_POST["showtelephone"]); 
 		$oProfile->birthdate(ddmmyyyyTOdate($_POST["birthdate"]));  
 		$oProfile->visible("birthdate", $_POST["showbirthdate"]); 
-		
-		if (($_POST["password1"] == $_POST["password2"]) && (trim($_POST["password1"]) != "")) $oProfile->password($_POST["password1"]); 
+		 
 		$bImageUploaded = FALSE; 
 		if ($_FILES["img"]["error"] == 0){  
 			$strTmp = "upload/tmp/" . $_FILES["img"]["name"]; 
@@ -96,14 +95,9 @@
 					$("div.foutmelding").remove(); 
 					bValidated = true; 
 					arMeldingen = {}; 
-					
-					strPW1 = $("#password1").val(); 
-					strPW2 = $("#password2").val(); 
-					if ((strPW1 != "")||(strPW2 != "")) if (strPW1 != strPW2) arMeldingen["#password2"] = "wachtwoord komt niet overeen"; 
-					
+					 
 					if ($("#email").val() == "") arMeldingen["#email"] = "E-mailadres is verplicht"; 
-					if (!validateEmail($("#email").val())) arMeldingen["#email"] = "Het opgegeven e-mailadres is incorrect"; 
-
+					if (!validateEmail($("#email").val())) arMeldingen["#email"] = "Het opgegeven e-mailadres is incorrect";  
 					
 					for (var strKey in arMeldingen){ 
 						$(strKey).after($("<div>").addClass("foutmelding alert alert-dismissable alert-danger").html(arMeldingen[strKey]));  
@@ -218,31 +212,11 @@
                                     <option>Verborgen</option>
                                 </select>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="password1" class="control-label col-lg-2">Wachtwoord:</label>
-                            <div class="col-lg-6">
-                                <input type="password" name="password1" class="password1 form-control" id="password1" placeholder="Wachtwoord" />
-                            </div>
-                            <div class="col-lg-4">
-                                <select class="form-control" disabled>
-                                    <option>Verborgen</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="password2" class="control-label col-lg-2">Herhalen:</label>
-                            <div class="col-lg-6">
-                                <input type="password" name="password2" class="password2 form-control" id="password2" placeholder="Wachtwoord herhalen" />
-                            </div>
-                            <div class="col-lg-4" disabled>
-                                
-                            </div>
-                        </div>
+                        </div> 
                         <div class="form-group">
                             <label for="email" class="control-label col-lg-2">E-mailadres:</label>
                             <div class="col-lg-6">
-                                <input type="text" name="email" class="email form-control" id="email" placeholder="E-mailadres" value="<? echo inputfield($oProfile->email()); ?>" />
+                                <input type="text" name="email" class="email form-control" id="email" placeholder="E-mailadres" value="<? echo inputfield(isset($_POST["email"]) ? $_POST["email"] : $oProfile->email()); ?>" />
                                     <?
                             	        if (isset($arErrors["email"])) echo "<dd><strong class=\"text-danger\">" . $arErrors["email"] . "</strong></dd>"; 
 							        ?>

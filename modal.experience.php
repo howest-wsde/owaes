@@ -15,7 +15,7 @@
 	$iExp2 = $oMe->experience()->total(TRUE); 
 	$iDiff = $iExp2 - $iExp1; 
 	
-	$oLayout->tag("newcredits", $iDiff);  
+	$oLayout->tag("newexp", $iDiff);  
 	 
 	echo $oLayout->html(); 
 	

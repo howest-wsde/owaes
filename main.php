@@ -322,7 +322,7 @@
                                     <img class="size" src="img/graphIndicatoren.png" alt="" style="display: none; " />
                                 </div>
                                 <div class="col-md-4 creditmeter">
-                                    <h3>Credits</h3>
+                                    <h3><? echo ucfirst(settings("credits", "name", "x")); ?></h3>
                                     <!-- <img class="size" src="img/creditMeter.png"/> -->
                                     <img class="creditmetermeter size" src="img/creditmetermeter.png" alt="" />
                                     <img class="creditmeterpointer size" src="img/creditmeterpointer.png" alt="" />

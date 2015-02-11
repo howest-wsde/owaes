@@ -124,6 +124,13 @@ function bestandenToevoegen() {
 	
     $("#editBestanden .files").append(strAddFile); 
 }
+
+function resetPersoonlijkeInformatieForm() {
+	document.forms.FormEditPersoonlijkeInformatie.reset();
+	$("#editPersoonlijkeInformatie .btn-save").removeClass("disabled"); 
+	$("#editPersoonlijkeInformatie #email").removeClass("loading").removeClass("invalid").parent().removeClass("has-error");	 
+    $(".alert").remove(); 
+}
  
 
 

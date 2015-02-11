@@ -1,0 +1,80 @@
+<div class="modal fade modalpassword" id="changepass">
+  <div class="modal-dialog">
+	<script>
+      
+        $(document).ready(function() { 
+            $(".save-form").click(function() {
+                $("div.foutmelding").remove(); 
+                bValidated = true; 
+                arMeldingen = {}; 
+                
+                strOld = $(this).parentsUntil("form").find(".passwordold").val(); 
+                strPW1 = $(this).parentsUntil("form").find(".password1").val(); 
+                strPW2 = $(this).parentsUntil("form").find(".password2").val(); 
+                if (strOld == "") arMeldingen[".passwordold"] = "Geef je oud paswoord in";
+                if (strPW1 == "") arMeldingen[".password1"] = "Geef een nieuw paswoord in";
+				if (strPW1 != strPW2) arMeldingen[".password2"] = "Wachtwoord komt niet overeen";
+				
+                for (var strKey in arMeldingen){ 
+                    $(strKey).after($("<div />").addClass("foutmelding alert alert-dismissable alert-danger").html(arMeldingen[strKey]));  
+                }
+				  
+				if (Object.keys(arMeldingen).length == 0) {
+					$(this).parentsUntil("form").find(".btn").addClass("disabled"); 
+					$(this).parentsUntil("form").find(".save-form").html("bezig..."); 
+					$.ajax({
+						type: "POST",
+						url: "[currentfile]",
+						data: {"old": strOld, "new": strPW1},
+						success: function(strReturn){
+							switch(strReturn) {
+								case "ok": 
+									$('.modalpassword').modal('hide'); 
+									break; 
+								default: 
+									$(".modalpassword .btn").removeClass("disabled"); 
+									$(".modalpassword .save-form").html("aanpassen"); 
+									$(".passwordold").after($("<div />").addClass("foutmelding alert alert-dismissable alert-danger").html(strReturn));  
+									break; 	
+							} 
+						}, 
+					}); 
+				} 
+				 
+                return false; 
+            })
+        })
+         
+    </script>
+  
+    <form class="formchangepass" action="[currentfile]">   
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Paswoord aanpassen</h4>
+          </div>  
+          <div class="modal-body">   
+                <label for="description" class="control-label col-lg-12">Huidig wachtwoord:</label>
+                <div class="col-lg-12">
+                    <input type="password" name="passwordold" class="passwordold form-control forceblank" id="passwordold" placeholder="Huidig wachtwoord" value="" />
+                </div>  
+          </div>  
+          <div class="modal-body">   
+                <label for="description" class="control-label col-lg-12">Nieuw wachtwoord:</label>
+                <div class="col-lg-12">
+                    <input type="password" name="password1" class="password1 form-control forceblank" id="password1" placeholder="Nieuw wachtwoord" value="" />
+                </div>  
+          </div>  
+          <div class="modal-body">   
+                <label for="description" class="control-label col-lg-12">Wachtwoord herhalen:</label>
+                <div class="col-lg-12">
+                    <input type="password" name="password2" class="password2 form-control forceblank" id="password2" placeholder="Nieuw wachtwoord herhalen" value="" />
+                </div>   
+          </div>
+          <div class="modal-footer"> 
+                <button type="button" class="btn btn-success save-form"  data-dismiss="modal">aanpassen</button>
+                <button type="button" class="btn btn-cancel later-form" data-dismiss="modal">annuleren</button> 
+          </div>
+        </div><!-- /.modal-content -->
+    </form>
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

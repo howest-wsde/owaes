@@ -74,10 +74,6 @@ $(document).ready(function() {
 		arData = oForm.serialize(); 
 		bRefresh = (oForm.find("input[name='refresh']").val()==1);  
 		strRedirect = (oForm.find("input[name='redirect']").val() || false);  
-		strFake = (oForm.find("input[name='dsqfqsdf']").val() || false); 
-		
-		console.log(strRedirect);
-		console.log(strFake); 
 		$.post(oForm.attr("action"), arData, function(){
 			if (strRedirect) {
 				window.location=strRedirect; 
@@ -97,6 +93,8 @@ $(document).ready(function() {
 	}).on("change", function() {
 		$(this).addClass("aangepast");
 	}); 
+	
+	$(":input.forceblank").val(""); 
 	
 	$("th.order").each(function(){
 		// $(this).append("&gt;"); 

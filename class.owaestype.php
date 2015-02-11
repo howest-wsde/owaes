@@ -13,19 +13,19 @@
 			$this->arTypes = array(
 				1 => array(
 					"key" => "ervaring", 
-					"title" => "werkervaring", 
+					"title" => "Werkervaring", 
 					"iconclass" => "icon-werkervaring", 
 					"direction" => DIRECTION_SPEND, 
 				), 
 				2 => array(
 					"key" => "opleiding", 
-					"title" => "opleiding", 
+					"title" => "Opleiding", 
 					"iconclass" => "icon-opleiding", 
 					"direction" => DIRECTION_EARN,
 				), 
 				3 => array(
 					"key" => "infra", 
-					"title" => "delen",  
+					"title" => "Delen",  
 					"iconclass" => "icon-delen", 
 					"direction" => DIRECTION_EARN,
 				), 

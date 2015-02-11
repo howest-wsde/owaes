@@ -81,15 +81,15 @@
 		}  
 		if (isset($_POST["data"])) foreach ($_POST["data"] as $iDatum) { 
 			$oOwaesItem->addMoment(ddmmyyyyTOdate($_POST["datum-$iDatum"]), hhmmTOminutes($_POST["start-$iDatum"]), hhmmTOminutes($_POST["tijd-$iDatum"])); 
-		}   
-		 
+		}
+
 		foreach ($oOwaesItem->getTags() as $strTag) {
 			$oOwaesItem->removeTag($strTag);
 		} 
 		if (isset($_POST["tag"])) foreach ($_POST["tag"] as $strTag) { 
 			$oOwaesItem->addTag($strTag);  
 		}   
-		
+
 		$oOwaesItem->timing(isset($_POST["timingtime"])?$_POST["timingtime"]:0); 
 		$oOwaesItem->physical($_POST["physical"]); 
 		$oOwaesItem->mental($_POST["mental"]); 
@@ -97,7 +97,7 @@
 		$oOwaesItem->social($_POST["social"]); 
 		$oOwaesItem->credits($_POST["credits"]); 
 		$oOwaesItem->type($_POST["type"]); 
-		
+
 		foreach ($oOwaesItem->subscriptions() as $iUser=>$oValue) {
 			switch ($oValue->state()) {
 				case SUBSCRIBE_CONFIRMED:  
@@ -224,7 +224,7 @@ input.time {width: 100%; display: block; }
 						$arOwaesTypes = owaesType()->getAllTypes();
 						
 						if (isset($arOwaesTypes[$strType])) {
-							echo ("<legend class=\"aanbod\">Aanbod toevoegen: <strong>" . $arOwaesTypes[$strType] . "</strong> <small>(credits " . ((owaesType($strType)->direction()==DIRECTION_EARN) ? "verdienen" : "uitgeven") . ")</small></legend>"); 
+							echo ("<legend class=\"aanbod\">Aanbod toevoegen: <strong>" . $arOwaesTypes[$strType] . "</strong> <small>(" . settings("credits", "name", "x") . " " . ((owaesType($strType)->direction()==DIRECTION_EARN) ? "verdienen" : "uitgeven") . ")</small></legend>"); 
 						} else {
 							echo ("<legend class=\"aanbod\">Aanbod toevoegen</legend>"); 
 						}  
@@ -253,8 +253,8 @@ input.time {width: 100%; display: block; }
 										if (!in_array($oGroup, $arAddGroups)) if ($oGroup->userrights()->owaesadd()) $arAddGroups[] = $oGroup; 
 									} 
 									if (user(me())->admin()) {
-										echo ('<div class="form-group">
-												<label for="group" class="col-lg-12">Aanbieder</label>
+										echo ('<div class="form-group"> 
+                                				<div class="row"><div class="col-lg-2"><h4>Aanbieder</h4></div></div> 
 												<div class="col-lg-12">');   
 													echo '<select name="poster" id="person" class="required form-control">'; 
 														echo "<optgroup label=\"Groepen\">";  
@@ -284,8 +284,8 @@ input.time {width: 100%; display: block; }
 											
 									} else {
 										if (count($arAddGroups) > 0) {
-											echo ('<div class="form-group">
-													<label for="group" class="col-lg-12">Aanbieder</label>
+											echo ('<div class="form-group"> 
+                                					<div class="row"><div class="col-lg-2"><h4>Aanbieder</h4></div></div> 
 													<div class="col-lg-12">
 														<select name="group" id="group" class="required form-control">'); 
 														echo ("<option value=\"0\" style=\"border-bottom: 1px dotted #000; \">" . $oOwaesItem->author()->getName() . "</option>");  
@@ -307,7 +307,10 @@ input.time {width: 100%; display: block; }
 									
 								?>  
                                 <div class="form-group">
-									<label for="title" class="col-lg-12">Titel</label>
+
+
+                                	<div class="row"><div class="col-lg-2"><h4>Titel</h4></div></div>
+                         
                                     <div class="col-lg-10">
                                         <input type="text" name="title" id="title" class="required form-control" placeholder="Titel voor uw aanbod" value="<? echo inputfield($oOwaesItem->title()); ?>" />
                                     </div>
@@ -328,14 +331,14 @@ input.time {width: 100%; display: block; }
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label for="description" class="col-lg-12">Omschrijving</label>
+                                	<div class="row"><div class="col-lg-2"><h4>Omschrijving</h4></div></div> 
                                     <div class="col-lg-12">
                                         <textarea name="description" id="description" class="required form-control" placeholder="Omschrijving"><? echo textarea($oOwaesItem->body()); ?></textarea>
                                     </div>
                                 </div>
                                  
                                 <div class="form-group">
-                                <label for="types" class="col-lg-12">Kernwoorden</label>
+                                	<div class="row"><div class="col-lg-2"><h4>Kernwoorden</h4></div></div> 
                                  
                               
                                 <div class="col-lg-12"><div class="invoer" id="tags">
@@ -358,10 +361,16 @@ input.time {width: 100%; display: block; }
                       </div>
                       <div class="tab-pane fade" id="tijdlocatie">  
                       <!-- <legend>Tijd en locatie</legend> -->
-                       <div class="row">
-                      		 <div class="col-lg-12">
-                         	    <h4 class="tijd">Tijd</h4>
+                      
+                      
+                        <div class="form-group">
+                      		 <div class="row">
+                       
+                                 <div class="col-lg-12">
+                                    <h4 class="tijd">Tijd</h4>
+                                 </div>
                              </div>
+                      		 <div class="row">
                                <div class="col-lg-3"> 
                                     <div id="calendar"></div>
                                 </div> 
@@ -388,9 +397,12 @@ input.time {width: 100%; display: block; }
                                    </div>
                                 </div>
                             </div> <!--/row--> 
+                        </div>
+                        
+                        <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-2"> 
-                                    <h4 class="locatie">Locatie</h4>
+                                    <h4>Locatie</h4>
                                 </div>
                                 <div class="col-lg-7">
                                     <div class="errorsTime"></div>
@@ -412,22 +424,7 @@ input.time {width: 100%; display: block; }
                                 <dd class="locationfixed"><div id="map-canvas" style="height: 300px; "></div></dd> 
                                 </div>
                             </div> <!--/row-->
-                            
-                            <div class="row"> 
-                                <label for="title" class="col-lg-12">Verzekering</label>
-                                <?
-                                	$arVerzekeringen = $oOwaesItem->details("verzekeringen"); 
-									if (!is_array($arVerzekeringen)) $arVerzekeringen = array(); 
-								?>
-                                <? foreach (settings("verzekeringen") as $iVerzekering => $strVerzekering) { ?>
-                                    <div class="col-lg-4">
-                                        <input type="checkbox" name="verzekering[]" id="verzekering<? echo $iVerzekering; ?>" value="<? echo $iVerzekering; ?>" <? if (in_array($iVerzekering, $arVerzekeringen)) echo "checked=checked"; ?> />
-                                        <label for="verzekering<? echo $iVerzekering; ?>" class="checkboxlabel"><? echo $strVerzekering; ?></label>                                    
-                                    </div>
-								<? } ?> 
-                            </div> <!--/row-->
-                            
-
+                        </div>
                             <div class="form-group"> 
                                 <div class="col-lg-12"> 
                                     <a href="#algemeen" class="tabchange">vorige</a>
@@ -439,13 +436,19 @@ input.time {width: 100%; display: block; }
                       <div class="tab-pane fade" id="compensatie">
                       <!-- <legend>Compensatie</legend> -->
                       
+                        <div class="form-group">
+                            <div class="row"><div class="col-lg-2"><h4><? echo ucfirst(settings("credits", "name", "x")); ?></h4></div></div> 
+                            
+                           <div class="row row-credits"> 
+                               <div class="col-lg-10">
+                                <input type="text" min="0" max="1000" name="credits" id="creditsfield" class="auto border" value="<? echo $oOwaesItem->credits(); ?>" />
+                               </div>
+                           </div>
+                        </div>
                            
-                           <div class="row row-credits">
-                           <label for="credits" class="col-lg-2">Credits</label>
-                           <div class="col-lg-10">
-                            <input type="text" min="0" max="1000" name="credits" id="creditsfield" class="auto border" value="<? echo $oOwaesItem->credits(); ?>" />
-                           </div>
-                           </div>
+                       
+                        <div class="form-group">
+                            <div class="row"><div class="col-lg-2"><h4>Indicatoren</h4></div></div> 
                            
                            <div class="row row-sociaal">
                            <label for="social" class="col-lg-2">Sociaal</label>
@@ -474,13 +477,26 @@ input.time {width: 100%; display: block; }
                             <input type="range" min="0" max="100" name="emotional" id="emotionalslide" value="<? echo $oOwaesItem->emotional(); ?>" class="development"  />
                            </div>
                            </div>
-                           
-                            <div class="form-group"> 
-                                <div class="col-lg-12"> 
-                                    <a href="#tijdlocatie" class="tabchange">vorige</a> 
-                                </div>
-                            </div>
-                           
+                       </div>
+                       
+                       
+                        <div class="form-group">
+                                <div class="row"><div class="col-lg-2"><h4>Verzekering</h4></div></div> 
+                            
+                            <div class="row"> 
+                                <?
+                                	$arVerzekeringen = $oOwaesItem->details("verzekeringen"); 
+									if (!is_array($arVerzekeringen)) $arVerzekeringen = array(); 
+								?>
+                                <? foreach (settings("verzekeringen") as $iVerzekering => $strVerzekering) { ?>
+                                    <div class="col-lg-4">
+                                        <input type="checkbox" name="verzekering[]" id="verzekering<? echo $iVerzekering; ?>" value="<? echo $iVerzekering; ?>" <? if (in_array($iVerzekering, $arVerzekeringen)) echo "checked=checked"; ?> />
+                                        <label for="verzekering<? echo $iVerzekering; ?>" class="checkboxlabel"><? echo $strVerzekering; ?></label>                                    
+                                    </div>
+								<? } ?> 
+                            </div> <!--/row-->
+                       </div>
+                            
                             <div class="row row-buttons">
                             
                                 <div class="form-group col-lg-11">
@@ -491,6 +507,13 @@ input.time {width: 100%; display: block; }
                                     <input type="submit" name="owaesadd" id="owaesadd" class="auto border btn btn-default pull-right" value="opslaan" />
                                 </div>
                             </div>
+                            
+                            <div class="form-group"> 
+                                <div class="col-lg-12"> 
+                                    <a href="#tijdlocatie" class="tabchange">vorige</a> 
+                                </div>
+                            </div>
+                           
                       </div>
                     </div>
 

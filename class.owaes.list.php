@@ -304,7 +304,8 @@
 		public function filterPassedDate($iTime = 0) { // geen attribuut of 0: voorbij vandaag, integer: time, FALSE of niet-integer: geen filter
 			if ($iTime == 0) $iTime = owaesTime(); 
 			if (is_numeric($iTime)) { 
-				$this->arSQLwhere["date"] = " (md.start > " . ($iTime-6*60*60) . ") or (md.start is NULL and m.lastupdate > " . ($iTime-(60*60*24*30)) . ")  or (md.start = 0 and m.lastupdate > " . ($iTime-(60*60*24*30)) . ")  " ;  // start > 6 uur geleden of laatst updated > maand geleden 
+//				$this->arSQLwhere["date"] = " (md.start > " . ($iTime-6*60*60) . ") or (md.start is NULL and m.lastupdate > " . ($iTime-(60*60*24*30)) . ")  or (md.start = 0 and m.lastupdate > " . ($iTime-(60*60*24*30)) . ")  " ;  // start > 6 uur geleden of laatst updated > maand geleden 
+				$this->arSQLwhere["date"] = " (md.start > " . ($iTime-6*60*60) . ") or (md.start is NULL)  or (md.start = 0)  " ;  // start > 6 uur geleden of laatst updated > maand geleden 
 				$this->arSQLjoin["date"] = "left join (select market, max(datum) as start from tblMarketDates group by market) md on m.id = md.market"; 
 			} else {
 				unset($this->arSQLwhere["date"]); 

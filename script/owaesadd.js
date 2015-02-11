@@ -393,13 +393,13 @@ function validateAddActivity(bShowAlerts) {
 			$(this).attr("id", "inpfield" + Math.floor(Math.random()*100000)); 
 		})
 		$(".invalidtime").each(function() {
-			arFouten[$(this).attr("id")] = "Gelieve geldige waarden in te vullen voor startuur en duurtijd"; 
+			arFouten[$(this).attr("id")] = "Gelieve geldige waarden in te vullen voor startuur en duurtijd."; 
 		}) 
 	}
     if (!($credits > 0)) {
 		arFouten["creditsfield"] = "Gelieve meer dan 0 credits te geven/vragen."; 
 	}
-    if ($("input#voorwaarden:checked").length == 0) arFouten["voorwaarden"] = "De algemene voorwaarden moeten gevolgd worden";  
+    if ($("input#voorwaarden:checked").length == 0) arFouten["voorwaarden"] = "De algemene voorwaarden moeten gevolgd worden.";  
 
 
 	if (Object.keys(arFouten).length > 0) { 

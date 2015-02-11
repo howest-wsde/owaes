@@ -129,11 +129,33 @@
 			
 			return $strHTML; 
 		}
+		
+		public function fixedTerms($strHTML) {
+			$arFixed = array(
+				"credit" => settings("credits", "name", "1"), 
+				"credits" => settings("credits", "name", "x"), 
+				"Credit" => ucfirst(settings("credits", "name", "1")),  
+				"Credits" => ucfirst(settings("credits", "name", "x")),  
+				"Creditoverdracht" => ucfirst(settings("credits", "name", "overdracht")),  
+			); 
+			preg_match_all("/\[\[([\s\S]*?)\]\]/", $strHTML, $arResult);   
+			if (isset($arResult[1])) foreach ($arResult[1] as $strTerm){
+				if (isset($arFixed[$strTerm])) {
+					$strHTML = str_replace("[[$strTerm]]", $arFixed[$strTerm], $strHTML); 
+				} else {
+					$strHTML = str_replace("[[$strTerm]]", $strTerm, $strHTML);  
+				}
+			}  
+			return $strHTML; 	
+		}
 
 		public function html($strHTML = NULL, $bXtraFunctions = TRUE) {
-			if (!is_null($strHTML)) $this->strHTML = $strHTML; 
+			if (!is_null($strHTML)) {
+				$this->strHTML = $strHTML; 
+			}
 			$strHTML = $this->strHTML; 
 			$strHTML = $this->includes($strHTML);
+			$strHTML = $this->fixedTerms($strHTML);
 			foreach ($this->arLoops as $strTag=>$arLoops) {
 				$strHTML = str_replace("[$strTag:count]", count($arLoops[key($arLoops)]), $strHTML);   // [tag:count$
 				
