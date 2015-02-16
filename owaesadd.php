@@ -39,7 +39,7 @@
 			switch($arPoster[0]) {
 				case "g": // group
 					$iGroep = intval($arPoster[1]); ; 
-					if (!($oOwaesItem->group() && $oOwvaesItem->group() == $iGroep)){
+					if (!($oOwaesItem->group() && $oOwaesItem->group() == $iGroep)){
 						$oOwaesItem->group($iGroep);	
 						$oOwaesItem->author(group($iGroep)->admin()->id()); 
 					}
@@ -65,6 +65,7 @@
 		
 		$oOwaesItem->title($_POST["title"]); 
 		$oOwaesItem->body($_POST["description"]); 
+		$oOwaesItem->details("verzekeringen", array()); 
 		$oOwaesItem->details("verzekeringen", $_POST["verzekering"]); 
 	//	switch($_POST["locationOptions"]) {
 	//		case "free": 
@@ -500,7 +501,7 @@ input.time {width: 100%; display: block; }
                             <div class="row row-buttons">
                             
                                 <div class="form-group col-lg-11">
-                                	<input type="checkbox" name="voorwaarden" id="voorwaarden" value="1" />
+                                	<input type="checkbox" name="voorwaarden" id="voorwaarden" value="1" <? if ($oOwaesItem->id() != 0) echo "checked=\"checked\""; ?> />
                                     <label for="voorwaarden" class="checkboxlabel">Ik bevestig dat dit aanbod conform de <a href="modal.voorwaarden.php" class="domodal">gebruiksvoorwaarden</a> is. </label>
                                 </div>
                                 <div class="form-group col-lg-1">

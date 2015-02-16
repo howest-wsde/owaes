@@ -309,52 +309,55 @@ $(document).ready(function() {
 	}
 	clock();  
 
-	arMessages = Array(); 
-	function ping() { 
-		$.getJSON(strRoot + "message.ajax.php", function( data ) { 
-	//		console.log(data); 
-			$.each( data, function(strKey, oMessage) {
-			//	console.log(oMessage); 
-				if (typeof arMessages[strKey] == 'undefined') {
-					arMessages[strKey] = oMessage; 
-					/*
-					elMessage = $("<p>").html(oMessage["message"]);
-					if (oMessage["link"]) elMessage = $("<a>").attr("href", oMessage["link"]).append(elMessage); 
-					$("ul.popupmessages").prepend(
-						$("<li />").attr("id", "message_" + strKey).hide().append(
-							elMessage
-						).append(
-							$("<a>").addClass("close").html("x").attr("href", "#").click(function(){
-								$(this).parentsUntil("ul").remove(); 
-								return false; 
-							})
-						).fadeIn("slow")
-					);  
-					*/
-					notify( // ($title, $body, $icon, $url) 
-						oMessage["title"], 
-						oMessage["message"], 
-						oMessage["icon"], 
-						oMessage["link"]
-					);
-					//setTimeout(function() { 
-					//	$("#message_" + strKey).fadeOut("slow"); 
-					//}, 90000);
-				}
-
-			}); 
-		}); 
-		setTimeout(ping, 30000);
-	}
-	ping();
 
 	
 	if ($(".convoColumn").length) {
 	    $(".convoColumn").scrollTop($(".convoColumn")[0].scrollHeight);
 	}
 
+	ping();
  
 });
+
+arMessages = Array(); 
+function ping(arSend) { 
+	arSend = arSend || {}; 
+	$.getJSON(strRoot + "message.ajax.php", arSend, function( data ) { 
+//		console.log(data); 
+		$.each( data, function(strKey, oMessage) {
+		//	console.log(oMessage); 
+			if (typeof arMessages[strKey] == 'undefined') {
+				arMessages[strKey] = oMessage; 
+				/*
+				elMessage = $("<p>").html(oMessage["message"]);
+				if (oMessage["link"]) elMessage = $("<a>").attr("href", oMessage["link"]).append(elMessage); 
+				$("ul.popupmessages").prepend(
+					$("<li />").attr("id", "message_" + strKey).hide().append(
+						elMessage
+					).append(
+						$("<a>").addClass("close").html("x").attr("href", "#").click(function(){
+							$(this).parentsUntil("ul").remove(); 
+							return false; 
+						})
+					).fadeIn("slow")
+				);  
+				*/
+				notify( // ($title, $body, $icon, $url) 
+					oMessage["title"], 
+					oMessage["message"], 
+					oMessage["icon"], 
+					oMessage["link"],
+					strKey
+				);
+				//setTimeout(function() { 
+				//	$("#message_" + strKey).fadeOut("slow"); 
+				//}, 90000);
+			}
+
+		}); 
+	}); 
+	setTimeout(ping, 30000);
+}
   
 function loadModals(arURLs) {
 	if (arURLs.length > 0) {

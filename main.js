@@ -369,8 +369,8 @@ function raiseExp($exp) {
  * $icon    De URL naar een afbeelding       type string (volledige url)
  * $url     De URL naar het event            type string (volledige url)
  */
-function notify($title, $body, $icon, $url) {
-	 htmlNotify($title, $body, $icon, $url);
+function notify($title, $body, $icon, $url, strKey) {
+	 htmlNotify($title, $body, $icon, $url, strKey);
 	 return ; 
 	 
     // Support de browser desktop notifications?
@@ -381,7 +381,7 @@ function notify($title, $body, $icon, $url) {
 	console.log("------------------------------"); 
     if (!("Notification" in window)) {
         console.log("JS: [notify] Deze browser ondersteunt geen desktop notificaties.");
-        htmlNotify($title, $body, $icon, $url);
+        htmlNotify($title, $body, $icon, $url, strKey);
     }
 
     // Laat de gebruiker desktop notifications toe? (dan moet de else if na deze niet overlopen worden)
@@ -425,7 +425,7 @@ function notify($title, $body, $icon, $url) {
 
             // Notificaties werden NU niet toegestaan
             if (permission !== 'granted') {
-                htmlNotify($title, $body, $icon, $url);
+                htmlNotify($title, $body, $icon, $url, strKey);
             }
         });
         console.log(Notification.permission);
@@ -433,24 +433,25 @@ function notify($title, $body, $icon, $url) {
 
     // Notificaties werden DE VORIGE KEER niet toegestaan
     else if (Notification.permission === "denied") {
-        htmlNotify($title, $body, $icon, $url);
+        htmlNotify($title, $body, $icon, $url, strKey);
 		console.log("new Notification (lijn 599)"); 
     }
     
     // Er is iets misgelopen met desktop notifications, dan maar een gewone notification
     else {
-        htmlNotify($title, $body, $icon, $url);
+        htmlNotify($title, $body, $icon, $url, strKey);
 		console.log("new Notification (lijn 605)"); 
     }
 }
 
-function htmlNotify($title, $body, $icon, $url) {
+function htmlNotify($title, $body, $icon, $url, strKey) {
+	strKey = strKey || "null"; 
     var $html = "";
     $html += "<div class=\"notification\">";
     $html += "<div class=\"media\">";
     $html += "<img class=\"media-object pull-left\" src=\"" + $icon + "\">";
     $html += "<div class=\"media-body odd\">";
-    $html += "<button type=\"button\" class=\"close\" >&times;</button>"; 
+    $html += "<button type=\"button\" class=\"close\" rel=\"" + strKey + "\">&times;</button>"; 
     $html += "<a href=\"" + $url + "\">";
 	$html += "<h4 class=\"media-heading\">" + $title + "</h4>";
     $html += "<p class=\"\">" + $body + "</p>";
@@ -464,7 +465,8 @@ function htmlNotify($title, $body, $icon, $url) {
 
 	// alert($body); 
  
-    $(".notification .close").click(function () {
+    $(".notification .close").click(function () { 
+		ping({"read": $(this).attr("rel")});
         $(this).parentsUntil(".notification").parent().remove();
     });
 }

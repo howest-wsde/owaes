@@ -197,7 +197,7 @@ $(function() {
 		iMin = parseInt($(this).attr("min")); 
 		iMax = parseInt($(this).attr("max")); 
 		$(this).after(
-			$("<div />").addClass("sliderref credits").html("credits") // .addClass("slidervalue").addClass("creditsslide").attr("rel", "credits").html((iVal==0)?"overeen te komen":iVal)
+			$("<div />").addClass("sliderref credits").html(vocabulaire("credits")) // .addClass("slidervalue").addClass("creditsslide").attr("rel", "credits").html((iVal==0)?"overeen te komen":iVal)
 		).before(
 			$("<div />").addClass("slider").attr("id", "creditsslide").addClass("creditsslide").attr("rel", "credits").slider({
 				min: iMin,
@@ -343,20 +343,20 @@ function aanbodAanpassen() {
 
     switch ($aanbod) {
         case "ervaring":
-            $legend += "<strong>Werkervaring</strong> <small>(credits uitgeven)</small>";
-            $credits = "credits (uitgeven)"
+            $legend += "<strong>Werkervaring</strong> <small>(" + vocabulaire("credits") + " uitgeven)</small>";
+            $credits = "" + vocabulaire("credits") + " (uitgeven)"
             break;
         case "opleiding":
-            $legend += "<strong>Opleiding</strong> <small>(credits verdienen)</small>";
-            $credits = "credits (verdienen)"
+            $legend += "<strong>Opleiding</strong> <small>(" + vocabulaire("credits") + " verdienen)</small>";
+            $credits = "" + vocabulaire("credits") + " (verdienen)"
             break;
         case "infra":
-            $legend += "<strong>Delen</strong> <small>(credits verdienen)</small>";
-            $credits = "credits (verdienen)"
+            $legend += "<strong>Delen</strong> <small>(" + vocabulaire("credits") + " verdienen)</small>";
+            $credits = "" + vocabulaire("credits") + " (verdienen)"
             break;
         default:
             $legend = "Aanbod toevoegen";
-            $credits = "credits"
+            $credits = vocabulaire("credits"); 
     }
     $("legend.aanbod").html($legend);
     $("div.sliderref.credits").html($credits);
@@ -397,7 +397,7 @@ function validateAddActivity(bShowAlerts) {
 		}) 
 	}
     if (!($credits > 0)) {
-		arFouten["creditsfield"] = "Gelieve meer dan 0 credits te geven/vragen."; 
+		arFouten["creditsfield"] = "Gelieve meer dan 0 " + vocabulaire("credits") + " te geven/vragen."; 
 	}
     if ($("input#voorwaarden:checked").length == 0) arFouten["voorwaarden"] = "De algemene voorwaarden moeten gevolgd worden.";  
 

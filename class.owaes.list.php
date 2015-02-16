@@ -151,7 +151,7 @@
 					} 
 					break; 
 			}
-		}
+		} 
 		
 		public function getList() {
 			if (!$this->bLoaded) {
