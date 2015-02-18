@@ -81,9 +81,10 @@
 							echo ("</tr>");  
 							while ($oDB->nextRecord()) {
 								$arStatus = json_decode($oDB->get("statusinfo"), TRUE); 
-								echo ("<tr title='"); 
-								if (isset($arStatus["warnings"])) var_dump($arStatus["warnings"]); 
-								echo ("'>"); 
+								echo ("<tr>"); 
+								//  title='"); 
+								//if (isset($arStatus["warnings"])) var_dump($arStatus["warnings"]); 
+								//echo ("'
 								echo ("<td class=\"status" . (isset($arStatus["status"])?$arStatus["status"]:"") . "\">" . $oDB->get("firstname") . " " . $oDB->get("lastname") . "</td>");
 								foreach ($arFields as $strField=>$arField) {
 									$iWarning = 0; 

@@ -21,12 +21,15 @@
 	$oOwaesList->filterByState(STATE_RECRUTE); 
 	  
 	$oOwaesList->filterPassedDate(owaesTime()); 
-
+	$oOwaesList->optiOrder($oMe); 
+	
+/*
 	$oOwaesList->enkalkuli("social", $oMe->social());
 	$oOwaesList->enkalkuli("physical", $oMe->physical());
 	$oOwaesList->enkalkuli("mental", $oMe->mental());
 	$oOwaesList->enkalkuli("emotional", $oMe->emotional());
 	// $oOwaesList->enkalkuli("location", $oMe->emotional());
+	*/
 
 	// $oOwaesList->setUser($oUser); 
 	

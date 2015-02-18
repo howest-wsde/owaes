@@ -114,9 +114,7 @@
                     </div>
                     <div class="main market admin-groepusers"> 
                     	<? if (user(me())->admin()) { ?>
-                        <ul>
-                        	<li><a href="admin.php">Admin</a></li><li><a href="admin.users.php">Gebruikers</a></li><li><a href="admin.groepen.php">Groepen</a></li>
-                        </ul>
+                        <? include "admin.menu.xml"; ?>
                         <? } ?>
                         <form method="post" class="form-horizontal" id="admingroupform" enctype="multipart/form-data"> 
                         

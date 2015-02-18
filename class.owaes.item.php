@@ -988,9 +988,9 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "actions":  
 					$arActions = array(); 
 					$arSubscriptions = $this->subscriptions();  
-					if ($this->iAuthor != me()) {
+					if ($this->iAuthor != me()) { 
 						$iMyValue = (isset($arSubscriptions[me()])) ? $arSubscriptions[me()]->state() : SUBSCRIBE_CANCEL; 
-						if (admin()) $arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" class=\"btn btn-default btn-sm pull-right edit\" align=\"right\" /></a>"; 
+						if ($this->userrights("edit", me())) $arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" class=\"btn btn-default btn-sm pull-right edit\" align=\"right\" /></a>"; 
 					} else { // ik == author
 						$iCount = count($arSubscriptions); 
 						if ($iCount > 0) { 

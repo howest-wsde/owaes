@@ -4,18 +4,17 @@
 		private $bLoaded = FALSE;  // when calling function getList, class checks if list has to be re-generated ; bLoaded == FALSE > generate
 		private $arOWAESlist = array(); // actual result
 		private $arSQLwhere = array(); 
+		private $arSQLselect = array(); 
 		private $arOrder = array();  
-		private $arScore = array(); 
+		private $arEnkalkuli = array(); 
 		private $arFilter = array(); 
 		private $arSQLjoin = array(); 
 		private $iLimit = 100; 
 		private $iStart = 0; 
-		private $arDetails = array(); 
+		//private $arDetails = array(); 
 		 
 		public function owaeslist() { 
-			$this->arOrder[] = "enkalkuli desc";   
-			$this->arOrder[] = "date desc";    
-		 
+			// 
 		}
 		 
 		public function setUser($oUser) {
@@ -48,6 +47,15 @@
 			}
 		}
 		
+		public function optiOrder($oUser = NULL) { 
+			if (is_null($oUser)) $oUser = user(me()); 
+			$this->enkalkuli("credits", $oUser->credits()); 
+			$this->enkalkuli("social", $oUser->social()); 
+			$this->enkalkuli("mental", $oUser->mental()); 
+			$this->enkalkuli("physical", $oUser->physical()); 
+			$this->enkalkuli("emotional", $oUser->emotional()); 
+			$this->enkalkuli("distance", $oUser->latitude(), $oUser->longitude());  
+		}
 		
 		public function rated($iUser, $strValue) {
 			switch(strtolower($strValue)) { 
@@ -118,62 +126,63 @@
 				bv. "social", 100 -> gaat minder social doen
 					"mental", 10 -> zoekt achter items met "mental"
 					"location", 20.3, 50.2 => zoekt op geografische nabijheid
-			*/
-			$this->arDetails[$strField] = is_null($value2) ? $value : array($value, $value2); 
+			*/ 
+			if (!in_array("enkalkuli desc", $this->arOrder)) $this->arOrder[] = "enkalkuli desc"; 
+			//$this->arDetails[$strField] = is_null($value2) ? $value : array($value, $value2); 
 			switch(strtolower($strField)) {
+				case "credits": 
+					$iItemCredits = "(m.credits * (case m.mtype
+						when '1' then 1
+						else -1 
+						end))";   
+					$iUserCredits = "100*(4800-" . $value . ")/4800";   
+					$this->arEnkalkuli["credits"] = " $iItemCredits * $iUserCredits/100 "; 
+					break; 
 				case "social":
 				case "mental":
 				case "physical": 
 				case "emotional": 
-					$this->arDetails["indicatoren"][$strField] = $value; 
-					switch(count($this->arDetails["indicatoren"])) {
-						case 1:  
-							if (intval($value) < 40) $this->arScore["indic." . $strField] = "(m.$strField / 111)+0.10"; 
-							if (intval($value) > 70) $this->arScore["indic." . $strField] = "1-(m.$strField / 111)";  
-						default: 
-							$iTotal = 0; 
-							$iMax = 0;
-							$iMin = 100; 
-							foreach ($this->arDetails["indicatoren"] as $strKey=>$iVal) {
-								$iTotal+=$iVal;
-								if ($iMin > $iVal) $iMin = $iVal; 
-								if ($iMax < $iVal) $iMax = $iVal; 
-							}
-							$iAVG = $iTotal / count($this->arDetails["indicatoren"]); 
-							foreach ($this->arDetails["indicatoren"] as $strKey=>$iVal) {
-								unset($this->arScore["indic." . $strField]); 
-								if ($iMax - $iMin > 10) {
-									if (intval($iVal) > $iAVG) $this->arScore["indic." . $strField] = "1-(m.$strField / 111)"; 
-									if (intval($iVal) < $iAVG) $this->arScore["indic." . $strField] = "(m.$strField / 111)+0.10"; 
-								} 
-							}
-							break; 	
-					} 
+					$iItemValue = "(m.$strField/25)"; 
+					$iUserValue = "100*(50-" . $value . ")/50"; 
+					$this->arEnkalkuli[$strField] = "$iItemValue * $iUserValue";  
 					break; 
-			}
+				case "distance": 
+					$iLatitude = $value; 
+					$iLongitude = $value2;   
+					$iKM = "3956 * 2 * ASIN(
+							SQRT( POWER(SIN((m.location_lat - abs($iLatitude)) * pi()/180 / 2), 2) 
+							+ COS(m.location_long * pi()/180 ) * COS(abs($iLatitude) * pi()/180)  
+							* POWER(SIN((m.location_long - $iLongitude) * pi()/180 / 2), 2) )) * (m.location_long/(m.location_long+0.0001))";  
+					$this->arEnkalkuli["distance"] = "(100-(-2*(50-$iKM)))/2"; 
+					break; 
+			} 
+			$this->arSQLselect["enkalkuli"] = "round((" . implode(") + (", array_values($this->arEnkalkuli)) . ")) as enkalkuli"; 
+			//$this->arSQLselect[time() . $strField] = $this->arEnkalkuli[$strField] . " as enkalkuli$strField"; 
+			//$this->arSQLselect["x"] = "m.location"; 
 		} 
 		
 		public function getList() {
-			if (!$this->bLoaded) {
+			if (!$this->bLoaded) { 
+				$this->arOrder[] = "date desc";  
+			
 				$arOWAESlist = array();
-				$strEnkalkuli = "1"; 
-				foreach ($this->arScore as $strKey=>$strVal) {
-					$strEnkalkuli .= "* ($strVal)";
-				}
-				$strSQL = "select distinct m.*, ($strEnkalkuli) as enkalkuli from tblMarket m ";
-				foreach($this->arSQLjoin as $strKey=>$strVal) { 
-					$strSQL .= " $strVal ";
-				} 
-				if (count($this->arSQLwhere)>0) {
-					$strSQL .= " where m.state != " . STATE_DELETED . " "; 
-					foreach($this->arSQLwhere as $strKey=>$strVal) { 
-						$strSQL .= " and (" . $strVal . ")"; 
-					} 
-				} 
-				$strSQL .= " order by " . implode(",", $this->arOrder);  
-				$strSQL .= " limit " . $this->offset() . ", " . $this->limit() . "";  
+				$this->arSQLselect["main"] = "m.*"; 
+				$this->arSQLwhere["main"] = "m.state != " . STATE_DELETED;  
+				
+				
+				
+				$strSQL = "select 
+							distinct " . implode(",", array_values($this->arSQLselect)) . " 
+							from tblMarket m  
+							" . implode(" ", array_values($this->arSQLjoin)) . " 
+							where (" . implode(") and (", array_values($this->arSQLwhere)) . ")
+							order by " . implode(",", $this->arOrder) . " 
+							limit " . $this->offset() . ", " . $this->limit() . "; ";  
 				$oOWAES = new database($strSQL, true); 
-				//if ($bShowSQL)  echo $oOWAES->table(TRUE); 
+				
+				
+//echo ("<style>table td, tr, th {border: 1px solid black; padding: 3px; }</style>"); 
+//echo $oOWAES->table(TRUE); 
 // vardump($strSQL); 
  // console("main.php", $strSQL); 
  //echo ("$strSQL "); 

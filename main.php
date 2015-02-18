@@ -162,7 +162,7 @@
                     <div class="col-md-4">
                         <div class="indicatoren">
                             <div class="indicator">
-                                <img src="img/userEmotionalIcon.png" alt="Sociaal" title="Sociaal: <? echo $oMe->social(); ?>%" />
+                                <img src="img/userSocialIcon.png" alt="Sociaal" title="Sociaal: <? echo $oMe->social(); ?>%" />
                                 <div class="progress progress-sociaal" title="Sociaal: <? echo $oMe->social(); ?>%">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->social(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->social(); ?>%;">
                                         <span class="sr-only"><? echo $oMe->social(); ?>% Sociaal</span>
@@ -192,7 +192,7 @@
                             </div>
                             
                             <div class="indicator">
-                             <img src="img/userSocialIcon.png" alt="Welzijn" title="Welzijn: <? echo $oMe->emotional(); ?>%" />
+                             <img src="img/userEmotionalIcon.png" alt="Welzijn" title="Welzijn: <? echo $oMe->emotional(); ?>%" />
                                 <div class="progress progress-welzijn" title="Welzijn: <? echo $oMe->emotional(); ?>%">
                                     <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->emotional(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->emotional(); ?>%;"> 
                                         <span class="sr-only"><? echo $oMe->emotional(); ?>% Welzijn</span>
@@ -287,23 +287,23 @@
 			$arIndicatoren = $oMe->indicatorenTimeline(); 
 			$arShow = array(
 						array(
-							"label" => "&nbsp;Welzijn",
-							"data" => $arIndicatoren["emotional"]["data"], 
+							"label" => "&nbsp;Sociaal",
+							"data" => $arIndicatoren["social"]["data"], 
 							"color" => "#8dc63f",
-						),  
+						), 
 						array(
 							"label" => "&nbsp;Fysiek",
 							"data" => $arIndicatoren["physical"]["data"], 
 							"color" => "#ff3131",
-						), 
+						),  
 						array(
 							"label" => "&nbsp;Kennis",
 							"data" => $arIndicatoren["mental"]["data"], 
 							"color" => "#0072bc",
 						), 
 						array(
-							"label" => "&nbsp;Sociaal",
-							"data" => $arIndicatoren["social"]["data"], 
+							"label" => "&nbsp;Welzijn",
+							"data" => $arIndicatoren["emotional"]["data"], 
 							"color" => "#ffcc00",
 						), 
 					); 
