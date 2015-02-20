@@ -9,7 +9,9 @@ div.rem {margin-left: 18px; font-style: italic; }
 .class .rem {border: 1px solid gray; margin: 10px 0; padding: 10px; }
 h2 {font-size: 16px; }
 h3 {font-size: 15px; }
-</style><?
+</style>
+
+<?
 	error_reporting(E_ALL);
 	ini_set('display_errors', '1');
 	

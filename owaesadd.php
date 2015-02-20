@@ -65,8 +65,8 @@
 		
 		$oOwaesItem->title($_POST["title"]); 
 		$oOwaesItem->body($_POST["description"]); 
-		$oOwaesItem->details("verzekeringen", array()); 
-		$oOwaesItem->details("verzekeringen", $_POST["verzekering"]); 
+		//$oOwaesItem->details("verzekeringen", array()); 
+		$oOwaesItem->details("verzekeringen", (isset($_POST["verzekering"])?$_POST["verzekering"]:array())); 
 	//	switch($_POST["locationOptions"]) {
 	//		case "free": 
 	//			$oOwaesItem->location("", 0, 0); 

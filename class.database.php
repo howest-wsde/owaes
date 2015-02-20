@@ -1,8 +1,6 @@
 <?php 
+	$dbPDO = new PDO("mysql:host=" . $arConfig["database"]["host"] . ";dbname=" . $arConfig["database"]["name"], $arConfig["database"]["user"], $arConfig["database"]["password"]);
 
-	mysql_connect($arConfig["database"]["host"], $arConfig["database"]["user"], $arConfig["database"]["password"]);
-	mysql_select_db($arConfig["database"]["name"]);
-	
 	$ar_GLOBAL_queries = array(); 
 
 	class database { // wordt gebruikt om SQL-queries uit te voeren, enkel gebruiken vanuit andere classes, niet in 'gewone' php-pages 
@@ -34,7 +32,7 @@
 		public function execute($strSQL = NULL){ /* executes DB-query, returns number of records (length)
 			optional parameter $strSQL: eerst SQL-aanpassen, anders wordt deze gebruikt die geset werd met sql("..")
 		*/
-		
+			global $dbPDO; 
 			$this->iRecord = -1;  
 			if (!is_null($strSQL)) $this->sql($strSQL);
 			$strSQL = $this->sql(); 
@@ -42,56 +40,71 @@
 			$iStartQuery = time();  
 			$arFieldNames = array(); 
 			$oResult = NULL; 
-			$oResult = mysql_query($strSQL) or die ('<div style="border: 2px solid red; padding: 10px; margin: 10px 0; "><div style="color: red; font-weight: bold; ">Error: </div><div style="margin: 10px 0; color: gray; font-style: italic; ">' . $this->sql() . '</div><div>' . mysql_error () . '</div></div>');
-			$this->iQueryTime = time() - $iStartQuery; 
-			$this->arResult = array(); 
-			if (!is_resource($oResult)){
+			try {  
+				$this->iQueryTime = time() - $iStartQuery; 
+				$this->arResult = array();  
+				$this->iInsertedID = 0; 
 				$this->iLength = 0; 
-				$this->iInsertedID = mysql_insert_id();  
-			} else {  
-				$this->iLength = @mysql_num_rows($oResult);
-				if ($this->iLength > 0) {
-					for ($i=0; $i < mysql_num_fields($oResult); $i++) $this->arFieldNames[] = mysql_fetch_field($oResult, $i)->name;  
-					while($r = mysql_fetch_array($oResult,MYSQL_BOTH)) $this->arResult[] = $r;
-				} else {
-					$this->iInsertedID = mysql_insert_id();  
+				
+				$arSQL = explode(" ", $strSQL); 
+				switch(strtolower($arSQL[0])) {
+					case "select":   
+						foreach($dbPDO->query($strSQL) as $oRow) {
+							$arRow = array(); 
+							foreach ($oRow as $strCol=>$strVal) {
+								$arRow[$strCol] = $strVal; 
+							}
+							$this->arResult[] = $arRow; 
+						}
+						$this->iLength = count($this->arResult); 
+						break; 
+					case "insert": 
+						$oResult = $dbPDO->exec($strSQL);  
+						$this->iInsertedID = $dbPDO->lastInsertId();   
+						break; 
+					case "delete": 
+					case "update": 
+						$oResult = $dbPDO->exec($strSQL);  
+						break; 
+					default: 
+						echo ('<div style="border: 2px solid red; padding: 10px; margin: 10px 0; "><div style="color: red; font-weight: bold; ">DB command? : </div><div style="margin: 10px 0; color: gray; font-style: italic; ">' . $this->sql() . '</div><div>Niet uitgevoerd (class.database, lijn ' . __LINE__ . '</div></div>');  
+				} 
+				 
+				if ($this->getTime() > 2) { 
+					$oLog = new log("trage query", array(
+						"url" => filename(), 
+						"sql" => $this->sql(), 
+						"tijd" => $this->getTime(), 
+					)); 
 				}
-			} 
-			// echo "<div class=\"ADMIN SQL\">SQL: <code>" . $strSQL . "</code></div>"; 
-//			if ($this->getTime() >= 1) {
-//				vardump($this->sql() . " : " . $this->getTime());  
-//			}
-			if ($this->getTime() > 2) { 
-				$oLog = new log("trage query", array(
+				
+				/* START LOG DB */
+				$strDBlog = "cache/dbqueries.json";
+				$arQueries = json($strDBlog); 
+				if (isset($arQueries)) foreach ($arQueries as $strKey=>$arQRY) {
+					if ($arQRY["date"] < time()-60*60*3) unset ($arQueries[$strKey]); 
+				}
+				while (count($arQueries)>500) $xDel = array_shift($arQueries);
+				global $ar_GLOBAL_queries; 
+				if (!isset($ar_GLOBAL_queries[$this->sql()])) $ar_GLOBAL_queries[$this->sql()]=0; 
+				$arQueries[time() . "." . rand(0,9999)] = array(
+					"date" => time(), 
 					"url" => filename(), 
 					"sql" => $this->sql(), 
 					"tijd" => $this->getTime(), 
-				)); 
+					"ip" => $_SERVER['REMOTE_ADDR'],
+					"user" => me(),
+					"sessie" => session_id(), 
+					"count" => ++$ar_GLOBAL_queries[$this->sql()], 
+				); 
+				json($strDBlog, $arQueries); 
+				/* END LOG DB */
+				
+				return $this->iLength;
+			} catch(PDOException $ex) {
+				echo ('<div style="border: 2px solid red; padding: 10px; margin: 10px 0; "><div style="color: red; font-weight: bold; ">Error: </div><div style="margin: 10px 0; color: gray; font-style: italic; ">' . $this->sql() . '</div><div>' . $ex->getMessage() . '</div></div>');  
+				return FALSE; 
 			}
-			
-			/* START LOG DB */
-			$strDBlog = "cache/dbqueries.json";
-			$arQueries = json($strDBlog); 
-			if (isset($arQueries)) foreach ($arQueries as $strKey=>$arQRY) {
-				if ($arQRY["date"] < time()-60*60*3) unset ($arQueries[$strKey]); 
-			}
-			while (count($arQueries)>500) $xDel = array_shift($arQueries);
-			global $ar_GLOBAL_queries; 
-			if (!isset($ar_GLOBAL_queries[$this->sql()])) $ar_GLOBAL_queries[$this->sql()]=0; 
-			$arQueries[time() . "." . rand(0,9999)] = array(
-				"date" => time(), 
-				"url" => filename(), 
-				"sql" => $this->sql(), 
-				"tijd" => $this->getTime(), 
-				"ip" => $_SERVER['REMOTE_ADDR'],
-				"user" => me(),
-				"sessie" => session_id(), 
-				"count" => ++$ar_GLOBAL_queries[$this->sql()], 
-			); 
-			json($strDBlog, $arQueries); 
-			/* END LOG DB */
-			
-			return $this->iLength;
 		} 
 		
 		public function table($bShowSQL = FALSE) { // voor debugging-purposes, returns DB-result als <table>
@@ -154,7 +167,10 @@
 		public function escape($strTekst) { // mysql_real_escape_string
 			//echo ($strTekst); 
 			//echo "<br />" . mysql_real_escape_string($strTekst); 	 
-			return mysql_real_escape_string($strTekst); 	
+			// global $dbPDO; 
+			$strTekst = str_replace('"', "\\\"", $strTekst);
+			$strTekst = str_replace("'", "\\'", $strTekst);
+			return $strTekst;  // $dbPDO->quote($strTekst); // mysql_real_escape_string($strTekst); 	
 		}
 		
 		public function fields() {

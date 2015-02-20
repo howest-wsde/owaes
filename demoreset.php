@@ -44,6 +44,7 @@
 					$oDB->execute("delete from tblMarketSubscriptions where user not in (select id from tblUsers); "); 
 					$oDB->execute("delete from tblActions where user not in (select id from tblUsers); "); 
 					$oDB->execute("delete from tblConversations where sender not in (select id from tblUsers); "); 
+					$oDB->execute("delete from tblConversations where receiver not in (select id from tblUsers); "); 
 					$oDB->execute("delete from tblExperience where user not in (select id from tblUsers); "); 
 					$oDB->execute("delete from tblFeedback where `from` not in (select id from tblUsers) or `to` not in (select id from tblUsers); ");  
 					$oDB->execute("delete from tblGroupUsers where user not in (select id from tblUsers); "); 

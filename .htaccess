@@ -2,8 +2,7 @@
 <FilesMatch "\.(inc|php)$">
 AddHandler x-httpd-php5 .inc .php
 </FilesMatch>
- 
- 
+
 # FRIENDLY URL's : 
 # ----------------
 Options -MultiViews

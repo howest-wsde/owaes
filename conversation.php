@@ -135,7 +135,7 @@
 	                                            echo ('<div class="date">' . str_date($oMessage->sent()) . '</div>'); 
 											}
 											$iPrevDate = $oMessage->sent(); 
-											echo ('<div class="msg">' . $oMessage->body() . '</div>'); 
+											echo ('<div class="msg">' . html($oMessage->body()) . '</div>'); 
 											
 											$arExtras = array(); 
 											foreach ($oMessage->data() as $strK => $strV) {
