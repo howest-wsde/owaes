@@ -260,6 +260,7 @@
 		
 		public function userrights($strWat, $iUser = NULL) { // $strWat = "edit", "del", "select", "pay" , als iUser==0: me
 			if (is_null($iUser)) $iUser = me(); 
+			if (user($iUser)->admin()) return TRUE; 
 			if (!$this->group()) {
 				return $this->author()->id() == me(); 
 			} else { 
@@ -881,8 +882,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$arVerzekeringen = $this->details("verzekeringen"); 
 					$arSettingVerzekeringen = settings("verzekeringen"); 
 					if (is_array($arVerzekeringen)) {
-						foreach ($arVerzekeringen as $iDummy=>$iVal) $arVerzekeringen[$iDummy] = $arSettingVerzekeringen[$iVal]; 
-						return implode("<br />", $arVerzekeringen); 
+						foreach ($arVerzekeringen as $iDummy=>$iVal) $arVerzekeringen[$iDummy] = $arSettingVerzekeringen[$iVal];  
+						return (count($arVerzekeringen)==0) ? "geen verzekeringen opgegeven" : implode("<br />", $arVerzekeringen);  
 					} else return "geen verzekeringen opgegeven";  
 				case "latitude": 
 					return $this->latitude(); 

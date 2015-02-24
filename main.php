@@ -539,10 +539,8 @@
                             $oOwaesList->filterByState(STATE_RECRUTE);  
                             $oOwaesList->filterPassedDate(owaesTime());  
                             $oOwaesList->filterByUser(me(), FALSE); 
-                            $oOwaesList->enkalkuli("social", $oMe->social());
-                            $oOwaesList->enkalkuli("physical", $oMe->physical());
-                            $oOwaesList->enkalkuli("mental", $oMe->mental());
-                            $oOwaesList->enkalkuli("emotional", $oMe->emotional());
+							$oOwaesList->notInvolved(me()); 
+                            $oOwaesList->optiOrder();  
                             $oOwaesList->limit(2);  
                             if (count($oOwaesList->getList()) > 0) { 
                                 ?>
@@ -625,15 +623,14 @@
                         ?>   
                          
 						<?
-                            $oOwaesList = new owaeslist(); 
-							$oOwaesList->subscribed(me(), "confirmed"); 
-							$oOwaesList->payment(me(), "no"); 
+                            $oOwaesList = new owaeslist();   
+							$oOwaesList->payment(me(), "tobepayed"); 
                             if (count($oOwaesList->getList()) > 0) { 
                                 ?>
                                     <!-- Recent aangemaakte activiteiten --> 
                                      <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
                                         <div class="layoutBlocks border">
-                                            <h2>Nog te betalen</h2>
+                                            <h2>Nog te ontvangen</h2>
             
                                             <div class="list-group">
                                                 
@@ -642,9 +639,29 @@
                                                     echo $oItem->HTML("owaes.main-full.html");  
                                                 } 
                                                 ?> 
-                                            </div>
+                                            </div> 
+                                        </div>
+                                     </div>
+                                <?
+                            }
+							
+                            $oOwaesList = new owaeslist();    
+							$oOwaesList->payment(me(), "topay"); 
+                            if (count($oOwaesList->getList()) > 0) { 
+                                ?>
+                                    <!-- Recent aangemaakte activiteiten --> 
+                                     <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
+                                        <div class="layoutBlocks border">
+                                            <h2>Nog te betalen xxx</h2>
             
-                                            <!-- <p class="meer"><a href="#">meer...</a></p> -->
+                                            <div class="list-group">
+                                                
+                                                <?				
+                                                foreach ($oOwaesList->getList() as $oItem) {  
+                                                    echo $oItem->HTML("owaes.main-full.html");  
+                                                } 
+                                                ?> 
+                                            </div> 
                                         </div>
                                      </div>
                                 <?

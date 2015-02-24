@@ -70,7 +70,7 @@
                    		        $oConversation = new conversation($oOwaesItem->author()->id());  
 						        $oConversation->filter("owaes", $iID); 
 						        $oPrevUser = NULL; 
-                                 echo('<div class="bericht">');
+                                echo('<div class="bericht">');
 						        foreach ($oConversation->messages() as $oMessage) {
 							        if ($oMessage->sender()->id() != me()) $oMessage->doRead(); 
                                    
@@ -88,7 +88,7 @@
 										        </div>');
 								        }
 								        echo ('<div class="date">' . str_date($oMessage->sent()) . '</div>
-									        <div class="msg">' . $oMessage->body() . '</div>'); 
+									        <div class="msg">' . html($oMessage->body()) . '</div>'); 
 								        echo ('<div class="spacer"></div>'); 
 							        echo ('</div>'); 
 							        $oPrevUser = $oMessage->sender();
@@ -105,13 +105,7 @@
                             </div> 
                     </div>
                    
-            	</div>
-                <!-- <div class="sideright">
-                	<? 
-						if ($iStatus != JOB_CREATOR) echo $oOwaesItem->author()->html("leftuserprofile.html");
-                        if (!is_null($oRightcolumnUser)) echo $oRightcolumnUser->html("leftuserprofile.html"); 
-					 ?>
-                </div> -->
+            	</div> 
             <? echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">

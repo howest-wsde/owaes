@@ -21,11 +21,11 @@
 			$this->iUser = $oUser->id(); 	
 		}
 		
-		public function payment($iUser, $strValue) {
-			switch(strtolower($strValue)) { 
-				case 1: 
+		public function payment($iUser, $strValue) { 
+			console($iUser, $strValue);
+			switch(strtolower($strValue)) {  
 				case "yes": 
-				case "true": 
+				case "true":  
 						$this->arSQLjoin["payment" . $iUser] = " inner join tblMarketSubscriptions tt" . $iUser . " 
 											on (tt" . $iUser . ".user = " . $iUser . " or m.author = " . $iUser . ") 
 												and tt" . $iUser . ".market = m.id 
@@ -34,9 +34,9 @@
 						$this->arSQLwhere["payment" . $iUser] = " m.id in (select market from tblPayments where sender = " . $iUser . " or receiver = " . $iUser . ")" ;  
 
 					break; 
-				case 0: 
+				//case 0: 
 				case "no": 
-				case "false": 
+				case "false":  
 						$this->arSQLjoin["payment" . $iUser] = " inner join tblMarketSubscriptions tt" . $iUser . " 
 											on (tt" . $iUser . ".user = " . $iUser . " or m.author = " . $iUser . ") 
 												and tt" . $iUser . ".market = m.id 
@@ -44,7 +44,36 @@
 												and tt" . $iUser . ".status = " . SUBSCRIBE_CONFIRMED . ""; 
 						$this->arSQLwhere["payment" . $iUser] = " m.id not in (select market from tblPayments where sender = " . $iUser . " or receiver = " . $iUser . ")" ;  
 					break; 
+				case "tobepayed": // user moet betaling ontvangen  
+						$this->arSQLjoin["payment" . $iUser] = " inner join tblMarketSubscriptions tt" . $iUser . " 
+												on (
+														(tt" . $iUser . ".user = " . $iUser . " and m.mtype in (1))
+														or ( m.author = " . $iUser . " and m.mtype in (2,3)) 
+												  ) 
+												and tt" . $iUser . ".market = m.id 
+												and tt" . $iUser . ".overruled = 0 
+												and tt" . $iUser . ".status = " . SUBSCRIBE_CONFIRMED . ""; 
+						$this->arSQLwhere["payment" . $iUser] = " m.id not in (select market from tblPayments where sender = " . $iUser . " or receiver = " . $iUser . ")" ;  
+					break; 
+				case "topay": // user moet betaling ontvangen  
+						$this->arSQLjoin["payment" . $iUser] = " inner join tblMarketSubscriptions tt" . $iUser . " 
+												on (
+														(tt" . $iUser . ".user = " . $iUser . " and m.mtype in (2,3))
+														or ( m.author = " . $iUser . " and m.mtype in (1)) 
+												  ) 
+												and tt" . $iUser . ".market = m.id 
+												and tt" . $iUser . ".overruled = 0 
+												and tt" . $iUser . ".status = " . SUBSCRIBE_CONFIRMED . ""; 
+						$this->arSQLwhere["payment" . $iUser] = " m.id not in (select market from tblPayments where sender = " . $iUser . " or receiver = " . $iUser . ")" ;  
+					break; 
+				default: 
+					echo "test"; 
 			}
+		}
+		
+		public function notInvolved($iUser = NULL) {
+			if (is_null($iUser)) $iUser = me();  
+			$this->arSQLwhere["notInvolved" . $iUser] = " m.id not in (select market from tblMarketSubscriptions where user = $iUser and overruled = 0 and status != " . SUBSCRIBE_CANCEL . ")" ;  
 		}
 		
 		public function optiOrder($oUser = NULL) { 
@@ -147,6 +176,8 @@
 					$this->arEnkalkuli[$strField] = "$iItemValue * $iUserValue";  
 					break; 
 				case "distance": 
+					// TODO!!!!
+					// als er geen locatie voor user is wordt formule anders (thuiswerk wel grote impact) 
 					$iLatitude = $value; 
 					$iLongitude = $value2;   
 					$iKM = "3956 * 2 * ASIN(
@@ -169,8 +200,7 @@
 				$this->arSQLselect["main"] = "m.*"; 
 				$this->arSQLwhere["main"] = "m.state != " . STATE_DELETED;  
 				
-				
-				
+				 
 				$strSQL = "select 
 							distinct " . implode(",", array_values($this->arSQLselect)) . " 
 							from tblMarket m  
@@ -179,7 +209,7 @@
 							order by " . implode(",", $this->arOrder) . " 
 							limit " . $this->offset() . ", " . $this->limit() . "; ";  
 				$oOWAES = new database($strSQL, true); 
-				
+			 
 				
 //echo ("<style>table td, tr, th {border: 1px solid black; padding: 3px; }</style>"); 
 //echo $oOWAES->table(TRUE); 
@@ -277,28 +307,7 @@
 			} else {
 				$this->arSQLwhere["creator"] = "m.author = $iUser "; 	
 			}
-		} 
-		/*
-		public function filterByUnpayed($iUser) {
-			$this->arFilter["unpayed"] = $iUser; 
-			$this->arSQLjoin["unpayed"] = " inner join tblMarketSubscriptions tt 
-											on (tt.user = " . $iUser . " or m.author = " . $iUser . ") 
-												and tt.market = m.id 
-												and tt.overruled = 0 
-												and tt.status = " . SUBSCRIBE_CONFIRMED . " 
-										left join tblTransactions tr 
-											on tr.market = m.id 
-												and (tr.sender = " . $iUser . " or tr.receiver = " . $iUser . ") 
-												and (tr.sender=tt.user or tr.receiver = tt.user) "; 
-			$this->arSQLwhere["unpayed"] = "tr.id IS NULL or tr.status != " . TRANSACTION_STATE_COMPLETED . "" ; 
-			if (is_null($iUser)) {
-				unset($this->arFilter["unpayed"]); 
-				unset($this->arSQLwhere["unpayed"]); 
-				unset($this->arSQLjoin["unpayed"]); 
-			}
-		} 
-		*/
-	 
+		}  
 		public function hasWaarde($strWaarde) {
 			//$this->arSQLjoin["cat" . $iCat] = "inner join tblMarketCategories mc" . $iCat . " on m.id = mc" . $iCat . ".market and mc" . $iCat . ".categorie = " . $iCat . " "; 
 			switch (strtolower($strWaarde)) {

@@ -61,7 +61,8 @@
 					sameHeight();
 					return false; 
 				})
-				$("form.selecteerform").submit(function(){
+//				$("form.selecteerform").submit(function(){
+				$("input#aanpassen").click(function(){
 					arModals = Array(); 
 					arGoedgekeurd = Array(); 
 					arAfgekeurd = Array(); 
@@ -181,11 +182,12 @@
                             </div>
                         </div>
                      
-                        <input type="submit" value="aanpassen" name="edit" class="knop edit btn btn-default btn-sm pull-right" />
+                        <input type="submit" id="aanpassen" value="aanpassen" name="edit" class="knop edit btn btn-default btn-sm pull-right" />
                         <?
 						
                             if ($oOwaesItem->state() != STATE_FINISHED) echo ('<input type="submit" value="inschrijvingen afsluiten" name="close" class="knoprood btn btn-default btn-sm pull-right" /> ');  
-                            if ($iConfirmed == 0) echo (' <input type="submit" value="verwijderen" name="delete" class="knoprood btn btn-default btn-sm pull-right" onclick="return confirm(\'Weet u zeker dat u deze opdracht wilt verwijderen?\'); " /> '); 
+                            //if ($iConfirmed == 0) echo (' <input type="submit" value="verwijderen" name="delete" class="knoprood btn btn-default btn-sm pull-right" onclick="return confirm(\'Weet u zeker dat u deze opdracht wilt verwijderen?\'); " /> '); 
+							if ($iConfirmed == 0) echo (' <a href="modal.deleteitem.php?i=' . $iID . '" class="domodal knoprood btn btn-default btn-sm pull-right">verwijderen</a> '); 
                      		if (count($oOwaesItem->subscriptions()) > 0) { 
 								echo ('<input type="submit" value="opslaan" name="save" id="savestep1" class="knopgroen btn btn-default btn-sm pull-right" /> '); 
 							}

@@ -338,6 +338,7 @@
 		fclose($fh);
 	}
 	
+	
 	function redirect($strURL = NULL) {
 		if (is_null($strURL)) $strURL = $_SERVER['HTTP_REFERER']; 
 		header("Location: " . $strURL); 
@@ -553,11 +554,10 @@
 	}
     
     function console($origin, $data) {
-        if (is_array($data)){
-            $output = "<script>console.log('PHP: [" . $origin . "] " . implode(',', $data) . "');</script>";
-        } else {
-            $output = "<script>console.log('PHP: [" . $origin . "] " . $data . "');</script>";
-        }   
+		$strPaste = is_array($data) ? implode(',', $data) : $data;  
+		$strPaste = str_replace("'", " ", $strPaste);
+		$strPaste = str_replace("\n", " ", $strPaste);
+        $output = "<script>console.log('PHP: [" . $origin . "] " . $strPaste . "');</script>"; 
         echo $output;
     }
 	

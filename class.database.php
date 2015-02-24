@@ -51,6 +51,12 @@
 					case "select":   
 						foreach($dbPDO->query($strSQL) as $oRow) {
 							$arRow = array(); 
+							if (count($arFieldNames)==0) {
+								foreach ($oRow as $strCol=>$strVal) {
+									$arFieldNames[] = $strCol; 
+								}
+								$this->arFieldNames = $arFieldNames; 
+							}
 							foreach ($oRow as $strCol=>$strVal) {
 								$arRow[$strCol] = $strVal; 
 							}
