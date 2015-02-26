@@ -108,7 +108,7 @@
 					$iPrev = round($iStart); 
 				} 
 			} 
-			$arTimeline[] = array(owaestime(), $arTimeline[count($arTimeline)-1][1]); 
+			if (count($arTimeline) > 0) $arTimeline[] = array(owaestime(), $arTimeline[count($arTimeline)-1][1]); 
 			return $arTimeline;
 		}
 		

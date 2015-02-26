@@ -400,11 +400,12 @@
 			return specialHTMLtags($strHTML);  
 		}
 		
-		private function HTMLvalue($strTag, $strTemplate = NULL) {
+		public function HTMLvalue($strTag, $strTemplate = NULL) {
 			switch($strTag) { 
 				case "id": 
 					return $this->id(); 
-				case "naam": 
+				case "naam":  
+				case "name": 
 					return html($this->naam()); 
 				case "website": 
 					return $this->website(); 

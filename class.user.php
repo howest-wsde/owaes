@@ -860,6 +860,7 @@
 		
 		public function algemenevoorwaarden($bAlgemeneVoorwaarden = NULL) { 
 			if (!is_null($bAlgemeneVoorwaarden)) {
+				if (is_bool($bAlgemeneVoorwaarden)) $bAlgemeneVoorwaarden = ($bAlgemeneVoorwaarden?1:0); 
 				if (is_null($this->bAlgemeneVoorwaarden)) {
 					$this->bAlgemeneVoorwaarden = $bAlgemeneVoorwaarden; 
 				} else {
@@ -1830,7 +1831,7 @@
 			return $this->getImage($matches[1], FALSE);  
 		} 
 		
-		private function HTMLvalue($strTag) {
+		public function HTMLvalue($strTag) {
 			switch($strTag) { 
 				case "id": 
 					return $this->id(); 

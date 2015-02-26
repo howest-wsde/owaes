@@ -33,6 +33,8 @@
 		}
 		$oUser->alias("", TRUE); 
 		$oUser->password($_POST["pass"]);
+		$oUser->algemenevoorwaarden(settings("startvalues", "algemenevoorwaarden")); 
+		$oUser->visible(settings("startvalues", "visibility"));
 		if ($_POST["pass"] == "") $arErrors["password"] = "Paswoord is verplicht";  
 		if (count($arErrors) == 0)  {
 			$oUser->update();  

@@ -31,8 +31,7 @@
 							$oPayment->reason(1); 
 							$oPayment->signed(TRUE); 
 							
-							$iExperience = $oOwaesItem->timing()*600; 
-							if ($iExperience == 0) $iExperience = $oPayment->credits()*10;
+							$iExperience = 100; 
 							
 							$oExpSender = new experience($oPayment->sender());
 							$oExpSender->sleutel("owaes." . $oOwaesItem->id());

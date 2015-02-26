@@ -442,7 +442,7 @@ input.time {width: 100%; display: block; }
                             
                            <div class="row row-credits"> 
                                <div class="col-lg-10">
-                                <input type="text" min="0" max="1000" name="credits" id="creditsfield" class="auto border" value="<? echo $oOwaesItem->credits(); ?>" />
+                                <input type="text" min="0" max="4800" name="credits" id="creditsfield" class="auto border" value="<? echo $oOwaesItem->credits(); ?>" />
                                </div>
                            </div>
                         </div>

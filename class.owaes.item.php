@@ -830,7 +830,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		}
 		
 		private function HTMLvalue($strTag) { 
-			switch($strTag) { 
+			$arTag = explode(":", $strTag, 2);  
+			switch(strtolower($arTag[0])) { 
 				case "flow": 
 					$strFlow = "<ol class=\"flow\">"; 
 					foreach ($this->flow()  as $iID=>$arFlowDetails) { 
@@ -851,30 +852,44 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "classes": 
 					return implode(" ", $this->classes());  
 				case "title": 
-					return $this->title();  
-				case "body": 
-					return nl2br($this->body());  
-				case "body:short": 
-					return nl2br(shorten($this->body(), 250, TRUE));  
+					return html($this->title());  
+				case "body":  
+					if (isset($arTag[1])) {
+						switch(strtolower($arTag[1])) { 
+							case "short": 
+								return nl2br(shorten(html($this->body(), 250, TRUE)));  
+								break; 
+							default: 
+								return nl2br(html($this->body()));  
+						}
+					} else return nl2br(html($this->body()));   
 				case "link": 
 				case "url": 
 					return $this->getLink(); 
 				case "iconclass": 
 					return $this->type()->iconclass(); 
-				case "soortIcon": 
+				case "soorticon": 
 					return "<span class='" . $this->type()->iconclass() . "'></span>"; 
-				case "author:type": 
-					return ($this->group()) ? "group" : "user"; 
 				case "author": 
-					return ($this->group()) ? $this->group()->getLink() : $this->author()->getLink(); 
-				case "author:url": 
-					return ($this->group()) ? $this->group()->getURL() : $this->author()->getURL(); 
-				case "author:key": 
-					if ($this->group()) {
-						return (($this->group()->alias() == "")?$this->group()->id():$this->group()->alias());  // of id als er geen username is
-					} else {
-						return (($this->author()->alias() == "")?$this->author()->iID:$this->author()->alias());  // of id als er geen username is
-					}  
+					if (isset($arTag[1])) {
+						switch(strtolower($arTag[1])) { 
+							case "type": 
+								return ($this->group()) ? "group" : "user";  
+							case "url": 
+								return ($this->group()) ? $this->group()->getURL() : $this->author()->getURL(); 
+							case "key": 
+								if ($this->group()) {
+									return (($this->group()->alias() == "")?$this->group()->id():$this->group()->alias());  // of id als er geen username is
+								} else {
+									return (($this->author()->alias() == "")?$this->author()->iID:$this->author()->alias());  // of id als er geen username is
+								} 	
+							case "box":
+								return $this->author()->userBox(); 
+							default:   
+								return ($this->group()) ? $this->group()->HTMLvalue($arTag[1]) : $this->author()->HTMLvalue($arTag[1]);  
+						}
+					} else return ($this->group()) ? $this->group()->getLink() : $this->author()->getLink();  
+					break; 
 				case "location": 
 					$strLocation = $this->location(); 
 					return ($strLocation == "") ? "geen locatie opgegeven" : $strLocation; 
@@ -889,8 +904,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					return $this->latitude(); 
 				case "longitude": 
 					return $this->longitude(); 
-				case "data": 
-				case "data:short": 
+				case "data": // case "data:short": 
 					if (count($this->data()) > 0) {
 						$arSub = array();  
 						foreach ($this->data() as $iDate) {
@@ -951,7 +965,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					return ($iTiming >0) ? $iTiming . " uur" : "geen tijdsduur ingesteld"; 
 				case "createdate": 
 					return str_date($this->iDate, "datum"); 
-				case "locationimg:100x100": 
+				case "locationimg":  // :100x100
 					switch ($this->location()) {
 						case "":  
 						case "free": 
@@ -966,8 +980,6 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					return ($this->iCredits==0) ? "" : $this->iCredits;    
 				case "subscribe":
 					return ""; // $this->subscriptionDiv();
-				case "author:box":
-					return $this->author()->userBox(); 
 				case "state":
 					switch($this->state()) {
 						case STATE_SELECTED: 
@@ -983,7 +995,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$arTags = array(); 
 					foreach ($this->getTags() as $strTag) $arTags[] = "<span>" . htmlentities($strTag) . "</span>"; 
 					return implode("", $arTags); 
-				case "aantalInschrijvingen":  
+				case "aantalinschrijvingen":  
 					$arSubscriptions = $this->subscriptions(array("notstate"=>SUBSCRIBE_DECLINED)); 
 					return (count($arSubscriptions)==1) ? "1 inschrijving " : count($arSubscriptions) . " inschrijvingen "; 
 				case "actions":  

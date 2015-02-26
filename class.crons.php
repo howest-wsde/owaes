@@ -43,12 +43,18 @@
 			$oInsertDB = new database();  
 			$iRefreshTijd = settings("crons", "indicators"); 
 			
-			$strLastUserrecordsSQL = "select user, max(datum) as datum from tblIndicators where actief = 1 group by user";
-			$strSQL = "select u.id as user, i.datum, i.reason, i.link 
+			$strLastUserrecordsSQL = "select user, max(datum) as datum, reason, link from tblIndicators where actief = 1 group by user";
+			/*$strSQL = "select u.id as user, i.datum, i.reason, i.link 
 				from tblUsers u 
 				left join ( $strLastUserrecordsSQL ) i2 on u.id = i2.user 
 				left join tblIndicators i on i.user = i2.user and i.datum = i2.datum and i.actief = 1 
-				where u.actief = 1 
+				where u.actief = 1 and u.algemenevoorwaarden = 1 
+				having (i.datum < " . (owaesTime()-$iRefreshTijd) . " or i.datum is null)
+			"; */
+			$strSQL = "select u.id as user, i.datum, i.reason, i.link 
+				from tblUsers u 
+				left join ( $strLastUserrecordsSQL ) i on u.id = i.user 
+				where u.actief = 1 and u.algemenevoorwaarden = 1 
 				having (i.datum < " . (owaesTime()-$iRefreshTijd) . " or i.datum is null)
 			"; 
 			  
