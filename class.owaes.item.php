@@ -854,6 +854,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "title": 
 					return html($this->title());  
 				case "body":  
+					return html($this->body(), array("p", "a", "strong", "em"));
 					if (isset($arTag[1])) {
 						switch(strtolower($arTag[1])) { 
 							case "short": 

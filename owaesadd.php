@@ -6,6 +6,7 @@
 	//$oPage->addJS("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
 	$oPage->addJS("script/owaesadd.js?v2");
+	$oPage->addJS("ckeditor/ckeditor.js");
 	//$oPage->addJS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.js"); 
 	//$oPage->addCSS("http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"); 
 	//$oPage->addCSS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.css"); 
@@ -166,8 +167,18 @@
 			}
 			google.maps.event.addDomListener(window, 'load', initialize);
 			
+			$(document).ready(function(e) {
+                $("textarea.wysiwyg").each(function(){ 
+					CKEDITOR.inline( $(this).attr("name") ); 
+					strClasses = $(this).attr("class"); 
+					$(".cke_textarea_inline").addClass(strClasses); 
+				});  
+            });
 
 		</script> 
+        <style> 
+
+		</style>
           <style>
 .invalidtime {border: 1px solid red; }								
 .invoer {
@@ -334,7 +345,7 @@ input.time {width: 100%; display: block; }
                                 <div class="form-group">
                                 	<div class="row"><div class="col-lg-2"><h4>Omschrijving</h4></div></div> 
                                     <div class="col-lg-12">
-                                        <textarea name="description" id="description" class="required form-control" placeholder="Omschrijving"><? echo textarea($oOwaesItem->body()); ?></textarea>
+                                       	<textarea name="description" id="description" class="required form-control wysiwyg" placeholder="Omschrijving"><? echo textarea($oOwaesItem->body()); ?></textarea>
                                     </div>
                                 </div>
                                  
