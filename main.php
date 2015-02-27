@@ -26,10 +26,8 @@
 			$(document).ready(function(e) {
 				$('div.masonry').masonry({
 				  itemSelector: '.masonrybox'
-				}); 
+				});
             });
-			
-
 
 			// GOOGLE MAP
 			var map; 
@@ -208,8 +206,8 @@
                     </div>
                     
                   
-                         <a data-toggle="collapse" data-parent="#accordionGraphs" href="#collapseGraph" class="iconExpand triangleDown">
-                            <!-- <span class="icon icon-plus"></span> -->
+                         <a data-toggle="collapse" data-parent="#accordionGraphs" href="#collapseGraph" class="iconExpand">
+                            <span class="icon icon-collapsed"></span>
                          </a>
                   
                     
@@ -739,8 +737,24 @@
         <script>
             $(document).ready(function () {
                 initCreditmeter(<? echo intval(($oMe->credits()-settings("credits", "min"))/(settings("credits", "max")-settings("credits", "min"))*100) ; ?>);
-				loadModals(<? echo json_encode($arModalURLs); ?>);  
-            }); 
+				loadModals(<? echo json_encode($arModalURLs); ?>);
+
+                var driehoek = document.getElementsByClassName("iconExpand")[0];
+                var spanCollapsed = document.getElementsByClassName("icon icon-collapsed")[0];
+
+                driehoek.addEventListener("click", function() { toggleTriangle(driehoek, spanCollapsed); }, false);
+            });
+
+            function toggleTriangle(driehoek, spanCollapsed) {
+                if (!driehoek.classList.contains("collapsed")) {
+                    spanCollapsed.style.display = "block";
+                    driehoek.classList.remove("triangleDown");
+                }
+                else {
+                    spanCollapsed.style.display = "none";
+                    driehoek.classList.add("triangleDown");
+                }
+            }
         </script> 
     </body>
 </html>
