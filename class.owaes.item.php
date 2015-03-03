@@ -854,14 +854,14 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "title": 
 					return html($this->title());  
 				case "body":  
-					return html($this->body(), array("p", "a", "strong", "em"));
+					//return html($this->body(), array("p", "a", "strong", "em", "br"));
 					if (isset($arTag[1])) {
 						switch(strtolower($arTag[1])) { 
 							case "short": 
-								return nl2br(shorten(html($this->body(), 250, TRUE)));  
+								return nl2br(shorten(html($this->body(), array("p", "a", "strong", "em", "br")), 250, TRUE));  
 								break; 
 							default: 
-								return nl2br(html($this->body()));  
+								return nl2br(html($this->body(), array("p", "a", "strong", "em", "br")));  
 						}
 					} else return nl2br(html($this->body()));   
 				case "link": 

@@ -389,6 +389,16 @@
 		if (strlen($strText) > $iLength+60) {
 			$strShortened = substr($strText, 0, $iLength);  
 			while ((strrpos(" .,!?:;)", substr($strShortened, -1)) === false) && (strlen($strShortened) > ($iLength/2))) $strShortened = substr($strShortened, 0, -1); 
+			if (strrpos($strShortened, "<") !== FALSE) {
+				if (strrpos($strShortened, ">") === FALSE) {  
+					$strShortened = substr($strShortened, 0, strrpos($strShortened, "<")-1); 
+				} else {
+					if (strrpos($strShortened, "<") > strrpos($strShortened, ">")) { 
+						$strShortened = substr($strShortened, 0, strrpos($strShortened, "<")-1); 
+					}
+				}
+			}
+			
 			if ($bJS) { 
 				$strResult = $strShortened . "<span class=\"moreA\">... <span>[lees meer]</span></span><span class=\"moreB\">" . substr($strText, strlen($strShortened)-strlen($strText)) . "</span>";  
 			} else {
@@ -561,20 +571,81 @@
         echo $output;
     }
 	
-	function html($strTxt, $arExcept = array()) {
-		$strHTML = nl2br(htmlspecialchars($strTxt)); 
-		foreach ($arExcept as $strExcept) { 
-			$strHTML = str_replace("&lt;$strExcept&gt;", "<$strExcept>", $strHTML);	
-			$strHTML = str_replace("&lt;/$strExcept&gt;", "</$strExcept>", $strHTML);	
+	function DOMinnerHTML(DOMNode $element) { 
+		$innerHTML = ""; 
+		$children  = $element->childNodes; 
+		foreach ($children as $child) { 
+			$innerHTML .= $element->ownerDocument->saveHTML($child);
+		} 
+		return $innerHTML; 
+	} 
+	 
+
+	function html($strTxt, $arExcept = array()) { 
+	/*
+		$config = HTMLPurifier_Config::createDefault(); 
+		$config->set('HTML.Allowed', implode(",", $arExcept));
+ 		$config->set('HTML.AllowedAttributes', 'a.href');
+ 		$config->set('HTML.AllowedAttributes', 'img.src');
+		$purifier = new HTMLPurifier($config);
+		return $purifier->purify($strTxt);
+		 
+	 */
+		if (trim($strTxt)=="") return ""; 
+		$arTags = array(); 
+		foreach ($arExcept as $strTag) $arTags[] = "<$strTag>"; 
+		$strTxt = strip_tags($strTxt, implode("", $arTags));  
+		preg_match_all("/<([a-z][a-z0-9]*)([^>]*?)(\/?)>/i", $strTxt, $arResult);   
+		for ($i=0;$i<count($arResult[0]);$i++) { 
+			switch(strtolower($arResult[1][$i])) {
+				case "a": 
+					$strTxt = str_replace($arResult[0][$i], "<" . $arResult[1][$i] . "" . $arResult[2][$i] . " target=\"_blank\">", $strTxt);
+					break; 
+				default: 	
+					$strTxt = str_replace($arResult[0][$i], "<" . $arResult[1][$i] . "" . $arResult[3][$i] . ">", $strTxt);
+			} 
+		} 	
+		
+		return $strTxt; 
+	 
+	/*
+		libxml_use_internal_errors(true); 
+		$dom = new DOMDocument; 
+		$dom->loadHTML($strTxt); 
+		libxml_use_internal_errors(false);
+		  
+		$dom->removeChild($dom->doctype);           
+		$dom->replaceChild($dom->firstChild->firstChild, $dom->firstChild);
+		
+		$strReturn = ""; 
+		
+		foreach ($dom->firstChild->childNodes as $child) {
+			if(isset($child->tagName)) { 
+				if ($dom->saveHTML($child) != $strTxt) {
+					if (in_array($child->tagName, $arExcept)) {  
+						$arTag = array($child->tagName);
+						switch ($child->tagName) {
+							case "a": 
+								$arTag[] = "href=\"" . $child->getAttribute("href") . "\""; 
+								$arTag[] = "target=\"_blank\""; 
+						}
+						
+						$strReturn .= "<" . implode(" ", $arTag) . ">" . html($dom->saveHTML($child), $arExcept) . "</" . $child->tagName . ">";
+					} else { // tag eruit filteren
+						$strReturn .= html($dom->saveHTML($child), $arExcept); 
+					}
+				} else { // content == vorige > oneindige loop (bv <p> die automatisch gezet werd)
+					$strReturn .= $dom->saveHTML($child);
+				}
+			} else { // tekst zonder tag
+				$strReturn .= $dom->saveHTML($child);
+			} 
 		}
 		
-		/*
-			$text = '<p style="padding:0px;"><strong style="padding:0;margin:0;">hello</strong></p>';
-			echo preg_replace("/<([a-z][a-z0-9]*)[^>]*?(\/?)>/i",'<$1$2>', $text);
+		return $strReturn; 
 		*/
-		return $strHTML;  
-	}
-	
+	} 
+  
 	function javascriptSafe($strTxt) {
 		$strTxt = str_replace("'", "&acute;", $strTxt); 
 		$strTxt = str_replace('"', "&quot;", $strTxt); 

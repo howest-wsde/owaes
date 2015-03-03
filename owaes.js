@@ -7,7 +7,27 @@ $(document).ready(function() {
 			$("body").removeClass("scrolled"); 
 		}  
 	}); 
-	
+	 
+	/* WYSIWYG - editor - START */
+	$("textarea.wysiwyg").each(function(){ 
+		strClasses = $(this).attr("class");  
+		CKEDITOR.inline( $(this).attr("name") ); 
+		$(".cke_textarea_inline").addClass(strClasses); 
+	});  
+	$.fn.modal.Constructor.prototype.enforceFocus = function () {
+		var $modalElement = this.$element;
+		$(document).on('focusin.modal', function (e) {
+			var $parent = $(e.target.parentNode);
+			if ($modalElement[0] !== e.target && !$modalElement.has(e.target).length
+				// add whatever conditions you need here:
+				&&
+				!$parent.hasClass('cke_dialog_ui_input_select') && !$parent.hasClass('cke_dialog_ui_input_text')) {
+				$modalElement.focus()
+			}
+		})
+	};
+	/* WYSIWYG - editor - END */
+		
 	$(document).on('click', "input[type=submit]", function(event){ // gebruikte submit-knop de class "submit" geven (om te detecteren welke submit-knop gebruikt werd)
 		$("input[type=submit]").removeClass("clicked");
 		$(this).addClass("clicked");

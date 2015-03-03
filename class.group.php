@@ -412,7 +412,7 @@
 				case "link": 
 					return $this->getURL(); 
 				case "description": 
-					return html($this->info()); 
+					return html($this->info(), array("p", "a", "em", "strong", "br"));  // html($this->info()) . "<hr>" . 
 				case "description:short": 
 					return shorten(html($this->info())); 
 				case "members:count": 

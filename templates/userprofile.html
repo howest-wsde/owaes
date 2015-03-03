@@ -123,7 +123,7 @@
                     Info
                     [if:me]<span data-toggle="modal" data-target="#editPersoonlijkeInformatie" class="icon icon-settings" onclick="resetPersoonlijkeInformatieForm();"></span>[/if:me]
                 </h3>
-                <p>[showurls][description][/showurls]</p>
+                <p>[description]</p>
                 [userdetails] 
             </div>
            
@@ -299,7 +299,7 @@
                         <fieldset>
                             <h4>Intro</h4>
                             <div class="form-group col-lg-12">
-                                <textarea name="description" class="form-control" placeholder="Plaats hier een introductie over jezelf.">[description:pure]</textarea>
+                                <textarea name="description" id="description" class="form-control wysiwyg" placeholder="Plaats hier een introductie over jezelf.">[description:pure]</textarea>
                             </div> 
                             <h4>Andere informatie</h4> 
                             <div class="form-group">

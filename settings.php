@@ -244,7 +244,7 @@
                         <div class="form-group">
                             <label for="description" class="control-label col-lg-2">Over jezelf:</label>
                             <div class="col-lg-6">
-                                <textarea name="description" id="description" class="form-control" placeholder="Vertel ons iets over jezelf..."><? echo textarea($oProfile->description()); ?></textarea>
+                                <textarea name="description" id="description" class="form-control wysiwyg" placeholder="Vertel ons iets over jezelf..."><? echo textarea($oProfile->description()); ?></textarea>
                             </div>
                             <div class="col-lg-4">
                                 <? echo showDropdown("showdescription", $oProfile->visible("description")); ?> 

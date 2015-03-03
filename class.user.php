@@ -1854,7 +1854,7 @@
 				case "telephone": 
 					return $this->telephone(); 
 				case "description": 
-					return html($this->description()); 
+					return html($this->description(), array("p", "a", "strong", "em", "br")); 
 				case "description:pure": 
 					return ($this->description()); 
 				case "link": 

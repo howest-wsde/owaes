@@ -136,7 +136,7 @@
                                 <div class="form-group">
                                     <label for="description" class="control-label col-lg-2">Omschrijving:</label>
                                     <div class="col-lg-10">
-                                        <textarea name="info" id="info" class="form-control" placeholder="Vertel ons iets over deze groep..."><? echo textarea($oGroep->info()); ?></textarea>
+                                        <textarea name="info" id="info" class="form-control wysiwyg" placeholder="Vertel ons iets over deze groep..."><? echo textarea($oGroep->info()); ?></textarea>
                                     </div> 
                                 </div>
                                 <div class="form-group">

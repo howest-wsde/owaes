@@ -39,6 +39,7 @@
 			$this->addJS("owaes.js?v5");  
             $this->addJS("main.js?v5");
             $this->addJS("vocabularium.js.php");
+            $this->addJS("ckeditor/ckeditor.js");
 			
 //			if (strrpos("http://nu", settings("domain", "absroot")) === false)  redirect("link");  
 			
