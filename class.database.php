@@ -53,7 +53,7 @@
 							$arRow = array(); 
 							if (count($arFieldNames)==0) {
 								foreach ($oRow as $strCol=>$strVal) {
-									$arFieldNames[] = $strCol; 
+									if (!is_numeric($strCol)) $arFieldNames[] = $strCol; 
 								}
 								$this->arFieldNames = $arFieldNames; 
 							}
@@ -117,7 +117,7 @@
 			if (is_null($this->arFieldNames)) {
 				$strResult = "Database: geen results " . ($bShowSQL?" (SQL: " . $this->sql() . ")":""); 
 			} else {
-				$strResult = "<table class=\"database\">"; 
+				$strResult = "<style>table.databaseview {border-collapse; background: white;  } table.databaseview td, table.databaseview th {border: 1px solid black; padding: 3px; } table.databaseview th {font-weight: bold; }</style><table class=\"databaseview\">"; 
 				if ($bShowSQL) $strResult .= "<tr><th colspan=\"" . count($this->arFieldNames) . "\">" . $this->sql() . "</th></tr>"; 
 				$strResult .= "<tr>";   
 				foreach ($this->arFieldNames as $strField) {

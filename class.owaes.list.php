@@ -180,23 +180,22 @@
 					// als er geen locatie voor user is wordt formule anders (thuiswerk wel grote impact) 
 					$iLatitude = $value; 
 					$iLongitude = $value2;
-					if ($iLatitude*$iLongitude != 0) {  
+					if ($iLatitude*$iLongitude != 0) { // gebruiker heeft een thuislocatie ingesteld 
 						$iKM = "3956 * 2 * ASIN(
 								SQRT( POWER(SIN((m.location_lat - abs($iLatitude)) * pi()/180 / 2), 2) 
 								+ COS(m.location_long * pi()/180 ) * COS(abs($iLatitude) * pi()/180)  
 								* POWER(SIN((m.location_long - $iLongitude) * pi()/180 / 2), 2) )) * (m.location_long/(m.location_long+0.0001))";  
-						$this->arEnkalkuli["distance"] = "(100-(-2*(50-$iKM)))/2"; 
-						$this->arSQLselect["km"] = $iKM; 
-					} else { 
+						$this->arEnkalkuli["distance"] = "(100-(-2*(50-$iKM)))/2";  
+					} else { // gebruiker heeft GEEN thuislocatie ingesteld
 						$iKM = "100 * (m.location_long/(m.location_long+0.0001))";  
 						$this->arEnkalkuli["distance"] = "(100-(-2*(50-$iKM)))/2"; 
-						$this->arSQLselect["km"] = $iKM; 
 					}
+//$this->arSQLselect["km"] = $iKM; 
 					break; 
 			} 
 			$this->arSQLselect["enkalkuli"] = "round((" . implode(") + (", array_values($this->arEnkalkuli)) . ")) as enkalkuli"; 
-			$this->arSQLselect[time() . $strField] = $this->arEnkalkuli[$strField] . " as enkalkuli$strField"; 
-			$this->arSQLselect["x"] = "m.location"; 
+//$this->arSQLselect["enk_" . $strField] = $this->arEnkalkuli[$strField] . " as enk_$strField"; 
+//$this->arSQLselect["enk_location"] = "m.location"; 
 		} 
 		
 		public function getList() {
@@ -219,9 +218,9 @@
 			 
 				
 //echo ("<style>table td, tr, th {border: 1px solid black; padding: 3px; }</style>"); 
-echo "<div style='display: none; '>"; 
-echo $oOWAES->table(TRUE); 
-echo "</div>";
+//echo "<div style='display: block; '>"; 
+//echo $oOWAES->table(TRUE); 
+//echo "</div>";
 // vardump($strSQL); 
  // console("main.php", $strSQL); 
  //echo ("$strSQL "); 

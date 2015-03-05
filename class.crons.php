@@ -4,6 +4,7 @@
 	define ("TIMEOUT_WAITING", 1); 
 	define ("TIMEOUT_BUSY", 3); 
 	define ("TIMEOUT_CONFIRMED", 4); 
+	define ("TIMEOUT_ADDEDNEW", 5); 
 	class crons {
 		public function crons() { // instellingen voor automatische gebeurtenissen: bv. automatische aftrek indicatoren
 			$arCrons = json("settings/crons.json");  

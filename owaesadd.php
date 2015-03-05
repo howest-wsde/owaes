@@ -29,7 +29,7 @@
 	if ($oOwaesItem->id() != 0) {
 		$strType = $oOwaesItem->type()->key();  
 	} else {
-		$strType = (isset($_GET["t"]) ? $_GET["t"] : ""); 
+		$strType = (isset($_GET["t"]) ? $_GET["t"] : "");  
 	} 
 	 
 	if (isset($_POST["owaesadd"])) { 
@@ -110,6 +110,8 @@
 		} 
 			
 		$oOwaesItem->update();   
+		
+		$oDB = new database("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values (" . me() . ", " . owaesTime() . ", 0, 0, 0, 0, " . TIMEOUT_ADDEDNEW . ", " . $oOwaesItem->id() . "); ", TRUE); 
 		
 		$oOwaesItem->type($_POST["type"]); 
 		user(me())->addbadge($_POST["type"]); 

@@ -12,8 +12,8 @@
     </head>
     <body id="index">
 		<? echo $oPage->startTabs(); ?> 
-			<? if ((isset($_POST["reset"]) && isset($_POST["demo"]))||(isset($_GET["kdieIIdd88s7"]))) { ?>
-				<?
+			<? if ((settings("debugging", "demo") == TRUE) && (isset($_POST["reset"]) && isset($_POST["demo"]))||(isset($_GET["kdieIIdd88s7"]))) { ?>
+				<? 
 					function demodone($strTekst) {
 						echo ("<div>done: $strTekst</div>"); 	
 					}
