@@ -14,6 +14,11 @@
     $oPage->tab("home");
 	
 	$oMe = user(me());  
+ 
+	$oExperience = new experience(me());  
+	$oExperience->detail("reason", "pageload");     
+	$oExperience->add(1);  
+	
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
@@ -701,43 +706,14 @@
         </div>
         <div class="footer">
         	<? echo $oPage->footer(); ?> 
-        </div>
-       <?
-	 	$arModalURLs = array(); 
-		$oActions = new actions(me());  
-		foreach ($oActions->getList() as $oAction) {
-			switch($oAction->type()) {
-				case "transaction": 
-					$arModalURLs[] = "modal.transaction.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
-					break; 
-				case "feedback": 
-					if ((user(me())->level()>=3)&&($oAction->tododate() > owaestime()-(7*24*60*60))) {
-						$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
-					}
-					break; 
-				case "badge": 
-					$arModalURLs[] = "modal.badge.php?m=" . $oAction->data("type"); 
-					$oAction->done(owaestime()); 
-					$oAction->update();  
-					break; 
-			} 
-		}  
-		 
-		
-		if ($iExp2 > ($iExp1+10)) { 
-			$arModalURLs[] = "modal.experience.php"; 
-			if ( $oMe->experience()->level(FALSE) != $oMe->experience()->level(TRUE)) { 
-				$arModalURLs[] = "modal.nextlevel.php";
-				// $arModalURLs[] = "templates/modal.nextlevel.html"; 
-			} 
-		}
-		?>
-         
-         
+        </div> 
         <script>
             $(document).ready(function () {
                 initCreditmeter(<? echo intval(($oMe->credits()-settings("credits", "min"))/(settings("credits", "max")-settings("credits", "min"))*100) ; ?>);
-				loadModals(<? echo json_encode($arModalURLs); ?>);
+				<? 
+					$oActions = new actions(me());  
+				?> 
+				loadModals(<? echo json_encode($oActions->modals()); ?>);
 
                 var driehoek = document.getElementsByClassName("iconExpand")[0];
                 var spanCollapsed = document.getElementsByClassName("icon icon-collapsed")[0];

@@ -145,6 +145,11 @@
 						$oNotification->sender(me()); 
 						$oNotification->link($this->getURL()); 
 						$oNotification->send(); 
+						 
+						$oExperience = new experience($iUser);  
+						$oExperience->detail("reason", "added to group");  
+						$oExperience->sleutel("group." . $this->id());   
+						$oExperience->add(50);  
 						
 					} else {
 						$strSQL = "insert into tblGroupUsers (invitedby, groep, user, confirmed) values (" . me() . ", " . $this->id() . ", " . $iUser . ", 0); "; 

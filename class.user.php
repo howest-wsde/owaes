@@ -119,7 +119,8 @@
 							$this->birthdate(ddmmyyyyTOdate($strVal));  
 							break; 	 
 						case "location": 
-							$this->location($strVal, 0, 0); 
+							$arLoc = getXY($strVal);  
+							$this->location($strVal, $arLoc["latitude"], $arLoc["longitude"]); 
 							break; 	
 						case "showlocation": 
 							$this->visible("location", $_POST["showlocation"]);
@@ -489,7 +490,11 @@
 					$oDB = new database(); 
 					if ($bValue) {
 						$oDB->execute("insert into tblFollowers (user, followed, startdate) values ('" . $this->id() . "', '$iUser', '" . owaestime() . "'); "); 
-						$this->addbadge("follower");   
+						$this->addbadge("follower");  
+	
+						$oExperience = new experience($this->id());  
+						$oExperience->detail("reason", "follower");     
+						$oExperience->add(50);  
 					} else {
 						$oDB->execute("delete from tblFollowers where user = '" . $this->id() . "' and followed = '$iUser'; "); 
 					}
@@ -553,6 +558,15 @@
 							user($iMe)->addbadge("10friends"); 
 							break; 	
 					}  
+					
+					$oExperience = new experience($iMe);  
+					$oExperience->detail("reason", "friendschip_accept");     
+					$oExperience->add(50);  
+					
+					$oExperience = new experience($iFriend);  
+					$oExperience->detail("reason", "friendschip_add");     
+					$oExperience->add(80); 
+					
 					break; 
 
 				case FRIEND_NOFRIENDS:  // nothing asked yet
@@ -1100,31 +1114,37 @@
 			} 
 			return $arChart; 
 		}
-		/*
+
 		public function addIndicators($arValues = array(), $iReason = 0, $iLink = 0) {
 			$iPhysical = isset($arValues["physical"]) ? $arValues["physical"] : 0; 
 			$iMental = isset($arValues["mental"]) ? $arValues["mental"] : 0; 
 			$iEmotional = isset($arValues["emotional"]) ? $arValues["emotional"] : 0; 
 			$iSocial = isset($arValues["social"]) ? $arValues["social"] : 0; 
 			$oDB = new database("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values ('" . $this->id() . "', '" . owaestime() . "', $iPhysical, $iMental, $iEmotional, $iSocial, $iReason, $iLink); ", TRUE); 
-		}
-		*/
+		} 
 		
 		private function loadIndicators() {
 			global $arConfig; 
-			$oDB = new database();
-			$oDB->execute("select sum(emotional) as emotional, sum(social) as social, sum(physical) as physical, sum(mental) as mental from tblIndicators where user = " . $this->iID . " and actief = 1; "); 
-			if ($oDB->length()>0) {
-				//var_dump($oDB->record()); 
-				if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"] + $oDB->get("social"));
-				if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"] + $oDB->get("emotional"));
-				if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"] + $oDB->get("physical"));
-				if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"] + $oDB->get("mental"));
-			} else {
+			if ($this->admin()) {
 				if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"]);
 				if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"]);
 				if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"]);
 				if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"]);
+			} else {
+				$oDB = new database();
+				$oDB->execute("select sum(emotional) as emotional, sum(social) as social, sum(physical) as physical, sum(mental) as mental from tblIndicators where user = " . $this->iID . " and actief = 1; "); 
+				if ($oDB->length()>0) {
+					//var_dump($oDB->record()); 
+					if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"] + $oDB->get("social"));
+					if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"] + $oDB->get("emotional"));
+					if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"] + $oDB->get("physical"));
+					if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"] + $oDB->get("mental"));
+				} else {
+					if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"]);
+					if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"]);
+					if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"]);
+					if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"]);
+				}
 			}
 		}
 		
@@ -2063,6 +2083,25 @@
 			return $this->arFollowed; 	
 		}
 		
+		
+		public function expBijAanmelding() { 
+			if (date("m.d.y", intval($this->data("aanmelding"))) != date("m.d.y", owaestime())) {
+				
+				$oExperience = new experience(me());  
+				$oExperience->detail("reason", "aanmelding"); 
+								
+				$oOwaesList = new owaeslist(); 
+				$oOwaesList->filterByCreator($this->id());
+				$oOwaesList->filterByState(array(STATE_RECRUTE, STATE_SELECTED));
+ 
+				$iCount = count($this->friends())*5 + count($this->followers())*8 + count($this->followed())*2 + count($oOwaesList->getList())*1; 
+				$oExperience->add($iCount);  
+				
+				$this->data("aanmelding", owaestime()); 
+				$this->update(); 
+			}  
+			
+		}
 
 	}
 	 

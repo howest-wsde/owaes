@@ -14,6 +14,11 @@
 		exit(); 
 	}
 	
+
+	$oExperience = new experience(me());  
+	$oExperience->detail("reason", "pageload");     
+	$oExperience->add(1);  
+	
 	$oNotification = new notification(); 
 	$oNotification->read("owaes." . $iID); 
 	

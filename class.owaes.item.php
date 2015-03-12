@@ -419,6 +419,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$oNotification->key("subscription." .  $this->id()); 
 					$oNotification->link(fixPath($this->getLink())); 
 					$oNotification->send(); 
+
+					$oExperience = new experience($iUser);  
+					$oExperience->detail("reason", "inschrijven_item");     
+					$oExperience->add(20);  
+					
 					break; 
 
 				case SUBSCRIBE_CONFIRMED: 
@@ -431,6 +436,10 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					foreach ($this->data() as $iSubDate) if ($iSubDate>0 && $iSubDate>$iDate) $iDate = $iSubDate + (2*24*60*60); // laatste uitvoerdatum + 2 dagen
 					$oAction->tododate($iDate); 
 					$oAction->update(); 
+					
+					$oExperience = new experience(me());  
+					$oExperience->detail("reason", "inschrijving bevestigen");     
+					$oExperience->add(10);  
 					break;  
 					
 				case SUBSCRIBE_ANNULATION:  
@@ -442,7 +451,19 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$oAction->checkID(); 
 					$oAction->done(owaestime()); 
 					$oAction->update(); 
+					
+					$oExperience = new experience(me());  
+					$oExperience->detail("reason", "inschrijving weigeren");     
+					$oExperience->add(1);  
+					
 					break;  
+					
+				case SUBSCRIBE_CANCEL: 
+					
+					$oExperience = new experience($iUser);  
+					$oExperience->detail("reason", "uitschrijven");     
+					$oExperience->add(-22);  
+					break; 
 			} 
 		} 
 		 

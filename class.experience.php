@@ -58,6 +58,18 @@
 			$oDB->execute($strSQL);  
 			if (isset($this->arTotal["all"])) $this->arTotal["all"] += $iNumber; 
 			if (isset($this->arTotal["confirmed"]) && $bConfirmed) $this->arTotal["confirmed"] += $iNumber; 
+			 
+			$oExpAction = new action($this->iUser); 
+			$oExpAction->type("experience"); 
+			$oExpAction->checkID(); 
+			if (is_null($oExpAction->tododate())) {
+				$oExpAction->tododate(owaestime()); 
+				$oExpAction->update();  
+			} elseif ($oExpAction->done()) {
+				$oExpAction->tododate($oExpAction->donedate()+(12*60*60)); // vanaf 12 uur na laatste show
+				$oExpAction->done(FALSE); 
+				$oExpAction->update();  
+			}
 		}
 		
 		public function level($bShowNotConfirmed = FALSE) { // returns huidige level (of eventueel volgende met parameter TRUE)

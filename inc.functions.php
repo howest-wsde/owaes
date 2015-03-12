@@ -251,8 +251,9 @@
 	}
 	  
 
-	function getXY($strSearch) {
+	function getXY($strSearch, $strExtra = "Belgie") {
 		// $strKey = "ABQIAAAA_CS-CjEGYWpUz_Xfzu7K6xRbHvlh9iWZpZGiNwuSfYnCrohmjRQLa5XQUQeO-tVVQN2YVKmVcCg7mA" ; 
+		$strSearch .= "," . $strExtra; 
 		$strURL = "http://maps.googleapis.com/maps/api/geocode/json" .
 			"?address=" . urlencode($strSearch) . 
 			"&sensor=false"; 
@@ -264,7 +265,6 @@
 		if (isset($arResult["results"][0]["geometry"]["location"]["lat"])) $arReturn["latitude"] = $arResult["results"][0]["geometry"]["location"]["lat"];
  
 		return $arReturn; 
-			 
 	}
 		
 	function logo($iSize) {

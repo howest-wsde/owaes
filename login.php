@@ -48,6 +48,8 @@
 												"id" => $oUser->id(),  
 												"naam" => $oUser->login(), 
 												"login" => $oUser->getName(),  
+												"email" => $oUser->email,  
+												"postvalues" => $_POST, 
 											)); 
 			$bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
 			redirect($strRedirect); 

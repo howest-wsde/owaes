@@ -37,6 +37,16 @@
 		$oRating->comment($strComment); 
 		$oRating->rated(TRUE);  
 		 
+		$oExperience = new experience(me());  
+		$oExperience->detail("reason", "sterren gegeven");  
+		$oExpSender->sleutel("feedback.out." . $iMarket);   
+		$oExperience->add(150);  
+		 
+		$oExperience = new experience($iReceiver);  
+		$oExperience->detail("reason", "sterren gekregen");  
+		$oExpSender->sleutel("feedback.in." . $iMarket);   
+		$oExperience->add($iStars*10);  
+		 
 		$oActions = new actions(me()); 
 		$oAction = $oActions->search(array(
 				"type" => "feedback", 

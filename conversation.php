@@ -4,7 +4,7 @@
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
     $arUsers =  array();
-    
+	 
     $oInbox = new inbox();
     $arDiscussions = $oInbox->discussions();  // overzicht van users waarmee conversations gestart zijn 
 	//if (!isset($arDiscussions[0])) { 
@@ -12,6 +12,10 @@
 	//}
 	
 	$iUser = isset($_GET["u"]) ? intval($_GET["u"]) : 0; 
+	
+	$oExperience = new experience(me());  
+	$oExperience->detail("reason", "messagepage");     
+	$oExperience->add(1);  
 
 	$oConversation = new conversation($iUser);  
 
@@ -21,6 +25,10 @@
 	if (isset($_POST["addmessage"])) { 
 		$oMessage = $oConversation->add($_POST["message"], intval($_POST["market"]));   
 		user(me())->addbadge("heyhallo"); 
+
+		$oExperience = new experience(me());  
+		$oExperience->detail("reason", "messagesend");     
+		$oExperience->add(1); 
 	}
 	 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

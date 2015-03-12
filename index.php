@@ -9,9 +9,14 @@
 	} else {
 		$strType = $_GET["t"]; 
 	}
-	
+	 
+	$oExperience = new experience(me());  
+	$oExperience->detail("reason", "pageload"); 
+	$oExperience->add(1);  
 	
 	$oMe = user(me()); 
+	$oMe->expBijAanmelding(); 
+	
  
 	// $strType = isset($_GET["t"]) ? $_GET["t"] : "market"; 
 	// $strType = ($oPage->tab() == "opdrachten") ? "work" : "market"; 
@@ -33,19 +38,8 @@
 
 	// $oOwaesList->setUser($oUser); 
 	
-
-	$arModalURLs = array(); 
+ 
 	$oActions = new actions(me());  
-	foreach ($oActions->getList() as $oAction) {
-		switch($oAction->type()) {
-			case "transaction": 
-				$arModalURLs[] = "modal.transaction.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
-				break; 
-			case "feedback": 
-				$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
-				break; 
-		} 
-	}  
 	
 	 
 	
@@ -84,7 +78,7 @@
 					$("div#results").load("index.ajax.php", {"t": "<? echo $strType; ?>", "show": arYes, "hide": arNo, "waarden": arWaarden}); 
 				}
 				
-				loadModals(<? echo json_encode($arModalURLs); ?>);  
+				loadModals(<? echo json_encode($oActions->modals()); ?>);  
 				
 			})
 		</script>

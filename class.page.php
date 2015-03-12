@@ -57,6 +57,7 @@
 					$this->tab("messages");  
 					break; 
 			} 
+			
 		} 
 		
 		public function getHeader() { // returns all setted inside-<head> information

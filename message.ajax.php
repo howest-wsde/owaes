@@ -1,12 +1,14 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
 	
+	// message.ajax.php wordt elke 30 secondes opgeroepen (via function ping in owaes.js)
+	
 	$oSecurity = new security(TRUE);   
-	if ($_SESSION['views'] ++ % 5 == 1) { 
+	if (++$_SESSION['views'] % 10 == 0) { 
 		$oExperience = new experience(me());  
 		$oExperience->detail("reason", "ping");  
-		$oExperience->sleutel(str_date(owaestime(), "j M y") , TRUE);   
-		$oExperience->add(0.1);  
+		$oExperience->sleutel(str_date(owaestime(), "j M y") , TRUE); 
+		$oExperience->add(0.5);  
 	}   
 	
 	

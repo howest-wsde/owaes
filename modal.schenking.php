@@ -13,7 +13,11 @@
 			$oPayment->receiver($iUser);  
 			$oPayment->reason(1); 
 			$oPayment->credits($iCredits); 
-			$oPayment->signed(TRUE); 
+			$oPayment->signed(TRUE);  
+
+			$oExpReceiver = new experience(me()); 
+			$oExpReceiver->detail("reason", "schenking"); 
+			$oExpReceiver->add(90);  
 
 			if ($_POST["comment"] != "") {
 				$oConversation = new conversation($iUser); 

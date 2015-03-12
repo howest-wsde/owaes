@@ -3,6 +3,11 @@
 	$oSecurity = new security(TRUE); 
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
 
+
+	$oExperience = new experience(me());  
+	$oExperience->detail("reason", "pageload");     
+	$oExperience->add(1);  
+	
 	$oProfile = user(me()); 
 	
 	$arErrors = array(); 

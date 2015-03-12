@@ -22,7 +22,7 @@
 				if ($bOK) return $oAction; 
 			}
 			return FALSE; 
-		}
+		} 
 		
 		public function getList($bOnlyOpen = TRUE) {
 			$strKey = $bOnlyOpen ? "open" : "all"; 
@@ -44,6 +44,39 @@
 			}
 			return $this->arActions[$strKey]; 
 		}
+		
+		public function modals() { 
+			$arModalURLs = array(); 
+			foreach ($this->getList() as $oAction) {
+				switch($oAction->type()) {
+					case "transaction": 
+						$arModalURLs[] = "modal.transaction.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
+						break; 
+					case "feedback": 
+						if ((user($this->iUser)->level()>=3)&&($oAction->tododate() > owaestime()-(7*24*60*60))) {
+							$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
+						}
+						break; 
+					case "badge": 
+						$arModalURLs[] = "modal.badge.php?m=" . $oAction->data("type"); 
+						$oAction->done(owaestime()); 
+						$oAction->update();  
+						break; 
+					case "experience": 
+						$arModalURLs[] = "modal.experience.php"; 
+						if ( user($this->iUser)->experience()->level(FALSE) != user($this->iUser)->experience()->level(TRUE)) { 
+							$arModalURLs[] = "modal.nextlevel.php"; 
+						} 
+						$oAction->done(owaestime()); 
+						$oAction->update();  
+						break; 
+				} 
+			} 
+			return $arModalURLs; 
+		} 
+		
+		
+		
 	} 
 
 	class action {
@@ -53,7 +86,7 @@
 		private $iTodoDate = NULL; 
 		private $iDoneDate = 0; 
 		private $strType = NULL; 
-		private $arData = NULL; 
+		private $arData = array(); 
 		
 		public function action($iUser = NULL) {
 			$this->iCreated = owaestime(); 
@@ -65,8 +98,7 @@
 			return $this->strType; 
 		} 
 		
-		public function data($strKey, $strValue = NULL) {
-			if (is_null($this->arData)) $this->arData = array(); 
+		public function data($strKey, $strValue = NULL) { 
 			if (!is_null($strValue)) $this->arData[$strKey] = $strValue; 
 			return isset($this->arData[$strKey]) ? $this->arData[$strKey] : FALSE; 
 		}
@@ -77,10 +109,20 @@
 		}
 		
 		public function done($iDate = NULL) {
-			if (!is_null($iDate)) $this->iDoneDate = $iDate; 
+			if (!is_null($iDate)) {
+				if (is_numeric($iDate)) {
+					$this->iDoneDate = $iDate; 
+				} elseif (is_bool($iDate)) {
+					$this->iDoneDate = ($iDate ? owaestime() : NULL);
+				}
+			}
 			return ($this->iDoneDate != 0); 
 		}
 		
+		public function donedate($iDate = NULL) {
+			if (!is_null($iDate)) $this->iDoneDate = $iDate; 
+			return ($this->iDoneDate); 
+		}
 		
 		public function user($iUser = NULL) {
 			if (!is_null($iUser)) $this->iUser = $iUser; 
@@ -104,8 +146,7 @@
 			$oDB = new database(); 
 			
 			$oDB->execute("select * from tblActions where user = " . $iUser . " and actie = '" . $oDB->escape($strActie) . "' and data = '" . $oDB->escape($strData) . "'; "); 
-			if ($oDB->nextRecord()) $this->iID = $oDB->get("id"); 
-	
+			if ($oDB->nextRecord())  $this->loadRecord($oDB->record()); //$this->iID = $oDB->get("id");  
 		}
 		
 		public function update() {

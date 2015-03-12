@@ -5,6 +5,10 @@
  
 	//$oBadgesList = new badseslist();   
 	//$oBadgesList->filter("visible"); 
+	
+	$oExperience = new experience(me());  
+	$oExperience->detail("reason", "pageload");     
+	$oExperience->add(1);  
     
     $oPage->tab("lijsten");
 	

@@ -20,13 +20,22 @@
 	}
 	if (isset($_POST["setadmin"])) {   
 		if ($oMijnRechten->userrights()) {
-			if($oGroep->users(intval($_POST["setadmin"])) != FALSE) {
+			$iSetAdmin = intval($_POST["setadmin"]); 
+			if($oGroep->users($iSetAdmin) != FALSE) {
+				// oude admin alle rechten geven 
 				$oCurrentAdminRechten = $oGroep->userrights($oGroep->admin()->id());
 				$arRechten = array("useradd", "userdel", "userrights", "owaesadd", "owaesedit", "owaesdel", "owaesselect", "owaespay", "groupinfo"); 
 				foreach ($arRechten as $strRecht) $oCurrentAdminRechten->right($strRecht, TRUE); 
 				$oCurrentAdminRechten->update(); 
-				$oGroep->admin(intval($_POST["setadmin"]));  
+				
+				// nieuwe admin
+				$oGroep->admin($iSetAdmin);  
 				$oGroep->update(); 
+		
+				$oExperience = new experience($iSetAdmin);  
+				$oExperience->detail("reason", "admin for group");  
+				$oExperience->sleutel("group.admin." . $oGroep->id());   
+				$oExperience->add(50);  
 			}
 		} else stop("rechten"); 
 	}

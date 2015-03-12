@@ -1,7 +1,6 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
-	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	//$oPage->addJS("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
@@ -15,6 +14,8 @@
 		stop("algemenevoorwaarden"); 
 	} 
 	 // GROEPEN MOETEN KUNNEN ZONDER LEVEL
+	 
+	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
 	$oOwaesItem = owaesitem($iID);
@@ -28,11 +29,14 @@
 	
 	if ($oOwaesItem->id() != 0) {
 		$strType = $oOwaesItem->type()->key();  
+		$bNEW = FALSE; 
 	} else {
 		$strType = (isset($_GET["t"]) ? $_GET["t"] : "");  
+		$bNEW = TRUE; 
 	} 
 	 
 	if (isset($_POST["owaesadd"])) { 
+		$oLog = new log("owaesadd", array("post" => $_POST)); 
 		
 		if (user(me())->admin()) {
 			$strPoster = $_POST["poster"]; 
@@ -110,23 +114,20 @@
 		} 
 			
 		$oOwaesItem->update();   
-		
-		$oDB = new database("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values (" . me() . ", " . owaesTime() . ", 0, 0, 0, 0, " . TIMEOUT_ADDEDNEW . ", " . $oOwaesItem->id() . "); ", TRUE); 
-		
-		$oOwaesItem->type($_POST["type"]); 
-		user(me())->addbadge($_POST["type"]); 
-		
-		
-		//switch($oOwaesItem->task())  {
-		//	case TRUE: 
-				redirect("index.php?t=" . $oOwaesItem->type()->key());  
-				exit(); 
-		//		break; 	
-		//	case FALSE:  
-		//		header("Location: index.php?t=market");  
-		//		exit(); 
-		//		break; 	
-		//} 
+		 
+		 
+		if ($bNEW) {
+			$oMe = user(me()); 
+			$oMe->addIndicators(array("physical"=>2, "mental"=>2, "emotional"=>2, "social"=>2, ), TIMEOUT_ADDEDNEW, $oOwaesItem->id()); 
+			$oMe->addbadge($_POST["type"]); 
+
+			$oExperience = new experience(me());  
+			$oExperience->detail("reason", "item toegevoegd");     
+			$oExperience->add(60);  
+		}
+	 
+		redirect("index.php?t=" . $oOwaesItem->type()->key());  
+		exit();  
 		
 	} 
 	  

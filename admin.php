@@ -8,13 +8,17 @@
     //Variables for pages
     if(isset($_GET["start"])){
        $start = $_GET["start"];
-    }else{
+    } else {
        $start = 0;
     }
     $limit = 10;//aantal records per pagina
     $linkNext = $start +$limit; // wordt op het laatst gebruikt om te zien of er een 'NEXT' link moet komen
     $back = $start - $limit; 
-    $next = $start + $limit;
+    $next = $start + $limit; 
+
+	$oExperience = new experience(me());  
+	$oExperience->detail("reason", "admin-users");     
+	$oExperience->add(1);  
 
     //vanaf 50 tot $limitIndicator =  oranje, alles eronder is rood
     $limitIndicators = 40;

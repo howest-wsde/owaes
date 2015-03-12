@@ -1,0 +1,1 @@
+ALTER TABLE `tblExperience` CHANGE `experience` `experience` INT NOT NULL DEFAULT '0';

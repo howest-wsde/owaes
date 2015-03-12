@@ -5,6 +5,10 @@
  
  	$iUser = isset($_GET["u"]) ? intval($_GET["u"]) : 0; 
  
+	$oExperience = new experience(me());  
+	$oExperience->detail("reason", "pageload");     
+	$oExperience->add(1);  
+	
 	$oUserList = new userlist();   
 	$oUserList->filter("visible"); 
 	if ($iUser != 0) {

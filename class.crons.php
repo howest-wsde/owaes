@@ -55,7 +55,7 @@
 			$strSQL = "select u.id as user, i.datum, i.reason, i.link 
 				from tblUsers u 
 				left join ( $strLastUserrecordsSQL ) i on u.id = i.user 
-				where u.actief = 1 and u.algemenevoorwaarden = 1 
+				where u.actief = 1 and u.algemenevoorwaarden = 1 and u.admin = 0  
 				having (i.datum < " . (owaesTime()-$iRefreshTijd) . " or i.datum is null)
 			"; 
 			  
@@ -75,6 +75,15 @@
 						$arChange["reason"] = TIMEOUT_WAITING;  
 						$arChange["link"] = $oDB->get("link");  
 						// enkel 0 voor indicatoren waar op gewerkt wordt
+						break; 
+					case TIMEOUT_ADDEDNEW: // wordt geset in owaeasadd wanneer een nieuw item toegevoegd wordt  
+						$arChange["physical"] = 0; 
+						$arChange["emotional"] = 0;
+						$arChange["mental"] = 0;
+						$arChange["social"] = 0;
+						$arChange["reason"] = TIMEOUT_WAITING;  
+						$arChange["link"] = $oDB->get("link");  
+						
 						break; 
 					case TIMEOUT_BUSY:   // wordt geset in class.subscription wanneer de state verandert naar SUBSCRIBED  
 
