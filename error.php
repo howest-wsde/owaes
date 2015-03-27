@@ -36,6 +36,9 @@
 							case "rechten": 
 								echo ("<p>U heeft niet de nodige rechten deze actie uit te voeren. </p>"); 
 								break; 	
+							case "level": 
+								echo ("<p>Om deze pagina te openen moet u eerst een hoger level behalen. </p>"); 
+								break; 	
 							default: 
 								echo ("<p>U heeft niet de nodige rechten deze actie uit te voeren. </p>"); 
 						}

@@ -57,6 +57,8 @@
 					$oDB->execute("delete from tblUserRecover where user not in (select id from tblUsers); ");   
 					$oDB->execute("delete from tblUserSessions where user not in (select id from tblUsers); ");  
 					
+					if (settings("debugging", "demouser")) $oDB->execute("update tblUsers set login = 'demo', pass = '" . md5("demo") . "' where id = " . settings("debugging", "demouser") . "; ");   
+					
 					demodone("gerelateerde records van verwijderede gebruikers verwijderen (inschrijvingen, acties, conversaties, experience, feedback, groeplidschap, indicatoren, notificaties, transacties, badges, certificaten, logins en sessies)"); 
 					
 					

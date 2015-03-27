@@ -89,21 +89,40 @@
         	
             	<div class="row">
 					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("user.html");
+                    echo $oMe->html("user.html");
                     ?>
                 </div>
                  <!-- <div class="container sidecenterright"> -->
 				<? //if (user(me())->level()>=2) { ?>
                     <div class="row">
-                    	<? if (user(me())->algemenevoorwaarden()) { ?> 
-                            <a href="owaesadd.php?t=<? echo $strType; ?>" class="btn btn-default">
-                                <span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
-                            </a>
-                        <? } else { ?>
-                            <a href="modal.voorwaarden.php" class="domodal btn btn-default">
-                                <span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
-                            </a>
-                        <? } ?>
+                    	<? 
+							$oNew = owaesitem(0); 
+							$oNew->type($strType);  
+							if ($oNew->editable()===TRUE) {
+								?>
+									<a href="owaesadd.php?t=<? echo $strType; ?>" class="btn btn-default">
+										<span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
+									</a>
+								<? 
+							} else {
+								switch($oNew->editable()) {
+									case "voorwaarden": 
+										?>
+											<a href="modal.voorwaarden.php" class="domodal btn btn-default">
+												<span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
+											</a>
+										<? 
+										break; 	
+									case "level": 
+										?>
+											<a href="modal.levelneeded.php?l=<? echo $oNew->type()->minimumlevel(); ?>" class="domodal btn btn-default">
+												<span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
+											</a>
+										<?	
+										break;  
+								}  
+							}
+						?>
                     </div>
                 <? //} ?>
                 

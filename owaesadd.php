@@ -1,6 +1,7 @@
 <?
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
+	$oMe = user(me()); 
 	
 	//$oPage->addJS("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
@@ -9,31 +10,29 @@
 	//$oPage->addJS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.js"); 
 	//$oPage->addCSS("http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"); 
 	//$oPage->addCSS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.css"); 
+	 
 	
-	if (!user(me())->algemenevoorwaarden()) { 
-		stop("algemenevoorwaarden"); 
-	} 
-	 // GROEPEN MOETEN KUNNEN ZONDER LEVEL
 	 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
 	$oOwaesItem = owaesitem($iID);
 	
-	if (!$oOwaesItem->userrights("edit", me())) {
-		if (!admin()) {
-			stop("rechten"); 
-			exit(); 
-		}
-	}
-	
 	if ($oOwaesItem->id() != 0) {
 		$strType = $oOwaesItem->type()->key();  
 		$bNEW = FALSE; 
 	} else {
 		$strType = (isset($_GET["t"]) ? $_GET["t"] : "");  
+		$oOwaesItem->type($strType); 
 		$bNEW = TRUE; 
-	} 
+	}  
+	 
+	if ($oOwaesItem->editable() !== TRUE) { 
+		stop($oOwaesItem->editable()); 
+		exit();  
+	}
+	
+	  
 	 
 	if (isset($_POST["owaesadd"])) { 
 		$oLog = new log("owaesadd", array("post" => $_POST)); 
@@ -118,7 +117,8 @@
 		 
 		if ($bNEW) {
 			$oMe = user(me()); 
-			$oMe->addIndicators(array("physical"=>2, "mental"=>2, "emotional"=>2, "social"=>2, ), TIMEOUT_ADDEDNEW, $oOwaesItem->id()); 
+			$iAddValue = settings("indicatoren", "owaesadd") ? settings("indicatoren", "owaesadd") : 2; 
+			$oMe->addIndicators(array("physical"=>$iAddValue, "mental"=>$iAddValue, "emotional"=>$iAddValue, "social"=>$iAddValue, ), TIMEOUT_ADDEDNEW, $oOwaesItem->id()); 
 			$oMe->addbadge($_POST["type"]); 
 
 			$oExperience = new experience(me());  
@@ -335,11 +335,14 @@ input.time {width: 100%; display: block; }
                                         <select class="form-control aanbod" name="type"> 
                                             <?
                                                 foreach($arOwaesTypes as $strKey=>$strTitle) {
-                                                    $strSelected = ($strType==$strKey) ? "selected=\"selected\"" : ""; 
-                                                    echo "<option value='$strKey' $strSelected>"; 
-                                                    echo $strTitle;
-                                                    //echo (owaestype($strKey)->direction() == DIRECTION_EARN) ? ": dit zal me credits opleveren" : ": dit zal me credits kosten"; 
-                                                    echo "</option>"; 	
+													$oTempType = owaestype($strKey);
+													if ($oMe->level() >= $oTempType->minimumlevel()) {
+														$strSelected = ($strType==$strKey) ? "selected=\"selected\"" : ""; 
+														echo "<option value='$strKey' $strSelected>"; 
+														echo $strTitle;
+														//echo (owaestype($strKey)->direction() == DIRECTION_EARN) ? ": dit zal me credits opleveren" : ": dit zal me credits kosten"; 
+														echo "</option>"; 	
+													}
                                                 }
                                             ?> 
                                         </select>

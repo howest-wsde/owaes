@@ -275,7 +275,8 @@
 				if ($bSet)  { 
 					switch($strLoop) {
 						case "members": 
-							$arList = $this->users();
+							$arList = array(); 
+							foreach ($this->users() as $oUser) if ($oUser->visible()) $arList[] = $oUser; 
 							break;  
 						case "market":  
 							$oList = new owaeslist();   

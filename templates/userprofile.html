@@ -21,25 +21,15 @@
                 </div>
                 [if:notme]
                	 <div class="col-sm-2">
-                    <div class="btn-group-vertical pull-right"> 
-                    [if:notfollowed]<a href="[link:follow]" class="btn btn-default btn-sm"><span class="icon icon-volgen"></span><span class="title">Volgen</span></a>[/if:notfollowed]
-                    [if:isfollowed]<a href="[link:follow]" class="btn btn-default btn-sm"><span class="icon icon-volgen"></span><span class="title">Ontvolgen</span></a>[/if:isfollowed]
-
-
-                    [if:friend]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Ontvrienden</span></a>[/if:friend]
-                    [if:nofriend:requested]<a href="#" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap aangevraagd</span></a>[/if:nofriend:requested]
-                    [if:nofriend:asked]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap bevestigen</span></a>[/if:nofriend:asked]
-                    [if:nofriend:noconnection]<a href="[link:addfriend]" class="btn btn-default btn-sm"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriend toevoegen</span></a>[/if:nofriend:noconnection]
-  
-                        <a href="[link:contact]" class="btn btn-default btn-sm"><span class="icon icon-berichtsturen"></span><span class="title">Bericht sturen</span></a>
-
+                    <div class="btn-group-vertical pull-right">
+                    	[for:actions:default]<a href="[url]" class="btn btn-default btn-sm [classes]"><span class="icon [icon]"></span><span class="title">[title]</span></a>[/for:actions:default] 
                         <div class="btn-group">
                             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                                 Meer ... 
                                 <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu"> 
-                                [actions] 
+                                [actions:notdefault] 
                             </ul>
                         </div>
                     </div>
@@ -337,16 +327,16 @@
                             <div class="form-group">
                                 <label for="email" class="control-label col-lg-2">Email:</label>
                                 <div class="col-lg-6">
-                                    <input type="text" name="email" class="email form-control" id="email" placeholder="Email" value="[email]" />
+                                    <input type="text" name="email" class="email form-control" id="email" placeholder="E-mail" value="[email]" />
                                 </div>
                                 <div class="col-lg-4">
                                     [select:visible:email]
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="woonplaats" class="control-label col-lg-2">Woonplaats:</label>
+                                <label for="woonplaats" class="control-label col-lg-2">Adres:</label>
                                 <div class="col-lg-6">
-                                    <input type="text" name="location" class="woonplaats form-control" id="woonplaats" placeholder="Woonplaats" value="[location]" />
+                                    <textarea name="location" class="woonplaats form-control" id="Adres" placeholder="Woonplaats">[location]</textarea>
                                 </div>
                                 <div class="col-lg-4">
                                     [select:visible:location]

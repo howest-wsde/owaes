@@ -1223,12 +1223,14 @@
 					$oUser->execute($strSQL);  
 					$this->id($oUser->lastInsertID()); 
 				} else {
-					$arUpdates = array(); 
-					foreach ($arVelden as $strVeld=>$strWaarde) {
-						$arUpdates[] = $strVeld . " = '" . $oUser->escape($strWaarde) . "'"; 
-					}
-					$strSQL = "update tblUsers set " . implode(", ", $arUpdates) . " where id = " . $this->id() . ";"; 
-					$oUser->execute($strSQL); 
+					if (settings("debugging", "demouser") != $this->id()) {
+						$arUpdates = array(); 
+						foreach ($arVelden as $strVeld=>$strWaarde) {
+							$arUpdates[] = $strVeld . " = '" . $oUser->escape($strWaarde) . "'"; 
+						}
+						$strSQL = "update tblUsers set " . implode(", ", $arUpdates) . " where id = " . $this->id() . ";"; 
+						$oUser->execute($strSQL); 
+					}; // else vardump($arVelden); //  error ("Dit is niet mogelijk op de demo-versie"); 	
 				}  
 			} else {
 				error ("Geen rechten om deze gebruiker aan te passen (class.user, lijn " . __LINE__ . ")"); 	
@@ -1583,6 +1585,18 @@
 			if (is_null($this->iLevel)) $this->iLevel = $this->experience()->level(); 
 			return $this->iLevel; 
 		}
+		public function levelrights($strWat) {
+			$iLevel = $this->level(); 
+			if ($this->admin()) return TRUE; 
+			switch ($strWat) {
+				case "donate": return $iLevel >= 4; 
+				case "message": return $iLevel >= 2; 
+				case "addfriend": return $iLevel >= 2; 
+				case "groepslijst": return $iLevel >= 2; 
+				case "gebruikerslijst": return $iLevel >= 3; 
+			}
+			return FALSE; 
+		}
 		
 		public function actions() {
 			$arActions = array(); 
@@ -1593,16 +1607,76 @@
 						"title" => "Activeren", 
 						"icon" => "icon-freeze", 
 						"class" => array("algemenevoorwaarden"), 
+						"default" => TRUE, 
 					);  
 					$arActions[] = array(); // splitter  
 				}
-				$arActions[] = array(	
+			
+				if (is_null($this->iFriendStatus)) $this->loadFriendship(); 
+				switch($this->iFriendStatus) {
+					case FRIEND_FRIENDS: 
+						$arActions[] = array(	
+							"href" => "addfriend.php?action=del&u=" . $this->id(), 
+							"title" => "Ontvrienden", 
+							"icon" => "icon-vriendtoevoegen", 
+							"class" => array(), 
+						);    
+						break; 
+					case FRIEND_ASKED: 
+						$arActions[] = array(	
+							"href" => "addfriend.php?action=add&u=" . $this->id(), 
+							"title" => "Vriendschap bevestigen", 
+							"icon" => "icon-vriendtoevoegen", 
+							"class" => array(), 
+							"default" => TRUE, 
+						); 
+						break; 
+					case FRIEND_REQUESTED:  
+						$arActions[] = array(	
+							"href" => "addfriend.php?action=del&u=" . $this->id(), 
+							"title" => "Vriendschapsverzoek verwijderen", 
+							"icon" => "icon-vriendtoevoegen", 
+							"class" => array(), 
+						); 
+						break; 
+					case FRIEND_NOFRIENDS: 
+					default:   
+						if (user(me())->levelrights("addfriend")) $arActions[] = array(	
+							"href" => "addfriend.php?action=add&u=" . $this->id(), 
+							"title" => "Vriend toevoegen", 
+							"icon" => "icon-vriendtoevoegen", 
+							"class" => array(), 
+							"default" => TRUE, 
+						); 
+						break;  
+				}
+				
+				if (user(me())->follows($this->id())) {
+					$arActions[] = array(	
+						"href" => "follow.php?action=del&u=" . $this->id(), 
+						"title" => "Ontvolgen", 
+						"icon" => "icon-volgen", 
+						"class" => array(), 
+					);
+				} else {
+					$arActions[] = array(	
+						"href" => "follow.php?action=add&u=" . $this->id(), 
+						"title" => "Volgen", 
+						"icon" => "icon-volgen", 
+						"class" => array(), 
+						"default" => TRUE, 
+					);
+				}
+				
+				$arActions[] = array(); // splitter    
+				if (user(me())->levelrights("message")) $arActions[] = array(	
 						"href" => $this->messageLink("", FALSE), 
 						"title" => "Bericht versturen", 
 						"icon" => "icon-berichtsturen", 
 						"class" => array(), 
+						"default" => TRUE, 
 					); 
-				if ($this->algemenevoorwaarden()) $arActions[] = array(	
+				if ($this->algemenevoorwaarden() && user(me())->levelrights("donate")) $arActions[] = array(	
 						"href" => $this->donateLink("", TRUE), 
 						"title" => ucfirst(settings("credits", "name", "x")) . " schenken", 
 						"icon" => "icon-credits", 
@@ -1729,6 +1803,28 @@
 			
 			foreach ($oHTML->loops() as $strTag=>$arLoops) {
 				switch($strTag) {
+
+					case "actions:default":  
+						$arList = $this->actions();   
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							if (isset($oItem["default"]) && $oItem["default"]) {
+								foreach ($arResults as $strSubHTML=>$arDummy) {
+									$strResult = $strSubHTML; 
+									$strResult = str_replace("[title]", $oItem["title"], $strResult); 
+									$strResult = str_replace("[icon]", $oItem["icon"], $strResult); 
+									$strResult = str_replace("[url]", $oItem["href"], $strResult); 
+									$strResult = str_replace("[classes]", implode(" ", $oItem["class"]), $strResult); 
+									$arResults[$strSubHTML][] = $strResult;
+								}
+							}
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("actions:default", $strSubHTML, $strResult); 
+						}
+						break; 
+						
 					case "friends":  
 						$arList = $this->friends();  
 						$arResults = array();  
@@ -1975,7 +2071,7 @@
 						$arUserDetails[] = $strGender; 
 					}
 					if ($this->birthdate() != 0) $arUserDetails[] = "<dt>Geboortedatum</dt><dd>" . str_date($this->birthdate()) . "</dd>"; 
-					if ($this->location() != "") $arUserDetails[] = "<dt>Woonplaats</dt><dd>" .$this->location() . "</dd>"; 
+					if ($this->location() != "") $arUserDetails[] = "<dt>Adres</dt><dd>" . nl2br(html($this->location())) . "</dd>"; 
 					return "<dl class=\"userinfo\">" . implode("", $arUserDetails) . "</dl>";
 				case "options:gender":  
 					$arGenderOptions = array(
@@ -1995,6 +2091,19 @@
 						} else {
 							$arActions[] = "<li class=\"divider\"></li>"; 
 						} 
+					}
+					return implode("", $arActions);  
+				case "actions:notdefault": 
+					$arActions = array();  
+					foreach ($this->actions() as $arAction) {
+						if (!isset($arAction["default"])) $arAction["default"] = FALSE; 
+						if (!$arAction["default"]) {
+							if (isset($arAction["href"])) {
+								$arActions[] = "<li><a href=\"" . $arAction["href"] . "\" class=\"" . implode(" ", $arAction["class"]) . "\"><span class=\"icon " . $arAction["icon"] . "\"></span><span class=\"title\">" . $arAction["title"] . "</span></a></li>";
+							} else {
+								$arActions[] = "<li class=\"divider\"></li>"; 
+							} 
+						}
 					}
 					return implode("", $arActions); 
 				case "actions:noicon": 

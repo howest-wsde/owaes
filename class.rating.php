@@ -59,12 +59,12 @@
 			if (!is_null($iID)) $this->iID = $iID; 
 			return $this->iID; 	
 		}
-		
+
 		public function market($iMarket = NULL){
 			if (!is_null($iMarket)) $this->iMarket = $iMarket; 
 			return $this->iMarket; 	
 		}
-		 
+
 		public function load() {
 			$arWhere = array(); 
 			$arWhere[] = "sender = " . $this->sender(); 

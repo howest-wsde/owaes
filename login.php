@@ -12,7 +12,11 @@
 		$strRedirect = $_GET["p"];
 	} else if (isset($_POST["from"])) {
 		$strRedirect = $_POST["from"];
-	} else $strRedirect = "main.php?start";  
+	} else $strRedirect = "main.php?start"; 
+	
+	if (isset($_GET["demo"]) && settings("debugging", "demo")) { 
+		if ($oSecurity->doLogin("demo")) redirect($strRedirect); 
+	}
 
 	if (isset($_POST["dosignup"])) {
 		$bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 

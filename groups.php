@@ -3,10 +3,9 @@
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
-	if (!user(me())->levelrights("gebruikerslijst")) stop("level");
+	if (!user(me())->levelrights("groepslijst")) stop("level");
  
-	$oUserList = new userlist();   
-	if (!user(me())->admin()) $oUserList->filter("visible"); 
+	$oList = new grouplist(); 
     
 	$oExperience = new experience(me());  
 	$oExperience->detail("reason", "pageload");     
@@ -35,8 +34,8 @@
                     <!--<div class="main market"> -->
 
                         <? 
-                            foreach ($oUserList->getList() as $oUser) { 
-                                echo "<div id=\"user-" . $oUser->id() . "\">" . $oUser->HTML("userfromlist.html") . "</div>";   
+                            foreach ($oList->getList() as $oUser) { 
+                                echo "<div id=\"group-" . $oUser->id() . "\">" . $oUser->HTML("groupfromlist.html") . "</div>";   
                             }
                         ?>
                     <!--</div>-->

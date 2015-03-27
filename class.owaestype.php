@@ -16,18 +16,21 @@
 					"title" => "Werkervaring", 
 					"iconclass" => "icon-werkervaring", 
 					"direction" => DIRECTION_SPEND, 
+					"minimumlevel" => 4, 
 				), 
 				2 => array(
 					"key" => "opleiding", 
 					"title" => "Opleiding", 
 					"iconclass" => "icon-opleiding", 
 					"direction" => DIRECTION_EARN,
+					"minimumlevel" => 3, 
 				), 
 				3 => array(
 					"key" => "infra", 
 					"title" => "Delen",  
 					"iconclass" => "icon-delen", 
 					"direction" => DIRECTION_EARN,
+					"minimumlevel" => 2, 
 				), 
 			); 	
 			foreach ($this->arTypes as $iKey=>$arType) {
@@ -50,6 +53,9 @@
 		}
 		public function title() {
 			return $this->arTypes[$this->iType]["title"]; 
+		}
+		public function minimumlevel() {
+			return $this->arTypes[$this->iType]["minimumlevel"]; 
 		}
 		
 		public function __toString() {

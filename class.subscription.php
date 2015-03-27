@@ -86,11 +86,12 @@ class subscription {
 				break;  
 			case SUBSCRIBE_CONFIRMED:  
 				$oMarket = owaesitem($this->iMarket);  
+				$iMultiplier = settings("indicatoren", "multiplier") ? settings("indicatoren", "multiplier") : 1;
 				$oDB->execute("insert into tblIndicators 
 									(user, datum, physical, mental, emotional, social, reason, link)
-									values (" . $this->iUser . ", " . owaesTime() . ", " . ($oMarket->physical()/25) . ", 
-										" . ($oMarket->mental()/25) . ", " . ($oMarket->emotional()/25) . ", 
-										" . ($oMarket->social()/25) . ", " . TIMEOUT_CONFIRMED . ", " . $this->iMarket . "); ");  
+									values (" . $this->iUser . ", " . owaesTime() . ", " . ($oMarket->physical()/25*$iMultiplier) . ", 
+										" . ($oMarket->mental()/25*$iMultiplier) . ", " . ($oMarket->emotional()/25*$iMultiplier) . ", 
+										" . ($oMarket->social()/25*$iMultiplier) . ", " . TIMEOUT_CONFIRMED . ", " . $this->iMarket . "); ");  
 				break; 
 			case SUBSCRIBE_DECLINED:  
 				break;  

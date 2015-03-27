@@ -89,11 +89,11 @@
 			// MAPS CHANGE
 			var iTimerZoek = 0; 
 			$(document).ready(function() {
-				$("input#location").keyup(function() { 
+				$("#location").keyup(function() { 
 					clearTimeout(iTimerZoek);
 					iTimerZoek = setTimeout("geozoek();", 1000); 
 				})
-				$("input#location").change(function() { 
+				$("#location").change(function() { 
 					geozoek(); 
 				})
 				$("#frmprofile").submit(function() {
@@ -119,7 +119,7 @@
 			
 			function geozoek() {
 				clearTimeout(iTimerZoek); 
-				strVal = $("input#location").val(); 
+				strVal = $("#location").val(); 
 				if (strVal == "") {
 					$("input#locationlong").val(0);
 					$("input#locationlat").val(0);
@@ -290,9 +290,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="location" class="control-label col-lg-2">Woonplaats:</label>
+                            <label for="location" class="control-label col-lg-2">Adres:</label>
                             <div class="col-lg-6">
-                                <input type="text" name="location" id="location" class="location form-control" placeholder="Woonplaats" value="<? echo inputfield($oProfile->location()); ?>" />
+                                <textarea  name="location" id="location" class="location form-control" placeholder="Uw adres" ><? echo inputfield($oProfile->location()); ?></textarea>
                                 <input type="hidden" name="locationlat" id="locationlat" value="<? echo $iLat; ?>" />
                                 <input type="hidden" name="locationlong" id="locationlong" value="<? echo $iLong; ?>" />
                                 <div id="map-canvas" style="height: 200px; "></div>

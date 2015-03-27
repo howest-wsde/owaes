@@ -5,18 +5,7 @@
             <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown">
                 Acties <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu" role="menu">
-                <li>
-                    [if:friend]<a href="[link:addfriend]" class="ajax" rel="user-[id]"><span class="icon icon-vriendtoevoegen"></span><span class="title">Ontvrienden</span></a>[/if:friend]
-                    [if:nofriend:requested]<a href="#" class=""><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap aangevraagd</span></a>[/if:nofriend:requested]
-                    [if:nofriend:asked]<a href="[link:addfriend]" class="ajax" rel="user-[id]"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriendschap bevestigen</span></a>[/if:nofriend:asked]
-                    [if:nofriend:noconnection]<a href="[link:addfriend]" class="ajax" rel="user-[id]"><span class="icon icon-vriendtoevoegen"></span><span class="title">Vriend toevoegen</span></a>[/if:nofriend:noconnection]
-                </li>
-                <li>
-                    [if:notfollowed]<a href="[link:follow]" class="ajax" rel="user-[id]"><span class="icon icon-volgen"></span><span class="title">Volgen</span></a>[/if:notfollowed]
-                    [if:isfollowed]<a href="[link:follow]" class="ajax" rel="user-[id]"><span class="icon icon-volgen"></span><span class="title">Ontvolgen</span></a>[/if:isfollowed]
-                </li>
-                <li class="divider"></li>
+            <ul class="dropdown-menu" role="menu"> 
                 [actions] 
             </ul>
         </div>

@@ -73,8 +73,7 @@
 		}
 		
 		public function level($bShowNotConfirmed = FALSE) { // returns huidige level (of eventueel volgende met parameter TRUE)
-			$iExp = $this->total($bShowNotConfirmed); 
-
+			$iExp = $this->total($bShowNotConfirmed);  
 			$this->iLevel = 0; 
 			foreach (settings("levels") as $iLevel=>$arSettings) {
 				if (($iExp >= $arSettings["threshold"]) && ($iLevel > $this->iLevel)) $this->iLevel = $iLevel;  
@@ -127,7 +126,7 @@
 		public function total($bShowNotConfirmed = FALSE, $iValue = NULL) { // als parameter bShowNotConfirmed == TRUE > ook punten die nog niet bevestigd werden door gebruiker
 			$strKey = $bShowNotConfirmed ? "all" : "confirmed"; 
 			if (!is_null($iValue)) $this->arTotal[$strKey] = $iValue; 
-			if (!isset($this->arTotal[$strKey])) {
+			if (!isset($this->arTotal[$strKey])) { 
 				$oDB = new database();
 				if ($bShowNotConfirmed) { 
 					$oDB->execute("select round(sum(experience)) as totaal from tblExperience where user = " . $this->iUser . ";"); 
@@ -141,6 +140,7 @@
 					$oDB->execute("select user, round(sum(experience)) as totaal from tblExperience where user in (" . implode(",", $arUsers) . ") and confirmed = 1 group by user;"); 
 					while ($oDB->nextRecord()) { 
 						user($oDB->get("user"))->experience()->total(FALSE, intval($oDB->get("totaal"))); 
+						if ($oDB->get("user") == $this->iUser) $this->arTotal[$strKey] = intval($oDB->get("totaal")); 
 					} 
 				} 
 			}  

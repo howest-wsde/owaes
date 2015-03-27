@@ -156,7 +156,8 @@
 					"sub" => array(),
                 );
                 
-                $arTabs["lijsten"]["sub"]["Gebruikers"] = array("users.php", "gebruikers");
+                if (user(me())->levelrights("groepslijst")) $arTabs["lijsten"]["sub"]["Groepen"] = array("groups.php", "groups");
+                if (user(me())->levelrights("gebruikerslijst")) $arTabs["lijsten"]["sub"]["Gebruikers"] = array("users.php", "gebruikers");
                 $arTabs["lijsten"]["sub"]["Vrienden"] = array("friends.php", "friends");
 				$arTabs["lijsten"]["sub"]["Badges"] = array("badges.php", "badges");
 				if ($oSecurity->admin()) {

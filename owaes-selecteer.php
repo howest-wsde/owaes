@@ -79,9 +79,13 @@
 					})
 					if (arGoedgekeurd.length > 0) arModals[arModals.length] = "modal.mailconfirm.php?m=<? echo $iID; ?>&s=1&u=" + arGoedgekeurd.join(","); 
 					if (arAfgekeurd.length > 0) arModals[arModals.length] = "modal.mailconfirm.php?m=<? echo $iID; ?>&s=0&u=" + arAfgekeurd.join(","); 
-					arModals[arModals.length - 1] += "&refresh=1"; 
-					loadModals(arModals);  
-					return (arModals.length==0);  
+					if (arModals.length > 0) {
+						arModals[arModals.length - 1] += "&refresh=1"; 
+						loadModals(arModals); 
+						return false; 
+					} else {
+						return true; 
+					} 
 				}); 
 			}); 
 		</script> 

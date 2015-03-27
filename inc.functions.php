@@ -228,9 +228,9 @@
 	
 	function settings($strA, $strB = NULL, $strC = NULL) {
 		global $arConfig; 
-		if (isset($strC)) return $arConfig[$strA][$strB][$strC]; 
-		if (isset($strB)) return $arConfig[$strA][$strB]; 
-		return $arConfig[$strA]; 
+		if (isset($strC)) return isset($arConfig[$strA][$strB][$strC]) ? $arConfig[$strA][$strB][$strC] : FALSE; 
+		if (isset($strB)) return isset($arConfig[$strA][$strB]) ? $arConfig[$strA][$strB] : FALSE; 
+		return isset($arConfig[$strA]) ? $arConfig[$strA] : FALSE; 
 	}
 	
 	

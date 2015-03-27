@@ -91,6 +91,31 @@
 				$this->state(STATE_RECRUTE);
 			}
 		}
+		
+		public function editable() { // editable for me() ? => returns TRUE or string error-code 
+			// TODO: GROEPEN MOETEN KUNNEN ZONDER LEVEL 
+			$oMe = user(me()); 
+			if (!$oMe->algemenevoorwaarden()) return("voorwaarden"); 
+			if (!$oMe->admin()) { 
+				if ($this->group()) {
+					$oRechten = $this->group()->userrights(me());
+					if (!$oRechten->owaesedit()) return "rechten"; 
+				} else { 
+					if ($this->author()->id() != me()) return "rechten"; 
+					if ($this->id() == 0) { 
+						$bLevelError = FALSE; 
+						if ($oMe->level() < $this->type()->minimumlevel()) $bLevelError = TRUE; 
+						if ($bLevelError) {
+							foreach ($oMe->groups() as $oGroup) {
+								if ($oGroup->userrights(me())->owaesadd()) $bLevelError = FALSE;
+							}
+							if ($bLevelError) return "level"; 
+						}
+					}
+				}	
+			}  
+			return TRUE; 
+		}
 		 
 		public function getTags() {
 			if (is_null($this->arTags)) $this->loadTags(); 
@@ -1023,6 +1048,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				case "actions":  
 					$arActions = array(); 
 					$arSubscriptions = $this->subscriptions();  
+					if ($this->editable() === TRUE) $arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" class=\"btn btn-default btn-sm pull-right edit\" align=\"right\" /></a>"; 
+					/*
 					if ($this->iAuthor != me()) { 
 						$iMyValue = (isset($arSubscriptions[me()])) ? $arSubscriptions[me()]->state() : SUBSCRIBE_CANCEL; 
 						if ($this->userrights("edit", me())) $arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" class=\"btn btn-default btn-sm pull-right edit\" align=\"right\" /></a>"; 
@@ -1040,6 +1067,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						}
 						$arActions[] = "<a href=\"" . fixPath("owaesadd.php?edit=" . $this->id()) . "\"><img class=\"btn btn-default btn-sm pull-right\" src=\"" . fixPath("img/edit.png") . "\" alt=\"aanpassen\" align=\"right\" /></a>"; 
 					}
+					*/
 					return implode("", $arActions);
  
  
