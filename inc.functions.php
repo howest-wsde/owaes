@@ -416,6 +416,8 @@
 	}
 	
 	function str_date($dDate, $strFormat = "") {
+		date_default_timezone_set("Europe/Brussels");
+
 		if ($dDate == 0) return ""; 
 		$arDagen = array("", "ma", "di", "woe", "do", "vr", "zat", "zon");
 		$arDagenFull = array("", "maandag", "dinsdag", "woensdag", "donderdag", "vrijdag", "zaterdag", "zondag");
