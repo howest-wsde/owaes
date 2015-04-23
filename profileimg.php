@@ -1,12 +1,13 @@
 <? 
 
-	$iID = intval($_GET["id"]); 
+	$iID = isset($_GET["id"]) ? intval($_GET["id"]) : -1; 
 	$iW = intval(isset($_GET["w"])?$_GET["w"]:0);  
 	$iH = intval(isset($_GET["h"])?$_GET["h"]:0); 
 	
 	$strFilename = "upload/profiles/id/" . $iID . ".png"; 
 	if (!file_exists($strFilename)) $strFilename = "upload/profiles/noprofileimg.png"; 
 	if ($iID == 0) $strFilename = "upload/profiles/owaes.png"; 
+	if ($iID == -1) $strFilename = "upload/profiles/noprofileimg.png"; 
 	
 	$oSource = imagecreatefrompng($strFilename);
 	$iProp = imagesx($oSource)/imagesy($oSource);

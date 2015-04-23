@@ -17,6 +17,17 @@
 		$oDB->execute("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason) values ('" . $iUser . "', '" . owaestime() . "', '" . (intval($_POST["physical"]) - $oUser->physical(NULL, FALSE)) . "', '" . (intval($_POST["mental"]) - $oUser->mental(NULL, FALSE)) . "', '" . (intval($_POST["emotional"]) - $oUser->emotional(NULL, FALSE)) . "', '" . (intval($_POST["social"]) - $oUser->social(NULL, FALSE)) . "', '" . 0 . "'); ");
 		redirect(filename());  // refresh om values up te daten
 	}
+	
+	if (isset($_POST["changepass"])) {
+		$strNewPass = $_POST["paswoord"]; 
+		if (trim($_POST["paswoord"]) != "") {
+			$oUser->password($strNewPass); 
+			$oUser->update();  
+		}
+		redirect(filename());  // refresh om form post uit url te halen
+	}
+	
+	
   
  
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -252,6 +263,26 @@ function plotAccordingToChoices() {
                                          </div>
                                          <div class="form-group"> 
                                             <input type="submit" value="Opslaan" name="changeindicatoren" class="btn btn-default btn-save" />
+                                        </div>
+                                     </fieldset>
+                                </form>
+                                
+                            </div>
+                            
+
+                            <div class="well" style="clear: both; ">
+                                <form method="post">
+                                    <fieldset>
+                                        <h4>Paswoord aanpassen: </h4>
+                                        <div class="form-group">
+                                            <label class="control-label col-lg-1" for="mental">nieuw paswoord:</label>
+                                            <div class="col-lg-2">
+                                                <input type="text" value="" placeholder="paswoord" id="paswoord" class="form-control" name="paswoord" />
+                                            </div>
+                                             
+                                         </div>
+                                         <div class="form-group"> 
+                                            <input type="submit" value="Opslaan" name="changepass" class="btn btn-default btn-save" />
                                         </div>
                                      </fieldset>
                                 </form>

@@ -400,7 +400,7 @@
 			}
 			
 			if ($bJS) { 
-				$strResult = $strShortened . "<span class=\"moreA\">... <span>[lees meer]</span></span><span class=\"moreB\">" . substr($strText, strlen($strShortened)-strlen($strText)) . "</span>";  
+				$strResult = $strShortened . "<div class=\"moreA\">... <span>[lees meer]</span></div><div class=\"moreB\">" . substr($strText, strlen($strShortened)-strlen($strText)) . "</div>";  
 			} else {
 				$strResult = $strShortened . " ...";  
 			}
@@ -416,7 +416,7 @@
 	}
 	
 	function str_date($dDate, $strFormat = "") {
-		date_default_timezone_set("Europe/Brussels");
+		date_default_timezone_set(settings("date", "timezone"));
 
 		if ($dDate == 0) return ""; 
 		$arDagen = array("", "ma", "di", "woe", "do", "vr", "zat", "zon");

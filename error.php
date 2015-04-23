@@ -25,7 +25,7 @@
 					<?
                     	switch(isset($_GET["e"]) ? $_GET["e"] : "") {
 							case "algemenevoorwaarden": 
-								echo ("<p>Deze actie is nog niet mogelijk zonder de algemene voorwaarden te tekenen.</p>"); 
+								echo ("<p>Deze actie is nog niet mogelijk zonder de gebruikersvoorwaarden te tekenen.</p>"); 
 								break; 	
 							case "admin": 
 								echo ("<p>Deze pagina is enkel toegankelijk voor administrators.</p>"); 

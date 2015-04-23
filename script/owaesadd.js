@@ -79,10 +79,9 @@ $(document).ready(function () {
 			})
 		} 
 		saveTimers();
-		validateAddActivity(); 
+		validateAddActivity();  
 	});  
 	printDates(); 
-	
 });
 
 $(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e) { 
@@ -153,7 +152,7 @@ $(function() {
 	}); 
 	arDev.reverse();  
 	
-	
+	/*
 	$("input#timingfreeslide").change(function(){
 		iVal = parseInt($(this).attr("value"));
 		$("div#timerslide").slider({ 
@@ -186,12 +185,13 @@ $(function() {
 			}) 
 		)
 	});   
+	*/
 	
-	$("input#creditsfield").change(function(){
-		iVal = parseInt($(this).attr("value"));
+	$("input#creditsfield").change(function(){ 
+		iVal = parseInt($(this).val()); 
 		$("div#creditsslide").slider({ 
 			value: iVal,
-		});
+		}); 
 	}).each(function(){   
 		iVal = parseInt($(this).attr("value"));  
 		iMin = parseInt($(this).attr("min")); 
@@ -205,8 +205,8 @@ $(function() {
 				value: iVal,
 				orientation: "horizontal", 
 				slide: function( event, ui ) { 
-					iVal = ui.value; 
-					$("input#creditsfield").attr("value", iVal).addClass("changed").change(); 
+					iVal = ui.value;  
+					$("input#creditsfield").val(iVal).addClass("changed").change(); 
 					validateAddActivity(false); 
 					//$(".slidervalue[rel=credits]").html((iVal==0)?"overeen te komen":iVal);  
 				}
@@ -399,7 +399,10 @@ function validateAddActivity(bShowAlerts) {
     if (!($credits > 0)) {
 		arFouten["creditsfield"] = "Gelieve meer dan 0 " + vocabulaire("credits") + " te geven/vragen."; 
 	}
-    if ($("input#voorwaarden:checked").length == 0) arFouten["voorwaarden"] = "De algemene voorwaarden moeten gevolgd worden.";  
+    if ($credits > 4800) {
+		arFouten["creditsfield"] = "Er geldt een maximum van 4800 " + vocabulaire("credits") + " per opdracht."; 
+	}
+    if ($("input#voorwaarden:checked").length == 0) arFouten["voorwaarden"] = "Gelieve de gebruiksvoorwaarden aan te vinken.";   // Ik bevestig dat dit aanbod conform de gebruiksvoorwaarden is. 
 
 
 	if (Object.keys(arFouten).length > 0) { 
@@ -426,14 +429,19 @@ function validateAddActivity(bShowAlerts) {
 
 
 function saveTimers() {
+	iTotaal = 0; 
 	$("div.tijdstip input.datestamp").each(function(){
 		strKey = $(this).val(); 
-		strDatum = $("input[name='datum-" + strKey + "']").val(), 
+		strDatum = $("input[name='datum-" + strKey + "']").val();
+		strTijd = $("input[name='tijd-" + strKey + "']").val(); 
+		arTijd = strTijd.split(":");  
 		arDatums[strDatum] = {
 			"start" : $("input[name='start-" + strKey + "']").val(),  
-			"tijd" : $("input[name='tijd-" + strKey + "']").val(), 
-		} 
+			"tijd" : strTijd, 
+		}  
+		if (arTijd.length == 2) iTotaal += parseInt(arTijd[0])*60 + parseInt(arTijd[1]); 
 	})
+	$("input#creditsfield:not(.changed)").val(iTotaal).change();  
 }
 
 

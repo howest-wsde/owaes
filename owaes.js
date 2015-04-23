@@ -148,9 +148,9 @@ $(document).ready(function() {
 	}); 
 	
 	
-	$("span.moreA").click(function() {  // shorten-functie (in functions-php-file)
+	$("div.moreA").click(function() {  // shorten-functie (in functions-php-file)
 		$(this).hide(); 
-		$(this).next("span").slideDown(); 
+		$(this).next("div").slideDown(); 
 	})
 	
 	$("div").each(function(){ // geeft classes aan even/oneven items, voor layout-purposes)

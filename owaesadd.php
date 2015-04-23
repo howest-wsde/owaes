@@ -10,13 +10,38 @@
 	//$oPage->addJS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.js"); 
 	//$oPage->addCSS("http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"); 
 	//$oPage->addCSS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.css"); 
-	 
 	
-	 
+	
+	
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
 	$oOwaesItem = owaesitem($iID);
+	
+	 
+	$arPossiblePosters = array();  
+	$arOwaesTypes = owaesType()->getAllTypes();
+	foreach($arOwaesTypes as $strKey=>$strTitle) {
+		//$oTempType = owaestype($strKey);
+		$arPossiblePosters[$strKey] = array(
+			"user" => array(), 
+			"group" => array(), 
+		); 
+		if ($oMe->level() >= owaestype($strKey)->minimumlevel()) $arPossiblePosters[$strKey]["user"][me()] = "";// $oMe; 
+		foreach ($oMe->groups() as $oGroup) {
+			if ($oGroup->userrights()->owaesadd()) $arPossiblePosters[$strKey]["group"][$oGroup->id()] = "";// $oGroup;  
+		}
+		if (user(me())->admin()) {
+			$oAllGroepen = new grouplist();   
+			foreach ($oAllGroepen->getList() as $oGroup) {
+				$arPossiblePosters[$strKey]["group"][$oGroup->id()] = "";// $oGroup;  
+			} 
+			$oUsers = new userlist();  
+			foreach ($oUsers->getList() as $oUser) {
+				$arPossiblePosters[$strKey]["user"][$oUser->id()] = "";// $oUser; 
+			}
+		}
+	}
 	
 	if ($oOwaesItem->id() != 0) {
 		$strType = $oOwaesItem->type()->key();  
@@ -30,9 +55,7 @@
 	if ($oOwaesItem->editable() !== TRUE) { 
 		stop($oOwaesItem->editable()); 
 		exit();  
-	}
-	
-	  
+	} 
 	 
 	if (isset($_POST["owaesadd"])) { 
 		$oLog = new log("owaesadd", array("post" => $_POST)); 
@@ -256,6 +279,13 @@ input.time {width: 100%; display: block; }
                       <div class="tab-pane fade in active" id="algemeen">
                       <dl id="algemeen">
                             	<? 
+									vardump ($arPossiblePosters); 
+								
+								
+								
+								
+								
+								
 									$arGroups = $oOwaesItem->author()->groups();  
 									$arAddGroups = array(); 
 									
@@ -421,7 +451,7 @@ input.time {width: 100%; display: block; }
                         <div class="form-group">
                             <div class="row">
                                 <div class="col-lg-2"> 
-                                    <h4>Locatie</h4>
+                                    <h4>Locatie van de opdracht</h4>
                                 </div>
                                 <div class="col-lg-7">
                                     <div class="errorsTime"></div>
@@ -436,7 +466,7 @@ input.time {width: 100%; display: block; }
                             <div class="row">
                                 <div class="col-lg-12">
                                 <dd class="locationfixed">
-                                    <input type="text" name="locationfixed" class="locationfixed_required form-control" id="location" placeholder="Locatie..." value="<? echo inputfield($oOwaesItem->location()); ?>" />
+                                    <input type="text" name="locationfixed" class="locationfixed_required form-control" id="location" placeholder="Geef hier je locatie in" value="<? echo inputfield($oOwaesItem->location()); ?>" />
                                 	<input type="hidden" name="locationlat" id="locationlat" value="<? echo $iLat; ?>" />
                                 	<input type="hidden" name="locationlong" id="locationlong" value="<? echo $iLong; ?>" />
                                 </dd>

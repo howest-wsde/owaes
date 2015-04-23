@@ -12,7 +12,7 @@
 		if ($oUser->id() != 0) {
 			$oUser->unlocked(TRUE); // als e-mailadres hidden staat kan deze anders niet gezien worden
 			$strPass = uniqueKey(); 
-			$iExpires = (owaesTime()+60*60*24); 
+			$iExpires = (owaesTime()+(60*60*24)); 
 			$oDB = new database();  
 			$oDB->execute("insert into tblUserRecover (user, timeasked, timeexpires, ipasked, conf, passcode) values ('" . $oUser->id() . "', '" . owaesTime() . "', '" . $iExpires . "', '" . $_SERVER['REMOTE_ADDR'] . "', '" . $_SERVER['HTTP_USER_AGENT'] . "', '" . $strPass . "'); "); 
 			$oMail = new email(); 
@@ -20,7 +20,8 @@
 				$strMail = $oUser->HTML("mail.recoverpassword.html"); 
 				$strLink = fixPath("login.php?recover=" . urlencode($strPass), TRUE); 
 				$strMail = str_replace("[recoverurl]", $strLink, $strMail); 
-				$strMail = str_replace("[recoverexpirydate]", date("H:i", $iExpires), $strMail); 
+				$strMail = str_replace("[recoverexpirydate]", str_date($iExpires, "j M"), $strMail);
+				$strMail = str_replace("[recoverexpirytime]", str_date($iExpires, "H:i"), $strMail); 
 				$oMail->setBody($strMail);  
 				$oMail->setSubject("OWAES Wachtwoord reset"); 
 			$oMail->send();  

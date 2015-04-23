@@ -103,7 +103,7 @@
                             <hr/>
                             <div class="message"> 
                                 <form method="post">
-                                    <textarea name="message" placeholder="Type hier uw bericht..."></textarea>
+                                    <textarea name="message" placeholder="Tik hier uw bericht..."></textarea>
                                     <input class="btn btn-default pull-right" type="submit" name="addmessage" value="Verzenden" />
                                 </form>
                             </div> 

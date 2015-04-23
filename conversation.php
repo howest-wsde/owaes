@@ -74,7 +74,7 @@
                                         }
 							   
 											echo('<div class="media">');
-												echo(' <img class="media-object pull-left" src="profileimg.php?id='.$iDiscussUser.'&w=64&h=64&v=464">');
+												echo(' <img class="media-object pull-left" src="' . user($iDiscussUser)->getImage("64x64", FALSE) . '">');
 											   
 												echo('<div class="media-body">');
 													echo('<h4 class="media-heading">'.$arDiscussion["name"].'</h4><span class="convDate">' . str_date($arDiscussion["lastpost"]) . '</span>');

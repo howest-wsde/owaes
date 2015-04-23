@@ -186,7 +186,7 @@
 						session_start();
 					
 						$strHTML = "<ul class=\"socialmedia\">"; 
-										
+ 									
 						// FACEBOOK:   
 						$facebook = new Facebook(array(
 							'appId'  => settings("facebook", "loginapp", "id"),
@@ -208,10 +208,10 @@
 						$oOpenid->returnUrl = $strReturnURL;   
 						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/google.png\" alt=\"Google\"/></a></li>";  
 						
-
+ 
 						// OWAES:  
 						$oOpenid = new LightOpenID($strID); 
-						$oOpenid->identity = 'http://www.owaes.org/v2';
+						$oOpenid->identity = 'http://info.owaes.org/';
 						$oOpenid->required = array(
 							'namePerson/first',
 							'namePerson/last',
@@ -219,7 +219,7 @@
 						);
 						$oOpenid->returnUrl = $strReturnURL;   
 						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/owaes.png\" alt=\"OWAES\"/></a></li>";  
-						
+ 					
 						
 						// YAHOO:  
 						$oOpenid = new LightOpenID($strID); 
@@ -295,7 +295,7 @@
                     </div> 
                     <div class="form-group">
                              <div class="col-lg-3"></div>
-                             <div class="col-lg-6"><a href="modal.voorwaarden.php" class="domodal">algemene voorwaarden</a></div>
+                             <div class="col-lg-6"><a href="modal.voorwaarden.php" class="domodal">gebruikersvoorwaarden</a></div>
                        		 <div class="col-lg-3"> 
                                 <button type="submit" name="dosignup" class="btn btn-default pull-right">Registreren</button>
                             </div>

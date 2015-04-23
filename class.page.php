@@ -303,7 +303,7 @@
 	                        <div class='yellowPart'><span>OWAES &ndash; Online Werk Activatie EcoSysteem &ndash; is een <a href='http://www.esf-agentschap.be/' tabindex='-1'>ESF</a> ondersteund onderzoeksproject onder leiding van Howest.</span></div>
 	                        <div class='whitePart'>
 								<div class='xtralinks'>
-									<a href='" . fixPath("algemenevoorwaarden.php") . "'>- algemene voorwaarden</a>
+									<a href='" . fixPath("algemenevoorwaarden.php") . "'>- gebruikersvoorwaarden</a>
 									<a href='" . fixPath("conversation.php?u=0") . "'>- contacteer OWAES</a>
 								</div>
 								<div class='logos'>

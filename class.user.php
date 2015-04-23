@@ -1231,7 +1231,7 @@
 						$strSQL = "update tblUsers set " . implode(", ", $arUpdates) . " where id = " . $this->id() . ";"; 
 						$oUser->execute($strSQL); 
 					}; // else vardump($arVelden); //  error ("Dit is niet mogelijk op de demo-versie"); 	
-				}  
+				} 
 			} else {
 				error ("Geen rechten om deze gebruiker aan te passen (class.user, lijn " . __LINE__ . ")"); 	
 			}  
@@ -1330,8 +1330,12 @@
 					}
 					break;  
 			}
-			$iID = $this->visible4me("img") ? $this->id() : 0; 
-			$strIMG = fixpath("profileimg.php?id=" . $iID . "&w=" . $iWidth . "&h=" . $iHeight . "&v=" . ($this->lastupdate()%500));   
+			if ($this->visible4me("img")) { 
+				$iID = $this->visible4me("img") ? $this->id() : 0; 
+				$strIMG = fixpath("profileimg.php?id=" . $iID . "&w=" . $iWidth . "&h=" . $iHeight . "&v=" . ($this->lastupdate()%500));   
+			} else {
+				$strIMG = fixpath("profileimg.php?w=" . $iWidth . "&h=" . $iHeight);  
+			}
 			if ($bHTML) {
 				return "<img src=\"$strIMG\" alt=\"" . $this->getName() . "\" width=\"" . $iWidth . "\" height=\"" . $iHeight . "\" />"; 	 
 			} else {

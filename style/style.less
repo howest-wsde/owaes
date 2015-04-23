@@ -1505,15 +1505,15 @@ input[type="number"] {
     width: 100%;
     margin: 20px 0 0 0;
 
-    span.moreA {
+    div.moreA {
         cursor: pointer;
     }
 
-    span.moreA span {
+    div.moreA span {
         font-size: 12px;
     }
 
-    span.moreB {
+    div.moreB {
         display: none;
     }
 
@@ -3604,6 +3604,8 @@ input[type="number"] {
     }
 }
 
+.form-control {height: auto; }
+
 //mozilla only
 @-moz-document url-prefix() {
     .admin-groepusers {
@@ -3655,8 +3657,6 @@ input[type="number"] {
 
     .form-control {
         height: auto;
-		
-		
     }
 	.form-control.gepasseerd.fout {
 		border: 1px solid red; 
