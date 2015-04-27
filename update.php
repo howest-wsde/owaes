@@ -59,7 +59,12 @@
 	}
 
 	// Read queries from _sql.inc
-	$queries = simplexml_load_file("_sql.inc");	
+	if (file_exists("_sql.inc")) {
+		$queries = simplexml_load_file("_sql.inc");
+	}
+	else {
+		die("<b>File &quot;_sql.inc&quot; not found!</b>");
+	}
 
 	// Read data from tblDbChanges
 	$query = "SELECT tag, action FROM tblDbChanges";
@@ -69,6 +74,7 @@
 	$executedQueries = array();
 	$i = 0;
 
+	// Associative array from SimpleXMLElementObjects
 	foreach ($queries as $query) {
 		if (!isset($query["name"]) && !isset($query["tag"])) {
 			$error = "<b>Missing &quot;name&quot; and/or &quot;tag&quot; attribute(s) in &lt;sql&gt; (_sql.inc)</b>";
@@ -84,6 +90,7 @@
 
 	$i = 0;
 
+	// Associative array from tblDbChanges records
 	if ($result->rowCount() > 0) {
 		foreach ($result as $row) {
 			$executedQueries[$i]["name"] = $row["action"];
@@ -97,6 +104,7 @@
 	$lenNewQ = count($newQueries);
 	$lenExecQ = count($executedQueries);
 
+	// Check if a query has already been executed
 	for ($i = 0; $i < $lenNewQ; $i++) {
 		for ($j = 0; $j < $lenExecQ; $j++) {
 			if (($newQueries[$i]["name"] == $executedQueries[$j]["name"]) && ($newQueries[$i]["tag"] == $executedQueries[$j]["tag"])) {
@@ -110,7 +118,6 @@
 
 		if ((count($newQueries) == 1) && (is_null($newQueries[0]))) {
 			$msg = "Database is up-to-date";
-
 			die($msg);
 		}
 
