@@ -12,7 +12,6 @@
 	//$oPage->addCSS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.css"); 
 	
 	
-	
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
@@ -27,18 +26,18 @@
 			"user" => array(), 
 			"group" => array(), 
 		); 
-		if ($oMe->level() >= owaestype($strKey)->minimumlevel()) $arPossiblePosters[$strKey]["user"][me()] = "";// $oMe; 
+		if ($oMe->level() >= owaestype($strKey)->minimumlevel()) $arPossiblePosters[$strKey]["user"][me()] = $oMe; 
 		foreach ($oMe->groups() as $oGroup) {
-			if ($oGroup->userrights()->owaesadd()) $arPossiblePosters[$strKey]["group"][$oGroup->id()] = "";// $oGroup;  
+			if ($oGroup->userrights()->owaesadd()) $arPossiblePosters[$strKey]["group"][$oGroup->id()] = $oGroup;  
 		}
 		if (user(me())->admin()) {
 			$oAllGroepen = new grouplist();   
 			foreach ($oAllGroepen->getList() as $oGroup) {
-				$arPossiblePosters[$strKey]["group"][$oGroup->id()] = "";// $oGroup;  
+				$arPossiblePosters[$strKey]["group"][$oGroup->id()] = $oGroup;  
 			} 
 			$oUsers = new userlist();  
 			foreach ($oUsers->getList() as $oUser) {
-				$arPossiblePosters[$strKey]["user"][$oUser->id()] = "";// $oUser; 
+				if (($oUser->level() >= owaestype($strKey)->minimumlevel()) || ($oUser->admin())) $arPossiblePosters[$strKey]["user"][$oUser->id()] = $oUser; 
 			}
 		}
 	}
@@ -60,49 +59,29 @@
 	if (isset($_POST["owaesadd"])) { 
 		$oLog = new log("owaesadd", array("post" => $_POST)); 
 		
-		if (user(me())->admin()) {
-			$strPoster = $_POST["poster"]; 
-			$arPoster = explode(".", $strPoster); 
-			switch($arPoster[0]) {
-				case "g": // group
-					$iGroep = intval($arPoster[1]); ; 
-					if (!($oOwaesItem->group() && $oOwaesItem->group() == $iGroep)){
-						$oOwaesItem->group($iGroep);	
-						$oOwaesItem->author(group($iGroep)->admin()->id()); 
-					}
-					break; 	
-				case "u": // gebruiker
-					$iGebruiker = intval($arPoster[1]); 
-					if (!(!$oOwaesItem->group() && $oOwaesItem->author()->id() == $iGebruiker)){
-						$oOwaesItem->group(0);
-						$oOwaesItem->author($iGebruiker); 
-					}
-					break; 	
-			}
-		} else {
-			$iGroup = intval($_POST["group"]); 
-			if ($iGroup != 0){
-				$oGroup = group($iGroup); 
-				if ($oGroup->userrights()->owaesadd()) $oOwaesItem->group($iGroup);
-				// TODO : BOVENSTAANDE KAN FOUT OPLEVEREN ALS ADMIN GROUPSITEM AANPAST ! 
-			} else {
-				$oOwaesItem->group(0); 
-			}  
-		}
+		$strPoster = $_POST["poster"]; 
+		$arPoster = explode(".", $strPoster); 
+		switch($arPoster[0]) {
+			case "g": // group
+				$iGroep = intval($arPoster[1]); 
+				if (isset($arPossiblePosters[$strType]["group"][$iGroep])) {
+					$oOwaesItem->group($iGroep);	
+					$oOwaesItem->author(me()); 
+				} else stop("rechten");  
+				break; 	
+			case "u": // gebruiker
+				$iGebruiker = intval($arPoster[1]); 
+				if (isset($arPossiblePosters[$strType]["user"][$iGebruiker])) {
+					$oOwaesItem->group(0);	
+					$oOwaesItem->author($iGebruiker); 
+				} else stop("rechten");   
+				break; 	
+		} 
 		
 		$oOwaesItem->title($_POST["title"]); 
 		$oOwaesItem->body($_POST["description"]); 
-		//$oOwaesItem->details("verzekeringen", array()); 
 		$oOwaesItem->details("verzekeringen", (isset($_POST["verzekering"])?$_POST["verzekering"]:array())); 
-	//	switch($_POST["locationOptions"]) {
-	//		case "free": 
-	//			$oOwaesItem->location("", 0, 0); 
-	//			break; 
-	//		default: // "fixed"	
-				$oOwaesItem->location($_POST["locationfixed"], $_POST["locationlat"], $_POST["locationlong"]); 
-	//	}
-		
-		//$oOwaesItem->timingtype($_POST["timing"]); 
+		$oOwaesItem->location($_POST["locationfixed"], $_POST["locationlat"], $_POST["locationlong"]); 
 		
 		foreach ($oOwaesItem->data() as $iDate) {
 			$oOwaesItem->removeMoment($iDate);
@@ -135,9 +114,8 @@
 			} 
 		} 
 			
-		$oOwaesItem->update();   
-		 
-		 
+		$oOwaesItem->update(); 
+
 		if ($bNEW) {
 			$oMe = user(me()); 
 			$iAddValue = settings("indicatoren", "owaesadd") ? settings("indicatoren", "owaesadd") : 2; 
@@ -191,16 +169,43 @@
 					} 
 				?> 
 			}
-			google.maps.event.addDomListener(window, 'load', initialize);
-			/*
+			google.maps.event.addDomListener(window, 'load', initialize); 
+			
 			$(document).ready(function(e) {
-                $("textarea.wysiwyg").each(function(){ 
-					CKEDITOR.inline( $(this).attr("name") ); 
-					strClasses = $(this).attr("class"); 
-					$(".cke_textarea_inline").addClass(strClasses); 
-				});  
+				setPosters(); 
+				$("select#kiesowaestype").change(function(){
+					setPosters(); 
+				})
+				$("select#person").change(function(){
+					setTypes(); 
+				}) 
             });
-			*/
+			
+			
+			<?
+				$arJsonPosters = array(); 
+				foreach ($arPossiblePosters as $strTypeKey=>$arList) {
+					$arJsonPosters[$strTypeKey] = array(); 
+					foreach ($arList["user"] as $iUser=>$oUser) $arJsonPosters[$strTypeKey][] = "u.$iUser"; 
+					foreach ($arList["group"] as $iGroup=>$oGroup) $arJsonPosters[$strTypeKey][] = "g.$iGroup";  
+				}
+			?>
+			var arP = <? echo json_encode($arJsonPosters); ?>; 
+			function setPosters() { 
+				$("select#person option").attr("disabled", "disabled"); 
+				strType = $("select#kiesowaestype").val();  
+				arPersons = arP[strType];  
+				for(i=0;i<arPersons.length;i++) {
+					$("select#person option[value='" + arPersons[i] + "']").attr("disabled", false); 
+				} 
+			}
+			function setTypes() {
+				$("select#kiesowaestype option").attr("disabled", "disabled"); 
+				strPerson = $("select#person").val();  
+				for (strType in arP){
+					if (arP[strType].indexOf(strPerson) >= 0) $("select#kiesowaestype option[value='" + strType + "']").attr("disabled", false); 
+				}
+			}
 
 		</script> 
         <style> 
@@ -279,82 +284,60 @@ input.time {width: 100%; display: block; }
                       <div class="tab-pane fade in active" id="algemeen">
                       <dl id="algemeen">
                             	<? 
-									vardump ($arPossiblePosters); 
-								
-								
-								
-								
-								
-								
-									$arGroups = $oOwaesItem->author()->groups();  
-									$arAddGroups = array(); 
+									//vardump ($arPossiblePosters); 
 									
-									// groups van de bestaande user
-									foreach ($arGroups as $oGroup) { 
-										if ($oGroup->userrights()->owaesadd()) $arAddGroups[] = $oGroup; 
+									$arPosters = array(
+										"users" => array(), 
+										"groups" => array(), 
+									); 
+									foreach ($arPossiblePosters as $strTypeKey=>$arList) {
+										foreach ($arList["user"] as $iUser=>$oUser) {
+											$arPosters["users"][$iUser] = $oUser; 
+										}	
+										foreach ($arList["group"] as $iGroup=>$oGroup) {
+											$arPosters["groups"][$iGroup] = $oGroup; 
+										}	
 									}
 									
-									// groups van mij
-									foreach (user(me())->groups() as $oGroup) { 
-										if (!in_array($oGroup, $arAddGroups)) if ($oGroup->userrights()->owaesadd()) $arAddGroups[] = $oGroup; 
-									} 
-									if (user(me())->admin()) {
+									//vardump($arPosters); 
+								
+									if (count($arPosters["users"]) + count($arPosters["groups"]) > 1) {
+										
 										echo ('<div class="form-group"> 
                                 				<div class="row"><div class="col-lg-2"><h4>Aanbieder</h4></div></div> 
 												<div class="col-lg-12">');   
-													echo '<select name="poster" id="person" class="required form-control">'; 
-														echo "<optgroup label=\"Groepen\">";  
-														$oAllGroepen = new grouplist();   
-														foreach ($oAllGroepen->getList() as $oGroup) {
-															if ($oOwaesItem->group() && $oOwaesItem->group()->id()==$oGroup->id()) { 
-																echo ("<option selected=\"selected\" value=\"g." . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
-															} else {
-																echo ("<option value=\"g." . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
-															}
-														}
-														echo "</optgroup>"; 
-	
-														echo "<optgroup label=\"Gebruikers\">"; 
-														$oUsers = new userlist();  
-														foreach ($oUsers->getList() as $oUser) {
-															if ((!$oOwaesItem->group() && $oOwaesItem->author()->id()==$oUser->id()) || ($oOwaesItem->author()->id()==0 && me()==$oUser->id())) {  
-																echo ("<option selected=\"selected\" value=\"u." . $oUser->id() . "\">" . $oUser->getName() . "</option>"); 
-															} else {
-																echo ("<option value=\"u." . $oUser->id() . "\">" . $oUser->getName() . "</option>"); 
-															}
-														}
-														echo "</optgroup>"; 
-													echo ('</select>
+										echo '<select name="poster" id="person" class="required form-control">'; 
+											
+											if (count($arPosters["groups"])+count($arPosters["users"]) > 1) echo "<optgroup label=\"Groepen\">";  
+											foreach ($arPosters["groups"] as $iGroup => $oGroup) {
+												if ($oOwaesItem->group() && $oOwaesItem->group()->id()==$iGroup) { 
+													echo ("<option selected=\"selected\" value=\"g." . $iGroup . "\">" . $oGroup->naam() . "</option>"); 
+												} else {
+													echo ("<option value=\"g." . $iGroup . "\">" . $oGroup->naam() . "</option>"); 
+												}
+											} 
+											if (count($arPosters["groups"])+count($arPosters["users"]) > 1) echo "</optgroup>"; 
+											
+											if (count($arPosters["groups"])+count($arPosters["users"]) > 1) echo "<optgroup label=\"Gebruikers\">";  
+											foreach ($arPosters["users"] as $iUser => $oUser) {
+												if ((!$oOwaesItem->group() && $oOwaesItem->author()->id()==$oUser->id()) || ($oOwaesItem->author()->id()==0 && me()==$oUser->id())) {  
+													echo ("<option selected=\"selected\" value=\"u." . $oUser->id() . "\">" . $oUser->getName() . "</option>"); 
+												} else {
+													echo ("<option value=\"u." . $oUser->id() . "\">" . $oUser->getName() . "</option>"); 
+												}
+											} 
+											if (count($arPosters["groups"])+count($arPosters["users"]) > 1) echo "</optgroup>"; 
+										
+										echo ('</select>
 												</div>
 											</div>');   
-											
-									} else {
-										if (count($arAddGroups) > 0) {
-											echo ('<div class="form-group"> 
-                                					<div class="row"><div class="col-lg-2"><h4>Aanbieder</h4></div></div> 
-													<div class="col-lg-12">
-														<select name="group" id="group" class="required form-control">'); 
-														echo ("<option value=\"0\" style=\"border-bottom: 1px dotted #000; \">" . $oOwaesItem->author()->getName() . "</option>");  
-														foreach ($arAddGroups as $oGroup) {
-															if ($oOwaesItem->group() && $oOwaesItem->group()->id()==$oGroup->id()) { 
-																echo ("<option selected=\"selected\" value=\"" . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
-															} else {
-																echo ("<option value=\"" . $oGroup->id() . "\">" . $oGroup->naam() . "</option>"); 
-															}
-														}
-														echo ('</select>
-													</div>
-												</div>');  
-										} else {
-											echo ("<input type=\"hidden\" name=\"group\" value=\"0\" />"); 	
-										}
-									}
-									 
+										
+									} // else zal zowieso in eigen naam zijn, dus geen select-list
+								 
 									
 								?>  
                                 <div class="form-group">
-
-
+                                
                                 	<div class="row"><div class="col-lg-2"><h4>Titel</h4></div></div>
                          
                                     <div class="col-lg-10">
@@ -362,18 +345,16 @@ input.time {width: 100%; display: block; }
                                     </div>
                                     <div class="col-lg-2"> 
                                         <dd>
-                                        <select class="form-control aanbod" name="type"> 
-                                            <?
-                                                foreach($arOwaesTypes as $strKey=>$strTitle) {
-													$oTempType = owaestype($strKey);
-													if ($oMe->level() >= $oTempType->minimumlevel()) {
-														$strSelected = ($strType==$strKey) ? "selected=\"selected\"" : ""; 
-														echo "<option value='$strKey' $strSelected>"; 
-														echo $strTitle;
-														//echo (owaestype($strKey)->direction() == DIRECTION_EARN) ? ": dit zal me credits opleveren" : ": dit zal me credits kosten"; 
-														echo "</option>"; 	
+                                        <select class="form-control aanbod" name="type" id="kiesowaestype"> 
+                                            <? 
+												foreach ($arPossiblePosters as $strTypeKey=>$arList) {
+													if (count($arList["user"])+count($arList["group"]) > 0) {
+														$oTempType = owaestype($strTypeKey);
+														$strSelected = ($strType==$strTypeKey) ? "selected=\"selected\"" : "";  
+														echo "<option value=\"$strTypeKey\" $strSelected>" . $oTempType->title() . "</option>";  
+														
 													}
-                                                }
+												} 
                                             ?> 
                                         </select>
                                         </dd>  

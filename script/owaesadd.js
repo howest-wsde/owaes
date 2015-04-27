@@ -381,7 +381,11 @@ function validateAddActivity(bShowAlerts) {
     var $tijdsduur = $(".content-market-add #timingfreeslide").val();
     var $credits = $(".content-market-add #creditsfield").val();
     var $inputTijdstippen = $(".tijdstippen input").val();
-    
+    var strType = $("select#kiesowaestype").val();  
+	var strPerson = $("select#person").val();  
+	
+	if (arP[strType].indexOf(strPerson) < 0) arFouten["kiesowaestype"] = "Deze gebruiker kan geen opdracht van dit type aanmaken"; 
+	
     if ($titel == "" || $titel.length < 5) {  
 		arFouten["title"] = "De titel van een activiteit moet minstens 5 karakters bevatten."; 
 	}
