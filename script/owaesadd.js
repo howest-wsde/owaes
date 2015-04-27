@@ -371,6 +371,7 @@ function aanbodAanpassen() {
  * Zo ja    => opslaan naar de database
  * Zo niet  => errormessage(s) weergeven
  */
+ 
 function validateAddActivity(bShowAlerts) { 
 	arFouten = {}; 
 	arMessage = []; 
@@ -424,7 +425,6 @@ function validateAddActivity(bShowAlerts) {
 		return false; 
 	} else {
     	$(".content-market-add .errors").empty();
-		console.log("JS: [validateAddActivity] opslaan naar de database...");
 		return true; 
 	}  
 	 

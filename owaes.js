@@ -11,9 +11,16 @@ $(document).ready(function() {
 	/* WYSIWYG - editor - START */
 	$("textarea.wysiwyg").each(function(){ 
 		strClasses = $(this).attr("class");  
-		CKEDITOR.inline( $(this).attr("name") ); 
+		CKEDITOR.inline( $(this).attr("name") , {
+			on: {
+				blur: function( event ) { 
+					event.editor.updateElement();  
+				}
+			}
+		} ); 
 		$(".cke_textarea_inline").addClass(strClasses); 
 	});  
+	
 	$.fn.modal.Constructor.prototype.enforceFocus = function () {
 		var $modalElement = this.$element;
 		$(document).on('focusin.modal', function (e) {
