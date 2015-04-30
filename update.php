@@ -1,10 +1,10 @@
 <?php
 	include "inc.default.php"; // should be included in EVERY file
 
-	function isTblDbChanges($dbCon) {
+	function isTblDbChanges($dbPDO) {
 		$query = "SHOW TABLES LIKE 'tblDbChanges'";
 
-		$result = $dbCon->query($query);
+		$result = $dbPDO->query($query);
 
 		if (!$result) {
 			return false;
@@ -17,29 +17,31 @@
 		return false;
 	}
 
-	function applyChanges($dbCon, $query) {
+	function applyChanges($dbPDO, $query) {
 		print("<hr/><br/>");
 		print($query["name"] . "\tTag: " . $query["tag"] . "<br/>");
 		print($query["sql"] . "<br/><br/>");
 
-		$result = $dbCon->exec($query["sql"]);
+		$result = $dbPDO->exec($query["sql"]);
+
+		if ($result == 0) {
+			$error = "<b>Script terminated: Query NOT successful executed!<br/>IMPORTANT: Some queries might not have been executed.";
+			die($error);
+		}
 
 		print("Output:<br/>" . $result . "<br/><br/>");
 
 		// Update tblDbChanges with applied changes
 		$query2 = "INSERT INTO tblDbChanges (date, tag, action) VALUES (NOW(), :tag, :action)";
 
-		$stmt = $dbCon->prepare($query2);
+		$stmt = $dbPDO->prepare($query2);
 		$stmt->bindParam(":tag", $query["tag"]);
 		$stmt->bindParam(":action", $query["name"]);
 		$stmt->execute();
 	}
 
-	// Connection with database
-	$dbCon = $dbPDO;
-
 	// Check if tblDbChanges exists
-	if (!isTblDbChanges($dbCon)) {
+	if (!isTblDbChanges($dbPDO)) {
 		// Create table
 		$query = "CREATE TABLE IF NOT EXISTS `tblDbChanges` (";
 		$query .= "`id` bigint(20) NOT NULL AUTO_INCREMENT, ";
@@ -49,7 +51,7 @@
 		$query .= "PRIMARY KEY (`id`)";
 		$query .= ") ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1";
 
-		$result = $dbCon->exec($query);
+		$result = $dbPDO->exec($query);
 
 		if ($result == 0) {
 			$result = "tblDbChanges created!";
@@ -68,7 +70,7 @@
 
 	// Read data from tblDbChanges
 	$query = "SELECT tag, action FROM tblDbChanges";
-	$result = $dbCon->query($query);
+	$result = $dbPDO->query($query);
 
 	$newQueries = array();
 	$executedQueries = array();
@@ -123,7 +125,7 @@
 
 		foreach ($newQueries as $query) {
 			if (!is_null($query)) {
-				applyChanges($dbCon, $query);
+				applyChanges($dbPDO, $query);
 			}
 		}
 	}
