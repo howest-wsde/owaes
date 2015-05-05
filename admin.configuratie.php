@@ -116,28 +116,28 @@
 				<div class="main market admin">
 					<? include "admin.menu.xml"; ?>
 					<h1>Configuratie paneel</h1>
-					<form method="POST">
+					<form id="frmConfig" method="POST">
 						<fieldset>
 							<legend>Start waardes</legend>
 							<p>
 								<label for="txtCredits">Credits:</label><br/>
-								<input type="text" name="txtCredits" id="txtCredits" value="<? echo settings("startvalues", "credits"); ?>"/>
+								<input type="number" name="txtCredits" id="txtCredits" value="<? echo settings("startvalues", "credits"); ?>"/>
 							</p>
 							<p>
 								<label for="txtPhysical">Physical:</label><br/>
-								<input type="text" name="txtPhysical" id="txtPhysical" value="<? echo settings("startvalues", "physical"); ?>"/>
+								<input type="number" name="txtPhysical" id="txtPhysical" value="<? echo settings("startvalues", "physical"); ?>"/>
 							</p>
 							<p>
 								<label for="txtSocial">Social:</label><br/>
-								<input type="text" name="txtSocial" id="txtSocial" value="<? echo settings("startvalues", "social"); ?>"/>
+								<input type="number" name="txtSocial" id="txtSocial" value="<? echo settings("startvalues", "social"); ?>"/>
 							</p>
 							<p>
 								<label for="txtMental">Mental:</label><br/>
-								<input type="text" name="txtMental" id="txtMental" value="<? echo settings("startvalues", "mental"); ?>"/>
+								<input type="number" name="txtMental" id="txtMental" value="<? echo settings("startvalues", "mental"); ?>"/>
 							</p>
 							<p>
 								<label for="txtEmotional">Emotional:</label><br/>
-								<input type="text" name="txtEmotional" id="txtEmotional" value="<? echo settings("startvalues", "emotional"); ?>"/>
+								<input type="number" name="txtEmotional" id="txtEmotional" value="<? echo settings("startvalues", "emotional"); ?>"/>
 							</p>
 							<p>
 								<label for="chkVisibility">Visibility</label>
@@ -167,18 +167,18 @@
 							</p>
 							<p>
 								<label for="txtLatitude">Latitude:</label><br/>
-								<input type="text" name="txtLatitude" id="txtLatitude" value="<? echo settings("geo", "latitude"); ?>"/>
+								<input type="number" step="0.00000000001" name="txtLatitude" id="txtLatitude" value="<? echo settings("geo", "latitude"); ?>"/>
 							</p>
 							<p>
 								<label for="txtLongitude">Longitude:</label><br/>
-								<input type="text" name="txtLongitude" id="txtLongitude" value="<? echo settings("geo", "longitude"); ?>"/>
+								<input type="number" step="0.00000000001" name="txtLongitude" id="txtLongitude" value="<? echo settings("geo", "longitude"); ?>"/>
 							</p>
 						</fieldset>
 						<fieldset>
 							<legend>Credits</legend>
 							<p>
 								<label for="txtMax">Max:</label><br/>
-								<input type="text" name="txtMax" id="txtMax" value="<? echo settings("credits", "max"); ?>"/>
+								<input type="number" name="txtMax" id="txtMax" value="<? echo settings("credits", "max"); ?>"/>
 							</p>
 							<p>
 								<label for="txtEenheid">Eenheid:</label><br/>
@@ -213,7 +213,7 @@
 							</p>
 							<p>
 								<label for="txtPort">Port:</label><br/>
-								<input type="text" name="txtPort" id="txtPort" value="<? echo settings("mail", "Port"); ?>"/>
+								<input type="number" name="txtPort" id="txtPort" value="<? echo settings("mail", "Port"); ?>"/>
 							</p>
 							<p>
 								<label for="txtUsername">Username:</label><br/>
