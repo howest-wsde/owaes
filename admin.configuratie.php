@@ -223,7 +223,12 @@
 			var lenFields = fields.length;
 
 			for (var i = 0; i < lenFields; i++) {
-				fields[i].disabled = !state;
+				if (fields[i].name == "chkAuth") {
+					fields[i].disabled = !state;
+				}
+				else {
+					fields[i].readOnly = !state;
+				}
 			}
 		}
 
