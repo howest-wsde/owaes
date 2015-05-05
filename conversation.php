@@ -143,7 +143,7 @@
 	                                            echo ('<div class="date">' . str_date($oMessage->sent()) . '</div>'); 
 											}
 											$iPrevDate = $oMessage->sent(); 
-											echo ('<div class="msg">' . html($oMessage->body()) . '</div>'); 
+											echo ('<div class="msg">' . html($oMessage->body(), array("p", "a", "strong", "em", "br")) . '</div>'); 
 											
 											$arExtras = array(); 
 											foreach ($oMessage->data() as $strK => $strV) {
@@ -189,7 +189,7 @@
                                         <div class="message">
                                             <form method="post" class="reactieform">
                                                 <input type="hidden" name="market" value="<? echo $iMarket; ?>" />
-                                                <textarea name="message" placeholder="Plaats een reactie"></textarea>
+                                                <textarea name="message" placeholder="Plaats een reactie" id="msg<? echo $iMarket; ?>" class="form-control wysiwyg"></textarea>
                                                 <input class="btn btn-default btn-sm pull-right" type="submit" name="addmessage" value="Verzenden" />
                                             </form>
                                         </div> 
