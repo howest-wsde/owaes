@@ -52,7 +52,7 @@
 		}
 
 		prepareAndExecuteStmt("startvalues.visibility", $test, $dbPDO);
-		prepareAndExecuteStmt("date.timezone", $_POST["txtTimezone"], $dbPDO);
+		prepareAndExecuteStmt("date.timezone", $_POST["lstTimezone"], $dbPDO);
 		prepareAndExecuteStmt("geo.latitude", $_POST["txtLatitude"], $dbPDO);
 		prepareAndExecuteStmt("geo.longitude", $_POST["txtLongitude"], $dbPDO);
 		prepareAndExecuteStmt("credits.max", $_POST["txtMax"], $dbPDO);
@@ -147,8 +147,23 @@
 						<fieldset>
 							<legend>Tijdzone en lokatie</legend>
 							<p>
-								<label for="txtTimezone">Tijdzone:</label><br/>
-								<input type="text" name="txtTimezone" id="txtTimezone" value="<? echo settings("date", "timezone"); ?>"/>
+								<label for="lstTimezone">Tijdzone:</label><br/>
+								<select id="lstTimezone" name="lstTimezone">
+								<?
+									$zones = timezone_identifiers_list();
+
+									foreach ($zones as $zone) {
+										$place = explode("/", $zone);
+
+										if (settings("date", "timezone") == $zone) {
+											print("<option value='" . $zone . "' selected='selected'>" . $place[1] . "</option>");
+										}
+										else {
+											print("<option value='" . $zone . "'>" . $place[1] . "</option>");
+										}
+									}
+								?>
+								</select>
 							</p>
 							<p>
 								<label for="txtLatitude">Latitude:</label><br/>
