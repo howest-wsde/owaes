@@ -49,6 +49,8 @@
                 </div> 
                     <div class="main market admin-user"> 
                      	<? include "admin.menu.xml"; ?>
+                    	<h2><? echo $oUser->getName(); ?></h2>
+                        <br />
                         <?   
 							$arChart = array(
 								"Fysiek" => array(
