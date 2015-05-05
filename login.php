@@ -135,7 +135,8 @@
             <div class="well">
             
             <?
-            
+			 
+			 
                 if (isset($_POST["dologin"])) {
 					$strLogin = $_POST["username"]; 
 		            $bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
