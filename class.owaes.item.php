@@ -1170,6 +1170,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$this->loadMomenten(); 
 				}
 			}
+			if (isset($this->arMomenten[intval($iDatum)])) $strStatus = "REPLACE"; 
 			$this->arMomenten[intval($iDatum)] = array(
 				"start" => $iStart,  
 				"tijd" => $iTijd, 
@@ -1186,7 +1187,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		}
 		 
 		public function removeMoment($iDatum) {  // timing verwijderen ($iTiming = unix time)
-			if (is_null($this->arMomenten)) $this->loadMomenten(); 
+			if (is_null($this->arMomenten)) $this->loadMomenten();  
 			if (isset($this->arMomenten[intval($iDatum)])) {
 				switch($this->arMomenten[intval($iDatum)]){
 					case "NEW": 
@@ -1194,7 +1195,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						break;
 					default: 
 						$this->arMomenten[intval($iDatum)]["status"] = "DELETE"; 
-				}
+				} 
 				return TRUE; 
 			} else return FALSE;  
 		} 
@@ -1312,6 +1313,10 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$oDB->execute("delete from tblMarketDates where market = '" . $this->iID . "' and datum = '$iDate';"); 
 						break; 
 					case "NEW":  
+						$oDB->execute("insert into tblMarketDates (market, datum, start, tijd) values ('" . $this->iID . "', '" . $iDate . "', '" . $arDetails["start"] . "', '" . $arDetails["tijd"] . "');"); 
+						break; 
+					case "REPLACE":  
+						$oDB->execute("delete from tblMarketDates where market = '" . $this->iID . "' and datum = '$iDate';"); 
 						$oDB->execute("insert into tblMarketDates (market, datum, start, tijd) values ('" . $this->iID . "', '" . $iDate . "', '" . $arDetails["start"] . "', '" . $arDetails["tijd"] . "');"); 
 						break; 
 					default: 
