@@ -332,7 +332,11 @@ input.time {width: 100%; display: block; }
 												</div>
 											</div>');   
 										
-									} // else zal zowieso in eigen naam zijn, dus geen select-list
+									}  else {
+										foreach ($arList["user"] as $iUser=>$oUser) $strPerson = "u.$iUser";
+										foreach ($arList["group"] as $iGroup=>$oGroup) $strPerson = "g.$iGroup"; 
+										echo '<input type="hidden" id="person" name="poster" value="' . $strPerson  . '" />'; 
+									}
 								 
 									
 								?>  

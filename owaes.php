@@ -92,7 +92,7 @@
 										        </div>');
 								        }
 								        echo ('<div class="date">' . str_date($oMessage->sent()) . '</div>
-									        <div class="msg">' . html($oMessage->body()) . '</div>'); 
+									        <div class="msg">' . html($oMessage->body(), array("p", "a", "strong", "em", "br")) . '</div>'); 
 								        echo ('<div class="spacer"></div>'); 
 							        echo ('</div>'); 
 							        $oPrevUser = $oMessage->sender();
@@ -103,7 +103,7 @@
                             <hr/>
                             <div class="message"> 
                                 <form method="post">
-                                    <textarea name="message" placeholder="Tik hier uw bericht..."></textarea>
+                                    <textarea name="message" placeholder="Tik hier uw bericht..." id="postmsg" class="form-control wysiwyg"></textarea>
                                     <input class="btn btn-default pull-right" type="submit" name="addmessage" value="Verzenden" />
                                 </form>
                             </div> 
