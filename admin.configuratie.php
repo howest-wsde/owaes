@@ -238,6 +238,13 @@
 			var lenFields = fields.length;
 
 			for (var i = 0; i < lenFields; i++) {
+				if (!state) {
+					fields[i].style.background = "#dadada";
+				}
+				else {
+					fields[i].style.background = "#ffffff";
+				}
+
 				if (fields[i].name == "chkAuth") {
 					fields[i].disabled = !state;
 				}
