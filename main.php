@@ -655,7 +655,7 @@
                                     <!-- Recent aangemaakte activiteiten --> 
                                      <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
                                         <div class="layoutBlocks border">
-                                            <h2>Nog te betalen xxx</h2>
+                                            <h2>Nog te betalen</h2>
             
                                             <div class="list-group">
                                                 

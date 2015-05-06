@@ -1008,7 +1008,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					}
 					return "vrij te kiezen"; 
 				case "timing": 
-					$iTiming = $this->timing();  
+					$iTiming = $this->timing(); 
 					return ($iTiming >0) ? $iTiming . " uur" : "geen tijdsduur ingesteld"; 
 				case "createdate": 
 					return str_date($this->iDate, "datum"); 
