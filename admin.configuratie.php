@@ -7,6 +7,29 @@
 
 	$oPage->addJS("script/admin.js");
 	$oPage->addCSS("style/admin.css");
+
+	function addressToCoordinates($address) {
+		$url = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=" . $address;
+		$response = file_get_contents($url);
+		$json = json_decode($response, TRUE);
+
+		$coord = array(
+			"latitude" => $json["results"][0]["geometry"]["location"]["lat"],
+			"longitude" => $json["results"][0]["geometry"]["location"]["lng"]
+		);
+
+		return $coord;
+	}
+
+	function coordinatesToAddress($lat, $lon) {
+		$url = "http://maps.google.com/maps/api/geocode/json?sensor=false&latlng=" . $lat . "," . $lon;
+		$response = file_get_contents($url);
+		$json = json_decode($response, TRUE);
+
+		$address = $json["results"][0]["address_components"][2]["long_name"];
+
+		return $address;
+	}
 	
 	function encryptor($text) {
 		$key = pack("H*", "cf372282683d4802ee035e793218e2e4a8a8eb4f6a1d5675b6a6a289c860abde");
@@ -53,8 +76,11 @@
 
 		prepareAndExecuteStmt("startvalues.visibility", $test, $dbPDO);
 		prepareAndExecuteStmt("date.timezone", $_POST["lstTimezone"], $dbPDO);
-		prepareAndExecuteStmt("geo.latitude", $_POST["txtLatitude"], $dbPDO);
-		prepareAndExecuteStmt("geo.longitude", $_POST["txtLongitude"], $dbPDO);
+
+		$coord = addressToCoordinates($_POST["txtLokatie"]);
+
+		prepareAndExecuteStmt("geo.latitude", $coord["latitude"], $dbPDO);
+		prepareAndExecuteStmt("geo.longitude", $coord["longitude"], $dbPDO);
 		prepareAndExecuteStmt("credits.max", $_POST["txtMax"], $dbPDO);
 		prepareAndExecuteStmt("credits.name.1", $_POST["txtEenheid"], $dbPDO);
 		prepareAndExecuteStmt("credits.name.x", $_POST["txtMeervoud"], $dbPDO);
@@ -168,12 +194,8 @@
 								</select>
 							</p>
 							<p>
-								<label for="txtLatitude">Latitude:</label><br/>
-								<input type="number" step="0.00000000001" name="txtLatitude" id="txtLatitude" value="<? echo settings("geo", "latitude"); ?>"/>
-							</p>
-							<p>
-								<label for="txtLongitude">Longitude:</label><br/>
-								<input type="number" step="0.00000000001" name="txtLongitude" id="txtLongitude" value="<? echo settings("geo", "longitude"); ?>"/>
+								<label for="txtLokatie">Lokatie:</label><br/>
+								<input type="text" name="txtLokatie" id="txtLokatie" value="<? echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
 							</p>
 						</fieldset>
 						<fieldset>
