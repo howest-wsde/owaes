@@ -159,7 +159,9 @@
 											print("<option value='" . $zone . "' selected='selected'>" . $place[1] . "</option>");
 										}
 										else {
-											print("<option value='" . $zone . "'>" . $place[1] . "</option>");
+											if ($zone != "UTC") {
+												print("<option value='" . $zone . "'>" . $place[1] . "</option>");
+											}
 										}
 									}
 								?>
