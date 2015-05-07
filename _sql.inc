@@ -94,4 +94,8 @@
 	('mail.Host', NULL), ('mail.SMTPAuth', 'FALSE'), ('mail.SMTPSecure', 'ssl'),
 	('mail.Port', NULL), ('mail.Username', NULL), ('mail.Password', NULL);
 	</sql>
+	<sql name="insert-fbLogin_tblConfig" tag="2">
+		INSERT INTO `tblConfig` (`key`, `value`) VALUES
+	('facebook.loginapp.id', NULL), ('facebook.loginapp.secret', NULL);
+	</sql>
 </queries>
