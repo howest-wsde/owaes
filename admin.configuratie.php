@@ -22,7 +22,8 @@
 	}
 
 	function coordinatesToAddress($lat, $lon) {
-		$url = "http://maps.google.com/maps/api/geocode/json?sensor=false&latlng=" . $lat . "," . $lon;
+
+		$url = "http://maps.google.com/maps/api/geocode/json?sensor=false&latlng=" . $lat . "," . $lon; 
 		$response = file_get_contents($url);
 		$json = json_decode($response, TRUE);
 

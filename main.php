@@ -41,7 +41,7 @@
 				if ($iLatMe * $iLongMe != 0) {
 					echo ("var startpos = new google.maps.LatLng($iLatMe, $iLongMe);"); 	
 				} else {
-					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longtitude") . ");"); 	
+					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longitude") . ");"); 	
 				}
 			?> 
 			
