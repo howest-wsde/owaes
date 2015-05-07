@@ -542,7 +542,7 @@
                             $oOwaesList->filterByState(STATE_RECRUTE);  
                             $oOwaesList->filterPassedDate(owaesTime());  
                             $oOwaesList->filterByUser(me(), FALSE); 
-							$oOwaesList->notInvolved(me()); 
+							$oOwaesList->involved(me(), FALSE); 
                             $oOwaesList->optiOrder();  
                             $oOwaesList->limit(2);  
                             if (count($oOwaesList->getList()) > 0) { 
@@ -601,7 +601,8 @@
 						<?
                             $oOwaesList = new owaeslist(); 
 							$oOwaesList->filterByCreator(me());
-							$oOwaesList->filterByState(array(STATE_RECRUTE, STATE_SELECTED));
+							$oOwaesList->open(TRUE); 
+														
                             if (count($oOwaesList->getList()) > 0) { 
                                 ?>
                                     <!-- Recent aangemaakte activiteiten --> 

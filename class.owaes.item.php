@@ -694,7 +694,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$arFlow[20]["count"] ++; 
 						break; 
 					case SUBSCRIBE_CONFIRMED: 
-						$arFlow[30]["count"] ++; 
+					case SUBSCRIBE_FINISHED: 
+						$arFlow[30]["count"] ++;  
 						break; 
 					default:  
 				}
