@@ -41,7 +41,7 @@
 				if ($iLatMe * $iLongMe != 0) {
 					echo ("var startpos = new google.maps.LatLng($iLatMe, $iLongMe);"); 	
 				} else {
-					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longtitude") . ");"); 	
+					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longitude") . ");"); 	
 				}
 			?> 
 			
@@ -655,7 +655,7 @@
                                     <!-- Recent aangemaakte activiteiten --> 
                                      <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
                                         <div class="layoutBlocks border">
-                                            <h2>Nog te betalen xxx</h2>
+                                            <h2>Nog te betalen</h2>
             
                                             <div class="list-group">
                                                 
