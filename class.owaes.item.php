@@ -1009,7 +1009,14 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					return "vrij te kiezen"; 
 				case "timing": 
 					$iTiming = $this->timing(); 
-					return ($iTiming >0) ? $iTiming . " uur" : "geen tijdsduur ingesteld"; 
+					if ($iTiming == 0) {
+						return "geen tijdsduur ingesteld"; 
+					} else {
+						
+						$iUur = floor($iTiming); 
+						$iMin = round($iTiming*60)%60; 
+						return (($iMin==0) ? "$iUur uur" : ($iUur . "u " . $iMin)); 
+					}
 				case "createdate": 
 					return str_date($this->iDate, "datum"); 
 				case "locationimg":  // :100x100

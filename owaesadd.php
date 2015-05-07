@@ -418,7 +418,7 @@ input.time {width: 100%; display: block; }
 											$oMoment = $oOwaesItem->getMoment($iDate);  
 											$arDatums[($iDate == 0) ? "" : str_date($iDate, "d/m/Y")] = array(
 												"start" => minutesTOhhmm($oMoment["start"]),
-												"tijd" => ($oMoment["tijd"] == 0) ? "" : $oMoment["tijd"]/60,
+												"tijd" => ($oMoment["tijd"] == 0) ? "" : (floor($oMoment["tijd"]/60) . ":" . ($oMoment["tijd"]%60)),
 											); 
 										}
 										echo ('<script>  
