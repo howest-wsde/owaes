@@ -7,6 +7,29 @@
 
 	$oPage->addJS("script/admin.js");
 	$oPage->addCSS("style/admin.css");
+
+	function addressToCoordinates($address) {
+		$url = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=" . $address;
+		$response = file_get_contents($url);
+		$json = json_decode($response, TRUE);
+
+		$coord = array(
+			"latitude" => $json["results"][0]["geometry"]["location"]["lat"],
+			"longitude" => $json["results"][0]["geometry"]["location"]["lng"]
+		);
+
+		return $coord;
+	}
+
+	function coordinatesToAddress($lat, $lon) {
+		$url = "http://maps.google.com/maps/api/geocode/json?sensor=false&latlng=" . $lat . "," . $lon;
+		$response = file_get_contents($url);
+		$json = json_decode($response, TRUE);
+
+		$address = $json["results"][0]["address_components"][2]["long_name"];
+
+		return $address;
+	}
 	
 	function encryptor($text) {
 		$key = pack("H*", "cf372282683d4802ee035e793218e2e4a8a8eb4f6a1d5675b6a6a289c860abde");
@@ -53,8 +76,11 @@
 
 		prepareAndExecuteStmt("startvalues.visibility", $test, $dbPDO);
 		prepareAndExecuteStmt("date.timezone", $_POST["lstTimezone"], $dbPDO);
-		prepareAndExecuteStmt("geo.latitude", $_POST["txtLatitude"], $dbPDO);
-		prepareAndExecuteStmt("geo.longitude", $_POST["txtLongitude"], $dbPDO);
+
+		$coord = addressToCoordinates($_POST["txtLokatie"]);
+
+		prepareAndExecuteStmt("geo.latitude", $coord["latitude"], $dbPDO);
+		prepareAndExecuteStmt("geo.longitude", $coord["longitude"], $dbPDO);
 		prepareAndExecuteStmt("credits.max", $_POST["txtMax"], $dbPDO);
 		prepareAndExecuteStmt("credits.name.1", $_POST["txtEenheid"], $dbPDO);
 		prepareAndExecuteStmt("credits.name.x", $_POST["txtMeervoud"], $dbPDO);
@@ -116,28 +142,28 @@
 				<div class="main market admin">
 					<? include "admin.menu.xml"; ?>
 					<h1>Configuratie paneel</h1>
-					<form method="POST">
+					<form id="frmConfig" method="POST">
 						<fieldset>
 							<legend>Start waardes</legend>
 							<p>
 								<label for="txtCredits">Credits:</label><br/>
-								<input type="text" name="txtCredits" id="txtCredits" value="<? echo settings("startvalues", "credits"); ?>"/>
+								<input type="number" name="txtCredits" id="txtCredits" value="<? echo settings("startvalues", "credits"); ?>"/>
 							</p>
 							<p>
 								<label for="txtPhysical">Physical:</label><br/>
-								<input type="text" name="txtPhysical" id="txtPhysical" value="<? echo settings("startvalues", "physical"); ?>"/>
+								<input type="number" name="txtPhysical" id="txtPhysical" value="<? echo settings("startvalues", "physical"); ?>"/>
 							</p>
 							<p>
 								<label for="txtSocial">Social:</label><br/>
-								<input type="text" name="txtSocial" id="txtSocial" value="<? echo settings("startvalues", "social"); ?>"/>
+								<input type="number" name="txtSocial" id="txtSocial" value="<? echo settings("startvalues", "social"); ?>"/>
 							</p>
 							<p>
 								<label for="txtMental">Mental:</label><br/>
-								<input type="text" name="txtMental" id="txtMental" value="<? echo settings("startvalues", "mental"); ?>"/>
+								<input type="number" name="txtMental" id="txtMental" value="<? echo settings("startvalues", "mental"); ?>"/>
 							</p>
 							<p>
 								<label for="txtEmotional">Emotional:</label><br/>
-								<input type="text" name="txtEmotional" id="txtEmotional" value="<? echo settings("startvalues", "emotional"); ?>"/>
+								<input type="number" name="txtEmotional" id="txtEmotional" value="<? echo settings("startvalues", "emotional"); ?>"/>
 							</p>
 							<p>
 								<label for="chkVisibility">Visibility</label>
@@ -159,26 +185,24 @@
 											print("<option value='" . $zone . "' selected='selected'>" . $place[1] . "</option>");
 										}
 										else {
-											print("<option value='" . $zone . "'>" . $place[1] . "</option>");
+											if ($zone != "UTC") {
+												print("<option value='" . $zone . "'>" . $place[1] . "</option>");
+											}
 										}
 									}
 								?>
 								</select>
 							</p>
 							<p>
-								<label for="txtLatitude">Latitude:</label><br/>
-								<input type="text" name="txtLatitude" id="txtLatitude" value="<? echo settings("geo", "latitude"); ?>"/>
-							</p>
-							<p>
-								<label for="txtLongitude">Longitude:</label><br/>
-								<input type="text" name="txtLongitude" id="txtLongitude" value="<? echo settings("geo", "longitude"); ?>"/>
+								<label for="txtLokatie">Lokatie:</label><br/>
+								<input type="text" name="txtLokatie" id="txtLokatie" value="<? echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
 							</p>
 						</fieldset>
 						<fieldset>
 							<legend>Credits</legend>
 							<p>
 								<label for="txtMax">Max:</label><br/>
-								<input type="text" name="txtMax" id="txtMax" value="<? echo settings("credits", "max"); ?>"/>
+								<input type="number" name="txtMax" id="txtMax" value="<? echo settings("credits", "max"); ?>"/>
 							</p>
 							<p>
 								<label for="txtEenheid">Eenheid:</label><br/>
@@ -213,7 +237,7 @@
 							</p>
 							<p>
 								<label for="txtPort">Port:</label><br/>
-								<input type="text" name="txtPort" id="txtPort" value="<? echo settings("mail", "Port"); ?>"/>
+								<input type="number" name="txtPort" id="txtPort" value="<? echo settings("mail", "Port"); ?>"/>
 							</p>
 							<p>
 								<label for="txtUsername">Username:</label><br/>
@@ -238,6 +262,13 @@
 			var lenFields = fields.length;
 
 			for (var i = 0; i < lenFields; i++) {
+				if (!state) {
+					fields[i].style.background = "#dadada";
+				}
+				else {
+					fields[i].style.background = "#ffffff";
+				}
+
 				if (fields[i].name == "chkAuth") {
 					fields[i].disabled = !state;
 				}
