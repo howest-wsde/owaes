@@ -150,7 +150,7 @@
 				if ($iLat + $iLong != 0) {
 					echo ("var startpos = new google.maps.LatLng(" . ($iLat) . ", " . ($iLong) . ");");  
 				} else {
-					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longtitude") . ");"); 
+					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longitude") . ");"); 
 				}
 			?>
 			var marker; 
@@ -332,7 +332,11 @@ input.time {width: 100%; display: block; }
 												</div>
 											</div>');   
 										
-									} // else zal zowieso in eigen naam zijn, dus geen select-list
+									}  else {
+										foreach ($arList["user"] as $iUser=>$oUser) $strPerson = "u.$iUser";
+										foreach ($arList["group"] as $iGroup=>$oGroup) $strPerson = "g.$iGroup"; 
+										echo '<input type="hidden" id="person" name="poster" value="' . $strPerson  . '" />'; 
+									}
 								 
 									
 								?>  
@@ -414,7 +418,7 @@ input.time {width: 100%; display: block; }
 											$oMoment = $oOwaesItem->getMoment($iDate);  
 											$arDatums[($iDate == 0) ? "" : str_date($iDate, "d/m/Y")] = array(
 												"start" => minutesTOhhmm($oMoment["start"]),
-												"tijd" => ($oMoment["tijd"] == 0) ? "" : $oMoment["tijd"]/60,
+												"tijd" => ($oMoment["tijd"] == 0) ? "" : (floor($oMoment["tijd"]/60) . ":" . ($oMoment["tijd"]%60)),
 											); 
 										}
 										echo ('<script>  

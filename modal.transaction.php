@@ -48,6 +48,9 @@
 						$oPayment->credits($iCredits); 
 						$oPayment->signed(TRUE); 
 						
+						$oSubscription->state(SUBSCRIBE_FINISHED);
+						$oSubscription->save(); 
+						
 						//$iExperience = $oMarket->timing()*600; 
 						//if ($iExperience == 0) $iExperience = $oPayment->credits()*10;
 						$iExperience = 100; 

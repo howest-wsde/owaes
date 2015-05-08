@@ -293,6 +293,18 @@
 					if ($this->emotional() <= $arTresholds["emotional"] ) $arWarnings[$iStatus][] = "indicatoren.emotional"; 
 					if ($this->arStatus["indictatorensom"] <= $arTresholds["indicatorsom"] ) $arWarnings[$iStatus][] = "indicatoren.som";  
 				}  
+
+				$arCorrigeer = array(); 
+				if ($this->social(NULL, FALSE) < 0) $arCorrigeer["social"] = 0-$this->social(NULL, FALSE); 
+				if ($this->physical(NULL, FALSE) < 0) $arCorrigeer["physical"] = 0-$this->physical(NULL, FALSE); 
+				if ($this->mental(NULL, FALSE) < 0) $arCorrigeer["mental"] = 0-$this->mental(NULL, FALSE); 
+				if ($this->emotional(NULL, FALSE) < 0) $arCorrigeer["emotional"] = 0-$this->emotional(NULL, FALSE); 
+				if ($this->social(NULL, FALSE) > 100) $arCorrigeer["social"] = 100-$this->social(NULL, FALSE); 
+				if ($this->physical(NULL, FALSE) > 100) $arCorrigeer["physical"] = 100-$this->physical(NULL, FALSE); 
+				if ($this->mental(NULL, FALSE) > 100) $arCorrigeer["mental"] = 100-$this->mental(NULL, FALSE); 
+				if ($this->emotional(NULL, FALSE) > 100) $arCorrigeer["emotional"] = 100-$this->emotional(NULL, FALSE); 
+				if (count(array_keys($arCorrigeer))>0)  $this->addIndicators($arCorrigeer); 
+
 				$this->arStatus["warnings"] = $arWarnings; 
 				foreach ($arWarnings as $iWarning => $arValues) $this->iStatus = $iWarning; 
 				$arMails = array(); 

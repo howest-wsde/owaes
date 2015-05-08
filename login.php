@@ -19,15 +19,16 @@
 	}
 
 	if (isset($_POST["dosignup"])) {
-		$bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
+		$bResult = $oSecurity->doLogin($_POST["email"], $_POST["pass"]); 
 		if ($bResult == TRUE) { 
 			redirect($strRedirect); 
 			exit(); 
 		}
 		
 		$arErrors = array();  
-		//if (!isset($_POST["voorwaarden"])) $arErrors["voorwaarden"] = "Voorwaarden?  "; 
-		if (!$oUser->login($_POST["username"])) $arErrors["username"] = "De gekozen loginnaam is ongeldig of bestaande. Een andere werd voorgesteld "; 
+		
+		//if (!$oUser->login($_POST["username"])) $arErrors["username"] = "De gekozen loginnaam is ongeldig of bestaande. Een andere werd voorgesteld "; 
+		$oUser->login(""); 
 		$oUser->firstname($_POST["firstname"]); 
 		$oUser->lastname($_POST["lastname"]); 
 		if ($_POST["email"] == "") {
@@ -39,7 +40,8 @@
 		$oUser->password($_POST["pass"]);
 		$oUser->algemenevoorwaarden(settings("startvalues", "algemenevoorwaarden")); 
 		$oUser->visible(settings("startvalues", "visibility"));
-		if ($_POST["pass"] == "") $arErrors["password"] = "Paswoord is verplicht";  
+		if ($_POST["pass"] == "") $arErrors["password"] = "Wachtwoord is verplicht"; 
+		if ($_POST["pass"] != $_POST["pass-repeat"]) $arErrors["pass-repeat"] = "Wachtwoord komt niet overeen";  
 		if (count($arErrors) == 0)  {
 			$oUser->update();  
 			$oMail = new email(); 
@@ -55,7 +57,7 @@
 												"email" => $oUser->email,  
 												"postvalues" => $_POST, 
 											)); 
-			$bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
+			$bResult = $oSecurity->doLogin($_POST["email"], $_POST["pass"]); 
 			redirect($strRedirect); 
 			exit(); 
 		}
@@ -133,8 +135,7 @@
             <div class="well">
             
             <?
-            
-                if (isset($_POST["dologin"])) {
+				if (isset($_POST["dologin"])) {
 					$strLogin = $_POST["username"]; 
 		            $bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
 		            if ($bResult == TRUE) {
@@ -208,10 +209,10 @@
 						$oOpenid->returnUrl = $strReturnURL;   
 						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/google.png\" alt=\"Google\"/></a></li>";  
 						
- 
+ /*
 						// OWAES:  
 						$oOpenid = new LightOpenID($strID); 
-						$oOpenid->identity = 'http://info.owaes.org/';
+						$oOpenid->identity = 'https://info.owaes.org/';
 						$oOpenid->required = array(
 							'namePerson/first',
 							'namePerson/last',
@@ -219,7 +220,7 @@
 						);
 						$oOpenid->returnUrl = $strReturnURL;   
 						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/owaes.png\" alt=\"OWAES\"/></a></li>";  
- 					
+*/ 					
 						
 						// YAHOO:  
 						$oOpenid = new LightOpenID($strID); 
@@ -257,6 +258,7 @@
                             <input type="text" name="lastname" class="lastname form-control" id="lastname" placeholder="Familienaam" value="<? echo inputfield($oUser->lastname()); ?>" />
                         </div>
                     </div>
+                    <? /*
                     <div class="form-group">
                         <label for="username" class="control-label col-lg-3">Loginnaam:</label>
                         <div class="col-lg-9">
@@ -266,6 +268,7 @@
 						    ?>
                         </div>
                     </div>
+                    */ ?>
                     <div class="form-group">
                         <label for="email" class="control-label col-lg-3">E-mailadres:</label>
                         <div class="col-lg-9">
@@ -289,7 +292,7 @@
                         <div class="col-lg-9">
                             <input type="password" name="pass-repeat" class="pass-repeat form-control" id="pass-repeat" placeholder="Wachtwoord herhalen" />
                             <?
-                                //if (isset($arErrors["password"])) echo ("<p>" . $arErrors["password"] . "</p>"); 
+                            	if (isset($arErrors["pass-repeat"])) echo ("<strong class=\"text-danger\">" . $arErrors["pass-repeat"] . "</strong>"); 
 						    ?>
                         </div>
                     </div> 

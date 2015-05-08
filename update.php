@@ -24,10 +24,12 @@
 
 		$result = $dbPDO->exec($query["sql"]);
 
+		/*
 		if ($result == 0) {
-			$error = "<b>Script terminated: Query NOT successful executed!<br/>IMPORTANT: Some queries might not have been executed.";
+			$error = "<b>Script terminated: Query (" . $query["sql"] . ") NOT successful executed!<br/>IMPORTANT: Some queries might not have been executed.";
 			die($error);
 		}
+		*/ // NOT TRUE: bv. CREATE TABLE IF NOT EXISTS ... 
 
 		print("Output:<br/>" . $result . "<br/><br/>");
 

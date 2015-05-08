@@ -41,7 +41,7 @@
 				if ($iLatMe * $iLongMe != 0) {
 					echo ("var startpos = new google.maps.LatLng($iLatMe, $iLongMe);"); 	
 				} else {
-					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longtitude") . ");"); 	
+					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longitude") . ");"); 	
 				}
 			?> 
 			
@@ -542,7 +542,7 @@
                             $oOwaesList->filterByState(STATE_RECRUTE);  
                             $oOwaesList->filterPassedDate(owaesTime());  
                             $oOwaesList->filterByUser(me(), FALSE); 
-							$oOwaesList->notInvolved(me()); 
+							$oOwaesList->involved(me(), FALSE); 
                             $oOwaesList->optiOrder();  
                             $oOwaesList->limit(2);  
                             if (count($oOwaesList->getList()) > 0) { 
@@ -601,7 +601,8 @@
 						<?
                             $oOwaesList = new owaeslist(); 
 							$oOwaesList->filterByCreator(me());
-							$oOwaesList->filterByState(array(STATE_RECRUTE, STATE_SELECTED));
+							$oOwaesList->open(TRUE); 
+														
                             if (count($oOwaesList->getList()) > 0) { 
                                 ?>
                                     <!-- Recent aangemaakte activiteiten --> 
@@ -655,7 +656,7 @@
                                     <!-- Recent aangemaakte activiteiten --> 
                                      <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
                                         <div class="layoutBlocks border">
-                                            <h2>Nog te betalen xxx</h2>
+                                            <h2>Nog te betalen</h2>
             
                                             <div class="list-group">
                                                 
