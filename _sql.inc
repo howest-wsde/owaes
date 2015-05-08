@@ -107,4 +107,7 @@
 	<sql name="update-status-inschrijvingen-stap3" tag="5">
 		DROP TABLE tmpToUpdate;
 	</sql>
+	<sql name="update-cronsIndicators_tblConfig" tag="6">
+		UPDATE `tblConfig` SET `value` = '1*24*3600' WHERE `key` LIKE `crons.indicators';
+	</sql>
 </queries>

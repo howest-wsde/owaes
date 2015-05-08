@@ -24,22 +24,21 @@
 
 		$result = $dbPDO->exec($query["sql"]);
 
-		/*
-		if ($result == 0) {
-			$error = "<b>Script terminated: Query (" . $query["sql"] . ") NOT successful executed!<br/>IMPORTANT: Some queries might not have been executed.";
-			die($error);
+		if ($result !== false) {
+			// Update tblDbChanges with applied changes
+			$query2 = "INSERT INTO tblDbChanges (date, tag, action) VALUES (NOW(), :tag, :action)";
+
+			$stmt = $dbPDO->prepare($query2);
+			$stmt->bindParam(":tag", $query["tag"]);
+			$stmt->bindParam(":action", $query["name"]);
+			$stmt->execute();
 		}
-		*/ // NOT TRUE: bv. CREATE TABLE IF NOT EXISTS ... 
+		else {
+			$result = "<b>No changes!</b><br/>Note: already executed or error in the query.";
+			$result .= "<p>Resolve error &quot;already executed&quot; by checking tblDbChanges for duplicate. The query probably got executed with another tag.</p>";
+		}
 
 		print("Output:<br/>" . $result . "<br/><br/>");
-
-		// Update tblDbChanges with applied changes
-		$query2 = "INSERT INTO tblDbChanges (date, tag, action) VALUES (NOW(), :tag, :action)";
-
-		$stmt = $dbPDO->prepare($query2);
-		$stmt->bindParam(":tag", $query["tag"]);
-		$stmt->bindParam(":action", $query["name"]);
-		$stmt->execute();
 	}
 
 	// Check if tblDbChanges exists
