@@ -167,6 +167,16 @@
 				-webkit-appearance: none;
 			}
 
+			input[type="range"]::-webkit-slider-thumb {
+				-webkit-appearance: none;
+				border: 0;
+				border-radius: 50%;
+				width: 18px;
+				height: 18px;
+				border: 1px solid #a0a0a0;
+				background: #e4e4e4;
+			}
+
 			input::-moz-range-track {
 				background: transparent;
 				border: 0;
