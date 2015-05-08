@@ -7,6 +7,7 @@
  
 	$oUserList = new userlist();   
 	if (!user(me())->admin()) $oUserList->filter("visible"); 
+	$oUserList->filter("algemenevoorwaarden", TRUE); 
     
 	$oExperience = new experience(me());  
 	$oExperience->detail("reason", "pageload");     

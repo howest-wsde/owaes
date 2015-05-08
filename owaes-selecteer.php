@@ -161,6 +161,7 @@
                                                 foreach ($oOwaesItem->subscriptions() as $iUser=>$oValue) {
                                                     switch ($oValue->state()) {
                                                         case SUBSCRIBE_CONFIRMED: 
+                                                        case SUBSCRIBE_FINISHED: 
                                                             $iConfirmed ++; 
                                                             $oUser = user($iUser);
                                                             $oTransaction = $oValue->payment(); 

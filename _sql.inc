@@ -89,4 +89,22 @@
 	(78, 'indicatoren.owaesadd', '5'),
 	(79, 'mail.smtp', 'FALSE');
 	</sql>
+	<sql name="insert-smtpConfs_tblConfig" tag="1">
+		INSERT INTO `tblConfig` (`key`, `value`) VALUES
+	('mail.Host', NULL), ('mail.SMTPAuth', 'FALSE'), ('mail.SMTPSecure', 'ssl'),
+	('mail.Port', NULL), ('mail.Username', NULL), ('mail.Password', NULL);
+	</sql>
+	<sql name="insert-fbLogin_tblConfig" tag="2">
+		INSERT INTO `tblConfig` (`key`, `value`) VALUES
+	('facebook.loginapp.id', NULL), ('facebook.loginapp.secret', NULL);
+	</sql>
+	<sql name="update-status-inschrijvingen-stap1" tag="3">
+		CREATE TABLE tmpToUpdate AS (select s.id from tblMarketSubscriptions s inner join tblPayments p on s.market = p.market and p.actief = 1 and (s.user = p.receiver or s.user = p.sender) and s.overruled = 0 and s.status = 2);
+	</sql>
+	<sql name="update-status-inschrijvingen-stap2" tag="4">
+		update tblMarketSubscriptions set status = 5 where id in (select id from tmpToUpdate); 
+	</sql>
+	<sql name="update-status-inschrijvingen-stap3" tag="5">
+		DROP TABLE tmpToUpdate;
+	</sql>
 </queries>

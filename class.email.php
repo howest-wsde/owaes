@@ -1,6 +1,27 @@
 <?php
 	require_once('phpmailer/class.phpmailer.php');
-	require ('phpmailer/PHPMailerAutoload.php'); 
+	require ('phpmailer/PHPMailerAutoload.php');
+
+	function decryptor($encText) {
+		$key = pack("H*", "cf372282683d4802ee035e793218e2e4a8a8eb4f6a1d5675b6a6a289c860abde");
+
+		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
+
+		$cipherText = base64_decode($encText);
+
+		$iv = substr($cipherText, 0, $iv_size);
+
+		$cipherText = substr($cipherText, $iv_size);
+
+		$text = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $key, $cipherText, MCRYPT_MODE_CBC, $iv);
+
+		$block = mcrypt_get_block_size("rijndael_256", "cbc");
+		$pad = ord($text[($len = strlen($text)) - 1]);
+
+		$text = substr($text, 0, strlen($text) - $pad);
+
+		return $text;
+	} 
 	
 	class email {  
 		private $strFromMail = "benedikt@beuntje.com";
@@ -46,7 +67,7 @@
 				$oPHPmailer->SMTPSecure = settings("mail", "SMTPSecure"); // "ssl";                 // sets the prefix to the servier
 				$oPHPmailer->Port       = settings("mail", "Port"); // 465;                   // set the SMTP port for the GMAIL server
 				$oPHPmailer->Username   = settings("mail", "Username"); // "esf.owaes@gmail.com";  // GMAIL username
-				$oPHPmailer->Password   = settings("mail", "Password"); // "ESF-Howest-OWAES-2015";            // GMAIL password  
+				$oPHPmailer->Password   = decryptor(settings("mail", "Password")); // "ESF-Howest-OWAES-2015";            // GMAIL password  
 				 
 				$oPHPmailer->SetFrom($this->strFromMail, $this->strFromName);		 		
 				$oPHPmailer->AddAddress($this->strToMail, $this->strToName);			
