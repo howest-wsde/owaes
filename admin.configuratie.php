@@ -119,9 +119,9 @@
 		/* ------------- */
 
 		/* Credits */
-		if (issetAndNotEmpty($_POST["txtStart"])) prepareAndExecuteStmt("startvalues.credits", $_POST["txtStart"], $dbPDO);
-		if (issetAndNotEmpty($_POST["txtMin"])) prepareAndExecuteStmt("credits.min", $_POST["txtMin"], $dbPDO);
-		if (issetAndNotEmpty($_POST["txtMax"])) prepareAndExecuteStmt("credits.max", $_POST["txtMax"], $dbPDO);
+		if (isset($_POST["txtStart"])) prepareAndExecuteStmt("startvalues.credits", $_POST["txtStart"], $dbPDO);
+		if (isset($_POST["txtMin"])) prepareAndExecuteStmt("credits.min", $_POST["txtMin"], $dbPDO);
+		if (isset($_POST["txtMax"])) prepareAndExecuteStmt("credits.max", $_POST["txtMax"], $dbPDO);
 		if (issetAndNotEmpty($_POST["txtEenheid"])) prepareAndExecuteStmt("credits.name.1", $_POST["txtEenheid"], $dbPDO);
 		if (issetAndNotEmpty($_POST["txtMeervoud"])) prepareAndExecuteStmt("credits.name.x", $_POST["txtMeervoud"], $dbPDO);
 		if (issetAndNotEmpty($_POST["txtOverdracht"])) prepareAndExecuteStmt("credits.name.overdracht", $_POST["txtOverdracht"], $dbPDO);
