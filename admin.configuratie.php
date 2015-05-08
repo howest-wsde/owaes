@@ -131,44 +131,44 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<? echo $oPage->getHeader(); ?>
+		<?php echo $oPage->getHeader(); ?>
 	</head>
 	<body id="index">
-		<? echo $oPage->startTabs(); ?>
+		<?php echo $oPage->startTabs(); ?>
 		<div class="body">
 			<div class="container">
 				<div class="row">
-					<? echo $oSecurity->me()->html("user.html"); ?>
+					<?php echo $oSecurity->me()->html("user.html"); ?>
 				</div>
 				<div class="main market admin">
-					<? include "admin.menu.xml"; ?>
+					<?php include "admin.menu.xml"; ?>
 					<h1>Configuratie paneel</h1>
 					<form id="frmConfig" method="POST">
 						<fieldset>
 							<legend>Start waardes</legend>
 							<p>
 								<label for="txtCredits">Credits:</label><br/>
-								<input type="number" name="txtCredits" id="txtCredits" value="<? echo settings("startvalues", "credits"); ?>"/>
+								<input type="number" name="txtCredits" id="txtCredits" value="<?php echo settings("startvalues", "credits"); ?>"/>
 							</p>
 							<p>
 								<label for="txtPhysical">Physical:</label><br/>
-								<input type="number" name="txtPhysical" id="txtPhysical" value="<? echo settings("startvalues", "physical"); ?>"/>
+								<input type="number" name="txtPhysical" id="txtPhysical" value="<?php echo settings("startvalues", "physical"); ?>"/>
 							</p>
 							<p>
 								<label for="txtSocial">Social:</label><br/>
-								<input type="number" name="txtSocial" id="txtSocial" value="<? echo settings("startvalues", "social"); ?>"/>
+								<input type="number" name="txtSocial" id="txtSocial" value="<?php echo settings("startvalues", "social"); ?>"/>
 							</p>
 							<p>
 								<label for="txtMental">Mental:</label><br/>
-								<input type="number" name="txtMental" id="txtMental" value="<? echo settings("startvalues", "mental"); ?>"/>
+								<input type="number" name="txtMental" id="txtMental" value="<?php echo settings("startvalues", "mental"); ?>"/>
 							</p>
 							<p>
 								<label for="txtEmotional">Emotional:</label><br/>
-								<input type="number" name="txtEmotional" id="txtEmotional" value="<? echo settings("startvalues", "emotional"); ?>"/>
+								<input type="number" name="txtEmotional" id="txtEmotional" value="<?php echo settings("startvalues", "emotional"); ?>"/>
 							</p>
 							<p>
 								<label for="chkVisibility">Visibility</label>
-								<input type="checkbox" name="chkVisibility" id="chkVisibility" value="visibility" <?  print((settings("startvalues", "visibility") == "TRUE") ? "checked='checked'" : ""); ?>/>
+								<input type="checkbox" name="chkVisibility" id="chkVisibility" value="visibility" <?php  print((settings("startvalues", "visibility") == "TRUE") ? "checked='checked'" : ""); ?>/>
 							</p>
 						</fieldset>
 						<fieldset>
@@ -176,7 +176,7 @@
 							<p>
 								<label for="lstTimezone">Tijdzone:</label><br/>
 								<select id="lstTimezone" name="lstTimezone">
-								<?
+								<?php
 									$zones = timezone_identifiers_list();
 
 									foreach ($zones as $zone) {
@@ -196,67 +196,67 @@
 							</p>
 							<p>
 								<label for="txtLokatie">Lokatie:</label><br/>
-								<input type="text" name="txtLokatie" id="txtLokatie" value="<? echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
+								<input type="text" name="txtLokatie" id="txtLokatie" value="<?php echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
 							</p>
 						</fieldset>
 						<fieldset>
 							<legend>Credits</legend>
 							<p>
 								<label for="txtMax">Max:</label><br/>
-								<input type="number" name="txtMax" id="txtMax" value="<? echo settings("credits", "max"); ?>"/>
+								<input type="number" name="txtMax" id="txtMax" value="<?php echo settings("credits", "max"); ?>"/>
 							</p>
 							<p>
 								<label for="txtEenheid">Eenheid:</label><br/>
-								<input type="text" name="txtEenheid" id="txtEenheid" value="<? echo settings("credits", "name", "1"); ?>"/>
+								<input type="text" name="txtEenheid" id="txtEenheid" value="<?php echo settings("credits", "name", "1"); ?>"/>
 							</p>
 							<p>
 								<label for="txtMeervoud">Meervoud:</label><br/>
-								<input type="text" name="txtMeervoud" id="txtMeervoud" value="<? echo settings("credits", "name", "x"); ?>"/>
+								<input type="text" name="txtMeervoud" id="txtMeervoud" value="<?php echo settings("credits", "name", "x"); ?>"/>
 							</p>
 							<p>
 								<label for="txtOverdracht">Overdracht:</label><br/>
-								<input type="text" name="txtOverdracht" id="txtOverdracht" value="<? echo settings("credits", "name", "overdracht"); ?>"/>
+								<input type="text" name="txtOverdracht" id="txtOverdracht" value="<?php echo settings("credits", "name", "overdracht"); ?>"/>
 							</p>
 						</fieldset>
 						<fieldset>
 							<legend>Mail</legend>
 							<p>
 								<label for="chkSMTP">SMTP</label>
-								<input type="checkbox" name="chkSMTP" id="chkSMTP" value="smtp" <? print((settings("mail", "smtp") == "TRUE") ? "checked='checked'" : ""); ?>/>
+								<input type="checkbox" name="chkSMTP" id="chkSMTP" value="smtp" <?php print((settings("mail", "smtp") == "TRUE") ? "checked='checked'" : ""); ?>/>
 							</p>
 							<p>
 								<label for="txtHost">Host:</label><br/>
-								<input type="text" name="txtHost" id="txtHost" value="<? echo settings("mail", "Host"); ?>"/>
+								<input type="text" name="txtHost" id="txtHost" value="<?php echo settings("mail", "Host"); ?>"/>
 							</p>
 							<p>
 								<label for="chkAuth">Authentication</label>
-								<input type="checkbox" name="chkAuth" id="chkAuth" value="SMTPAuth" <? print((settings("mail", "SMTPAuth") == "TRUE") ? "checked='checked'" : ""); ?>/>
+								<input type="checkbox" name="chkAuth" id="chkAuth" value="SMTPAuth" <?php print((settings("mail", "SMTPAuth") == "TRUE") ? "checked='checked'" : ""); ?>/>
 							</p>
 							<p>
 								<label for="txtSecure">Secure:</label><br/>
-								<input type="text" name="txtSecure" id="txtSecure" value="<? echo settings("mail", "SMTPSecure"); ?>"/>
+								<input type="text" name="txtSecure" id="txtSecure" value="<?php echo settings("mail", "SMTPSecure"); ?>"/>
 							</p>
 							<p>
 								<label for="txtPort">Port:</label><br/>
-								<input type="number" name="txtPort" id="txtPort" value="<? echo settings("mail", "Port"); ?>"/>
+								<input type="number" name="txtPort" id="txtPort" value="<?php echo settings("mail", "Port"); ?>"/>
 							</p>
 							<p>
 								<label for="txtUsername">Username:</label><br/>
-								<input type="text" name="txtUsername" id="txtUsername" value="<? echo settings("mail", "Username"); ?>"/>
+								<input type="text" name="txtUsername" id="txtUsername" value="<?php echo settings("mail", "Username"); ?>"/>
 							</p>
 							<p>
 								<label for="txtPasswd">Password:</label><br/>
-								<input type="password" name="txtPasswd" id="txtPasswd" value="<? echo settings("mail", "Password"); ?>"/>
+								<input type="password" name="txtPasswd" id="txtPasswd" value="<?php echo settings("mail", "Password"); ?>"/>
 							</p>
 						</fieldset>
 						<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>
 					</form>
 				</div>
 			</div>
-			<? echo $oPage->endTabs(); ?>
+			<?php echo $oPage->endTabs(); ?>
 		</div>
 	<div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
 	<script>
 		function enableDisableFields(state, fields) {

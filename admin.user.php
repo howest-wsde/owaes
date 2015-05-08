@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
 	if (!$oSecurity->admin()) stop("admin"); 
@@ -33,25 +33,25 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
     </head>
     <body id="index">
-    <? echo $oPage->startTabs(); ?> 
+    <?php echo $oPage->startTabs(); ?> 
     	<div class="body">
          <div class="container">
         	
             	  <div class="row">
-					<? 
+					<?php 
                     echo $oSecurity->me()->html("user.html");
                     ?>
                 </div> 
                     <div class="main market admin-user"> 
-                     	<? include "admin.menu.xml"; ?>
-                    	<h2><? echo $oUser->getName(); ?></h2>
+                     	<?php include "admin.menu.xml"; ?>
+                    	<h2><?php echo $oUser->getName(); ?></h2>
                         <br />
-                        <?   
+                        <?php   
 							$arChart = array(
 								"Fysiek" => array(
 									"current" => settings("startvalues", "physical"), 
@@ -118,29 +118,29 @@ $(function () {
 
 	
 	
-	var arEvents = <? echo json_encode($arEvents); ?>; 
+	var arEvents = <?php echo json_encode($arEvents); ?>; 
 
     
     var datasets ={
         "Welzijn" : {
             label:"Welzijn",
-            data: <? echo json_encode($arChart["Welzijn"]["data"]);?>
+            data: <?php echo json_encode($arChart["Welzijn"]["data"]);?>
         },
          "Kennis" : {
             label:"Kennis",
-            data: <? echo json_encode($arChart["Kennis"]["data"]);?>
+            data: <?php echo json_encode($arChart["Kennis"]["data"]);?>
         },
         "Fysiek" : {
             label:"Fysiek",
-            data: <? echo json_encode($arChart["Fysiek"]["data"]);?>
+            data: <?php echo json_encode($arChart["Fysiek"]["data"]);?>
         },
         "Sociaal" : {
             label:"Sociaal",
-            data: <? echo json_encode($arChart["Sociaal"]["data"]);?>
+            data: <?php echo json_encode($arChart["Sociaal"]["data"]);?>
         },
          "Credits" : {
-            label:"<? echo ucfirst(settings("credits", "name", "x")); ?>",
-            data: <? echo json_encode($arChart["Credits"]["data"]);?>,
+            label:"<?php echo ucfirst(settings("credits", "name", "x")); ?>",
+            data: <?php echo json_encode($arChart["Credits"]["data"]);?>,
             yaxis:2
       },
     };
@@ -181,7 +181,7 @@ function plotAccordingToChoices() {
 			 			    tickFormatter: function (v, axis) { return v.toFixed(axis.tickDecimals) +" %" }
 			 		    },
                  y2axis: { 
-			 			    tickFormatter: function (v, axis) { return v.toFixed(axis.tickDecimals) +" <? echo settings("credits", "name", "x"); ?>" }
+			 			    tickFormatter: function (v, axis) { return v.toFixed(axis.tickDecimals) +" <?php echo settings("credits", "name", "x"); ?>" }
 			 		    },
                  legend: { position: 'sw' }, 
 			     series: {
@@ -245,22 +245,22 @@ function plotAccordingToChoices() {
                                         <div class="form-group">
                                             <label class="control-label col-lg-1" for="mental">mental:</label>
                                             <div class="col-lg-2">
-                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<? echo $oUser->mental();  ?>" placeholder="mental" id="mental" class="form-control" name="mental" />
+                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<?php echo $oUser->mental();  ?>" placeholder="mental" id="mental" class="form-control" name="mental" />
                                             </div>
                                             
                                             <label class="control-label col-lg-1" for="mental">physical:</label>
                                             <div class="col-lg-2">
-                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<? echo $oUser->physical();  ?>" placeholder="physical" id="physical" class="form-control" name="physical" />
+                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<?php echo $oUser->physical();  ?>" placeholder="physical" id="physical" class="form-control" name="physical" />
                                             </div>
                                             
                                             <label class="control-label col-lg-1" for="mental">emotional:</label>
                                             <div class="col-lg-2">
-                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<? echo $oUser->emotional();  ?>" placeholder="emotional" id="emotional" class="form-control" name="emotional" />
+                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<?php echo $oUser->emotional();  ?>" placeholder="emotional" id="emotional" class="form-control" name="emotional" />
                                             </div>
                                             
                                             <label class="control-label col-lg-1" for="mental">social:</label>
                                             <div class="col-lg-2">
-                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<? echo $oUser->social();  ?>" placeholder="social" id="social" class="form-control" name="social" />
+                                                <input type="text" pattern="^0*(?:[0-9][0-9]?|100)$" value="<?php echo $oUser->social();  ?>" placeholder="social" id="social" class="form-control" name="social" />
                                             </div>
                                          </div>
                                          <div class="form-group"> 
@@ -300,10 +300,10 @@ function plotAccordingToChoices() {
 						
  
                 </div> 
-        	<? echo $oPage->endTabs(); ?>
+        	<?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
     </body>
 </html>

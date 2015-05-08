@@ -1,4 +1,4 @@
-<?
+<?php
 	require_once "class.owaes.item.php"; 
 	require_once "class.owaes.list.php";
 	require_once "class.page.php";

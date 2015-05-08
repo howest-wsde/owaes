@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(FALSE); 
 	
@@ -71,7 +71,7 @@
 	<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
 	<h4 class="modal-title">Wachtwoord vergeten</h4>
 </div>
-<?
+<?php
 	switch($strPage) {
 		case "MAILED": 
 			?>
@@ -99,7 +99,7 @@
 			} 
 			?>
 				<div class="modal-body">
-					<p><? echo $strZin; ?></p>
+					<p><?php echo $strZin; ?></p>
 				</div>
 				<div class="modal-footer"> 
 					<button type="button" class="btn btn-default" id="btn-ok-pwd" data-dismiss="modal">Ok</button>
@@ -113,8 +113,8 @@
 				: "Geef een nieuw wachtwoord in:"; 
 			?>
 				<div class="modal-body">
-					<p><? echo $strZin; ?></p>
-                    <input type="hidden" name="code"  value="<? echo $_POST["code"]; ?>" />
+					<p><?php echo $strZin; ?></p>
+                    <input type="hidden" name="code"  value="<?php echo $_POST["code"]; ?>" />
                     <input type="hidden" name="changepass"  value="y" /> 
 					<div class="form-group"> <div class="col-lg-12">
                   	  <input type="password" name="pass1" class="form-control" id="pass1" placeholder="paswoord" /> 
@@ -127,7 +127,7 @@
 				<div class="modal-footer"> 
 					<input type="submit" class="btn btn-default" id="btn-paswoord" value="Opslaan" />
 				</div>
-			<?
+			<?php
 			break;  
 		
 		case "NOTFOUND": 
@@ -137,7 +137,7 @@
 				: "Geef je mailadres of inlognaam in"; 
 			?>
 				<div class="modal-body">
-					<p><? echo $strZin; ?></p>
+					<p><?php echo $strZin; ?></p>
                     <input type="hidden" name="recover" value="y" />
 					<div class="form-group"><div class="col-lg-12">
 						<input type="text" name="search" class="username form-control" id="mailpaswoordlost" placeholder="E-mailadres of gebruikersnaam" autofocus />
@@ -146,6 +146,6 @@
 				<div class="modal-footer"> 
 					<input type="submit" class="btn btn-default" id="btn-paswoord" value="Aanvragen" />
 				</div>
-			<? 
+			<?php 
 	}
 ?> 

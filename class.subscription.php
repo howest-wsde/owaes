@@ -1,4 +1,4 @@
-<?
+<?php
 define ("SUBSCRIBE_CANCEL", -1);
 define ("SUBSCRIBE_SUBSCRIBE", 0); 
 define ("SUBSCRIBE_CONFIRMED", 2);
