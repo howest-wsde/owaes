@@ -72,7 +72,7 @@
 	}
 
 	if (isset($_POST["btnOpslaan"])) {
-		/* Start waarden */
+		/* Startwaarden */
 		if (isset($_POST["txtPhysical"])) prepareAndExecuteStmt("startvalues.physical", $_POST["txtPhysical"], $dbPDO);
 		if (isset($_POST["txtSocial"])) prepareAndExecuteStmt("startvalues.social", $_POST["txtSocial"], $dbPDO);
 		if (isset($_POST["txtMental"])) prepareAndExecuteStmt("startvalues.mental", $_POST["txtMental"], $dbPDO);
@@ -171,6 +171,34 @@
 				background: transparent;
 				border: 0;
 			}
+
+			input[type="range"]::-ms-track {
+				background: transparent;
+				border-color: transparent;
+				color: transparent;
+			}
+
+			input[type="range"]::-ms-thumb {
+				border-radius: 50%;
+				border: 2px solid #e4e4e4;
+				background: #e4e4e4;
+			}
+
+			#txtPhysical::-ms-fill-upper, #txtPhysical::-ms-fill-lower {
+				background-color: #ff3131;
+			}
+
+			#txtSocial::-ms-fill-upper, #txtSocial::-ms-fill-lower {
+				background-color: #8dc63f;
+			}
+
+			#txtMental::-ms-fill-upper, #txtMental::-ms-fill-lower {
+				background-color: #0072bc;
+			}
+
+			#txtEmotional::-ms-fill-upper, #txtEmotional::-ms-fill-lower {
+				background-color: #ffcc00;
+			}
 		</style>
 	</head>
 	<body id="index">
@@ -185,7 +213,7 @@
 					<h1>Spel configuraties</h1>
 					<form id="frmGameConfig" method="POST">
 						<fieldset>
-							<legend>Start waarden</legend>
+							<legend>Startwaarden</legend>
 							<p>
 								<label for="txtPhysical">Physical:</label>&nbsp;&nbsp;<span id="sPhy"></span>
 								<input step="1" onchange="printValue('txtPhysical', 'sPhy')" style="background-color: #ff3131;" type="range" name="txtPhysical" id="txtPhysical" min="0" max="100" value="<? echo settings("startvalues", "physical"); ?>"/>
@@ -298,8 +326,8 @@
 							</p>
 							<p>
 								<label for="dDStart">Start:</label><br/>
-								<input type="number" name="dDStart" id="dDStart" min="0" max="31" value="<? echo createDateTime(settings("date", "start"))["date"]["day"]; ?>"/>/
-								<input type="number" name="dMStart" id="dMStart" min="0" max="12" value="<? echo createDateTime(settings("date", "start"))["date"]["month"]; ?>"/>/
+								<input type="number" name="dDStart" id="dDStart" min="1" max="31" value="<? echo createDateTime(settings("date", "start"))["date"]["day"]; ?>"/>/
+								<input type="number" name="dMStart" id="dMStart" min="1" max="12" value="<? echo createDateTime(settings("date", "start"))["date"]["month"]; ?>"/>/
 								<input type="number" name="dYStart" id="dYStart" min="2014" value="<? echo createDateTime(settings("date", "start"))["date"]["year"]; ?>"/>&nbsp;&nbsp;&nbsp;
 								<input type="number" name="tHStart" id="tHStart" min="1" max="24" value="<? echo createDateTime(settings("date", "start"))["time"]["hour"]; ?>"/>:
 								<input type="number" name="tMStart" id="tMStart" min="0" max="59" value="<? echo createDateTime(settings("date", "start"))["time"]["minute"]; ?>"/>
