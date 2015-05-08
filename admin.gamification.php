@@ -166,6 +166,11 @@
 				height: 10px;
 				-webkit-appearance: none;
 			}
+
+			input::-moz-range-track {
+				background: transparent;
+				border: 0;
+			}
 		</style>
 	</head>
 	<body id="index">
@@ -325,7 +330,7 @@
 			var span = document.getElementById(spanID);
 			var sliderID = document.getElementById(sliderID);
 
-			span.innerText = sliderID.value;
+			span.innerHTML = sliderID.value;
 		}
 
 		window.addEventListener("DOMContentLoaded", function() {
