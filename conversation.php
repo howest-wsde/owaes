@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	
 	$oSecurity = new security(TRUE); 
@@ -34,7 +34,7 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
             global $oPage;
             echo $oPage->getHeader(); 
         ?>
@@ -49,11 +49,11 @@
 		</script>
     </head>
     <body id="conversation">
-        <? echo $oPage->startTabs(); ?> 
+        <?php echo $oPage->startTabs(); ?> 
     <div class="body content content-lists-users container">
     
                 <div class="row">
-                    <? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+                    <?php /*echo $oSecurity->me()->html("leftuserprofile.html"); */
                     global $oSecurity;
                     echo $oSecurity->me()->html("user.html");
                     ?>
@@ -63,7 +63,7 @@
                 
                         <div class="col-md-4 convoCollection">
                             <div class="list-group">
-                                <? 
+                                <?php 
                                     foreach ($arDiscussions as $iDiscussUser=>$arDiscussion) {
 
                                        
@@ -92,7 +92,7 @@
                     
                         </div><!-- end convoCollection -->
                         <div class="col-md-8 convoColumn">  
-                            <?   
+                            <?php   
                                 foreach ($oConversation->messages()as $oMessage) {
 									$arSub = isset($arSubjects[$oMessage->market()]) ? $arSubjects[$oMessage->market()] : array();
 									if (isset($arSubjects[$oMessage->market()])) unset ($arSubjects[$oMessage->market()]); 
@@ -179,21 +179,21 @@
 									
                    
                                     ?>
-										<? if ($oPrevUser != user(me())) { ?>
+										<?php if ($oPrevUser != user(me())) { ?>
                                         	<div class="clear"></div>
                                             <div class="user">
-                                                <div class="img"><? echo $oMe->getImage("60x60", TRUE); ?></div>
-                                                <div class="name"><a href="<? echo $oMe->getURL(); ?>"><? echo $oMe->getName(); ?></a></div>
+                                                <div class="img"><?php echo $oMe->getImage("60x60", TRUE); ?></div>
+                                                <div class="name"><a href="<?php echo $oMe->getURL(); ?>"><?php echo $oMe->getName(); ?></a></div>
                                             </div>
-                                        <? } ?>
+                                        <?php } ?>
                                         <div class="message">
                                             <form method="post" class="reactieform">
-                                                <input type="hidden" name="market" value="<? echo $iMarket; ?>" />
-                                                <textarea name="message" placeholder="Plaats een reactie" id="msg<? echo $iMarket; ?>" class="form-control wysiwyg"></textarea>
+                                                <input type="hidden" name="market" value="<?php echo $iMarket; ?>" />
+                                                <textarea name="message" placeholder="Plaats een reactie" id="msg<?php echo $iMarket; ?>" class="form-control wysiwyg"></textarea>
                                                 <input class="btn btn-default btn-sm pull-right" type="submit" name="addmessage" value="Verzenden" />
                                             </form>
                                         </div> 
-                                    <?
+                                    <?php
 									
 									echo "</div>";  // newsubject
                                 }
@@ -205,10 +205,10 @@
                       </div> <!-- einde col-md-8 -->
                    </div> <!-- einde row --> 
         
-            <? echo $oPage->endTabs(); ?>
+            <?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-            <? echo $oPage->footer(); ?>
+            <?php echo $oPage->footer(); ?>
         </div>
     </body>
 </html>

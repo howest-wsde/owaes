@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 
 	$oSecurity = new security(TRUE); 
@@ -10,7 +10,7 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
         <script> 
@@ -87,12 +87,12 @@
 		</script>
     </head>
     <body id="index">
-        <? echo $oPage->startTabs(); ?> 
+        <?php echo $oPage->startTabs(); ?> 
     	<div class="body content-market search">
             
                 <div class="container sidecenterright">
                     <div class="row">
-					    <? 
+					    <?php 
                             echo $oSecurity->me()->html("user.html"); 
                         ?>
                     </div>
@@ -100,7 +100,7 @@
                         <div id="results">
                         	<div class="row">
                        			<form method="get" action="search.php" onsubmit="return false; ">
-                                	<input type="hidden" name="q" value="<? ($_GET["q"]); ?>" />
+                                	<input type="hidden" name="q" value="<?php ($_GET["q"]); ?>" />
                                     <div class="col-md-3 border sidebar">  
                                         <div class="weergevenPersonen">
                                             <h2>Aanbod</h2> 
@@ -139,7 +139,7 @@
                                 
                                 
                                 <div class="col-md-9">
-                                    <?  
+                                    <?php  
                                             // $oOwaesList->setUser($oUser); 
 											echo "<div class=\"col-md-12 zoekgroep\">"; 
 												$oOwaesList = new owaeslist(); 
@@ -183,10 +183,10 @@
                         </div>
                     </div>
                 </div>
-        	<? echo $oPage->endTabs(); ?>
+        	<?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
     </body>
 </html>

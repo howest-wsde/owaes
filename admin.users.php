@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
 	if (!$oSecurity->admin()) stop("admin"); 
@@ -10,23 +10,23 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
     </head>
     <body id="index">
-        <? echo $oPage->startTabs(); ?> 
+        <?php echo $oPage->startTabs(); ?> 
     	<div class="body">
         	
                 <div class="container">
                   <div class="row">
-					        <? 
+					        <?php 
                                 echo $oSecurity->me()->html("user.html");
                             ?>
                     </div>
                     
                     <div class="main market admin-users"> 
-                       <? include "admin.menu.xml"; ?>
+                       <?php include "admin.menu.xml"; ?>
                         
                         <!-- <h1>Users: </h1>  -->
                         <table class="editable">
@@ -36,7 +36,7 @@
                             	<th class="order">alias</th>
                             	<th class="order">login</th>
                             </tr>
-							<?
+							<?php
                                 $oUsers = new userList(); 
                                 
                                 $itemsPerPage = 10;
@@ -61,7 +61,7 @@
                             ?>
                         </table>
                         
-                        <? 
+                        <?php 
                         echo("<div class='links'>");
                         
                          if($pageKey > 0){
@@ -88,10 +88,10 @@
 							 
                     </div>
                 </div> 
-        	<? echo $oPage->endTabs(); ?>
+        	<?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
     </body>
 </html>

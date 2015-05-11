@@ -1,4 +1,4 @@
-<?  
+<?php  
 	define ("STATE_RECRUTE", 0); 
 	define ("STATE_SELECTED", 1); 
 	define ("STATE_FINISHED", 2); 

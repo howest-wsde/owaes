@@ -1,4 +1,4 @@
-<? 
+<?php 
 
 	$iID = isset($_GET["id"]) ? intval($_GET["id"]) : -1; 
 	$iW = intval(isset($_GET["w"])?$_GET["w"]:0);  

@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
 	$oMe = user(me()); 
@@ -139,14 +139,14 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
         <script>
 		
 			// GOOGLE MAP
 			var map; 
-			<?
+			<?php
 				if ($iLat + $iLong != 0) {
 					echo ("var startpos = new google.maps.LatLng(" . ($iLat) . ", " . ($iLong) . ");");  
 				} else {
@@ -162,7 +162,7 @@
 					mapTypeId: google.maps.MapTypeId.ROADMAP
 				};
 				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-				<?
+				<?php
 					if ($iLat + $iLong != 0) {
 						echo (" oPos = new google.maps.LatLng(" . $iLat . ", " . $iLong . "); 
 						setMarker(oPos); "); 
@@ -182,7 +182,7 @@
             });
 			
 			
-			<?
+			<?php
 				$arJsonPosters = array(); 
 				foreach ($arPossiblePosters as $strTypeKey=>$arList) {
 					$arJsonPosters[$strTypeKey] = array(); 
@@ -190,7 +190,7 @@
 					foreach ($arList["group"] as $iGroup=>$oGroup) $arJsonPosters[$strTypeKey][] = "g.$iGroup";  
 				}
 			?>
-			var arP = <? echo json_encode($arJsonPosters); ?>; 
+			var arP = <?php echo json_encode($arJsonPosters); ?>; 
 			function setPosters() { 
 				$("select#person option").attr("disabled", "disabled"); 
 				strType = $("select#kiesowaestype").val();  
@@ -251,11 +251,11 @@ input.time {width: 100%; display: block; }
 								</style>
     </head>
     <body id="owaesadd">               
-        <? echo $oPage->startTabs(); ?> 
+        <?php echo $oPage->startTabs(); ?> 
     	<div class="body content content-market content-market-add container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+					<?php /*echo $oSecurity->me()->html("leftuserprofile.html"); */
                     echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
@@ -264,7 +264,7 @@ input.time {width: 100%; display: block; }
                 <div class="errors"></div>
                 
                 <form method="post" class="form-horizontal" id="frmowaesadd" name="frmowaesadd">
-                	<?  
+                	<?php  
 						$arOwaesTypes = owaesType()->getAllTypes();
 						
 						if (isset($arOwaesTypes[$strType])) {
@@ -283,7 +283,7 @@ input.time {width: 100%; display: block; }
                     <div class="tab-content">
                       <div class="tab-pane fade in active" id="algemeen">
                       <dl id="algemeen">
-                            	<? 
+                            	<?php 
 									//vardump ($arPossiblePosters); 
 									
 									$arPosters = array(
@@ -345,12 +345,12 @@ input.time {width: 100%; display: block; }
                                 	<div class="row"><div class="col-lg-2"><h4>Titel</h4></div></div>
                          
                                     <div class="col-lg-10">
-                                        <input type="text" name="title" id="title" class="required form-control" placeholder="Titel voor uw aanbod" value="<? echo inputfield($oOwaesItem->title()); ?>" />
+                                        <input type="text" name="title" id="title" class="required form-control" placeholder="Titel voor uw aanbod" value="<?php echo inputfield($oOwaesItem->title()); ?>" />
                                     </div>
                                     <div class="col-lg-2"> 
                                         <dd>
                                         <select class="form-control aanbod" name="type" id="kiesowaestype"> 
-                                            <? 
+                                            <?php 
 												foreach ($arPossiblePosters as $strTypeKey=>$arList) {
 													if (count($arList["user"])+count($arList["group"]) > 0) {
 														$oTempType = owaestype($strTypeKey);
@@ -367,7 +367,7 @@ input.time {width: 100%; display: block; }
                                 <div class="form-group">
                                 	<div class="row"><div class="col-lg-2"><h4>Omschrijving</h4></div></div> 
                                     <div class="col-lg-12">
-                                       	<textarea name="description" id="description" class="required form-control wysiwyg" placeholder="Omschrijving"><? echo textarea($oOwaesItem->body()); ?></textarea>
+                                       	<textarea name="description" id="description" class="required form-control wysiwyg" placeholder="Omschrijving"><?php echo textarea($oOwaesItem->body()); ?></textarea>
                                     </div>
                                 </div>
                                  
@@ -376,7 +376,7 @@ input.time {width: 100%; display: block; }
                                  
                               
                                 <div class="col-lg-12"><div class="invoer" id="tags">
-                                <?
+                                <?php
 									$iTagCount = 0;  
                                 	foreach ($oOwaesItem->getTags() as $strTag) {
 										$strKey = "tag" . ++$iTagCount; 
@@ -411,7 +411,7 @@ input.time {width: 100%; display: block; }
                                 <div class="col-lg-9">
                                     <div class="errorsTime"></div>
                                      
-                                   	<? 
+                                   	<?php 
 										  
 										$arDatums = array(); 
 										foreach ($oOwaesItem->data() as $iDate) {
@@ -451,9 +451,9 @@ input.time {width: 100%; display: block; }
                             <div class="row">
                                 <div class="col-lg-12">
                                 <dd class="locationfixed">
-                                    <input type="text" name="locationfixed" class="locationfixed_required form-control" id="location" placeholder="Geef hier je locatie in" value="<? echo inputfield($oOwaesItem->location()); ?>" />
-                                	<input type="hidden" name="locationlat" id="locationlat" value="<? echo $iLat; ?>" />
-                                	<input type="hidden" name="locationlong" id="locationlong" value="<? echo $iLong; ?>" />
+                                    <input type="text" name="locationfixed" class="locationfixed_required form-control" id="location" placeholder="Geef hier je locatie in" value="<?php echo inputfield($oOwaesItem->location()); ?>" />
+                                	<input type="hidden" name="locationlat" id="locationlat" value="<?php echo $iLat; ?>" />
+                                	<input type="hidden" name="locationlong" id="locationlong" value="<?php echo $iLong; ?>" />
                                 </dd>
                                 <dd class="locationfixed"><div id="map-canvas" style="height: 300px; "></div></dd> 
                                 </div>
@@ -471,11 +471,11 @@ input.time {width: 100%; display: block; }
                       <!-- <legend>Compensatie</legend> -->
                       
                         <div class="form-group">
-                            <div class="row"><div class="col-lg-2"><h4><? echo ucfirst(settings("credits", "name", "x")); ?></h4></div></div> 
+                            <div class="row"><div class="col-lg-2"><h4><?php echo ucfirst(settings("credits", "name", "x")); ?></h4></div></div> 
                             
                            <div class="row row-credits"> 
                                <div class="col-lg-10">
-                                <input type="text" min="0" max="4800" name="credits" id="creditsfield" class="auto border" value="<? echo $oOwaesItem->credits(); ?>" />
+                                <input type="text" min="0" max="4800" name="credits" id="creditsfield" class="auto border" value="<?php echo $oOwaesItem->credits(); ?>" />
                                </div>
                            </div>
                         </div>
@@ -487,28 +487,28 @@ input.time {width: 100%; display: block; }
                            <div class="row row-sociaal">
                            <label for="social" class="col-lg-2">Sociaal</label>
                            <div class="col-lg-10">
-                            <input type="range" min="0" max="100" name="social" id="socialslide" value="<? echo $oOwaesItem->social(); ?>" class="development"  />
+                            <input type="range" min="0" max="100" name="social" id="socialslide" value="<?php echo $oOwaesItem->social(); ?>" class="development"  />
                            </div>
                            </div>
                            
                            <div class="row row-fysiek">
                            <label for="physical" class="col-lg-2">Fysiek</label>
                            <div class="col-lg-10">
-                            <input type="range" min="0" max="100" name="physical" id="physicalslide" value="<? echo $oOwaesItem->physical(); ?>" class="development" />
+                            <input type="range" min="0" max="100" name="physical" id="physicalslide" value="<?php echo $oOwaesItem->physical(); ?>" class="development" />
                            </div>
                            </div>
                            
                            <div class="row row-kennis">
                            <label for="mental" class="col-lg-2">Kennis</label>
                            <div class="col-lg-10">
-                            <input type="range" min="0" max="100" name="mental" id="mentalslide" value="<? echo $oOwaesItem->mental(); ?>" class="development"  />
+                            <input type="range" min="0" max="100" name="mental" id="mentalslide" value="<?php echo $oOwaesItem->mental(); ?>" class="development"  />
                            </div>
                            </div>
                            
                            <div class="row row-welzijn">
                            <label for="emotional" class="col-lg-2">Welzijn</label>
                            <div class="col-lg-10">
-                            <input type="range" min="0" max="100" name="emotional" id="emotionalslide" value="<? echo $oOwaesItem->emotional(); ?>" class="development"  />
+                            <input type="range" min="0" max="100" name="emotional" id="emotionalslide" value="<?php echo $oOwaesItem->emotional(); ?>" class="development"  />
                            </div>
                            </div>
                        </div>
@@ -518,23 +518,23 @@ input.time {width: 100%; display: block; }
                                 <div class="row"><div class="col-lg-2"><h4>Verzekering</h4></div></div> 
                             
                             <div class="row"> 
-                                <?
+                                <?php
                                 	$arVerzekeringen = $oOwaesItem->details("verzekeringen"); 
 									if (!is_array($arVerzekeringen)) $arVerzekeringen = array(); 
 								?>
-                                <? foreach (settings("verzekeringen") as $iVerzekering => $strVerzekering) { ?>
+                                <?php foreach (settings("verzekeringen") as $iVerzekering => $strVerzekering) { ?>
                                     <div class="col-lg-4">
-                                        <input type="checkbox" name="verzekering[]" id="verzekering<? echo $iVerzekering; ?>" value="<? echo $iVerzekering; ?>" <? if (in_array($iVerzekering, $arVerzekeringen)) echo "checked=checked"; ?> />
-                                        <label for="verzekering<? echo $iVerzekering; ?>" class="checkboxlabel"><? echo $strVerzekering; ?></label>                                    
+                                        <input type="checkbox" name="verzekering[]" id="verzekering<?php echo $iVerzekering; ?>" value="<?php echo $iVerzekering; ?>" <?php if (in_array($iVerzekering, $arVerzekeringen)) echo "checked=checked"; ?> />
+                                        <label for="verzekering<?php echo $iVerzekering; ?>" class="checkboxlabel"><?php echo $strVerzekering; ?></label>                                    
                                     </div>
-								<? } ?> 
+								<?php } ?> 
                             </div> <!--/row-->
                        </div>
                             
                             <div class="row row-buttons">
                             
                                 <div class="form-group col-lg-11">
-                                	<input type="checkbox" name="voorwaarden" id="voorwaarden" value="1" <? if ($oOwaesItem->id() != 0) echo "checked=\"checked\""; ?> />
+                                	<input type="checkbox" name="voorwaarden" id="voorwaarden" value="1" <?php if ($oOwaesItem->id() != 0) echo "checked=\"checked\""; ?> />
                                     <label for="voorwaarden" class="checkboxlabel">Ik bevestig dat dit aanbod conform de <a href="modal.voorwaarden.php" class="domodal">gebruiksvoorwaarden</a> is. </label>
                                 </div>
                                 <div class="form-group col-lg-1">
@@ -556,10 +556,10 @@ input.time {width: 100%; display: block; }
                         </ul>
                     </form>
             	</div> 
-			<? echo $oPage->endTabs(); ?>
+			<?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
     </body>
 </html>

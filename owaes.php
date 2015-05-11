@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
@@ -45,16 +45,16 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
     </head>
     <body id="owaes">               
-            <? echo $oPage->startTabs(); ?> 
+            <?php echo $oPage->startTabs(); ?> 
     	<div class="container body content content-owaes">
         	
         <div class="row">
-					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+					<?php /*echo $oSecurity->me()->html("leftuserprofile.html"); */
                     echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
@@ -67,10 +67,10 @@
                 
                 
                 
-					<? echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
+					<?php echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
 				 	
                     <div class="messages">
-                             <? 
+                             <?php 
                    		        $oConversation = new conversation($oOwaesItem->author()->id());  
 						        $oConversation->filter("owaes", $iID); 
 						        $oPrevUser = NULL; 
@@ -110,10 +110,10 @@
                     </div>
                    
             	</div> 
-            <? echo $oPage->endTabs(); ?>
+            <?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
     </body>
 </html>

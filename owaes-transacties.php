@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(FALSE); 
    
@@ -43,7 +43,7 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?> 
         <script>
@@ -53,13 +53,13 @@
     </head>
     <body id="owaes"> 
     	<div class="body">
-        	<? echo $oPage->startTabs(); ?>
+        	<?php echo $oPage->startTabs(); ?>
             	<div class="sideleft">
-					<? echo $oSecurity->me()->html("leftuserprofile.html"); ?>
+					<?php echo $oSecurity->me()->html("leftuserprofile.html"); ?>
                 </div>
                 <div class="sidecenterright"> 
-					<? echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
-					<?
+					<?php echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
+					<?php
 						echo ("<form method=\"post\">");  
 								echo ("<div class=\"box\" >
 										<h2>Beloon</h2> 
@@ -79,15 +79,15 @@
 							
 							 
 							?>   
-							<?
+							<?php
 						echo ("</form>");  
                             
                     ?> 
             	</div> 
-            <? echo $oPage->endTabs(); ?>
+            <?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
     </body>
 </html>

@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = security(TRUE); 
 	if (!$oSecurity->admin()) stop("admin"); 
@@ -35,23 +35,23 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
     </head>
     <body id="index">
-            <? echo $oPage->startTabs(); ?> 
+            <?php echo $oPage->startTabs(); ?> 
             
     	<div class="body">
 
                 <div class="container">
                      <div class="row">
-					    <? 
+					    <?php 
                         echo $oSecurity->me()->html("user.html");
                         ?>
                     </div>
                     <div class="main market admin-groepen"> 
-                        <? include "admin.menu.xml"; ?>
+                        <?php include "admin.menu.xml"; ?>
                     	<h1>Groepsbeheer </h1>
                         <form method="post" class="groepToevoegenForm form-horizontal" enctype="multipart/form-data"> 
 
@@ -65,7 +65,7 @@
                                             <th class="order">beheerder</th>
                                             <th>...</th>
                                         </tr>
-                                        <?
+                                        <?php
                                             $oGroepen = new grouplist(); 
                                             foreach ($oGroepen->getList() as $oGroep) {
                                                 echo "<tr>";  
@@ -97,7 +97,7 @@
                                     <div class="col-lg-10">
                                         <select name="admin" class="form-control" id="admin">
                                         	<option value="0">- selecteer een beheerder -</option>
-											<?
+											<?php
 												$oUserList = new userlist();   
 												foreach ($oUserList->getList() as $oUser) { 
 													echo  "<option value=\"" . $oUser->id() . "\">" . $oUser->getName() . "</option>"; 	
@@ -129,10 +129,10 @@
 					     
                     </div>
                 </div> 
-        	<? echo $oPage->endTabs(); ?>
+        	<?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
     </body>
 </html>

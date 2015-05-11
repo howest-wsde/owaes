@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = security(TRUE); 
 //	if (!$oSecurity->admin()) $oSecurity->doLogout(); 
@@ -64,7 +64,7 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
         <script>
@@ -112,47 +112,47 @@
 		</script>
     </head>
     <body id="index">
-    <? echo $oPage->startTabs(); ?> 
+    <?php echo $oPage->startTabs(); ?> 
     	<div class="body">
         	
                 <div class="container">
                     <div class="row">
-					        <? 
+					        <?php 
                                 echo $oSecurity->me()->html("user.html");
                             ?>
                     </div>
                     <div class="main market admin-groepusers"> 
-                    	<? if (user(me())->admin()) { ?>
-                        <? include "admin.menu.xml"; ?>
-                        <? } ?>
+                    	<?php if (user(me())->admin()) { ?>
+                        <?php include "admin.menu.xml"; ?>
+                        <?php } ?>
                         <form method="post" class="form-horizontal" id="admingroupform" enctype="multipart/form-data"> 
                         
-                       	<? if ($oMijnRechten->groupinfo()) { ?>
+                       	<?php if ($oMijnRechten->groupinfo()) { ?>
                             <fieldset>
                                 <legend>Algemene gegevens</legend>
                                 <div class="form-group">
                                     <label for="username" class="control-label col-lg-2">Groepsnaam:</label>
                                     <div class="col-lg-10">
-                                        <input type="text" name="groepsnaam" class="naam form-control" id="naam" placeholder="Groepsnaam" value="<? echo inputfield($oGroep->naam()); ?>" />
+                                        <input type="text" name="groepsnaam" class="naam form-control" id="naam" placeholder="Groepsnaam" value="<?php echo inputfield($oGroep->naam()); ?>" />
                                     </div> 
                                 </div>
                                 <div class="form-group">
                                     <label for="groepsurl" class="control-label col-lg-2">Website:</label>
                                     <div class="col-lg-10">
-                                        <input type="text" name="groepsurl" class="groepsurl form-control" id="groepsurl" placeholder="Website" value="<? echo inputfield($oGroep->website()); ?>" />
+                                        <input type="text" name="groepsurl" class="groepsurl form-control" id="groepsurl" placeholder="Website" value="<?php echo inputfield($oGroep->website()); ?>" />
                                     </div> 
                                 </div>
                                 <div class="form-group">
                                     <label for="description" class="control-label col-lg-2">Omschrijving:</label>
                                     <div class="col-lg-10">
-                                        <textarea name="info" id="info" class="form-control wysiwyg" placeholder="Vertel ons iets over deze groep..."><? echo textarea($oGroep->info()); ?></textarea>
+                                        <textarea name="info" id="info" class="form-control wysiwyg" placeholder="Vertel ons iets over deze groep..."><?php echo textarea($oGroep->info()); ?></textarea>
                                     </div> 
                                 </div>
                                 <div class="form-group">
                                     <label for="img" class="control-label col-lg-2">Foto:</label>
                                     <div class="col-lg-10">
                                         <input type="file" name="img" ext="jpg,jpeg,gif,bmp,png" class="img image form-control" id="img" placeholder="" value="" />
-                                        <? echo $oGroep->getImage(); ?>
+                                        <?php echo $oGroep->getImage(); ?>
                                     </div> 
                                 </div>
                                 <div class="form-group">
@@ -161,9 +161,9 @@
                                     </div>
                                 </div>
                             </fieldset>    
-                        <? } ?>        
+                        <?php } ?>        
                          
-                        <? if ($oMijnRechten->useradd()) { ?>
+                        <?php if ($oMijnRechten->useradd()) { ?>
                             <fieldset>
                                 <legend>Persoon toevoegen:</legend> 
                                 <input type="hidden" name="adduser" id="adduser" value="0" />
@@ -183,28 +183,28 @@
                                     </div>
                                 </div> 
                             </fieldset> 
-                        <? } ?>
+                        <?php } ?>
                         
-                         <? if ($oMijnRechten->useradd()) { ?>
+                         <?php if ($oMijnRechten->useradd()) { ?>
                             <fieldset>
                                 <legend>Gebruikerslijst:</legend>  
                                 <table>
                                     <tr>
                                         <th colspan="2" class="borderright">Gebruiker</th>
-                                        <? if ($oMijnRechten->userrights()) { ?> 
+                                        <?php if ($oMijnRechten->userrights()) { ?> 
                                             <th colspan="3" class="borderright">Groepsleden</th>
                                             <th colspan="3" class="borderright">OWAES-items</th>
                                             <th colspan="2" class="borderright">Inschrijvingen</th>
                                             <th colspan="2" class="borderright">Groep</th>
-                                        <? } ?>
-                                        <?
+                                        <?php } ?>
+                                        <?php
                                             if ($oMijnRechten->userdel()) echo "<th>Actie's</th>"
                                         ?>
                                     </tr>
                                     <tr> 
                                         <th>voornaam</th>
                                         <th class="borderright">familienaam</th>
-                                        <? if ($oMijnRechten->userrights()) { ?> 
+                                        <?php if ($oMijnRechten->userrights()) { ?> 
                                             <th>toevoegen</th>
                                             <th>verwijderen</th>
                                             <th class="borderright">rechten aanpassen</th>
@@ -215,12 +215,12 @@
                                             <th class="borderright">afhandelen</th>
                                             <th>gegevens</th>
                                             <th class="borderright">beheerder</th>
-                                        <? } ?>
-                                        <?
+                                        <?php } ?>
+                                        <?php
                                             if ($oMijnRechten->userdel()) echo "<th></th>"
                                         ?>
                                     </tr>
-                                    <?   
+                                    <?php   
 									
 									$oLeden = new userlist(); 
 									$oLeden->group($oGroep->id(), FALSE); 
@@ -264,9 +264,9 @@
                                     ?>
                                 </table>
 						 	</fieldset>
-                            <? } ?>
+                            <?php } ?>
                              
-                            <?
+                            <?php
 
 								function checkbox($oGroep, $iUser, $strWut) {
 									$oRechten = $oGroep->userrights($iUser);  
@@ -285,10 +285,10 @@
                         </form>
                     </div>
                 </div> 
-        	<? echo $oPage->endTabs(); ?>
+        	<?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
     </body>
 </html>

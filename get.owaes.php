@@ -1,4 +1,4 @@
-<?
+<?php
 	// get/owaes?help => help
 	
 	include "inc.default.php"; // should be included in EVERY file 
