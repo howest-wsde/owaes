@@ -1,6 +1,6 @@
 <?php
-	include_once "inc.config.php";
-
+	include_once "inc.default.php";
+ 
 	function isTblDbChanges($dbPDO) {
 		$query = "SHOW TABLES LIKE 'tblDbChanges'";
 
@@ -41,10 +41,13 @@
 		print("Output:<br/>" . $result . "<br/><br/>");
 	}
 
+
 	// connectie met database
 	global $arConfig;
 
+
 	$dbPDO = new PDO("mysql:host=" . settings("database", "host") . ";dbname=" . settings("database", "name"), settings("database", "user"), settings("database", "password"));
+
 
 	// Check if tblDbChanges exists
 	if (!isTblDbChanges($dbPDO)) {
@@ -78,6 +81,7 @@
 	$query = "SELECT tag, action FROM tblDbChanges";
 	$result = $dbPDO->query($query);
 
+
 	$newQueries = array();
 	$executedQueries = array();
 	$i = 0;
@@ -95,6 +99,7 @@
 
 		$i++;
 	}
+
 
 	$i = 0;
 
@@ -121,6 +126,7 @@
 		}
 	}
 
+
 	if (count($newQueries) > 0) {
 		$newQueries = array_unique($newQueries, SORT_REGULAR);
 
@@ -135,4 +141,6 @@
 			}
 		}
 	}
+	
+	echo "update done"; 
 ?>

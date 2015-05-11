@@ -252,10 +252,6 @@
 						break;
 				}
 			} 
-	
-			$arConfig["domain"]["name"] = strtolower($_SERVER['HTTP_HOST']);
-			$arConfig["domain"]["root"] = "/owaes/";
-			$arConfig["domain"]["absroot"] = "http://localhost/owaes/";
 			
 			$arConfig["dbloaded"] = TRUE;  
 			return settings($strA, $strB, $strC); 
