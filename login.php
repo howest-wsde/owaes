@@ -187,16 +187,18 @@
 						session_start();
 					
 						$strHTML = "<ul class=\"socialmedia\">"; 
- 									
-						// FACEBOOK:   
-						$facebook = new Facebook(array(
-							'appId'  => settings("facebook", "loginapp", "id"),
-							'secret' => settings("facebook", "loginapp", "secret"),
-						)); 
-						$strHTML .= "<li><a class=\"login\" href=\"" . $facebook->getLoginUrl(array(
-							'scope' => 'email', 
-							'redirect_uri'=>$strReturnURL
-						)) . "\" rel=\"1020,575\"><img src=\"img/facebook.png\" alt=\"Facebook\"/></a></li>"; 
+ 						
+						if (settings("facebook", "loginapp", "id")) {
+							// FACEBOOK: 
+							$facebook = new Facebook(array(
+								'appId'  => settings("facebook", "loginapp", "id"),
+								'secret' => settings("facebook", "loginapp", "secret"),
+							)); 
+							$strHTML .= "<li><a class=\"login\" href=\"" . $facebook->getLoginUrl(array(
+								'scope' => 'email', 
+								'redirect_uri'=>$strReturnURL
+							)) . "\" rel=\"1020,575\"><img src=\"img/facebook.png\" alt=\"Facebook\"/></a></li>"; 
+						}
 						
 						// GOOGLE:  
 						$oOpenid = new LightOpenID($strID); 

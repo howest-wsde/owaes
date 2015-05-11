@@ -71,7 +71,7 @@
 	(60, 'crons.hourstoworkfordelay', '4'),
 	(61, 'crons.x', NULL),
 	(62, 'date.speed', '1'),
-	(63, 'date.start', 'mktime(12, 00, 00, 3, 18, 2014)'),
+	(63, 'date.start', '1395100800'),
 	(64, 'date.timezone', 'Europe/Brussels'),
 	(65, 'geo.latitude', '50.8305303'),
 	(66, 'geo.longitude', '3.2644603'),
@@ -106,5 +106,8 @@
 	</sql>
 	<sql name="update-status-inschrijvingen-stap3" tag="5">
 		DROP TABLE tmpToUpdate;
+	</sql>
+	<sql name="update-cronsIndicators_tblConfig" tag="6">
+		UPDATE `tblConfig` SET `value` = '1*24*3600' WHERE `key` LIKE `crons.indicators';
 	</sql>
 </queries>

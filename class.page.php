@@ -75,7 +75,7 @@
 				$strHTML .= "\n\t\t<script src=\"" . $strFile . "\"></script>"; 
 			} 
 			$strHTML .= "\n\t\t<script>
-				var strRoot = \"" . $arConfig["domain"]["root"] . "\"; 
+				var strRoot = \"" . settings("domain", "root") . "\"; 
 			</script>"; 
 			
 			
