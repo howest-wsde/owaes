@@ -1,5 +1,5 @@
 <?php
-	include "inc.default.php"; // should be included in EVERY file
+	include_once "inc.config.php";
 
 	function isTblDbChanges($dbPDO) {
 		$query = "SHOW TABLES LIKE 'tblDbChanges'";
@@ -40,6 +40,11 @@
 
 		print("Output:<br/>" . $result . "<br/><br/>");
 	}
+
+	// connectie met database
+	global $arConfig;
+
+	$dbPDO = new PDO("mysql:host=" . $arConfig["database"]["host"] . ";dbname=" . $arConfig["database"]["name"], $arConfig["database"]["user"], $arConfig["database"]["password"]);
 
 	// Check if tblDbChanges exists
 	if (!isTblDbChanges($dbPDO)) {

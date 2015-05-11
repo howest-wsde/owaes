@@ -225,6 +225,57 @@
 	function javatime($iTime) {
 		return $iTime * 1000; 	
 	}
+
+	function arConfigLoaded() {
+		global $arConfig;
+		return (count($arConfig) > 0) ? TRUE : FALSE;
+	}
+
+	function loadSettings() {
+		if (!arConfigLoaded()) {
+			die("inc.config.php not found!");
+		}
+
+		global $arConfig;
+
+		// connectie met database
+		$dbCon = new PDO("mysql:host=" . $arConfig["database"]["host"] . ";dbname=" . $arConfig["database"]["name"], $arConfig["database"]["user"], $arConfig["database"]["password"]);
+
+		// haal data van tblConfig
+		$query = "SELECT `key`, `value` FROM `tblConfig`";
+		$result = $dbCon->query($query);
+
+		// maak een associatief array met de database waardes
+		if (!$result) {
+			die("Geen configuratie gevonden");
+		}
+
+		if ($result->rowCount() > 0) {
+			foreach ($result as $row) {
+				$keys = explode(".", $row["key"]);
+				$lenKeys = count($keys);
+
+				switch ($lenKeys) {
+					case 1:
+						$arConfig[$row["key"]] = $row["value"];
+						break;
+					case 2:
+						$arConfig[$keys[0]][$keys[1]] = $row["value"];
+						break;
+					case 3:
+						$arConfig[$keys[0]][$keys[1]][$keys[2]] = $row["value"];
+						break;
+				}
+			}
+		}
+
+		$domainRoot = "/owaes/";
+		$domainAbsRoot = "http://localhost/owaes/";
+
+		$arConfig["domain"]["name"] = strtolower($_SERVER['HTTP_HOST']);
+		$arConfig["domain"]["root"] = $domainRoot;
+		$arConfig["domain"]["absroot"] = $domainAbsRoot;
+	}
 	
 	function settings($strA, $strB = NULL, $strC = NULL) {
 		global $arConfig; 
@@ -243,6 +294,7 @@
 				} else $oJSON = array(); 
 			} else $oJSON = array(); 
 		} else {
+			return null;
 			$fh = fopen($strFile, 'w') or die("can't open file"); 
 			fwrite($fh, json_encode($oJSON));
 			fclose($fh); 	
@@ -321,7 +373,7 @@
 		if (file_exists($strCache)) { 
 			if (($iHours == -1) || (filemtime($strCache)>owaesTime()-(60-60*$iHours))) return $strCache; 
 		}
-		copy($strURL, $strCache);	
+		//copy($strURL, $strCache);	
 		return $strCache; 
 	}
 
