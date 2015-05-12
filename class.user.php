@@ -213,7 +213,7 @@
 		public function mailalert($strID, $iValue = NULL) {
 			if (is_null($this->arMailalerts)) $this->load(); 
 			if (!is_null($iValue)) $this->arMailalerts[$strID] = $iValue; 
-			return $this->arMailalerts[$strID]; 
+			return isset($this->arMailalerts[$strID]) ? $this->arMailalerts[$strID] : FALSE; 
 		}
 		
 		public function alias($strAlias = NULL, $bCreate = FALSE) { // if bCreate == TRUE -> alias will be set to unique alias
