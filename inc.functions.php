@@ -253,7 +253,14 @@
 				}
 			} 
 			
-			$arConfig["dbloaded"] = TRUE;  
+			$arConfig["dbloaded"] = TRUE; 
+			
+			if ((filename() != "setup.php") && (
+			    is_null($arConfig["domain"]["name"]) 
+				|| is_null($arConfig["domain"]["root"]) 
+				|| is_null($arConfig["domain"]["absroot"]) 
+			)) redirect("setup.php"); 
+			
 			return settings($strA, $strB, $strC); 
 		}
 		return FALSE; 

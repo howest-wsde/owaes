@@ -74,6 +74,7 @@
 		private $iStatus = NULL; 
 		private $arStatus = NULL; 
 		private $bAlgemeneVoorwaarden = NULL; 
+		private $arMailalerts = NULL; 
 		
 		private $bNEW = TRUE; 
 		 
@@ -208,6 +209,12 @@
 			$this->bNEW = ($this->iID == 0);
 			return $this->iID; 	
 		} 
+		
+		public function mailalert($strID, $iValue = NULL) {
+			if (is_null($this->arMailalerts)) $this->load(); 
+			if (!is_null($iValue)) $this->arMailalerts[$strID] = $iValue; 
+			return $this->arMailalerts[$strID]; 
+		}
 		
 		public function alias($strAlias = NULL, $bCreate = FALSE) { // if bCreate == TRUE -> alias will be set to unique alias
 			if (!is_null($strAlias)) {
@@ -1021,6 +1028,9 @@
 				case "statusinfo": 
 					if (is_null($this->arStatus)) $this->arStatus = json_decode($strValue, TRUE); 
 					break;
+				case "mailalerts": 
+					if (is_null($this->arMailalerts)) $this->arMailalerts = ($strValue=="") ? array() : json_decode($strValue, TRUE); 
+					break;
 			}
 		}
 		
@@ -1065,6 +1075,7 @@
 
 					if (is_null($this->iStatus)) $this->iStatus=0;  
 					if (is_null($this->arStatus)) $this->arStatus = array(); 
+					if (is_null($this->arMailalerts)) $this->arMailalerts = array(); 
 					
 					if (is_null($this->bVisible)) $this->visible(TRUE);
 					if (!isset($this->arVisible["firstname"])) $this->visible("firstname", VISIBILITY_VISIBLE);
@@ -1212,6 +1223,7 @@
 					"location_long" => $this->iLocationLong, 
 					"data" => json_encode($this->arData), 
 					"bestanden" => json_encode($this->arBestanden), 
+					"mailalerts" => json_encode($this->arMailalerts), 
 				);   
 				if (user(me())->admin()) $arVelden["admin"] = ($this->admin()?1:0); 
 				

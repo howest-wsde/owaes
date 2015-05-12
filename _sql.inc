@@ -116,4 +116,16 @@
 			('domain.root', '/owaes/'),
 			('domain.absroot', 'http://localhost/owaes/');
 	</sql>
+	<sql name="mailalerts" tag="8">
+		ALTER TABLE `tblUsers` ADD `mailalerts` TEXT NOT NULL AFTER `data` ;
+	</sql>
+	<sql name="tblconfig-domainsetup-name" tag="9">
+		update `tblConfig` set value = NULL where `key` = 'domain.name' and `value` = 'localhost'; 
+	</sql>
+	<sql name="tblconfig-domainsetup-root" tag="9">
+		update `tblConfig` set value = NULL where `key` = 'domain.root' and `value` = '/owaes/'; 
+	</sql>
+	<sql name="tblconfig-domainsetup-absroot" tag="9">
+		update `tblConfig` set value = NULL where `key` = 'domain.absroot' and `value` = 'http://localhost/owaes/'; 
+	</sql> 
 </queries>
