@@ -239,6 +239,7 @@
                                 <?php echo showDropdown("showtelephone", $oProfile->visible("telephone")); ?> 
                             </div>
                         </div>
+                        
                         <legend>Persoonlijke gegevens</legend>
                         <div class="form-group">
                             <label for="visible" class="control-label col-lg-2">Zichtbaar:</label>
@@ -301,6 +302,62 @@
                                 <?php echo showDropdown("showlocation", $oProfile->visible("location")); ?> 
                             </div>
                         </div>
+                        
+                        
+                        
+                        <legend>Meldingen</legend>  
+                        <div class="form-group">
+                            <label class="control-label col-lg-2">Stuur me een e-mail:</label> 
+                            <div class="col-lg-6 checkbox">Nieuwe berichten</div>  
+                            <div class="col-lg-4">
+								<select name="x" class="form-control">
+                                	<option value="0">Nooit</option>
+                                	<option value="60">Onmiddelijk </option>
+                                	<option value="86400">Max. 1x / dag</option>
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="form-group">
+                            <label class="col-lg-2"></label> 
+                            <div class="col-lg-6 checkbox">Nieuwe inschrijvingen</div>  
+                            <div class="col-lg-4">
+								<select name="x" class="form-control">
+                                	<option value="0">Nooit</option>
+                                	<option value="60">Onmiddelijk</option>
+                                	<option value="86400">Max. 1x / dag</option>
+                                </select>
+                            </div>
+                        </div> 
+                        <div class="form-group">
+                            <label class="col-lg-2"></label> 
+                            <div class="col-lg-6 checkbox">Platform-meldingen</div>  
+                            <div class="col-lg-4">
+								<select name="x" class="form-control">
+                                	<option value="1">Onmiddelijk</option>
+                                </select>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label class="col-lg-2"></label> 
+                            <div class="col-lg-6 checkbox">Herinnering ongelezen berichten</div>  
+                            <div class="col-lg-4">
+								<select name="x" class="form-control">
+                                	<option value="259200">Na 3 dagen</option>
+                                	<option value="604800">Na 7 dagen</option>
+                                </select>
+                            </div>
+                        </div>  
+                        <div class="form-group">
+                            <label class="col-lg-2"></label> 
+                            <div class="col-lg-6 checkbox">Herinnering onbeantwoorde inschrijvingen</div>  
+                            <div class="col-lg-4">
+								<select name="x" class="form-control">
+                                	<option value="259200">Na 3 dagen</option>
+                                	<option value="604800">Na 7 dagen</option>
+                                </select>
+                            </div>
+                        </div> 
+                        
                         <div class="form-group">
                             <div class="col-lg-12">
                                 <input type="submit" value="Gegevens opslaan" id="profile" class="btn btn-default pull-right" name="profile" />
