@@ -30,6 +30,21 @@
 		?> 
     </head>
     <body id="settings"> 
+         <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="row">
+                    <div class="navbar-header">
+                        <a href=""><h1 class="navbar-brand">OWAES</h1></a>
+                        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                    </div>
+                    <div class="navbar-collapse collapse" id="navbar-main"><ul class="nav navbar-nav navbar-right"></ul></div>
+                </div>
+            </div>
+        </nav>
     	<div class="body content content-account-settings container"> 
             <div class="container sideleftcenter">
                 <form method="post" name="frmprofile" id="frmprofile" class="form-horizontal" enctype="multipart/form-data">  

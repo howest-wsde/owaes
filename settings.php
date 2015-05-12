@@ -41,7 +41,13 @@
 			move_uploaded_file($_FILES["img"]["tmp_name"], $strTmp);
 			createProfilePicture($strTmp, $oProfile->id()); 
 		}
-
+		
+		$oProfile->mailalert("newmessage", $_POST["newmessage"]); 
+		$oProfile->mailalert("newsubscription", $_POST["newsubscription"]); 
+		$oProfile->mailalert("platform", $_POST["platform"]); 
+		$oProfile->mailalert("reminderunread", $_POST["reminderunread"]); 
+		$oProfile->mailalert("remindersubscription", $_POST["remindersubscription"]); 
+		  
 		$oProfile->update();  
 	}
 
@@ -306,55 +312,91 @@
                         
                         
                         <legend>Meldingen</legend>  
-                        <div class="form-group">
+                        <div class="form-group"> 
                             <label class="control-label col-lg-2">Stuur me een e-mail:</label> 
                             <div class="col-lg-6 checkbox">Nieuwe berichten</div>  
                             <div class="col-lg-4">
-								<select name="x" class="form-control">
-                                	<option value="0">Nooit</option>
-                                	<option value="60">Onmiddelijk </option>
-                                	<option value="86400">Max. 1x / dag</option>
-                                </select>
+                            	<?php 
+									echo selectbox(array(
+										"name" => "newmessage", 
+										"class" => "form-control", 
+										"value" => $oProfile->mailalert("newmessage"), 
+										"options" => array(
+											"0" => "Nooit", 
+											"60" => "Onmiddelijk", 
+											"86400" => "Max. 1x / dag", 
+										)
+									));  
+								?> 
                             </div>
                         </div> 
                         <div class="form-group">
                             <label class="col-lg-2"></label> 
                             <div class="col-lg-6 checkbox">Nieuwe inschrijvingen</div>  
                             <div class="col-lg-4">
-								<select name="x" class="form-control">
-                                	<option value="0">Nooit</option>
-                                	<option value="60">Onmiddelijk</option>
-                                	<option value="86400">Max. 1x / dag</option>
-                                </select>
+								<?php 
+									echo selectbox(array(
+										"name" => "newsubscription", 
+										"class" => "form-control", 
+										"value" => $oProfile->mailalert("newsubscription"), 
+										"options" => array(
+											"0" => "Nooit", 
+											"60" => "Onmiddelijk", 
+											"86400" => "Max. 1x / dag", 
+										)
+									));  
+								?> 
                             </div>
                         </div> 
                         <div class="form-group">
                             <label class="col-lg-2"></label> 
                             <div class="col-lg-6 checkbox">Platform-meldingen</div>  
                             <div class="col-lg-4">
-								<select name="x" class="form-control">
-                                	<option value="1">Onmiddelijk</option>
-                                </select>
+								<?php 
+									echo selectbox(array(
+										"name" => "platform", 
+										"class" => "form-control", 
+										"disabled" => "disabled", 
+										"value" => $oProfile->mailalert("platform"), 
+										"options" => array( 
+											"1" => "Onmiddelijk",  
+										)
+									));  
+								?> 
                             </div>
                         </div>  
                         <div class="form-group">
                             <label class="col-lg-2"></label> 
                             <div class="col-lg-6 checkbox">Herinnering ongelezen berichten</div>  
                             <div class="col-lg-4">
-								<select name="x" class="form-control">
-                                	<option value="259200">Na 3 dagen</option>
-                                	<option value="604800">Na 7 dagen</option>
-                                </select>
+								<?php 
+									echo selectbox(array(
+										"name" => "reminderunread", 
+										"class" => "form-control", 
+										"value" => $oProfile->mailalert("reminderunread"), 
+										"options" => array(
+											"259200" => "Na 3 dagen", 
+											"604800" => "Na 7 dagen", 
+										)
+									));  
+								?> 
                             </div>
                         </div>  
                         <div class="form-group">
                             <label class="col-lg-2"></label> 
                             <div class="col-lg-6 checkbox">Herinnering onbeantwoorde inschrijvingen</div>  
                             <div class="col-lg-4">
-								<select name="x" class="form-control">
-                                	<option value="259200">Na 3 dagen</option>
-                                	<option value="604800">Na 7 dagen</option>
-                                </select>
+								<?php 
+									echo selectbox(array(
+										"name" => "remindersubscription", 
+										"class" => "form-control", 
+										"value" => $oProfile->mailalert("remindersubscription"), 
+										"options" => array(
+											"259200" => "Na 3 dagen", 
+											"604800" => "Na 7 dagen", 
+										)
+									));  
+								?> 
                             </div>
                         </div> 
                         
