@@ -1,85 +1,125 @@
 <?php
 	include "inc.default.php"; // should be included in EVERY file
+
 	$oSecurity = new security(TRUE);
+
 	if (!$oSecurity->admin()) stop("admin");
+
 	$oPage->addJS("script/admin.js");
 	$oPage->addCSS("style/admin.css");
+
+	$oPage->addJS("script/confVal.js");
+
 	function addressToCoordinates($address) {
 		$url = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=" . $address;
 		$response = file_get_contents($url);
 		$json = json_decode($response, TRUE);
+
 		$coord = array(
 			"latitude" => $json["results"][0]["geometry"]["location"]["lat"],
 			"longitude" => $json["results"][0]["geometry"]["location"]["lng"]
 		);
+
 		return $coord;
 	}
+
 	function coordinatesToAddress($lat, $lon) {
 		$url = "http://maps.google.com/maps/api/geocode/json?sensor=false&latlng=" . $lat . "," . $lon;
 		$response = file_get_contents($url);
 		$json = json_decode($response, TRUE);
+
 		$address = $json["results"][0]["address_components"][2]["long_name"];
+
 		return $address;
 	}
 	
 	function encryptor($text) {
 		$key = pack("H*", "cf372282683d4802ee035e793218e2e4a8a8eb4f6a1d5675b6a6a289c860abde");
 		$key_size = strlen($key);
+
 		$iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_CBC);
 		$iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+
 		$block = mcrypt_get_block_size("rijndael_256", "cbc");
 		$pad = $block - (strlen($text) % $block);
 		$text .= str_repeat(chr($pad), $pad);
+
 		$cipherText = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $key, $text, MCRYPT_MODE_CBC, $iv);
 		$cipherText = $iv . $cipherText;
+
 		$encodeCipher = base64_encode($cipherText);
+
 		return $encodeCipher;
 	}
+
 	function prepareAndExecuteStmt($key, $val, $dbPDO) {
 		$query = "UPDATE `tblConfig` SET `value` = ? WHERE `key` LIKE ?";
+
 		$stmt = $dbPDO->prepare($query);
 		$stmt->bindParam(1, $val);
 		$stmt->bindParam(2, $key);
 		$stmt->execute();
 	}
+
 	function issetAndNotEmpty($field) {
 		$test = false;
+
 		if (isset($field) && !empty($field)) {
 			$test = true;
 		}
+
 		return $test;
 	}
+
 	if (isset($_POST["btnOpslaan"])) {
-		/* Start waarden */
+		/* Startwaarden */
 		if (issetAndNotEmpty($_POST["txtTemplateFolder"])) prepareAndExecuteStmt("domain.templatefolder", $_POST["txtTemplateFolder"], $dbPDO);
+
 		$test = "FALSE";
 		if (isset($_POST["chkAlgemenevoorwaarden"])) $test = "TRUE";
+
 		prepareAndExecuteStmt("startvalues.algemenevoorwaarden", $test, $dbPDO);
+
 		$test = "FALSE";
 		if (isset($_POST["chkVisibility"])) $test = "TRUE";
+
 		prepareAndExecuteStmt("startvalues.visibility", $test, $dbPDO);
+
 		if (isset($_POST["txtAnalytics"])) prepareAndExecuteStmt("analytics", $_POST["txtAnalytics"], $dbPDO);
+
 		/* ------------- */
+
 		/* Debugging */
 		$test = "FALSE";
 		if (isset($_POST["chkShowwarnings"])) $test = "TRUE";
+
 		prepareAndExecuteStmt("debugging.showwarnings", $test, $dbPDO);
+
 		$test = "FALSE";
 		if (isset($_POST["chkDemo"])) $test = "TRUE";
+
 		prepareAndExecuteStmt("debugging.demo", $test, $dbPDO);
+
 		/* ------------- */
+
 		/* Verzekeringen */
 		if (issetAndNotEmpty($_POST["txtV1"])) prepareAndExecuteStmt("verzekeringen.1", $_POST["txtV1"], $dbPDO);
 		if (issetAndNotEmpty($_POST["txtV2"])) prepareAndExecuteStmt("verzekeringen.2", $_POST["txtV2"], $dbPDO);
+
 		/* ------------- */
+
 		/* Tijdzone en lokatie */
 		prepareAndExecuteStmt("date.timezone", $_POST["lstTimezone"], $dbPDO);
+
 		if (isset($_POST["txtLokatie"])) {
 			$coord = addressToCoordinates($_POST["txtLokatie"]);
+
 			prepareAndExecuteStmt("geo.latitude", $coord["latitude"], $dbPDO);
 			prepareAndExecuteStmt("geo.longitude", $coord["longitude"], $dbPDO);
 		}
+
 		/* ------------- */
+
 		/* Credits */
 		if (isset($_POST["txtStart"])) prepareAndExecuteStmt("startvalues.credits", $_POST["txtStart"], $dbPDO);
 		if (isset($_POST["txtMin"])) prepareAndExecuteStmt("credits.min", $_POST["txtMin"], $dbPDO);
@@ -87,36 +127,50 @@
 		if (issetAndNotEmpty($_POST["txtEenheid"])) prepareAndExecuteStmt("credits.name.1", $_POST["txtEenheid"], $dbPDO);
 		if (issetAndNotEmpty($_POST["txtMeervoud"])) prepareAndExecuteStmt("credits.name.x", $_POST["txtMeervoud"], $dbPDO);
 		if (issetAndNotEmpty($_POST["txtOverdracht"])) prepareAndExecuteStmt("credits.name.overdracht", $_POST["txtOverdracht"], $dbPDO);
+
 		/* ------------- */
+
 		/* Mail */
 		$test = "FALSE";
 		if (isset($_POST["chkSMTP"])) $test = "TRUE";
+
 		prepareAndExecuteStmt("mail.smtp", $test, $dbPDO);
+
 		if (isset($_POST["txtHost"])) prepareAndExecuteStmt("mail.Host", $_POST["txtHost"], $dbPDO);
 		
 		$test = "FALSE";
 		if (isset($_POST["chkAuth"])) $test = "TRUE";
+
 		prepareAndExecuteStmt("mail.SMTPAuth", $test, $dbPDO);
+
 		if (isset($_POST["txtSecure"])) prepareAndExecuteStmt("mail.SMTPSecure", $_POST["txtSecure"], $dbPDO);
 		if (isset($_POST["txtPort"])) prepareAndExecuteStmt("mail.Port", $_POST["txtPort"], $dbPDO);
 		if (isset($_POST["txtUsername"])) prepareAndExecuteStmt("mail.Username", $_POST["txtUsername"], $dbPDO);
+
 		$pwd = null;
+
 		if (!empty($_POST["txtPasswd"])) {
 			$query = "SELECT `value` FROM `tblConfig` WHERE `key` LIKE 'mail.Password'";
 			$result = $dbPDO->query($query);
 			$pwd = $_POST["txtPasswd"];
+
 			foreach ($result as $p) {
 				if ($pwd != $p["value"]) {
 					$pwd = encryptor($pwd);
 				}
 			}
 		}
+
 		prepareAndExecuteStmt("mail.Password", $pwd, $dbPDO);
+
 		/* ------------- */
+
 		/* Facebook loginapp */
 		if (isset($_POST["txtFbId"])) prepareAndExecuteStmt("facebook.loginapp.id", $_POST["txtFbId"], $dbPDO);
 		if (isset($_POST["txtFbSecret"])) prepareAndExecuteStmt("facebook.loginapp.secret", $_POST["txtFbSecret"], $dbPDO);
+
 		/* ------------- */
+
 		redirect(filename());
 	}
 ?>
@@ -124,10 +178,27 @@
 <html>
 	<head>
 		<? echo $oPage->getHeader(); ?>
+		<style>
+			.fout, li.error {
+				background: #ff0039;
+			}
+
+			.fout {
+				color: white;
+			}
+
+			.enabled {
+				background: #ffffff;
+			}
+
+			.disabled {
+				background: #dadada;
+			}
+		</style>
 	</head>
 	<body id="index">
 		<? echo $oPage->startTabs(); ?>
-		<div class="body">
+		<div class="body content container">
 			<div class="container">
 				<div class="row">
 					<? echo $oSecurity->me()->html("user.html"); ?>
@@ -135,9 +206,10 @@
 				<div class="main market admin">
 					<? include "admin.menu.xml"; ?>
 					<h1>Configuratie paneel</h1>
-					<form id="frmConfig" method="POST">
+					<div class="errors"></div>
+					<form name="frmConfig" id="frmConfig" method="POST">
 						<fieldset>
-							<legend>Start waarden</legend>
+							<legend>Startwaarden</legend>
 							<p>
 								<label for="txtTemplateFolder">Template folder:</label><br/>
 								<input type="text" name="txtTemplateFolder" id="txtTemplateFolder" value="<? echo settings("domain", "templatefolder"); ?>"/>
@@ -166,7 +238,6 @@
 								<input type="checkbox" name="chkDemo" id="chkDemo" value="demo" <? print((settings("debugging", "demo") == "TRUE") ? "checked='checked'" : ""); ?>/>
 							</p>
 						</fieldset>
-						<!-- Later -->
 						<fieldset>
 							<legend>Verzekeringen</legend>
 							<p>
@@ -183,8 +254,10 @@
 								<select id="lstTimezone" name="lstTimezone">
 								<?
 									$zones = timezone_identifiers_list();
+
 									foreach ($zones as $zone) {
 										$place = explode("/", $zone);
+
 										if (settings("date", "timezone") == $zone) {
 											print("<option value='" . $zone . "' selected='selected'>" . $place[1] . "</option>");
 										}
@@ -206,7 +279,7 @@
 							<legend>Credits</legend>
 							<p>
 								<label for="txtStart">Start:</label></br>
-								<input type="number" name="txtStart" id="txtStart" min="0" value="<? echo settings("startvalues", "credits"); ?>"/>
+								<input type="number" name="txtStart" id="txtStart" min="0" max="<? echo settings("credits", "max"); ?>"  value="<? echo settings("startvalues", "credits"); ?>"/>
 							</p>
 							<p>
 								<label for="txtMin">Min:</label><br/>
@@ -271,7 +344,7 @@
 								<input type="text" name="txtFbSecret" id="txtFbSecret" value="<? echo settings("facebook", "loginapp", "secret"); ?>"/>
 							</p>
 						</fieldset>
-						<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>
+						<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>	
 					</form>
 				</div>
 			</div>
@@ -283,13 +356,19 @@
 	<script>
 		function enableDisableFields(state, fields) {
 			var lenFields = fields.length;
+
 			for (var i = 0; i < lenFields; i++) {
 				if (!state) {
-					fields[i].style.background = "#dadada";
+					fields[i].className = "disabled";
 				}
 				else {
-					fields[i].style.background = "#ffffff";
+					fields[i].className = "enabled";
+
+					if (fields[i].classList.contains("fout")) {
+						fields[i].classList.remove("enabled");
+					}
 				}
+
 				if (fields[i].name == "chkAuth") {
 					fields[i].disabled = !state;
 				}
@@ -298,18 +377,38 @@
 				}
 			}
 		}
-		var chkSMTP = document.getElementById("chkSMTP");
-		var txtHost = document.getElementById("txtHost");
-		var chkAuth = document.getElementById("chkAuth");
-		var txtSecure = document.getElementById("txtSecure");
-		var txtPort = document.getElementById("txtPort");
-		var txtUsername = document.getElementById("txtUsername");
-		var txtPasswd = document.getElementById("txtPasswd");
-		var fields = [txtHost, chkAuth, txtSecure,
-			txtPort, txtUsername, txtPasswd];
-		enableDisableFields(chkSMTP.checked, fields);
-		chkSMTP.addEventListener("click", function() {
-			enableDisableFields(chkSMTP.checked, fields);
+
+		document.addEventListener("DOMContentLoaded", function() {
+			var chkSMTP = document.getElementById("chkSMTP");
+			var txtHost = document.getElementById("txtHost");
+			var chkAuth = document.getElementById("chkAuth");
+			var txtSecure = document.getElementById("txtSecure");
+			var txtPort = document.getElementById("txtPort");
+			var txtUsername = document.getElementById("txtUsername");
+			var txtPasswd = document.getElementById("txtPasswd");
+
+			enableDisableFields(chkSMTP.check,
+				[txtHost, chkAuth, txtSecure,
+				txtPort, txtUsername, txtPasswd]);
+
+			chkSMTP.addEventListener("click", function() {
+				enableDisableFields(chkSMTP.check,
+					[txtHost, chkAuth, txtSecure,
+					txtPort, txtUsername, txtPasswd]);
+			});
+
+			chkAuth.addEventListener("click", function() {
+				enableDisableFields(chkAuth.check,
+					[txtSecure, txtPort, txtUsername,
+					txtPasswd]);
+			});
+
+			var txtStart = document.getElementById("txtStart");
+			var txtMax = document.getElementById("txtMax");
+
+			txtMax.addEventListener("blur", function() {
+				txtStart.max = txtMax.value;
+			});
 		});
 	</script>
 	</body>
