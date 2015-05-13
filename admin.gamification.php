@@ -8,6 +8,8 @@
 	$oPage->addJS("script/admin.js");
 	$oPage->addCSS("style/admin.css");
 
+	$oPage->addJS("script/gamiVal.js");
+
 	function prepareAndExecuteStmt($key, $val, $dbPDO) {
 		$query = "UPDATE `tblConfig` SET `value` = ? WHERE `key` LIKE ?";
 
@@ -55,20 +57,25 @@
 		return $mkTime;
 	}
 
-	function getPeriod($formula, $from) {
-		$digits = explode("*", $formula);
+	function getPeriod($seconds, $from) {
+		$hours = $seconds / 3600;
+		$days = $hours / 24;
+		$weeks = $days / 7;
 
 		$test = "";
 
-		if ($from == "day" && $digits[1] == "24") $test = "checked='checked'";
-		if ($from == "week" && $digits[1] == "168") $test = "checked='checked'";
+		if ($from == "day" && !is_int($weeks)) $test = "checked='checked'";
+		if ($from == "week" && is_int($weeks)) $test = "checked='checked'";
 
 		return $test;
 	}
 
-	function getCronsIndicator($formula) {
-		$digits = explode("*", $formula);
-		return $digits[0];
+	function getCronsIndicator($seconds) {
+		$hours = $seconds / 3600;
+		$days = $hours / 24;
+		$weeks = $days / 7;
+
+		return (is_int($weeks)) ? $weeks : $days;
 	}
 
 	if (isset($_POST["btnOpslaan"])) {
@@ -83,7 +90,7 @@
 		/* Levels */
 		$i = 0;
 
-		foreach (settings("levels") as $level) {
+		foreach ($arConfig["levels"] as $level) {
 			if (isset($_POST["txtLevel" . $i . "Threshold"])) prepareAndExecuteStmt("levels." . $i . ".threshold", $_POST["txtLevel" . $i . "Threshold"], $dbPDO);
 			if (isset($_POST["txtLevel" . $i . "Multiplier"])) prepareAndExecuteStmt("levels." . $i . ".multiplier", $_POST["txtLevel" . $i . "Multiplier"], $dbPDO);
 
@@ -95,7 +102,7 @@
 		/* Warnings */
 		$i = 1;
 
-		foreach (settings("warnings") as $warning) {
+		foreach ($arConfig["warnings"] as $warning) {
 			if (isset($_POST["txtW" . $i . "Schenkingen"])) prepareAndExecuteStmt("warnings." . $i . ".schenkingen", $_POST["txtW" . $i . "Schenkingen"], $dbPDO);
 			if (isset($_POST["txtW" . $i . "Trans"])) prepareAndExecuteStmt("warnings." . $i . ".transactiediversiteit", $_POST["txtW" . $i . "Trans"], $dbPDO);
 			if (isset($_POST["txtW" . $i . "Credits"])) prepareAndExecuteStmt("warnings." . $i . ".credits", $_POST["txtW" . $i . "Credits"], $dbPDO);
@@ -114,11 +121,11 @@
 		/* Crons */
 		if (isset($_POST["rbWhen"]) && isset($_POST["txtCronsIndicators"])) {
 			$period = $_POST["rbWhen"];
-			$formula = $_POST["txtCronsIndicators"] . "*24*3600";
+			$result = intval($_POST["txtCronsIndicators"]) * 24 * 3600;
 
-			if ($period == "week") $formula = $_POST["txtCronsIndicators"] . "*168*3600";
+			if ($period == "week") $result = intval($_POST["txtCronsIndicators"]) * 168 * 3600;
 
-			prepareAndExecuteStmt("crons.indicators", $formula, $dbPDO);
+			prepareAndExecuteStmt("crons.indicators", $result, $dbPDO);
 		}
 
 		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", $_POST["txtHTWFD"], $dbPDO);
@@ -209,6 +216,14 @@
 			#txtEmotional::-ms-fill-upper, #txtEmotional::-ms-fill-lower {
 				background-color: #ffcc00;
 			}
+
+			.fout, li.error {
+				background: #ff0039;
+			}
+
+			.fout {
+				color: white;
+			}
 		</style>
 	</head>
 	<body id="index">
@@ -221,6 +236,7 @@
 				<div class="main market admin">
 					<? include "admin.menu.xml"; ?>
 					<h1>Spel configuraties</h1>
+					<div class="errors"></div>
 					<form id="frmGameConfig" method="POST">
 						<fieldset>
 							<legend>Startwaarden</legend>
@@ -246,16 +262,16 @@
 							<?
 								$i = 0;
 
-								foreach (settings("levels") as $level) {
+								foreach ($arConfig["levels"] as $level) {
 									?>
 									<h2>Level <? echo $i; ?></h2>
 									<p>
 										<label for="txtLevel<? print($i . "Threshold"); ?>">Threshold:</label><br/>
-										<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" value="<? echo $level["threshold"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="0.001"  value="<? echo $level["threshold"]; ?>"/>
 									</p>
 									<p>
 										<label for="txtLevel<? print($i . "Multiplier"); ?>">Vermenigvuldigingsfactor:</label><br/>
-										<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" value="<? echo $level["multiplier"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.001" value="<? echo $level["multiplier"]; ?>"/>
 									</p>
 									<?
 									$i++;
@@ -267,44 +283,44 @@
 							<?
 								$i = 1;
 
-								foreach (settings("warnings") as $warning) {
+								foreach ($arConfig["warnings"] as $warning) {
 									?>
 									<h2>Warning <? echo $i; ?></h2>
 									<p>
 										<label for="txtW<? print($i . "Schenkingen"); ?>">Schenkingen:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" value="<? echo $warning["schenkingen"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="0.001" value="<? echo $warning["schenkingen"]; ?>"/>
 									</p>
 									<p>
 										<label for="txtW<? print($i . "Trans"); ?>">Transactiediversiteit:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" value="<? echo $warning["transactiediversiteit"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.001" value="<? echo $warning["transactiediversiteit"]; ?>"/>
 									</p>
 									<p>
 										<label for="txtW<? print($i . "Credits"); ?>">Credits:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" value="<? echo $warning["credits"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="0.001" value="<? echo $warning["credits"]; ?>"/>
 									</p>
 									<p>
 										<label for="txtW<? print($i . "Waardering"); ?>">Waardering:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" value="<? echo $warning["waardering"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.001" value="<? echo $warning["waardering"]; ?>"/>
 									</p>
 									<p>
 										<label for="txtW<? print($i . "Physical"); ?>">Physical:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" value="<? echo $warning["physical"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="0.001" value="<? echo $warning["physical"]; ?>"/>
 									</p>
 									<p>
 										<label for="txtW<? print($i . "Social"); ?>">Social:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" value="<? echo $warning["social"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="0.001" value="<? echo $warning["social"]; ?>"/>
 									</p>
 									<p>
 										<label for="txtW<? print($i . "Mental"); ?>">Mental:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" value="<? echo $warning["mental"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="0.001" value="<? echo $warning["mental"]; ?>"/>
 									</p>
 									<p>
 										<label for="txtW<? print($i . "Emotional"); ?>">Emotional:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" value="<? echo $warning["emotional"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="0.001" value="<? echo $warning["emotional"]; ?>"/>
 									</p>
 									<p>
 										<label for="txtW<? print($i . "IndiSom"); ?>">Indicatorsom:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" value="<? echo $warning["indicatorsom"]; ?>"/>
+										<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="0.001" value="<? echo $warning["indicatorsom"]; ?>"/>
 									</p>
 									<?
 									$i++;
@@ -332,7 +348,7 @@
 							<legend>Datum</legend>
 							<p>
 								<label for="txtDateSpeed">Snelheid:</label><br/>
-								<input type="number" name="txtDateSpeed" id="txtDateSpeed" value="<? echo settings("date", "speed"); ?>"/>
+								<input type="number" name="txtDateSpeed" id="txtDateSpeed" min="0" value="<? echo settings("date", "speed"); ?>"/>
 							</p>
 							<p>
 								<label for="dDStart">Start:</label><br/>
@@ -347,11 +363,11 @@
 							<legend>Indicatoren</legend>
 							<p>
 								<label for="txtIndicatorMultiplier">Vermenigvuldigingsfactor:</label><br/>
-								<input type="number" name="txtIndicatorMultiplier" id="txtIndicatorMultiplier" value="<? echo settings("indicatoren", "multiplier"); ?>"/>
+								<input type="number" name="txtIndicatorMultiplier" id="txtIndicatorMultiplier" min="0" value="<? echo settings("indicatoren", "multiplier"); ?>"/>
 							</p>
 							<p>
 								<label for="txtOwaesAdd">Aantal toevoegen:</label><br/>
-								<input type="number" name="txtOwaesAdd" id="txtOwaesAdd" value="<? echo settings("indicatoren", "owaesadd"); ?>"/>
+								<input type="number" name="txtOwaesAdd" id="txtOwaesAdd" min="0" value="<? echo settings("indicatoren", "owaesadd"); ?>"/>
 							</p>
 						</fieldset>
 						<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>
