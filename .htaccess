@@ -3,12 +3,13 @@
 AddHandler x-httpd-php5 .inc .php
 </FilesMatch>
 
-# FRIENDLY URL's : 
-# ----------------
-Options -MultiViews
-RewriteEngine on 
-RewriteRule ^([a-zA-Z0-9_-]+)$ profile.php?alias=$1 [QSA] 
-RewriteRule ^([a-zA-Z0-9_-]+)/profile.php$ /profile.php [QSA] 
 
-RewriteRule ^get/(([a-zA-Z0-9_]+)/)?([a-zA-Z0-9_]+)(/(\S+\.\S+))?/?$ get.$3.php?format=$2&file=$5 [QSA]
-RewriteRule ^([a-zA-Z0-9_-]+)/get.([a-zA-Z0-9_]+).php$ /get.$2.php [QSA]
+Options -Indexes
+Options -Multiviews 
+Options +FollowSymLinks 
+
+ 
+RewriteEngine On 
+
+RewriteRule ^([a-zA-Z0-9_-]+)$ profile.php?alias=$1 [QSA] 
+RewriteRule ^get/(([a-zA-Z0-9_]+)/)?([a-zA-Z0-9_]+)(/(\S+\.\S+))?/?$ get.$3.php?format=$2&file=$5 [QSA,L]

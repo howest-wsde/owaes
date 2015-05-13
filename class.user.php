@@ -1264,7 +1264,8 @@
 		 
 		 
 		public function getURL() { // returns pad naar profiel
-			return fixPath(($this->alias() != "") ? ($this->alias())  : ("profile.php?id=" . $this->iID)); 
+			//return fixPath(($this->alias() != "") ? ($this->alias())  : ("profile.php?id=" . $this->iID)); 
+			return fixPath(($this->alias() != "") ? ("profile.php?alias=" . $this->alias())  : ("profile.php?id=" . $this->iID)); 
 		}
 		
 		public function getLink($bHTML = TRUE) { // link to article details  (html: "<a href="profiel.html">Voornaam Naam</a>") 

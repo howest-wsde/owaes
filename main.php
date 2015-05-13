@@ -111,7 +111,8 @@
 			}
             	
 			function showMarket(iID) {
-				$("#map-item").html("<div class='info'>Bezig met laden...</div>").show().load("get/htm/owaes/owaes-map.html?id=" + iID);
+				//$("#map-item").html("<div class='info'>Bezig met laden...</div>").show().load("get/htm/owaes/owaes-map.html?id=" + iID);
+				$("#map-item").html("<div class='info'>Bezig met laden...</div>").show().load("get.owaes.php?format=htm&file=owaes-map.html&id=" + iID);
 			} 
 			
 		</script>
