@@ -9,7 +9,7 @@
 	$oExperience->add(1);  
 	
 	$oProfile = user(me()); 
-	
+	 
 	$arErrors = array(); 
 	
 	if (isset($_POST["profile"])) {
@@ -44,7 +44,7 @@
 		
 		$oProfile->mailalert("newmessage", $_POST["newmessage"]); 
 		$oProfile->mailalert("newsubscription", $_POST["newsubscription"]); 
-		$oProfile->mailalert("platform", $_POST["platform"]); 
+		// $oProfile->mailalert("platform", $_POST["platform"]);  // > disabled
 		$oProfile->mailalert("reminderunread", $_POST["reminderunread"]); 
 		$oProfile->mailalert("remindersubscription", $_POST["remindersubscription"]); 
 		  

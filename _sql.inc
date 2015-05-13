@@ -128,4 +128,19 @@
 	<sql name="tblconfig-domainsetup-absroot" tag="9">
 		update `tblConfig` set value = NULL where `key` = 'domain.absroot' and `value` = 'http://localhost/owaes/'; 
 	</sql> 
+	<sql name="defaults-mailalerts-a" tag="10">
+		INSERT INTO `tblConfig` (`key`, `value`) VALUES  
+			('mailalert.newmessage', 86400),
+			('mailalert.newsubscription', 86400),
+			('mailalert.platform', 1),
+			('mailalert.reminderunread', 259200),
+			('mailalert.remindersubscription', 259200);
+	</sql> 
+	<sql name="tblConfig-to-json" tag="10">
+		update tblConfig set `value` = concat('"', `value`, '"') where `key` in ('domain.templatefolder', 'date.timezone', 'credits.name.1', 'credits.name.x', 'credits.name.overdracht', 'verzekeringen.1', 'verzekeringen.2', 'mail.Host', 'mail.SMTPAuth', 'mail.SMTPSecure', 'domain.name', 'domain.root', 'domain.absroot') and not (`value` is null)
+	</sql>
+	<sql name="tblConfig-fix" tag="10">
+		update tblConfig set `value` = '86400' where `value` = '24*60*60' and `key` = 'crons.indicators'; 
+	</sql> 
+	
 </queries>

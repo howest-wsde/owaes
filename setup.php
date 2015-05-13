@@ -16,9 +16,9 @@
 	
 	if (isset($_POST["domainname"])) {
 		$oDB = new database(); 
-		$oDB->execute("update `tblConfig` set value = '" . $oDB->escape($_POST["domainname"]) . "' where `key` = 'domain.name' and `value` is NULL; "); 
-		$oDB->execute("update `tblConfig` set value = '" . $oDB->escape($_POST["domainroot"]) . "' where `key` = 'domain.root' and `value` is NULL; "); 
-		$oDB->execute("update `tblConfig` set value = '" . $oDB->escape($_POST["domainabsroot"]) . "' where `key` = 'domain.absroot' and `value` is NULL; "); 
+		$oDB->execute("update `tblConfig` set value = '" . $oDB->escape(json_encode($_POST["domainname"])) . "' where `key` = 'domain.name' and `value` is NULL; "); 
+		$oDB->execute("update `tblConfig` set value = '" . $oDB->escape(json_encode($_POST["domainroot"])) . "' where `key` = 'domain.root' and `value` is NULL; "); 
+		$oDB->execute("update `tblConfig` set value = '" . $oDB->escape(json_encode($_POST["domainabsroot"])) . "' where `key` = 'domain.absroot' and `value` is NULL; "); 
 		redirect("login.php"); 
 	}
 		

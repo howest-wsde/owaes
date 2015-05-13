@@ -240,21 +240,22 @@
 			$oDB->execute(); 
 			while ($oDB->nextRecord()) { 
 				$arKeys = explode(".", $oDB->get("key")); 
+				$oValue = json_decode($oDB->get("value"), FALSE);  
 				switch (count($arKeys)) {
 					case 1:
-						$arConfig[$arKeys[0]] = $oDB->get("value");
+						$arConfig[$arKeys[0]] = $oValue; 
 						break;
 					case 2:
-						$arConfig[$arKeys[0]][$arKeys[1]] = $oDB->get("value");
+						$arConfig[$arKeys[0]][$arKeys[1]] = $oValue;
 						break;
 					case 3:
-						$arConfig[$arKeys[0]][$arKeys[1]][$arKeys[2]] = $oDB->get("value");
+						$arConfig[$arKeys[0]][$arKeys[1]][$arKeys[2]] = $oValue;
 						break;
 				}
 			} 
 			
 			$arConfig["dbloaded"] = TRUE; 
-			
+			 
 			if ((filename() != "setup.php") && (
 			    is_null($arConfig["domain"]["name"]) 
 				|| is_null($arConfig["domain"]["root"]) 
@@ -711,4 +712,6 @@
 		return $strTxt; 
 	}
 	
-?>
+	function validEmail($strMail) {
+		return (filter_var($strMail, FILTER_VALIDATE_EMAIL));
+	}

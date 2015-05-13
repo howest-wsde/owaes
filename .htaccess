@@ -11,5 +11,5 @@ Options +FollowSymLinks
  
 RewriteEngine On 
 
-RewriteRule ^([a-zA-Z0-9_-]+)$ profile.php?alias=$1 [QSA] 
+RewriteRule ^([a-zA-Z0-9_-]+)$ profile.php?alias=$1 [QSA,L] 
 RewriteRule ^get/(([a-zA-Z0-9_]+)/)?([a-zA-Z0-9_]+)(/(\S+\.\S+))?/?$ get.$3.php?format=$2&file=$5 [QSA,L]

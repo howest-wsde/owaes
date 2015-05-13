@@ -14,7 +14,7 @@
 		$query = "UPDATE `tblConfig` SET `value` = ? WHERE `key` LIKE ?";
 
 		$stmt = $dbPDO->prepare($query);
-		$stmt->bindParam(1, $val);
+		$stmt->bindParam(1, json_encode($val));
 		$stmt->bindParam(2, $key);
 		$stmt->execute();
 	}
