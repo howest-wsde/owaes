@@ -6,7 +6,7 @@
 	$strMelding = ""; 
 	
 	$strModal = template("modal.voorwaarden.html");
-	if (!$oMe->algemenevoorwaarden()) $strMelding = "<p>U kan pas deelnemen aan het platform vanaf een OWAES-medewerker een ondertekend exemplaar van de gebruikersvoorwaarden ontvangen heeft. </p>"; 
+	if (!$oMe->algemenevoorwaarden()) $strMelding = "<p>U kan pas deelnemen aan het platform van zodra een OWAES-medewerker een ondertekend exemplaar van de gebruikersvoorwaarden ontvangen heeft. </p>"; 
 	
 	$strModal->tag("melding", $strMelding); 
 	
