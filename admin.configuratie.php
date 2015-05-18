@@ -144,7 +144,7 @@
 		prepareAndExecuteStmt("mail.SMTPAuth", $test, $dbPDO);
 
 		if (isset($_POST["txtSecure"])) prepareAndExecuteStmt("mail.SMTPSecure", $_POST["txtSecure"], $dbPDO);
-		if (isset($_POST["txtPort"])) prepareAndExecuteStmt("mail.Port", $_POST["txtPort"], $dbPDO);
+		if (isset($_POST["txtPort"])) prepareAndExecuteStmt("mail.Port", intval($_POST["txtPort"]), $dbPDO);
 		if (isset($_POST["txtUsername"])) prepareAndExecuteStmt("mail.Username", $_POST["txtUsername"], $dbPDO);
 
 		$pwd = null;

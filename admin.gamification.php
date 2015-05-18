@@ -354,8 +354,8 @@
 							<legend>Taken planner</legend>
 							<p class="naastElkaar">
 								<label for="txtCronsIndicators">Indicatoren verlagen:</label><br/>
-								<input type="radio" name="rbWhen" value="day" <? echo getPeriod(settings("crons", "indicators"), "day"); ?>/>Dag&nbsp;&nbsp;&nbsp;&nbsp;
-								<input type="radio" name="rbWhen" value="week" <? echo getPeriod(settings("crons", "indicators"), "week"); ?>/>Week<br/>
+								<input type="radio" name="rbWhen" id="rbDay" value="day" <? echo getPeriod(settings("crons", "indicators"), "day"); ?>/><label for="rbDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
+								<input type="radio" name="rbWhen" id="rbWeek" value="week" <? echo getPeriod(settings("crons", "indicators"), "week"); ?>/><label for="rbWeek">Week</label><br/>
 								<input type="number" name="txtCronsIndicators" id="txtCronsIndicators" min="0" value="<? echo getCronsIndicator(settings("crons", "indicators")); ?>"/>
 							</p>
 							<p class="naastElkaar">
