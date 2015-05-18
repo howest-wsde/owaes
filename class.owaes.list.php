@@ -22,7 +22,7 @@
 		}
 		
 		public function payment($iUser, $strValue) { 
-			console($iUser, $strValue);
+			//console($iUser, $strValue);
 			switch(strtolower($strValue)) {  
 				case "yes": 
 				case "true":  
@@ -71,9 +71,9 @@
 			}
 		}
 		
-		public function notInvolved($iUser = NULL) {
+		public function involved($iUser = NULL, $bValue = TRUE) {
 			if (is_null($iUser)) $iUser = me();  
-			$this->arSQLwhere["notInvolved" . $iUser] = " m.id not in (select market from tblMarketSubscriptions where user = $iUser and overruled = 0 and status != " . SUBSCRIBE_CANCEL . ")" ;  
+			$this->arSQLwhere["notInvolved" . $iUser] = " m.id " . ($bValue ? "in" : "not in") . " (select market from tblMarketSubscriptions where user = $iUser and overruled = 0 and status != " . SUBSCRIBE_CANCEL . ")" ;  
 		}
 		
 		public function optiOrder($oUser = NULL) { 
@@ -297,7 +297,7 @@
 		}
 		
 		public function filterByState($oState) { 
-			$this->arSQLwhere[] = (is_array($oState)) ? ("m.state in (" . implode(",", $oState) . ")") : "m.state = $oState";  
+			$this->arSQLwhere["filterByState"] = (is_array($oState)) ? ("m.state in (" . implode(",", $oState) . ")") : "m.state = $oState";  
 		} 
 		
 		public function order($strOrder) {
@@ -339,5 +339,16 @@
 			} 
 		}
 		
+		public function open($bValue = TRUE) {
+//			$this->arSQLwhere[] = (is_array($oState)) ? ("m.state in (" . implode(",", $oState) . ")") : "m.state = $oState";  
+	//		$this->arSQLwhere["open"] = " m.groep " . ($bComp?"=":"!=") . " $iGroep "; 
+			$arStates = array(STATE_RECRUTE, STATE_SELECTED); 
+			if ($bValue) {
+				$this->arSQLwhere["open"] = "m.state in (" . implode(",", $arStates) . ") 
+							or m.id in (select market from tblMarketSubscriptions where overruled = 0 and status in (" . SUBSCRIBE_SUBSCRIBE . ", " . SUBSCRIBE_CONFIRMED . "))" ;  
+			} else {
+				vardump("owaes-list filter open(false) bestaat nog niet"); 
+				exit(); 
+			}
+		}
 	}
-	

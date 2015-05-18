@@ -1,4 +1,4 @@
-<?
+<?php
 	define ("DIRECTION_SPEND", 0); 
 	define ("DIRECTION_EARN", 1); 
 	

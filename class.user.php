@@ -74,6 +74,7 @@
 		private $iStatus = NULL; 
 		private $arStatus = NULL; 
 		private $bAlgemeneVoorwaarden = NULL; 
+		private $arMailalerts = NULL; 
 		
 		private $bNEW = TRUE; 
 		 
@@ -209,6 +210,12 @@
 			return $this->iID; 	
 		} 
 		
+		public function mailalert($strID, $iValue = NULL) {
+			if (is_null($this->arMailalerts)) $this->load(); 
+			if (!is_null($iValue)) $this->arMailalerts[$strID] = $iValue; 
+			return isset($this->arMailalerts[$strID]) ? $this->arMailalerts[$strID] : FALSE; 
+		}
+		
 		public function alias($strAlias = NULL, $bCreate = FALSE) { // if bCreate == TRUE -> alias will be set to unique alias
 			if (!is_null($strAlias)) {
 				if ($bCreate) {
@@ -293,6 +300,18 @@
 					if ($this->emotional() <= $arTresholds["emotional"] ) $arWarnings[$iStatus][] = "indicatoren.emotional"; 
 					if ($this->arStatus["indictatorensom"] <= $arTresholds["indicatorsom"] ) $arWarnings[$iStatus][] = "indicatoren.som";  
 				}  
+
+				$arCorrigeer = array(); 
+				if ($this->social(NULL, FALSE) < 0) $arCorrigeer["social"] = 0-$this->social(NULL, FALSE); 
+				if ($this->physical(NULL, FALSE) < 0) $arCorrigeer["physical"] = 0-$this->physical(NULL, FALSE); 
+				if ($this->mental(NULL, FALSE) < 0) $arCorrigeer["mental"] = 0-$this->mental(NULL, FALSE); 
+				if ($this->emotional(NULL, FALSE) < 0) $arCorrigeer["emotional"] = 0-$this->emotional(NULL, FALSE); 
+				if ($this->social(NULL, FALSE) > 100) $arCorrigeer["social"] = 100-$this->social(NULL, FALSE); 
+				if ($this->physical(NULL, FALSE) > 100) $arCorrigeer["physical"] = 100-$this->physical(NULL, FALSE); 
+				if ($this->mental(NULL, FALSE) > 100) $arCorrigeer["mental"] = 100-$this->mental(NULL, FALSE); 
+				if ($this->emotional(NULL, FALSE) > 100) $arCorrigeer["emotional"] = 100-$this->emotional(NULL, FALSE); 
+				if (count(array_keys($arCorrigeer))>0)  $this->addIndicators($arCorrigeer); 
+
 				$this->arStatus["warnings"] = $arWarnings; 
 				foreach ($arWarnings as $iWarning => $arValues) $this->iStatus = $iWarning; 
 				$arMails = array(); 
@@ -1009,6 +1028,9 @@
 				case "statusinfo": 
 					if (is_null($this->arStatus)) $this->arStatus = json_decode($strValue, TRUE); 
 					break;
+				case "mailalerts": 
+					if (is_null($this->arMailalerts)) $this->arMailalerts = ($strValue=="") ? array() : json_decode($strValue, TRUE); 
+					break;
 			}
 		}
 		
@@ -1053,6 +1075,7 @@
 
 					if (is_null($this->iStatus)) $this->iStatus=0;  
 					if (is_null($this->arStatus)) $this->arStatus = array(); 
+					if (is_null($this->arMailalerts)) $this->arMailalerts = array(); 
 					
 					if (is_null($this->bVisible)) $this->visible(TRUE);
 					if (!isset($this->arVisible["firstname"])) $this->visible("firstname", VISIBILITY_VISIBLE);
@@ -1065,10 +1088,10 @@
 					if (!isset($this->arVisible["telephone"])) $this->visible("telephone", VISIBILITY_HIDDEN);
 					if (!isset($this->arVisible["birthdate"])) $this->visible("birthdate", VISIBILITY_VISIBLE);
 	
-					if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"]);
-					if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"]);
-					if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"]);
-					if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"]);
+					if (is_null($this->iSocial)) $this->social(settings("startvalues", "social"));
+					if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional"));
+					if (is_null($this->iPhysical)) $this->physical(settings("startvalues", "physical"));
+					if (is_null($this->iMental)) $this->mental(settings("startvalues", "mental"));
 	 
 				}
 			} 
@@ -1126,24 +1149,24 @@
 		private function loadIndicators() {
 			global $arConfig; 
 			if ($this->admin()) {
-				if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"]);
-				if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"]);
-				if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"]);
-				if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"]);
+				if (is_null($this->iSocial)) $this->social(settings("startvalues", "social"));
+				if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional"));
+				if (is_null($this->iPhysical)) $this->physical(settings("startvalues", "physical"));
+				if (is_null($this->iMental)) $this->mental(settings("startvalues", "mental"));
 			} else {
 				$oDB = new database();
 				$oDB->execute("select sum(emotional) as emotional, sum(social) as social, sum(physical) as physical, sum(mental) as mental from tblIndicators where user = " . $this->iID . " and actief = 1; "); 
 				if ($oDB->length()>0) {
 					//var_dump($oDB->record()); 
-					if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"] + $oDB->get("social"));
-					if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"] + $oDB->get("emotional"));
-					if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"] + $oDB->get("physical"));
-					if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"] + $oDB->get("mental"));
+					if (is_null($this->iSocial)) $this->social(settings("startvalues", "social") + $oDB->get("social"));
+					if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional") + $oDB->get("emotional"));
+					if (is_null($this->iPhysical)) $this->physical(settings("startvalues", "physical") + $oDB->get("physical"));
+					if (is_null($this->iMental)) $this->mental(settings("startvalues", "mental") + $oDB->get("mental"));
 				} else {
-					if (is_null($this->iSocial)) $this->social($arConfig["startvalues"]["social"]);
-					if (is_null($this->iEmotional)) $this->emotional($arConfig["startvalues"]["emotional"]);
-					if (is_null($this->iPhysical)) $this->physical($arConfig["startvalues"]["physical"]);
-					if (is_null($this->iMental)) $this->mental($arConfig["startvalues"]["mental"]);
+					if (is_null($this->iSocial)) $this->social(settings("startvalues", "social"));
+					if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional"));
+					if (is_null($this->iPhysical)) $this->physical(settings("startvalues", "physical"));
+					if (is_null($this->iMental)) $this->mental(settings("startvalues", "mental"));
 				}
 			}
 		}
@@ -1200,6 +1223,7 @@
 					"location_long" => $this->iLocationLong, 
 					"data" => json_encode($this->arData), 
 					"bestanden" => json_encode($this->arBestanden), 
+					"mailalerts" => json_encode($this->arMailalerts), 
 				);   
 				if (user(me())->admin()) $arVelden["admin"] = ($this->admin()?1:0); 
 				

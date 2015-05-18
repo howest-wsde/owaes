@@ -1,4 +1,4 @@
-<?
+<?php
  
 class subscriptions {
 	private $arSubscriptions = NULL; 

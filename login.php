@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	
 	$oSecurity = new security(FALSE); 
@@ -19,15 +19,16 @@
 	}
 
 	if (isset($_POST["dosignup"])) {
-		$bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
+		$bResult = $oSecurity->doLogin($_POST["email"], $_POST["pass"]); 
 		if ($bResult == TRUE) { 
 			redirect($strRedirect); 
 			exit(); 
 		}
 		
 		$arErrors = array();  
-		//if (!isset($_POST["voorwaarden"])) $arErrors["voorwaarden"] = "Voorwaarden?  "; 
-		if (!$oUser->login($_POST["username"])) $arErrors["username"] = "De gekozen loginnaam is ongeldig of bestaande. Een andere werd voorgesteld "; 
+		
+		//if (!$oUser->login($_POST["username"])) $arErrors["username"] = "De gekozen loginnaam is ongeldig of bestaande. Een andere werd voorgesteld "; 
+		$oUser->login(""); 
 		$oUser->firstname($_POST["firstname"]); 
 		$oUser->lastname($_POST["lastname"]); 
 		if ($_POST["email"] == "") {
@@ -39,7 +40,8 @@
 		$oUser->password($_POST["pass"]);
 		$oUser->algemenevoorwaarden(settings("startvalues", "algemenevoorwaarden")); 
 		$oUser->visible(settings("startvalues", "visibility"));
-		if ($_POST["pass"] == "") $arErrors["password"] = "Paswoord is verplicht";  
+		if ($_POST["pass"] == "") $arErrors["password"] = "Wachtwoord is verplicht"; 
+		if ($_POST["pass"] != $_POST["pass-repeat"]) $arErrors["pass-repeat"] = "Wachtwoord komt niet overeen";  
 		if (count($arErrors) == 0)  {
 			$oUser->update();  
 			$oMail = new email(); 
@@ -55,7 +57,7 @@
 												"email" => $oUser->email,  
 												"postvalues" => $_POST, 
 											)); 
-			$bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
+			$bResult = $oSecurity->doLogin($_POST["email"], $_POST["pass"]); 
 			redirect($strRedirect); 
 			exit(); 
 		}
@@ -74,7 +76,7 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
         <script>
@@ -98,15 +100,15 @@
 					return false; 	
 				})
 				
-				<? if (isset($_GET["recover"])) { ?>
+				<?php if (isset($_GET["recover"])) { ?>
 					$("#paswoordvergeten").modal({
 						show: true,
 						backdrop: "static",
 						keyboard: true
 					});
 					$("#requestwachtwoordbody div.modal-body").html("<p>bezig met laden...</p>"); 
-					$("#requestwachtwoordbody").load("recover.php", {"code": "<? echo $_GET["recover"]; ?>"}); 
-				<? } ?>
+					$("#requestwachtwoordbody").load("recover.php", {"code": "<?php echo $_GET["recover"]; ?>"}); 
+				<?php } ?>
 			});
 		</script>
     </head>
@@ -132,9 +134,8 @@
             <div class="login col-lg-5">
             <div class="well">
             
-            <?
-            
-                if (isset($_POST["dologin"])) {
+            <?php
+				if (isset($_POST["dologin"])) {
 					$strLogin = $_POST["username"]; 
 		            $bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
 		            if ($bResult == TRUE) {
@@ -155,11 +156,11 @@
                 <form method="post" class="form-horizontal">
                 	<fieldset>
                         <legend>Aanmelden</legend>
-                    <input type="hidden" name="from" id="from" value="<? echo $strRedirect; ?>" />
+                    <input type="hidden" name="from" id="from" value="<?php echo $strRedirect; ?>" />
                     <div class="form-group">
                             <!-- <label for="username" class="col-lg-3 control-label">Gebruikersnaam</label> -->
                             <div class="col-lg-12">
-                                <input type="text" name="username" class="username form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" autofocus value="<? echo inputfield($strLogin); ?>" />
+                                <input type="text" name="username" class="username form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" autofocus value="<?php echo inputfield($strLogin); ?>" />
                             </div>
                         </div>
                     <div class="form-group">
@@ -178,7 +179,7 @@
                     </fieldset>
                 </form>  
                 <div class="openid">
-                    <?
+                    <?php
 			
 						$strURL = fixPath("login.php", TRUE);
 						$strReturnURL = fixPath("loggedin.php", TRUE);
@@ -186,16 +187,18 @@
 						session_start();
 					
 						$strHTML = "<ul class=\"socialmedia\">"; 
- 									
-						// FACEBOOK:   
-						$facebook = new Facebook(array(
-							'appId'  => settings("facebook", "loginapp", "id"),
-							'secret' => settings("facebook", "loginapp", "secret"),
-						)); 
-						$strHTML .= "<li><a class=\"login\" href=\"" . $facebook->getLoginUrl(array(
-							'scope' => 'email', 
-							'redirect_uri'=>$strReturnURL
-						)) . "\" rel=\"1020,575\"><img src=\"img/facebook.png\" alt=\"Facebook\"/></a></li>"; 
+ 						
+						if (settings("facebook", "loginapp", "id")) {
+							// FACEBOOK: 
+							$facebook = new Facebook(array(
+								'appId'  => settings("facebook", "loginapp", "id"),
+								'secret' => settings("facebook", "loginapp", "secret"),
+							)); 
+							$strHTML .= "<li><a class=\"login\" href=\"" . $facebook->getLoginUrl(array(
+								'scope' => 'email', 
+								'redirect_uri'=>$strReturnURL
+							)) . "\" rel=\"1020,575\"><img src=\"img/facebook.png\" alt=\"Facebook\"/></a></li>"; 
+						}
 						
 						// GOOGLE:  
 						$oOpenid = new LightOpenID($strID); 
@@ -208,10 +211,10 @@
 						$oOpenid->returnUrl = $strReturnURL;   
 						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/google.png\" alt=\"Google\"/></a></li>";  
 						
- 
+ /*
 						// OWAES:  
 						$oOpenid = new LightOpenID($strID); 
-						$oOpenid->identity = 'http://info.owaes.org/';
+						$oOpenid->identity = 'https://info.owaes.org/';
 						$oOpenid->required = array(
 							'namePerson/first',
 							'namePerson/last',
@@ -219,7 +222,7 @@
 						);
 						$oOpenid->returnUrl = $strReturnURL;   
 						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/owaes.png\" alt=\"OWAES\"/></a></li>";  
- 					
+*/ 					
 						
 						// YAHOO:  
 						$oOpenid = new LightOpenID($strID); 
@@ -248,29 +251,31 @@
                     <div class="form-group">
                         <label for="firstname" class="control-label col-lg-3">Voornaam:</label>
                         <div class="col-lg-9">
-                            <input type="text" name="firstname" class="firstname form-control" id="firstname" placeholder="Voornaam" value="<? echo inputfield($oUser->firstname()); ?>" />
+                            <input type="text" name="firstname" class="firstname form-control" id="firstname" placeholder="Voornaam" value="<?php echo inputfield($oUser->firstname()); ?>" />
                         </div>
                     </div>
                     <div class="form-group">
                         <label for="lastname" class="control-label col-lg-3">Familienaam:</label>
                         <div class="col-lg-9">
-                            <input type="text" name="lastname" class="lastname form-control" id="lastname" placeholder="Familienaam" value="<? echo inputfield($oUser->lastname()); ?>" />
+                            <input type="text" name="lastname" class="lastname form-control" id="lastname" placeholder="Familienaam" value="<?php echo inputfield($oUser->lastname()); ?>" />
                         </div>
                     </div>
+                    <?php /*
                     <div class="form-group">
                         <label for="username" class="control-label col-lg-3">Loginnaam:</label>
                         <div class="col-lg-9">
-                            <input type="text" name="username" class="username form-control" id="username" placeholder="Loginnaam" value="<? echo ((isset($_POST["dosignup"])) ? inputfield($oUser->login()) : ""); ?>" />
-                            <?
+                            <input type="text" name="username" class="username form-control" id="username" placeholder="Loginnaam" value="<?php echo ((isset($_POST["dosignup"])) ? inputfield($oUser->login()) : ""); ?>" />
+                            <?php
                         	    if (isset($arErrors["username"])) echo ("<strong class=\"text-danger\">" . $arErrors["username"] . "</strong>"); 
 						    ?>
                         </div>
                     </div>
+                    */ ?>
                     <div class="form-group">
                         <label for="email" class="control-label col-lg-3">E-mailadres:</label>
                         <div class="col-lg-9">
-                            <input type="text" name="email" class="email form-control" id="username" placeholder="E-mailadres" value="<? echo inputfield($oUser->email()); ?>" />
-                            <?
+                            <input type="text" name="email" class="email form-control" id="username" placeholder="E-mailadres" value="<?php echo inputfield($oUser->email()); ?>" />
+                            <?php
                         	    if (isset($arErrors["email"])) echo ("<strong class=\"text-danger\">" . $arErrors["email"] . "</strong>"); 
 						    ?>
                         </div>
@@ -279,7 +284,7 @@
                         <label for="pass" class="control-label col-lg-3">Wachtwoord:</label>
                         <div class="col-lg-9">
                             <input type="password" name="pass" class="pass form-control" id="pass" placeholder="Wachtwoord" />
-                            <?
+                            <?php
                         	    if (isset($arErrors["password"])) echo ("<strong class=\"text-danger\">" . $arErrors["password"] . "</strong>"); 
 						    ?>
                         </div>
@@ -288,8 +293,8 @@
                         <label for="pass-repeat" class="control-label longlabel col-lg-3">Wachtwoord herhalen:</label>
                         <div class="col-lg-9">
                             <input type="password" name="pass-repeat" class="pass-repeat form-control" id="pass-repeat" placeholder="Wachtwoord herhalen" />
-                            <?
-                                //if (isset($arErrors["password"])) echo ("<p>" . $arErrors["password"] . "</p>"); 
+                            <?php
+                            	if (isset($arErrors["pass-repeat"])) echo ("<strong class=\"text-danger\">" . $arErrors["pass-repeat"] . "</strong>"); 
 						    ?>
                         </div>
                     </div> 
@@ -322,7 +327,7 @@
                     <!-- <label for="username" class="col-lg-3 control-label">Gebruikersnaam</label> -->
                     <div class="col-lg-12">
                     	<input type="hidden" name="recover" value="y" />
-	                    <input type="text" name="search" class="search form-control" id="mailpaswoordlost" placeholder="E-mailadres of gebruikersnaam" autofocus value="<? echo inputfield($strLogin); ?>" />
+	                    <input type="text" name="search" class="search form-control" id="mailpaswoordlost" placeholder="E-mailadres of gebruikersnaam" autofocus value="<?php echo inputfield($strLogin); ?>" />
                     </div>
                     </div> 
      

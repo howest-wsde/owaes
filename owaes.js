@@ -11,10 +11,18 @@ $(document).ready(function() {
 	/* WYSIWYG - editor - START */
 	$("textarea.wysiwyg").each(function(){ 
 		strClasses = $(this).attr("class");  
-		CKEDITOR.inline( $(this).attr("name") , {
+		strCall = $(this).attr("id"); 
+		if (!strCall) strCall = $(this).attr("name");  
+		CKEDITOR.inline( strCall , {
 			on: {
 				blur: function( event ) { 
+					strID = this.element.$.id;  
+					$("#" + strID).parent().removeClass("focus"); 
 					event.editor.updateElement();  
+				}, 
+				focus: function (event) {
+					strID = this.element.$.id;  
+					$("#" + strID).parent().addClass("focus");  
 				}
 			}
 		} ); 

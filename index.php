@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file  
 
 	$oSecurity = new security(TRUE); 
@@ -46,7 +46,7 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
         <script>
@@ -75,35 +75,35 @@
 							case "true": arWaarden[arWaarden.length] = $(this).find("a").attr("rel"); break; 
 						} 
 					});
-					$("div#results").load("index.ajax.php", {"t": "<? echo $strType; ?>", "show": arYes, "hide": arNo, "waarden": arWaarden}); 
+					$("div#results").load("index.ajax.php", {"t": "<?php echo $strType; ?>", "show": arYes, "hide": arNo, "waarden": arWaarden}); 
 				}
 				
-				loadModals(<? echo json_encode($oActions->modals()); ?>);  
+				loadModals(<?php echo json_encode($oActions->modals()); ?>);  
 				
 			})
 		</script>
     </head>
     <body id="index">               
-        <? echo $oPage->startTabs(); ?> 
+        <?php echo $oPage->startTabs(); ?> 
     	<div class="body content content-market container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+					<?php /*echo $oSecurity->me()->html("leftuserprofile.html"); */
                     echo $oMe->html("user.html");
                     ?>
                 </div>
                  <!-- <div class="container sidecenterright"> -->
-				<? //if (user(me())->level()>=2) { ?>
+				<?php //if (user(me())->level()>=2) { ?>
                     <div class="row">
-                    	<? 
+                    	<?php 
 							$oNew = owaesitem(0); 
 							$oNew->type($strType);  
 							if ($oNew->editable()===TRUE) {
 								?>
-									<a href="owaesadd.php?t=<? echo $strType; ?>" class="btn btn-default">
+									<a href="owaesadd.php?t=<?php echo $strType; ?>" class="btn btn-default">
 										<span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
 									</a>
-								<? 
+								<?php 
 							} else {
 								switch($oNew->editable()) {
 									case "voorwaarden": 
@@ -111,11 +111,11 @@
 											<a href="modal.voorwaarden.php" class="domodal btn btn-default">
 												<span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
 											</a>
-										<? 
+										<?php 
 										break; 	
 									case "level": 
 										?>
-											<a href="modal.levelneeded.php?l=<? echo $oNew->type()->minimumlevel(); ?>" class="domodal btn btn-default">
+											<a href="modal.levelneeded.php?l=<?php echo $oNew->type()->minimumlevel(); ?>" class="domodal btn btn-default">
 												<span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
 											</a>
 										<?	
@@ -124,12 +124,12 @@
 							}
 						?>
                     </div>
-                <? //} ?>
+                <?php //} ?>
                 
                 <div class="row">
                     <div class="main market"> 
                         <div id="results">
-                        <? 
+                        <?php 
                             foreach ($oOwaesList->getList() as $oItem) {  
                                 echo $oItem->HTML("owaeskort.html"); 
                             }
@@ -138,10 +138,10 @@
                     </div>
                     </div>
                 
-        	<? echo $oPage->endTabs(); ?>
+        	<?php echo $oPage->endTabs(); ?>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div> 
     </body>
 </html>

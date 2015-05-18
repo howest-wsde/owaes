@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(FALSE); 
 	
@@ -91,6 +91,6 @@
 	//var_dump($arLogin); 
 	
 ?><script>
-	window.opener.location.replace("<? echo $strRedirect; ?>");
+	window.opener.location.replace("<?php echo $strRedirect; ?>");
 	window.close();
 </script>

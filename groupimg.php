@@ -1,4 +1,4 @@
-<? 
+<?php 
 	$iID = intval($_GET["id"]); 
 	$iW = intval(isset($_GET["w"])?$_GET["w"]:0);  
 	$iH = intval(isset($_GET["h"])?$_GET["h"]:0); 

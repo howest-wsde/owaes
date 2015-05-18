@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE, AJAX); 
    
@@ -73,12 +73,12 @@
 				alert("FUNCTIE WEG");  /* TODO */
 				if (isNaN(oObj)) {  // oObj = Form  
 					frm = oObj; 
-					$.post("owaes-transactie.ajax.php?user=<? echo $iUser; ?>", {"message":frm.message.value, "credits":frm.credits.value, "type":"donate"}, function(data){ 
+					$.post("owaes-transactie.ajax.php?user=<?php echo $iUser; ?>", {"message":frm.message.value, "credits":frm.credits.value, "type":"donate"}, function(data){ 
 						location.reload(); 
 					}); 
 				} else { // oObj = Number
 					iUser = oObj; 
-					$.post("owaes-transactie.ajax.php?owaes=<? echo $iMarket; ?>", {"user":iUser, "type":"finish"}, function(data){
+					$.post("owaes-transactie.ajax.php?owaes=<?php echo $iMarket; ?>", {"user":iUser, "type":"finish"}, function(data){
 						location.reload(); 
 					}); 
 				}
@@ -86,24 +86,24 @@
 			}
 		</script>
         <form method="post" onsubmit="return transactie(this); ">  
-            <? 
+            <?php 
 				foreach ($oOwaesItem->subscriptions(array("state"=>SUBSCRIBE_CONFIRMED)) as $iItemUser=>$oSubscription) {
 					$oPayment = $oSubscription->payment(); 
 					if ($oPayment->sender() == me()) {
 						if ($oPayment->signed()) {
 							?><div> 
-								<h2><? echo $oPayment->credits(); ?> <? echo settings("credits", "name", "x"); ?> overgedragen naar <? echo user($oPayment->receiver())->getName(); ?></h2> 
-							</div><?
+								<h2><?php echo $oPayment->credits(); ?> <?php echo settings("credits", "name", "x"); ?> overgedragen naar <?php echo user($oPayment->receiver())->getName(); ?></h2> 
+							</div><?php
 						} else {
 							?><div> 
-								<a href="#" onclick="return transactie(<? echo $oPayment->receiver(); ?>); "><h2>Draag <? echo $oPayment->credits(); ?> <? echo settings("credits", "name", "x"); ?> over naar <? echo user($oPayment->receiver())->getName(); ?></h2> </a> 
-							</div><?
+								<a href="#" onclick="return transactie(<?php echo $oPayment->receiver(); ?>); "><h2>Draag <?php echo $oPayment->credits(); ?> <?php echo settings("credits", "name", "x"); ?> over naar <?php echo user($oPayment->receiver())->getName(); ?></h2> </a> 
+							</div><?php
 						}
 					} else if ($oPayment->receiver() == me()) {
 						?><div>
-							<h2>Ik moet nog <? echo $oPayment->credits(); ?> <? echo settings("credits", "name", "x"); ?> krijgen van <? echo user($oPayment->sender())->getName(); ?></h2> 
+							<h2>Ik moet nog <?php echo $oPayment->credits(); ?> <?php echo settings("credits", "name", "x"); ?> krijgen van <?php echo user($oPayment->sender())->getName(); ?></h2> 
 							TODO: bericht sturen
-						</div><?
+						</div><?php
 					}
 				}
 				

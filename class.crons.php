@@ -1,4 +1,4 @@
-<?
+<?php
 	define ("TIMEOUT_DEFAULT", 0); 
 	define ("TIMEOUT_CLICKED", 2); 
 	define ("TIMEOUT_WAITING", 1); 
