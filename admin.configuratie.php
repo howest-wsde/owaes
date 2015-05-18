@@ -75,13 +75,13 @@
 		/* Startwaarden */
 		if (issetAndNotEmpty($_POST["txtTemplateFolder"])) prepareAndExecuteStmt("domain.templatefolder", $_POST["txtTemplateFolder"], $dbPDO);
 
-		$test = "FALSE";
-		if (isset($_POST["chkAlgemenevoorwaarden"])) $test = "TRUE";
+		$test = FALSE;
+		if (isset($_POST["chkAlgemenevoorwaarden"])) $test = TRUE;
 
 		prepareAndExecuteStmt("startvalues.algemenevoorwaarden", $test, $dbPDO);
 
-		$test = "FALSE";
-		if (isset($_POST["chkVisibility"])) $test = "TRUE";
+		$test = FALSE;
+		if (isset($_POST["chkVisibility"])) $test = TRUE;
 
 		prepareAndExecuteStmt("startvalues.visibility", $test, $dbPDO);
 
@@ -90,13 +90,13 @@
 		/* ------------- */
 
 		/* Debugging */
-		$test = "FALSE";
-		if (isset($_POST["chkShowwarnings"])) $test = "TRUE";
+		$test = FALSE;
+		if (isset($_POST["chkShowwarnings"])) $test = TRUE;
 
 		prepareAndExecuteStmt("debugging.showwarnings", $test, $dbPDO);
 
-		$test = "FALSE";
-		if (isset($_POST["chkDemo"])) $test = "TRUE";
+		$test = FALSE;
+		if (isset($_POST["chkDemo"])) $test = TRUE;
 
 		prepareAndExecuteStmt("debugging.demo", $test, $dbPDO);
 
@@ -121,9 +121,9 @@
 		/* ------------- */
 
 		/* Credits */
-		if (isset($_POST["txtStart"])) prepareAndExecuteStmt("startvalues.credits", $_POST["txtStart"], $dbPDO);
-		if (isset($_POST["txtMin"])) prepareAndExecuteStmt("credits.min", $_POST["txtMin"], $dbPDO);
-		if (isset($_POST["txtMax"])) prepareAndExecuteStmt("credits.max", $_POST["txtMax"], $dbPDO);
+		if (isset($_POST["txtStart"])) prepareAndExecuteStmt("startvalues.credits", intval($_POST["txtStart"]), $dbPDO);
+		if (isset($_POST["txtMin"])) prepareAndExecuteStmt("credits.min", intval($_POST["txtMin"]), $dbPDO);
+		if (isset($_POST["txtMax"])) prepareAndExecuteStmt("credits.max", intval($_POST["txtMax"]), $dbPDO);
 		if (issetAndNotEmpty($_POST["txtEenheid"])) prepareAndExecuteStmt("credits.name.1", $_POST["txtEenheid"], $dbPDO);
 		if (issetAndNotEmpty($_POST["txtMeervoud"])) prepareAndExecuteStmt("credits.name.x", $_POST["txtMeervoud"], $dbPDO);
 		if (issetAndNotEmpty($_POST["txtOverdracht"])) prepareAndExecuteStmt("credits.name.overdracht", $_POST["txtOverdracht"], $dbPDO);
@@ -131,15 +131,15 @@
 		/* ------------- */
 
 		/* Mail */
-		$test = "FALSE";
-		if (isset($_POST["chkSMTP"])) $test = "TRUE";
+		$test = FALSE;
+		if (isset($_POST["chkSMTP"])) $test = TRUE;
 
 		prepareAndExecuteStmt("mail.smtp", $test, $dbPDO);
 
 		if (isset($_POST["txtHost"])) prepareAndExecuteStmt("mail.Host", $_POST["txtHost"], $dbPDO);
 		
-		$test = "FALSE";
-		if (isset($_POST["chkAuth"])) $test = "TRUE";
+		$test = FALSE;
+		if (isset($_POST["chkAuth"])) $test = TRUE;
 
 		prepareAndExecuteStmt("mail.SMTPAuth", $test, $dbPDO);
 
@@ -179,12 +179,25 @@
 	<head>
 		<? echo $oPage->getHeader(); ?>
 		<style>
-			.fout, li.error {
-				background: #ff0039;
+			h1 {
+				font-size: 20pt;
 			}
 
-			.fout {
-				color: white;
+			h2 {
+				font-size: 13pt;
+			}
+
+			legend {
+				font-size: 12pt;
+			}
+
+			fieldset {
+				padding: 0 0 30px 0;
+				width: 800px;
+			}
+
+			fieldset > p {
+				padding: 0 0 0 20px;
 			}
 
 			.enabled {
@@ -205,6 +218,7 @@
 				</div>
 				<div class="main market admin">
 					<? include "admin.menu.xml"; ?>
+					<div id="inhoud">
 					<h1>Configuratie paneel</h1>
 					<div class="errors"></div>
 					<form name="frmConfig" id="frmConfig" method="POST">
@@ -216,11 +230,11 @@
 							</p>
 							<p>
 								<label for="chkAlgemenevoorwaarden">Algemene voorwaarden</label>
-								<input type="checkbox" name="chkAlgemenevoorwaarden" id="chkAlgemenevoorwaarden" value="algemenevoorwaarden" <? print((settings("startvalues", "algemenevoorwaarden") == "TRUE") ? "checked='checked'" : ""); ?>/>
+								<input type="checkbox" name="chkAlgemenevoorwaarden" id="chkAlgemenevoorwaarden" value="algemenevoorwaarden" <? print((settings("startvalues", "algemenevoorwaarden") == TRUE) ? "checked='checked'" : ""); ?>/>
 							</p>
 							<p>
 								<label for="chkVisibility">Profielen zichtbaar</label>
-								<input type="checkbox" name="chkVisibility" id="chkVisibility" value="visibility" <?  print((settings("startvalues", "visibility") == "TRUE") ? "checked='checked'" : ""); ?>/>
+								<input type="checkbox" name="chkVisibility" id="chkVisibility" value="visibility" <?  print((settings("startvalues", "visibility") == TRUE) ? "checked='checked'" : ""); ?>/>
 							</p>
 							<p>
 								<label for="txtAnalytics">Google analytics:</label><br/>
@@ -229,13 +243,13 @@
 						</fieldset>
 						<fieldset>
 							<legend>Debugging</legend>
-							<p>
+							<p class="naastElkaar">
 								<label for="chkShowwarnings">Show warnings</label>
-								<input type="checkbox" name="chkShowwarnings" id="chkShowwarnings" value="showwarnings" <? print((settings("debugging", "showwarnings") == "TRUE") ? "checked='checked'" : ""); ?>/>
+								<input type="checkbox" name="chkShowwarnings" id="chkShowwarnings" value="showwarnings" <? print((settings("debugging", "showwarnings") == TRUE) ? "checked='checked'" : ""); ?>/>
 							</p>
-							<p>
+							<p class="naastElkaar">
 								<label for="chkDemo">Demo</label>
-								<input type="checkbox" name="chkDemo" id="chkDemo" value="demo" <? print((settings("debugging", "demo") == "TRUE") ? "checked='checked'" : ""); ?>/>
+								<input type="checkbox" name="chkDemo" id="chkDemo" value="demo" <? print((settings("debugging", "demo") == TRUE) ? "checked='checked'" : ""); ?>/>
 							</p>
 						</fieldset>
 						<fieldset>
@@ -249,7 +263,7 @@
 						</fieldset>
 						<fieldset>
 							<legend>Tijdzone en lokatie</legend>
-							<p>
+							<p class="naastElkaar">
 								<label for="lstTimezone">Tijdzone:</label><br/>
 								<select id="lstTimezone" name="lstTimezone">
 								<?
@@ -270,34 +284,34 @@
 								?>
 								</select>
 							</p>
-							<p>
+							<p class="naastElkaar">
 								<label for="txtLokatie">Standaard lokatie:</label><br/>
 								<input type="text" name="txtLokatie" id="txtLokatie" value="<? echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
 							</p>
 						</fieldset>
 						<fieldset>
 							<legend>Credits</legend>
-							<p>
+							<p class="naastElkaar">
 								<label for="txtStart">Start:</label></br>
 								<input type="number" name="txtStart" id="txtStart" min="0" max="<? echo settings("credits", "max"); ?>"  value="<? echo settings("startvalues", "credits"); ?>"/>
 							</p>
-							<p>
+							<p class="naastElkaar">
 								<label for="txtMin">Min:</label><br/>
 								<input type="number" name="txtMin" id="txtMin" min="0" value="<? echo settings("credits", "min"); ?>"/>
 							</p>
-							<p>
+							<p class="naastElkaar">
 								<label for="txtMax">Max:</label><br/>
 								<input type="number" name="txtMax" id="txtMax" min="0" value="<? echo settings("credits", "max"); ?>"/>
 							</p>
-							<p>
+							<p class="naastElkaar">
 								<label for="txtEenheid">Eenheid:</label><br/>
 								<input type="text" name="txtEenheid" id="txtEenheid" value="<? echo settings("credits", "name", "1"); ?>"/>
 							</p>
-							<p>
+							<p class="naastElkaar">
 								<label for="txtMeervoud">Meervoud:</label><br/>
 								<input type="text" name="txtMeervoud" id="txtMeervoud" value="<? echo settings("credits", "name", "x"); ?>"/>
 							</p>
-							<p>
+							<p class="naastElkaar">
 								<label for="txtOverdracht">Overdracht:</label><br/>
 								<input type="text" name="txtOverdracht" id="txtOverdracht" value="<? echo settings("credits", "name", "overdracht"); ?>"/>
 							</p>
@@ -306,7 +320,7 @@
 							<legend>Mail</legend>
 							<p>
 								<label for="chkSMTP">SMTP</label>
-								<input type="checkbox" name="chkSMTP" id="chkSMTP" value="smtp" <? print((settings("mail", "smtp") == "TRUE") ? "checked='checked'" : ""); ?>/>
+								<input type="checkbox" name="chkSMTP" id="chkSMTP" value="smtp" <? print((settings("mail", "smtp") == TRUE) ? "checked='checked'" : ""); ?>/>
 							</p>
 							<p>
 								<label for="txtHost">Host:</label><br/>
@@ -314,7 +328,7 @@
 							</p>
 							<p>
 								<label for="chkAuth">Authentication</label>
-								<input type="checkbox" name="chkAuth" id="chkAuth" value="SMTPAuth" <? print((settings("mail", "SMTPAuth") == "TRUE") ? "checked='checked'" : ""); ?>/>
+								<input type="checkbox" name="chkAuth" id="chkAuth" value="SMTPAuth" <? print((settings("mail", "SMTPAuth") == TRUE) ? "checked='checked'" : ""); ?>/>
 							</p>
 							<p>
 								<label for="txtSecure">Secure:</label><br/>
@@ -335,17 +349,18 @@
 						</fieldset>
 						<fieldset>
 							<legend>Facebook loginapp</legend>
-							<p>
+							<p class="naastElkaar">
 								<label for="txtFbId">Id:</label><br/>
 								<input type="text" name="txtFbId" id="txtFbId" value="<? echo settings("facebook", "loginapp", "id"); ?>"/>
 							</p>
-							<p>
+							<p class="naastElkaar">
 								<label for="txtFbSecret">Secret:</label><br/>
 								<input type="text" name="txtFbSecret" id="txtFbSecret" value="<? echo settings("facebook", "loginapp", "secret"); ?>"/>
 							</p>
 						</fieldset>
 						<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>	
 					</form>
+				</div>
 				</div>
 			</div>
 			<? echo $oPage->endTabs(); ?>
@@ -392,13 +407,13 @@
 				txtPort, txtUsername, txtPasswd]);
 
 			chkSMTP.addEventListener("click", function() {
-				enableDisableFields(chkSMTP.check,
+				enableDisableFields(chkSMTP.checked,
 					[txtHost, chkAuth, txtSecure,
 					txtPort, txtUsername, txtPasswd]);
 			});
 
 			chkAuth.addEventListener("click", function() {
-				enableDisableFields(chkAuth.check,
+				enableDisableFields(chkAuth.checked,
 					[txtSecure, txtPort, txtUsername,
 					txtPasswd]);
 			});
