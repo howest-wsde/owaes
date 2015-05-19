@@ -142,5 +142,20 @@
 	<sql name="tblConfig-fix" tag="10">
 		update tblConfig set `value` = '86400' where `value` = '24*60*60' and `key` = 'crons.indicators'; 
 	</sql> 
+	<sql name="tblMailalerts" tag="11"> 
+CREATE TABLE IF NOT EXISTS `tblMailalerts` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) unsigned NOT NULL,
+  `link` varchar(150) NOT NULL,
+  `message` text NOT NULL,
+  `deadline` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `sent` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; 
+	</sql> 
+	<sql name="tblConfig-change" tag="12">  
+		ALTER TABLE `tblConfig` DROP `id`;
+		ALTER TABLE `tblConfig` ADD PRIMARY KEY(`key`);
+	</sql> 
 	
 </queries>

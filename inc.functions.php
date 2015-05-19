@@ -231,40 +231,51 @@
 		 
 		if (isset($strC)) {
 			if (isset($arConfig[$strA][$strB][$strC])) return $arConfig[$strA][$strB][$strC];
-		} else if (isset($strB)){
+		} else if (isset($strB)) {
 			if (isset($arConfig[$strA][$strB])) return $arConfig[$strA][$strB]; 
 		} else if (isset($arConfig[$strA])) return $arConfig[$strA]; 
 		
-		if (!isset($arConfig["dbloaded"])) {
-			$oDB = new database("SELECT `key`, `value` FROM `tblConfig`");
-			$oDB->execute(); 
-			while ($oDB->nextRecord()) { 
-				$arKeys = explode(".", $oDB->get("key")); 
-				$oValue = json_decode($oDB->get("value"), FALSE);  
-				switch (count($arKeys)) {
-					case 1:
-						$arConfig[$arKeys[0]] = $oValue; 
-						break;
-					case 2:
-						$arConfig[$arKeys[0]][$arKeys[1]] = $oValue;
-						break;
-					case 3:
-						$arConfig[$arKeys[0]][$arKeys[1]][$arKeys[2]] = $oValue;
-						break;
-				}
-			} 
+		if (!isset($arConfig["settings-loaded"])) {
+			if (settings("database", "loaded")) { 
+				$oDB = new database("SELECT `key`, `value` FROM `tblConfig`"); 
+				$oDB->execute(); 
+				while ($oDB->nextRecord()) { 
+					$arKeys = explode(".", $oDB->get("key")); 
+					$oValue = json_decode($oDB->get("value"), FALSE);  
+					switch (count($arKeys)) {
+						case 1:
+							$arConfig[$arKeys[0]] = $oValue; 
+							break;
+						case 2:
+							$arConfig[$arKeys[0]][$arKeys[1]] = $oValue;
+							break;
+						case 3:
+							$arConfig[$arKeys[0]][$arKeys[1]][$arKeys[2]] = $oValue;
+							break;
+					}
+				}  
+				$arConfig["settings-loaded"] = TRUE; 
+			}
 			
-			$arConfig["dbloaded"] = TRUE; 
-			 
-			if ((filename() != "setup.php") && (
-			    is_null($arConfig["domain"]["name"]) 
+			if (is_null($arConfig["domain"]["name"]) 
 				|| is_null($arConfig["domain"]["root"]) 
 				|| is_null($arConfig["domain"]["absroot"]) 
-			)) redirect("setup.php"); 
+				) {
+					loadSetup();
+				}
 			
-			return settings($strA, $strB, $strC); 
+			
+			if (isset($strC)) {
+				if (isset($arConfig[$strA][$strB][$strC])) return $arConfig[$strA][$strB][$strC];
+			} else if (isset($strB)) {
+				if (isset($arConfig[$strA][$strB])) return $arConfig[$strA][$strB]; 
+			} else if (isset($arConfig[$strA])) return $arConfig[$strA]; 
 		}
 		return FALSE; 
+	}
+	
+	function loadSetup() {
+		if (filename() != "setup.php") redirect("setup.php"); 
 	}
 	
 	
