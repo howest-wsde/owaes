@@ -139,25 +139,25 @@
 		if (isset($_POST["txtHost"])) prepareAndExecuteStmt("mail.Host", $_POST["txtHost"], $dbPDO);
 		
 		$test = FALSE;
-		if (isset($_POST["chkAuth"])) {
-			$test = TRUE;
+		if (isset($_POST["chkAuth"])) $test = TRUE;
 
-			if (isset($_POST["txtSecure"])) prepareAndExecuteStmt("mail.SMTPSecure", $_POST["txtSecure"], $dbPDO);
-			if (isset($_POST["txtPort"])) prepareAndExecuteStmt("mail.Port", intval($_POST["txtPort"]), $dbPDO);
-			if (isset($_POST["txtUsername"])) prepareAndExecuteStmt("mail.Username", $_POST["txtUsername"], $dbPDO);
+		prepareAndExecuteStmt("mail.SMTPAuth", $test, $dbPDO);
 
-			if (issetAndNotEmpty($_POST["txtPasswd"])) {
-				$pwd = $_POST["txtPasswd"];
+		if (isset($_POST["txtSecure"])) prepareAndExecuteStmt("mail.SMTPSecure", $_POST["txtSecure"], $dbPDO);
+		if (isset($_POST["txtPort"])) prepareAndExecuteStmt("mail.Port", intval($_POST["txtPort"]), $dbPDO);
+		if (isset($_POST["txtUsername"])) prepareAndExecuteStmt("mail.Username", $_POST["txtUsername"], $dbPDO);
 
-				if ($pwd != settings("mail", "Password")) {
-					$pwd = encryptor($pwd);
-				}
+		$pwd = null;
 
-				prepareAndExecuteStmt("mail.Password", $pwd, $dbPDO);
+		if (issetAndNotEmpty($_POST["txtPasswd"])) {
+			$pwd = $_POST["txtPasswd"];
+
+			if ($pwd != settings("mail", "Password")) {
+				$pwd = encryptor($pwd);
 			}
 		}
 
-		prepareAndExecuteStmt("mail.SMTPAuth", $test, $dbPDO);
+		prepareAndExecuteStmt("mail.Password", $pwd, $dbPDO);
 
 		/* ------------- */
 
