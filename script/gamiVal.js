@@ -242,6 +242,22 @@ function validateAddActivity(bShowAlerts) {
 		arFouten["dYStart"] = "Gelieve een geldig jaartal mee te geven.";
 	}
 
+	if ($tHStart == "") {
+		arFouten["tHStart"] = "Gelieve een uur mee te geven.";
+	}
+
+	if ($tHStart < 0 || $tHStart > 23) {
+		arFouten["tHStart"] = "Gelieve een geldig uur mee te geven.";
+	}
+
+	if ($tMStart == "") {
+		arFouten["tMStart"] = "Gelieve een minuut mee te geven.";
+	}
+
+	if ($tMStart < 0 || $tMStart > 59) {
+		arFouten["tMStart"] = "Gelieve een geldig minuut mee te geven.";
+	}
+
 	if ($txtIndicatorMultiplier == "") {
 		arFouten["txtIndicatorMultiplier"] = "Gelieve een indicator vermenigvuldigingsfactor mee te geven.";
 	}

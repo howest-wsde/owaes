@@ -12,3 +12,21 @@ table.editable td textarea {border: 0px; width: 100%; height: 17px;  }*/
 
 .actiondelete {width: 21px; height: 21px; background: url("../img/delete.png") no-repeat left center; color: rgba(0,0,0,0); overflow: hidden; display: inline-block; padding: 0; margin: 0; border: 0;  }
 .actiondelete:hover {color: rgba(0,0,0,0); }
+
+#inhoud {
+	width: 85%;
+	margin-left: auto;
+}
+
+.naastElkaar {
+	float: left;
+	padding: 0 20px 20px auto;
+}
+
+.fout, li.error {
+	background: #ff0039;
+}
+
+.fout {
+	color: white;
+}
