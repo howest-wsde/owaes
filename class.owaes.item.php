@@ -442,13 +442,15 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 							break; 
 					}
 					
+	json("cache/test.txt", "addsubscription"); 
 					if ($this->author()->mailalert("newsubscription")) {
+						json("cache/test.txt", "pass"); 
 						$oAlert = new mailalert(); 
 						$oAlert->user($this->author()->id()); 
 						$oAlert->link("market", $this->id()); 
 						$oAlert->deadline($this->author()->mailalert("newsubscription")); 
 						$oAlert->update();  
-					}  
+					}   else json("cache/test.txt", $this->author()->mailalert("newsubscription")); 
 					
 					$oNotification->key("subscription." .  $this->id()); 
 					$oNotification->link(fixPath($this->getLink())); 

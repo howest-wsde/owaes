@@ -288,7 +288,6 @@
 				} else $oJSON = array(); 
 			} else $oJSON = array(); 
 		} else {
-			return null;
 			$fh = fopen($strFile, 'w') or die("can't open file"); 
 			fwrite($fh, json_encode($oJSON));
 			fclose($fh); 	
