@@ -139,29 +139,25 @@
 		if (isset($_POST["txtHost"])) prepareAndExecuteStmt("mail.Host", $_POST["txtHost"], $dbPDO);
 		
 		$test = FALSE;
-		if (isset($_POST["chkAuth"])) $test = TRUE;
+		if (isset($_POST["chkAuth"])) {
+			$test = TRUE;
 
-		prepareAndExecuteStmt("mail.SMTPAuth", $test, $dbPDO);
+			if (isset($_POST["txtSecure"])) prepareAndExecuteStmt("mail.SMTPSecure", $_POST["txtSecure"], $dbPDO);
+			if (isset($_POST["txtPort"])) prepareAndExecuteStmt("mail.Port", intval($_POST["txtPort"]), $dbPDO);
+			if (isset($_POST["txtUsername"])) prepareAndExecuteStmt("mail.Username", $_POST["txtUsername"], $dbPDO);
 
-		if (isset($_POST["txtSecure"])) prepareAndExecuteStmt("mail.SMTPSecure", $_POST["txtSecure"], $dbPDO);
-		if (isset($_POST["txtPort"])) prepareAndExecuteStmt("mail.Port", intval($_POST["txtPort"]), $dbPDO);
-		if (isset($_POST["txtUsername"])) prepareAndExecuteStmt("mail.Username", $_POST["txtUsername"], $dbPDO);
+			if (issetAndNotEmpty($_POST["txtPasswd"])) {
+				$pwd = $_POST["txtPasswd"];
 
-		$pwd = null;
-
-		if (!empty($_POST["txtPasswd"])) {
-			$query = "SELECT `value` FROM `tblConfig` WHERE `key` LIKE 'mail.Password'";
-			$result = $dbPDO->query($query);
-			$pwd = $_POST["txtPasswd"];
-
-			foreach ($result as $p) {
-				if ($pwd != $p["value"]) {
+				if ($pwd != settings("mail", "Password")) {
 					$pwd = encryptor($pwd);
 				}
+
+				prepareAndExecuteStmt("mail.Password", $pwd, $dbPDO);
 			}
 		}
 
-		prepareAndExecuteStmt("mail.Password", $pwd, $dbPDO);
+		prepareAndExecuteStmt("mail.SMTPAuth", $test, $dbPDO);
 
 		/* ------------- */
 
@@ -402,14 +398,23 @@
 			var txtUsername = document.getElementById("txtUsername");
 			var txtPasswd = document.getElementById("txtPasswd");
 
-			enableDisableFields(chkSMTP.check,
-				[txtHost, chkAuth, txtSecure,
-				txtPort, txtUsername, txtPasswd]);
+			enableDisableFields(chkSMTP.checked,
+				[txtHost, chkAuth]);
+
+			enableDisableFields(chkAuth.checked,
+				[txtSecure, txtPort, txtUsername,
+				txtPasswd]);
 
 			chkSMTP.addEventListener("click", function() {
-				enableDisableFields(chkSMTP.checked,
-					[txtHost, chkAuth, txtSecure,
-					txtPort, txtUsername, txtPasswd]);
+				if (chkAuth.checked) {
+					enableDisableFields(chkSMTP.checked,
+						[txtHost, chkAuth, txtSecure,
+						txtPort, txtUsername, txtPasswd]);
+				}
+				else {
+					enableDisableFields(chkSMTP.checked,
+						[txtHost, chkAuth]);
+				}
 			});
 
 			chkAuth.addEventListener("click", function() {
