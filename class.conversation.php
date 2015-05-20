@@ -210,6 +210,17 @@
 					$oNotification->sender($this->iSender); 
 					$oNotification->link(fixPath("conversation.php?u=" . $this->iSender)); 
 					$oNotification->send();  
+					
+
+					if (user($this->iReceiver)->mailalert("newmessage")) {
+						$oAlert = new mailalert(); 
+						$oAlert->user($this->iReceiver); 
+						$oAlert->link("conversation", $this->iSender); 
+						$oAlert->sleutel("conversation." . $this->iReceiver . "." . $this->iSender); 
+						$oAlert->deadline(user($this->iReceiver)->mailalert("newmessage")); 
+						$oAlert->message($this->sender()->getName() . " stuurde een berichtje");  
+						$oAlert->update();  
+					} 
 				} 
 								
 			} else {

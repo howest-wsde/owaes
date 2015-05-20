@@ -440,17 +440,17 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 							$oNotification->message(user($iUser)->getName() . " en " . (count($arSubscriptions)-1) . " andere personen schreven zich in voor de opdracht");
 							$oNotification->sender($iUser); 
 							break; 
-					}
+					} 
 					
-	json("cache/test.txt", "addsubscription"); 
 					if ($this->author()->mailalert("newsubscription")) {
-						json("cache/test.txt", "pass"); 
 						$oAlert = new mailalert(); 
 						$oAlert->user($this->author()->id()); 
 						$oAlert->link("market", $this->id()); 
-						$oAlert->deadline($this->author()->mailalert("newsubscription")); 
+						$oAlert->deadline($this->author()->mailalert("newsubscription"));  
+						$oAlert->sleutel("market." . $this->id()); 
+						$oAlert->message(user($iUser)->getName() . " schreef zich in voor de opdracht \"" . $this->title() . "\"");  
 						$oAlert->update();  
-					}   else json("cache/test.txt", $this->author()->mailalert("newsubscription")); 
+					} 
 					
 					$oNotification->key("subscription." .  $this->id()); 
 					$oNotification->link(fixPath($this->getLink())); 
