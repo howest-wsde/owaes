@@ -46,6 +46,12 @@ function validateAddActivity(bShowAlerts) {
 	var $txtUsername = $("#txtUsername").val();
 	var $txtPasswd = $("#txtPasswd").val();
 
+	var $txtNewMessage = $("#txtNewMessage").val();
+	var $txtNewSub = $("#txtNewSub").val();
+	var $txtRemSub = $("#txtRemSub").val();
+	var $txtPlatform = $("#txtPlatform").val();
+	var $txtRemUnread = $("#txtRemUnread").val();
+
 	if ($txtTemplateFolder == "") {
 		arFouten["txtTemplateFolder"] = "Gelieve een template folder mee te geven.";
 	}
@@ -116,6 +122,46 @@ function validateAddActivity(bShowAlerts) {
 				arFouten["txtPasswd"] = "Gelieve een wachtwoord mee te geven.";
 			}
 		}
+	}
+
+	if ($txtNewMessage == "") {
+		arFouten["txtNewMessage"] = "Gelieve het aantal dagen of weken mee te geven voor nieuw bericht.";
+	}
+
+	if ($txtNewMessage < 1) {
+		arFouten["txtNewMessage"] = "Het aantal dagen of weken voor nieuw bericht kan niet kleiner zijn dan 1.";
+	}
+
+	if ($txtNewSub == "") {
+		arFouten["txtNewSub"] = "Gelieve het aantal dagen of weken mee te geven voor nieuw aanbieding.";
+	}
+
+	if ($txtNewSub < 1) {
+		arFouten["txtNewSub"] = "Het aantal dagen of weken voor nieuw aanbieding kan niet kleiner zijn dan 1.";
+	}
+
+	if ($txtRemSub == "") {
+		arFouten["txtRemSub"] = "Gelieve het aantal dagen of weken mee te geven voor herinnering aanbieding.";
+	}
+
+	if ($txtRemSub < 1) {
+		arFouten["txtRemSub"] = "Het aantal dagen of weken voor herinnering aanbieding kan niet kleiner zijn dan 1.";
+	}
+
+	if ($txtPlatform == "") {
+		arFouten["txtPlatform"] = "Gelieve een aantal mee te geven voor platform.";
+	}
+
+	if ($txtPlatform < 0) {
+		arFouten["txtPlatform"] = "Het aantal kan niet kleiner zijn dan 0.";
+	}
+
+	if ($txtRemUnread == "") {
+		arFouten["txtRemUnread"] = "Gelieve het aantal dagen of weken mee te geven voor ongelezen herinnering.";
+	}
+
+	if ($txtRemUnread < 1) {
+		arFouten["txtRemUnread"] = "Het aantal dagen of weken voor ongelezen herinnering kan niet kleiner zijn dan 1.";
 	}
 
 	if (Object.keys(arFouten).length > 0) {
