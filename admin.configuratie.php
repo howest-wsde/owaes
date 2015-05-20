@@ -10,6 +10,27 @@
 
 	$oPage->addJS("script/confVal.js");
 
+	function getPeriod($seconds, $from) {
+		$hours = $seconds / 3600;
+		$days = $hours / 24;
+		$weeks = $days / 7;
+
+		$test = "";
+
+		if ($from == "day" && !is_int($weeks)) $test = "checked='checked'";
+		if ($from == "week" && is_int($weeks)) $test = "checked='checked'";
+
+		return $test;
+	}
+
+	function convertSeconds($seconds) {
+		$hours = $seconds / 3600;
+		$days = $hours / 24;
+		$weeks = $days / 7;
+
+		return (is_int($weeks)) ? $weeks : $days;
+	}
+
 	function addressToCoordinates($address) {
 		$url = "http://maps.google.com/maps/api/geocode/json?sensor=false&address=" . $address;
 		$response = file_get_contents($url);
@@ -167,6 +188,47 @@
 
 		/* ------------- */
 
+		/* Mail alert */
+		if (isset($_POST["rbNMwhen"]) && isset($_POST["txtNewMessage"])) {
+			$period = $_POST["rbNMwhen"];
+			$result = intval($_POST["txtNewMessage"]) * 24 * 3600;
+
+			if ($period == "week") $result = intval($_POST["txtNewMessage"]) * 168 * 3600;
+
+			prepareAndExecuteStmt("mailalert.newmessage", $result, $dbPDO);
+		}
+
+		if (isset($_POST["rbNSwhen"]) && isset($_POST["txtNewSub"])) {
+			$period = $_POST["rbNSwhen"];
+			$result = intval($_POST["txtNewSub"]) * 24 * 3600;
+
+			if ($period == "week") $result = intval($_POST["txtNewSub"]) * 168 * 3600;
+
+			prepareAndExecuteStmt("mailalert.newsubscription", $result, $dbPDO);
+		}
+
+		if (isset($_POST["txtPlatform"])) prepareAndExecuteStmt("mailalert.platform", intval($_POST["txtPlatform"]), $dbPDO);
+
+		if (isset($_POST["rbRSwhen"]) && isset($_POST["txtRemSub"])) {
+			$period = $_POST["rbRSwhen"];
+			$result = intval($_POST["txtRemSub"]) * 24 * 3600;
+
+			if ($period == "week") $result = intval($_POST["txtRemSub"]) * 168 * 3600;
+
+			prepareAndExecuteStmt("mailalert.remindersubscription", $result, $dbPDO);
+		}
+
+		if (isset($_POST["rbRUwhen"]) && isset($_POST["txtRemUnread"])) {
+			$period = $_POST["rbRUwhen"];
+			$result = intval($_POST["txtRemUnread"]) * 24 * 3600;
+
+			if ($period == "week") $result = intval($_POST["txtRemUnread"]) * 168 * 3600;
+
+			prepareAndExecuteStmt("mailalert.reminderunread", $result, $dbPDO);
+		}
+
+		/* ------------- */
+
 		redirect(filename());
 	}
 ?>
@@ -215,148 +277,179 @@
 				<div class="main market admin">
 					<? include "admin.menu.xml"; ?>
 					<div id="inhoud">
-					<h1>Configuratie paneel</h1>
-					<div class="errors"></div>
-					<form name="frmConfig" id="frmConfig" method="POST">
-						<fieldset>
-							<legend>Startwaarden</legend>
-							<p>
-								<label for="txtTemplateFolder">Template folder:</label><br/>
-								<input type="text" name="txtTemplateFolder" id="txtTemplateFolder" value="<? echo settings("domain", "templatefolder"); ?>"/>
-							</p>
-							<p>
-								<label for="chkAlgemenevoorwaarden">Algemene voorwaarden</label>
-								<input type="checkbox" name="chkAlgemenevoorwaarden" id="chkAlgemenevoorwaarden" value="algemenevoorwaarden" <? print((settings("startvalues", "algemenevoorwaarden") == TRUE) ? "checked='checked'" : ""); ?>/>
-							</p>
-							<p>
-								<label for="chkVisibility">Profielen zichtbaar</label>
-								<input type="checkbox" name="chkVisibility" id="chkVisibility" value="visibility" <?  print((settings("startvalues", "visibility") == TRUE) ? "checked='checked'" : ""); ?>/>
-							</p>
-							<p>
-								<label for="txtAnalytics">Google analytics:</label><br/>
-								<input type="text" name="txtAnalytics" id="txtAnalytics" value="<? echo settings("analytics"); ?>"/>
-							</p>
-						</fieldset>
-						<fieldset>
-							<legend>Debugging</legend>
-							<p class="naastElkaar">
-								<label for="chkShowwarnings">Show warnings</label>
-								<input type="checkbox" name="chkShowwarnings" id="chkShowwarnings" value="showwarnings" <? print((settings("debugging", "showwarnings") == TRUE) ? "checked='checked'" : ""); ?>/>
-							</p>
-							<p class="naastElkaar">
-								<label for="chkDemo">Demo</label>
-								<input type="checkbox" name="chkDemo" id="chkDemo" value="demo" <? print((settings("debugging", "demo") == TRUE) ? "checked='checked'" : ""); ?>/>
-							</p>
-						</fieldset>
-						<fieldset>
-							<legend>Verzekeringen</legend>
-							<p>
-								<input style="width: 350px;" type="text" name="txtV1" id="txtV1" value="<? echo settings("verzekeringen", "1"); ?>"/>
-							</p>
-							<p>
-								<input style="width: 350px;" type="text" name="txtV2" id="txtV2" value="<? echo settings("verzekeringen", "2"); ?>"/>
-							</p>
-						</fieldset>
-						<fieldset>
-							<legend>Tijdzone en lokatie</legend>
-							<p class="naastElkaar">
-								<label for="lstTimezone">Tijdzone:</label><br/>
-								<select id="lstTimezone" name="lstTimezone">
-								<?
-									$zones = timezone_identifiers_list();
+						<h1>Configuratie paneel</h1>
+						<div class="errors"></div>
+						<form name="frmConfig" id="frmConfig" method="POST">
+							<fieldset>
+								<legend>Startwaarden</legend>
+								<p>
+									<label for="txtTemplateFolder">Template folder:</label><br/>
+									<input type="text" name="txtTemplateFolder" id="txtTemplateFolder" value="<? echo settings("domain", "templatefolder"); ?>"/>
+								</p>
+								<p>
+									<label for="chkAlgemenevoorwaarden">Algemene voorwaarden</label>
+									<input type="checkbox" name="chkAlgemenevoorwaarden" id="chkAlgemenevoorwaarden" value="algemenevoorwaarden" <? print((settings("startvalues", "algemenevoorwaarden") == TRUE) ? "checked='checked'" : ""); ?>/>
+								</p>
+								<p>
+									<label for="chkVisibility">Profielen zichtbaar</label>
+									<input type="checkbox" name="chkVisibility" id="chkVisibility" value="visibility" <?  print((settings("startvalues", "visibility") == TRUE) ? "checked='checked'" : ""); ?>/>
+								</p>
+								<p>
+									<label for="txtAnalytics">Google analytics:</label><br/>
+									<input type="text" name="txtAnalytics" id="txtAnalytics" value="<? echo settings("analytics"); ?>"/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Debugging</legend>
+								<p class="naastElkaar">
+									<label for="chkShowwarnings">Show warnings</label>
+									<input type="checkbox" name="chkShowwarnings" id="chkShowwarnings" value="showwarnings" <? print((settings("debugging", "showwarnings") == TRUE) ? "checked='checked'" : ""); ?>/>
+								</p>
+								<p class="naastElkaar">
+									<label for="chkDemo">Demo</label>
+									<input type="checkbox" name="chkDemo" id="chkDemo" value="demo" <? print((settings("debugging", "demo") == TRUE) ? "checked='checked'" : ""); ?>/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Verzekeringen</legend>
+								<p>
+									<input style="width: 350px;" type="text" name="txtV1" id="txtV1" value="<? echo settings("verzekeringen", "1"); ?>"/>
+								</p>
+								<p>
+									<input style="width: 350px;" type="text" name="txtV2" id="txtV2" value="<? echo settings("verzekeringen", "2"); ?>"/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Tijdzone en lokatie</legend>
+								<p class="naastElkaar">
+									<label for="lstTimezone">Tijdzone:</label><br/>
+									<select id="lstTimezone" name="lstTimezone">
+									<?
+										$zones = timezone_identifiers_list();
 
-									foreach ($zones as $zone) {
-										$place = explode("/", $zone);
+										foreach ($zones as $zone) {
+											$place = explode("/", $zone);
 
-										if (settings("date", "timezone") == $zone) {
-											print("<option value='" . $zone . "' selected='selected'>" . $place[1] . "</option>");
-										}
-										else {
-											if ($zone != "UTC") {
-												print("<option value='" . $zone . "'>" . $place[1] . "</option>");
+											if (settings("date", "timezone") == $zone) {
+												print("<option value='" . $zone . "' selected='selected'>" . $place[1] . "</option>");
+											}
+											else {
+												if ($zone != "UTC") {
+													print("<option value='" . $zone . "'>" . $place[1] . "</option>");
+												}
 											}
 										}
-									}
-								?>
-								</select>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtLokatie">Standaard lokatie:</label><br/>
-								<input type="text" name="txtLokatie" id="txtLokatie" value="<? echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
-							</p>
-						</fieldset>
-						<fieldset>
-							<legend>Credits</legend>
-							<p class="naastElkaar">
-								<label for="txtStart">Start:</label></br>
-								<input type="number" name="txtStart" id="txtStart" min="0" max="<? echo settings("credits", "max"); ?>"  value="<? echo settings("startvalues", "credits"); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtMin">Min:</label><br/>
-								<input type="number" name="txtMin" id="txtMin" min="0" value="<? echo settings("credits", "min"); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtMax">Max:</label><br/>
-								<input type="number" name="txtMax" id="txtMax" min="0" value="<? echo settings("credits", "max"); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtEenheid">Eenheid:</label><br/>
-								<input type="text" name="txtEenheid" id="txtEenheid" value="<? echo settings("credits", "name", "1"); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtMeervoud">Meervoud:</label><br/>
-								<input type="text" name="txtMeervoud" id="txtMeervoud" value="<? echo settings("credits", "name", "x"); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtOverdracht">Overdracht:</label><br/>
-								<input type="text" name="txtOverdracht" id="txtOverdracht" value="<? echo settings("credits", "name", "overdracht"); ?>"/>
-							</p>
-						</fieldset>
-						<fieldset>
-							<legend>Mail</legend>
-							<p>
-								<label for="chkSMTP">SMTP</label>
-								<input type="checkbox" name="chkSMTP" id="chkSMTP" value="smtp" <? print((settings("mail", "smtp") == TRUE) ? "checked='checked'" : ""); ?>/>
-							</p>
-							<p>
-								<label for="txtHost">Host:</label><br/>
-								<input type="text" name="txtHost" id="txtHost" value="<? echo settings("mail", "Host"); ?>"/>
-							</p>
-							<p>
-								<label for="chkAuth">Authentication</label>
-								<input type="checkbox" name="chkAuth" id="chkAuth" value="SMTPAuth" <? print((settings("mail", "SMTPAuth") == TRUE) ? "checked='checked'" : ""); ?>/>
-							</p>
-							<p>
-								<label for="txtSecure">Secure:</label><br/>
-								<input type="text" name="txtSecure" id="txtSecure" value="<? echo settings("mail", "SMTPSecure"); ?>"/>
-							</p>
-							<p>
-								<label for="txtPort">Port:</label><br/>
-								<input type="number" name="txtPort" id="txtPort" min="0" max="65535" value="<? echo settings("mail", "Port"); ?>"/>
-							</p>
-							<p>
-								<label for="txtUsername">Username:</label><br/>
-								<input type="text" name="txtUsername" id="txtUsername" value="<? echo settings("mail", "Username"); ?>"/>
-							</p>
-							<p>
-								<label for="txtPasswd">Password:</label><br/>
-								<input type="password" name="txtPasswd" id="txtPasswd" value="<? echo settings("mail", "Password"); ?>"/>
-							</p>
-						</fieldset>
-						<fieldset>
-							<legend>Facebook loginapp</legend>
-							<p class="naastElkaar">
-								<label for="txtFbId">Id:</label><br/>
-								<input type="text" name="txtFbId" id="txtFbId" value="<? echo settings("facebook", "loginapp", "id"); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtFbSecret">Secret:</label><br/>
-								<input type="text" name="txtFbSecret" id="txtFbSecret" value="<? echo settings("facebook", "loginapp", "secret"); ?>"/>
-							</p>
-						</fieldset>
-						<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>	
-					</form>
-				</div>
+									?>
+									</select>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtLokatie">Standaard lokatie:</label><br/>
+									<input type="text" name="txtLokatie" id="txtLokatie" value="<? echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Credits</legend>
+								<p class="naastElkaar">
+									<label for="txtStart">Start:</label></br>
+									<input type="number" name="txtStart" id="txtStart" min="0" max="<? echo settings("credits", "max"); ?>"  value="<? echo settings("startvalues", "credits"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtMin">Min:</label><br/>
+									<input type="number" name="txtMin" id="txtMin" min="0" value="<? echo settings("credits", "min"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtMax">Max:</label><br/>
+									<input type="number" name="txtMax" id="txtMax" min="0" value="<? echo settings("credits", "max"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtEenheid">Eenheid:</label><br/>
+									<input type="text" name="txtEenheid" id="txtEenheid" value="<? echo settings("credits", "name", "1"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtMeervoud">Meervoud:</label><br/>
+									<input type="text" name="txtMeervoud" id="txtMeervoud" value="<? echo settings("credits", "name", "x"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtOverdracht">Overdracht:</label><br/>
+									<input type="text" name="txtOverdracht" id="txtOverdracht" value="<? echo settings("credits", "name", "overdracht"); ?>"/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Mail</legend>
+								<p>
+									<label for="chkSMTP">SMTP</label>
+									<input type="checkbox" name="chkSMTP" id="chkSMTP" value="smtp" <? print((settings("mail", "smtp") == TRUE) ? "checked='checked'" : ""); ?>/>
+								</p>
+								<p>
+									<label for="txtHost">Host:</label><br/>
+									<input type="text" name="txtHost" id="txtHost" value="<? echo settings("mail", "Host"); ?>"/>
+								</p>
+								<p>
+									<label for="chkAuth">Authentication</label>
+									<input type="checkbox" name="chkAuth" id="chkAuth" value="SMTPAuth" <? print((settings("mail", "SMTPAuth") == TRUE) ? "checked='checked'" : ""); ?>/>
+								</p>
+								<p>
+									<label for="txtSecure">Secure:</label><br/>
+									<input type="text" name="txtSecure" id="txtSecure" value="<? echo settings("mail", "SMTPSecure"); ?>"/>
+								</p>
+								<p>
+									<label for="txtPort">Port:</label><br/>
+									<input type="number" name="txtPort" id="txtPort" min="0" max="65535" value="<? echo settings("mail", "Port"); ?>"/>
+								</p>
+								<p>
+									<label for="txtUsername">Username:</label><br/>
+									<input type="text" name="txtUsername" id="txtUsername" value="<? echo settings("mail", "Username"); ?>"/>
+								</p>
+								<p>
+									<label for="txtPasswd">Password:</label><br/>
+									<input type="password" name="txtPasswd" id="txtPasswd" value="<? echo settings("mail", "Password"); ?>"/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Facebook loginapp</legend>
+								<p class="naastElkaar">
+									<label for="txtFbId">Id:</label><br/>
+									<input type="text" name="txtFbId" id="txtFbId" value="<? echo settings("facebook", "loginapp", "id"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtFbSecret">Secret:</label><br/>
+									<input type="text" name="txtFbSecret" id="txtFbSecret" value="<? echo settings("facebook", "loginapp", "secret"); ?>"/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Mail alert</legend>
+								<p>
+									<label for="txtPlatform">Platform:</label><br/>
+									<input type="number" name="txtPlatform" id="txtPlatform" min="0" value="<? echo settings("mailalert", "platform"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtNewMessage">Nieuw bericht:</label><br/>
+									<input type="radio" name="rbNMwhen" id="rbNMDay" value="day" <? echo getPeriod(settings("mailalert", "newmessage"), "day"); ?>/><label for="rbNMDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
+									<input type="radio" name="rbNMwhen" id="rbNMWeek" value="week" <? echo getPeriod(settings("mailalert", "newmessage"), "week"); ?>/><label for="rbNMWeek">Week</label><br/>
+									<input type="number" name="txtNewMessage" id="txtNewMessage" min="0" value="<? echo convertSeconds(settings("mailalert", "newmessage")); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtNewSub">Nieuw aanbieding:</label><br/>
+									<input type="radio" name="rbNSwhen" id="rbNSDay" value="day" <? echo getPeriod(settings("mailalert", "newsubscription"), "day"); ?>/><label for="rbNSDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
+									<input type="radio" name="rbNSwhen" id="rbNSWeek" value="week" <? echo getPeriod(settings("mailalert", "newsubscription"), "week"); ?>/><label for="rbNSWeek">Week</label><br/>
+									<input type="number" name="txtNewSub" id="txtNewSub" min="0" value="<? echo convertSeconds(settings("mailalert", "newsubscription")); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtRemSub">Herinnering aanbieding:</label><br/>
+									<input type="radio" name="rbRSwhen" id="rbRSDay" value="day" <? echo getPeriod(settings("mailalert", "remindersubscription"), "day"); ?>/><label for="rbRSDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
+									<input type="radio" name="rbRSwhen" id="rbRSWeek" value="week" <? echo getPeriod(settings("mailalert", "remindersubscription"), "week"); ?>/><label for="rbRSWeek">Week</label><br/>
+									<input type="number" name="txtRemSub" id="txtRemSub" min="0" value="<? echo convertSeconds(settings("mailalert", "remindersubscription")); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtRemUnread">Ongelezen herinnering:</label><br/>
+									<input type="radio" name="rbRUwhen" id="rbRUDay" value="day" <? echo getPeriod(settings("mailalert", "reminderunread"), "day"); ?>/><label for="rbRUDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
+									<input type="radio" name="rbRUwhen" id="rbRUWeek" value="week" <? echo getPeriod(settings("mailalert", "reminderunread"), "week"); ?>/><label for="rbRUWeek">Week</label><br/>
+									<input type="number" name="txtRemUnread" id="txtRemUnread" min="0" value="<? echo convertSeconds(settings("mailalert", "reminderunread")); ?>"/>
+								</p>
+							</fieldset>
+							<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>	
+						</form>
+					</div>
 				</div>
 			</div>
 			<? echo $oPage->endTabs(); ?>

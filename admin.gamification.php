@@ -254,148 +254,148 @@
 				<div class="main market admin">
 					<? include "admin.menu.xml"; ?>
 					<div id="inhoud">
-					<h1>Spel configuraties</h1>
-					<div class="errors"></div>
-					<form name="frmGameConfig" id="frmGameConfig" method="POST">
-						<fieldset>
-							<legend>Startwaarden</legend>
-							<p>
-								<label for="txtPhysical">Physical:</label>&nbsp;&nbsp;<span id="sPhy"></span>
-								<input step="1" onchange="printValue('txtPhysical', 'sPhy')" style="background-color: #ff3131;" type="range" name="txtPhysical" id="txtPhysical" min="0" max="100" value="<? echo settings("startvalues", "physical"); ?>"/>
-							</p>
-							<p>
-								<label for="txtSocial">Social:</label>&nbsp;&nbsp;<span id="sSoc"></span>
-								<input step="1" onchange="printValue('txtSocial', 'sSoc')" style="background-color: #8dc63f;" type="range" name="txtSocial" id="txtSocial" min="0" max="100" value="<? echo settings("startvalues", "social"); ?>"/>
-							</p>
-							<p>
-								<label for="txtMental">Mental:</label>&nbsp;&nbsp;<span id="sMen"></span>
-								<input step="1" onchange="printValue('txtMental', 'sMen')" style="background-color: #0072bc;" type="range" name="txtMental" id="txtMental" min="0" max="100" value="<? echo settings("startvalues", "mental"); ?>"/>
-							</p>
-							<p>
-								<label for="txtEmotional">Emotional:</label>&nbsp;&nbsp;<span id="sEmo"></span>
-								<input step="1" onchange="printValue('txtEmotional', 'sEmo')" style="background-color: #ffcc00;" type="range" name="txtEmotional" id="txtEmotional" min="0" max="100" value="<? echo settings("startvalues", "emotional"); ?>"/>
-							</p>
-						</fieldset>
-						<fieldset>
-							<legend>Levels</legend>
-							<?
-								$i = 0;
+						<h1>Spel configuraties</h1>
+						<div class="errors"></div>
+						<form name="frmGameConfig" id="frmGameConfig" method="POST">
+							<fieldset>
+								<legend>Startwaarden</legend>
+								<p>
+									<label for="txtPhysical">Physical:</label>&nbsp;&nbsp;<span id="sPhy"></span>
+									<input step="1" onchange="printValue('txtPhysical', 'sPhy')" style="background-color: #ff3131;" type="range" name="txtPhysical" id="txtPhysical" min="0" max="100" value="<? echo settings("startvalues", "physical"); ?>"/>
+								</p>
+								<p>
+									<label for="txtSocial">Social:</label>&nbsp;&nbsp;<span id="sSoc"></span>
+									<input step="1" onchange="printValue('txtSocial', 'sSoc')" style="background-color: #8dc63f;" type="range" name="txtSocial" id="txtSocial" min="0" max="100" value="<? echo settings("startvalues", "social"); ?>"/>
+								</p>
+								<p>
+									<label for="txtMental">Mental:</label>&nbsp;&nbsp;<span id="sMen"></span>
+									<input step="1" onchange="printValue('txtMental', 'sMen')" style="background-color: #0072bc;" type="range" name="txtMental" id="txtMental" min="0" max="100" value="<? echo settings("startvalues", "mental"); ?>"/>
+								</p>
+								<p>
+									<label for="txtEmotional">Emotional:</label>&nbsp;&nbsp;<span id="sEmo"></span>
+									<input step="1" onchange="printValue('txtEmotional', 'sEmo')" style="background-color: #ffcc00;" type="range" name="txtEmotional" id="txtEmotional" min="0" max="100" value="<? echo settings("startvalues", "emotional"); ?>"/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Levels</legend>
+								<?
+									$i = 0;
 
-								foreach ($arConfig["levels"] as $level) {
-?>
-									<div class="naastElkaar">
-									<h2>Level <? echo $i; ?></h2>
-									<p>
-										<label for="txtLevel<? print($i . "Threshold"); ?>">Threshold:</label><br/>
-										<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="0.001"  value="<? echo $level["threshold"]; ?>"/>
-									</p>
-									<p>
-										<label for="txtLevel<? print($i . "Multiplier"); ?>">Vermenigvuldigingsfactor:</label><br/>
-										<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.001" value="<? echo $level["multiplier"]; ?>"/>
-									</p>
-									</div>
-									<?
-									$i++;
-								}
-								?>
-						</fieldset>
-						<fieldset>
-							<legend>Warnings</legend>
-							<?
-								$i = 1;
+									foreach ($arConfig["levels"] as $level) {
+	?>
+										<div class="naastElkaar">
+										<h2>Level <? echo $i; ?></h2>
+										<p>
+											<label for="txtLevel<? print($i . "Threshold"); ?>">Threshold:</label><br/>
+											<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="0.001"  value="<? echo $level["threshold"]; ?>"/>
+										</p>
+										<p>
+											<label for="txtLevel<? print($i . "Multiplier"); ?>">Vermenigvuldigingsfactor:</label><br/>
+											<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.001" value="<? echo $level["multiplier"]; ?>"/>
+										</p>
+										</div>
+										<?
+										$i++;
+									}
+									?>
+							</fieldset>
+							<fieldset>
+								<legend>Warnings</legend>
+								<?
+									$i = 1;
 
-								foreach ($arConfig["warnings"] as $warning) {
-?>
-									<div class="naastElkaar">
-									<h2>Warning <? echo $i; ?></h2>
-									<p>
-										<label for="txtW<? print($i . "Schenkingen"); ?>">Schenkingen:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="0.001" value="<? echo $warning["schenkingen"]; ?>"/>
-									</p>
-									<p>
-										<label for="txtW<? print($i . "Trans"); ?>">Transactiediversiteit:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.001" value="<? echo $warning["transactiediversiteit"]; ?>"/>
-									</p>
-									<p>
-										<label for="txtW<? print($i . "Credits"); ?>">Credits:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="0.001" value="<? echo $warning["credits"]; ?>"/>
-									</p>
-									<p>
-										<label for="txtW<? print($i . "Waardering"); ?>">Waardering:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.001" value="<? echo $warning["waardering"]; ?>"/>
-									</p>
-									<p>
-										<label for="txtW<? print($i . "Physical"); ?>">Physical:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="0.001" value="<? echo $warning["physical"]; ?>"/>
-									</p>
-									<p>
-										<label for="txtW<? print($i . "Social"); ?>">Social:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="0.001" value="<? echo $warning["social"]; ?>"/>
-									</p>
-									<p>
-										<label for="txtW<? print($i . "Mental"); ?>">Mental:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="0.001" value="<? echo $warning["mental"]; ?>"/>
-									</p>
-									<p>
-										<label for="txtW<? print($i . "Emotional"); ?>">Emotional:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="0.001" value="<? echo $warning["emotional"]; ?>"/>
-									</p>
-									<p>
-										<label for="txtW<? print($i . "IndiSom"); ?>">Indicatorsom:</label><br/>
-										<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="0.001" value="<? echo $warning["indicatorsom"]; ?>"/>
-									</p>
-									</div>
-									<?
-									$i++;
-								}
-								?>
-						</fieldset>
-						<fieldset>
-							<legend>Taken planner</legend>
-							<p class="naastElkaar">
-								<label for="txtCronsIndicators">Indicatoren verlagen:</label><br/>
-								<input type="radio" name="rbWhen" id="rbDay" value="day" <? echo getPeriod(settings("crons", "indicators"), "day"); ?>/><label for="rbDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
-								<input type="radio" name="rbWhen" id="rbWeek" value="week" <? echo getPeriod(settings("crons", "indicators"), "week"); ?>/><label for="rbWeek">Week</label><br/>
-								<input type="number" name="txtCronsIndicators" id="txtCronsIndicators" min="0" value="<? echo getCronsIndicator(settings("crons", "indicators")); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtHTWFD">Aantal uren werken voor delay:</label><br/>
-								<input type="number" name="txtHTWFD" id="txtHTWFD" value="<? echo settings("crons", "hourstoworkfordelay"); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtX">x</label><br/>
-								<input type="number" name="txtX" id="txtX" value="<? echo settings("crons", "x"); ?>"/>
-							</p>
-						</fieldset>
-						<fieldset>
-							<legend>Datum</legend>
-							<p class="naastElkaar">
-								<label for="txtDateSpeed">Snelheid:</label><br/>
-								<input type="number" name="txtDateSpeed" id="txtDateSpeed" min="0" value="<? echo settings("date", "speed"); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="dDStart">Start:</label><br/>
-								<input type="number" name="dDStart" id="dDStart" min="1" max="31" value="<? echo createDateTime(settings("date", "start"))["date"]["day"]; ?>"/>/
-								<input type="number" name="dMStart" id="dMStart" min="1" max="12" value="<? echo createDateTime(settings("date", "start"))["date"]["month"]; ?>"/>/
-								<input type="number" name="dYStart" id="dYStart" min="2014" value="<? echo createDateTime(settings("date", "start"))["date"]["year"]; ?>"/>&nbsp;&nbsp;&nbsp;
-								<input type="number" name="tHStart" id="tHStart" min="0" max="23" value="<? echo createDateTime(settings("date", "start"))["time"]["hour"]; ?>"/>:
-								<input type="number" name="tMStart" id="tMStart" min="0" max="59" value="<? echo createDateTime(settings("date", "start"))["time"]["minute"]; ?>"/>
-							</p>
-						</fieldset>
-						<fieldset>
-							<legend>Indicatoren</legend>
-							<p class="naastElkaar">
-								<label for="txtIndicatorMultiplier">Vermenigvuldigingsfactor:</label><br/>
-								<input type="number" name="txtIndicatorMultiplier" id="txtIndicatorMultiplier" min="0" value="<? echo settings("indicatoren", "multiplier"); ?>"/>
-							</p>
-							<p class="naastElkaar">
-								<label for="txtOwaesAdd">Aantal toevoegen:</label><br/>
-								<input type="number" name="txtOwaesAdd" id="txtOwaesAdd" min="0" value="<? echo settings("indicatoren", "owaesadd"); ?>"/>
-							</p>
-						</fieldset>
-						<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>
-					</form>
-				</div>
+									foreach ($arConfig["warnings"] as $warning) {
+	?>
+										<div class="naastElkaar">
+										<h2>Warning <? echo $i; ?></h2>
+										<p>
+											<label for="txtW<? print($i . "Schenkingen"); ?>">Schenkingen:</label><br/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="0.001" value="<? echo $warning["schenkingen"]; ?>"/>
+										</p>
+										<p>
+											<label for="txtW<? print($i . "Trans"); ?>">Transactiediversiteit:</label><br/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.001" value="<? echo $warning["transactiediversiteit"]; ?>"/>
+										</p>
+										<p>
+											<label for="txtW<? print($i . "Credits"); ?>">Credits:</label><br/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="0.001" value="<? echo $warning["credits"]; ?>"/>
+										</p>
+										<p>
+											<label for="txtW<? print($i . "Waardering"); ?>">Waardering:</label><br/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.001" value="<? echo $warning["waardering"]; ?>"/>
+										</p>
+										<p>
+											<label for="txtW<? print($i . "Physical"); ?>">Physical:</label><br/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="0.001" value="<? echo $warning["physical"]; ?>"/>
+										</p>
+										<p>
+											<label for="txtW<? print($i . "Social"); ?>">Social:</label><br/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="0.001" value="<? echo $warning["social"]; ?>"/>
+										</p>
+										<p>
+											<label for="txtW<? print($i . "Mental"); ?>">Mental:</label><br/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="0.001" value="<? echo $warning["mental"]; ?>"/>
+										</p>
+										<p>
+											<label for="txtW<? print($i . "Emotional"); ?>">Emotional:</label><br/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="0.001" value="<? echo $warning["emotional"]; ?>"/>
+										</p>
+										<p>
+											<label for="txtW<? print($i . "IndiSom"); ?>">Indicatorsom:</label><br/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="0.001" value="<? echo $warning["indicatorsom"]; ?>"/>
+										</p>
+										</div>
+										<?
+										$i++;
+									}
+									?>
+							</fieldset>
+							<fieldset>
+								<legend>Taken planner</legend>
+								<p class="naastElkaar">
+									<label for="txtCronsIndicators">Indicatoren verlagen:</label><br/>
+									<input type="radio" name="rbWhen" id="rbDay" value="day" <? echo getPeriod(settings("crons", "indicators"), "day"); ?>/><label for="rbDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
+									<input type="radio" name="rbWhen" id="rbWeek" value="week" <? echo getPeriod(settings("crons", "indicators"), "week"); ?>/><label for="rbWeek">Week</label><br/>
+									<input type="number" name="txtCronsIndicators" id="txtCronsIndicators" min="0" value="<? echo getCronsIndicator(settings("crons", "indicators")); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtHTWFD">Aantal uren werken voor delay:</label><br/>
+									<input type="number" name="txtHTWFD" id="txtHTWFD" value="<? echo settings("crons", "hourstoworkfordelay"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtX">x</label><br/>
+									<input type="number" name="txtX" id="txtX" value="<? echo settings("crons", "x"); ?>"/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Datum</legend>
+								<p class="naastElkaar">
+									<label for="txtDateSpeed">Snelheid:</label><br/>
+									<input type="number" name="txtDateSpeed" id="txtDateSpeed" min="0" value="<? echo settings("date", "speed"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="dDStart">Start:</label><br/>
+									<input type="number" name="dDStart" id="dDStart" min="1" max="31" value="<? echo createDateTime(settings("date", "start"))["date"]["day"]; ?>"/>/
+									<input type="number" name="dMStart" id="dMStart" min="1" max="12" value="<? echo createDateTime(settings("date", "start"))["date"]["month"]; ?>"/>/
+									<input type="number" name="dYStart" id="dYStart" min="2014" value="<? echo createDateTime(settings("date", "start"))["date"]["year"]; ?>"/>&nbsp;&nbsp;&nbsp;
+									<input type="number" name="tHStart" id="tHStart" min="0" max="23" value="<? echo createDateTime(settings("date", "start"))["time"]["hour"]; ?>"/>:
+									<input type="number" name="tMStart" id="tMStart" min="0" max="59" value="<? echo createDateTime(settings("date", "start"))["time"]["minute"]; ?>"/>
+								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Indicatoren</legend>
+								<p class="naastElkaar">
+									<label for="txtIndicatorMultiplier">Vermenigvuldigingsfactor:</label><br/>
+									<input type="number" name="txtIndicatorMultiplier" id="txtIndicatorMultiplier" min="0" value="<? echo settings("indicatoren", "multiplier"); ?>"/>
+								</p>
+								<p class="naastElkaar">
+									<label for="txtOwaesAdd">Aantal toevoegen:</label><br/>
+									<input type="number" name="txtOwaesAdd" id="txtOwaesAdd" min="0" value="<? echo settings("indicatoren", "owaesadd"); ?>"/>
+								</p>
+							</fieldset>
+							<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>
+						</form>
+					</div>
 				</div>
 			</div>
 			<? echo $oPage->endTabs(); ?>
