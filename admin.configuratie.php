@@ -269,7 +269,7 @@
 	</head>
 	<body id="index">
 		<? echo $oPage->startTabs(); ?>
-		<div class="body content container">
+		<div class="body content">
 			<div class="container">
 				<div class="row">
 					<? echo $oSecurity->me()->html("user.html"); ?>
@@ -283,7 +283,7 @@
 							<fieldset>
 								<legend>Startwaarden</legend>
 								<p>
-									<label for="txtTemplateFolder">Template folder:</label><br/>
+									<label for="txtTemplateFolder">Template map:</label><br/>
 									<input type="text" name="txtTemplateFolder" id="txtTemplateFolder" value="<? echo settings("domain", "templatefolder"); ?>"/>
 								</p>
 								<p>
@@ -302,7 +302,7 @@
 							<fieldset>
 								<legend>Debugging</legend>
 								<p class="naastElkaar">
-									<label for="chkShowwarnings">Show warnings</label>
+									<label for="chkShowwarnings">Waarschuwingen tonen</label>
 									<input type="checkbox" name="chkShowwarnings" id="chkShowwarnings" value="showwarnings" <? print((settings("debugging", "showwarnings") == TRUE) ? "checked='checked'" : ""); ?>/>
 								</p>
 								<p class="naastElkaar">
@@ -385,7 +385,7 @@
 									<input type="text" name="txtHost" id="txtHost" value="<? echo settings("mail", "Host"); ?>"/>
 								</p>
 								<p>
-									<label for="chkAuth">Authentication</label>
+									<label for="chkAuth">Authenticatie</label>
 									<input type="checkbox" name="chkAuth" id="chkAuth" value="SMTPAuth" <? print((settings("mail", "SMTPAuth") == TRUE) ? "checked='checked'" : ""); ?>/>
 								</p>
 								<p>
@@ -393,15 +393,15 @@
 									<input type="text" name="txtSecure" id="txtSecure" value="<? echo settings("mail", "SMTPSecure"); ?>"/>
 								</p>
 								<p>
-									<label for="txtPort">Port:</label><br/>
+									<label for="txtPort">Poort:</label><br/>
 									<input type="number" name="txtPort" id="txtPort" min="0" max="65535" value="<? echo settings("mail", "Port"); ?>"/>
 								</p>
 								<p>
-									<label for="txtUsername">Username:</label><br/>
+									<label for="txtUsername">Gebruikersnaam:</label><br/>
 									<input type="text" name="txtUsername" id="txtUsername" value="<? echo settings("mail", "Username"); ?>"/>
 								</p>
 								<p>
-									<label for="txtPasswd">Password:</label><br/>
+									<label for="txtPasswd">Wachtwoord:</label><br/>
 									<input type="password" name="txtPasswd" id="txtPasswd" value="<? echo settings("mail", "Password"); ?>"/>
 								</p>
 							</fieldset>
