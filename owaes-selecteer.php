@@ -8,7 +8,7 @@
 	
 	$oNotification = new notification(); 
 	$oNotification->read("subscription." . $iID );  
-	
+	 
 	if (!$oOwaesItem->userrights("select", me())) {  
 		redirect("owaes.php?owaes=" . $iID); 
 		exit(); 
@@ -111,6 +111,7 @@
                                     <div class="bucket box sameheight col-md-4" id="nieuw">
                                         <h2>Nieuw</h2>
                                         <?php  
+											$iCount = 0; 
                                             foreach ($oOwaesItem->subscriptions() as $iUser=>$oValue) {
                                                 switch ($oValue->state()) {
                                                     case SUBSCRIBE_SUBSCRIBE: 
@@ -125,6 +126,10 @@
                                                         break;  
                                                 } 
                                             }  
+											if ($iCount == 0) { 
+												$oMailalerts = new mailalert(); 
+												$oMailalerts->cancel("market." . $iID);  	
+											}
                                         ?>
                                     </div>
                                 </div>

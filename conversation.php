@@ -21,6 +21,9 @@
 
 	$oNotification = new notification(); 
 	$oNotification->read("conversation." . $iUser);  
+	
+	$oMailalerts = new mailalert(); 
+	$oMailalerts->cancel("conversation." . me() . "." . $iUser);  
 
 	if (isset($_POST["addmessage"])) { 
 		$oMessage = $oConversation->add($_POST["message"], intval($_POST["market"]));   

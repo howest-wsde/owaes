@@ -128,4 +128,37 @@
 	<sql name="tblconfig-domainsetup-absroot" tag="9">
 		update `tblConfig` set value = NULL where `key` = 'domain.absroot' and `value` = 'http://localhost/owaes/'; 
 	</sql> 
+	<sql name="defaults-mailalerts-a" tag="10">
+		INSERT INTO `tblConfig` (`key`, `value`) VALUES  
+			('mailalert.newmessage', 86400),
+			('mailalert.newsubscription', 86400),
+			('mailalert.platform', 1),
+			('mailalert.reminderunread', 259200),
+			('mailalert.remindersubscription', 259200);
+	</sql> 
+	<sql name="tblConfig-to-json" tag="10">
+		update tblConfig set `value` = concat('"', `value`, '"') where `key` in ('domain.templatefolder', 'date.timezone', 'credits.name.1', 'credits.name.x', 'credits.name.overdracht', 'verzekeringen.1', 'verzekeringen.2', 'mail.Host', 'mail.SMTPAuth', 'mail.SMTPSecure', 'domain.name', 'domain.root', 'domain.absroot') and not (`value` is null)
+	</sql>
+	<sql name="tblConfig-fix" tag="10">
+		update tblConfig set `value` = '86400' where `value` = '24*60*60' and `key` = 'crons.indicators'; 
+	</sql> 
+	<sql name="tblMailalerts" tag="11"> 
+CREATE TABLE IF NOT EXISTS `tblMailalerts` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) unsigned NOT NULL,
+  `link` varchar(150) NOT NULL,
+  `message` text NOT NULL,
+  `deadline` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `sent` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; 
+	</sql> 
+	<sql name="tblConfig-change" tag="12">  
+		ALTER TABLE `tblConfig` DROP `id`;
+		ALTER TABLE `tblConfig` ADD PRIMARY KEY(`key`);
+	</sql> 
+	<sql name="tblMailalerts-key" tag="13">  
+		ALTER TABLE `tblMailalerts` ADD `sleutel` VARCHAR( 25 ) NOT NULL DEFAULT '' AFTER `user` ;
+		ALTER TABLE `tblMailalerts` CHANGE `sent` `sent` BIGINT( 20 ) UNSIGNED NULL DEFAULT NULL ;
+	</sql>  
 </queries>

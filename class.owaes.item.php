@@ -440,7 +440,18 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 							$oNotification->message(user($iUser)->getName() . " en " . (count($arSubscriptions)-1) . " andere personen schreven zich in voor de opdracht");
 							$oNotification->sender($iUser); 
 							break; 
-					}
+					} 
+					
+					if ($this->author()->mailalert("newsubscription")) {
+						$oAlert = new mailalert(); 
+						$oAlert->user($this->author()->id()); 
+						$oAlert->link("market", $this->id()); 
+						$oAlert->deadline($this->author()->mailalert("newsubscription"));  
+						$oAlert->sleutel("market." . $this->id()); 
+						$oAlert->message(user($iUser)->getName() . " schreef zich in voor de opdracht \"" . $this->title() . "\"");  
+						$oAlert->update();  
+					} 
+					
 					$oNotification->key("subscription." .  $this->id()); 
 					$oNotification->link(fixPath($this->getLink())); 
 					$oNotification->send(); 

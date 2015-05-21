@@ -213,7 +213,7 @@
 		public function mailalert($strID, $iValue = NULL) {
 			if (is_null($this->arMailalerts)) $this->load(); 
 			if (!is_null($iValue)) $this->arMailalerts[$strID] = $iValue; 
-			return isset($this->arMailalerts[$strID]) ? $this->arMailalerts[$strID] : FALSE; 
+			return isset($this->arMailalerts[$strID]) ? $this->arMailalerts[$strID] : 0; 
 		}
 		
 		public function alias($strAlias = NULL, $bCreate = FALSE) { // if bCreate == TRUE -> alias will be set to unique alias
@@ -703,7 +703,8 @@
 								if (!isset($this->arVisible[$oSelector])) $this->load();
 								return $this->arVisible[$oSelector]; 
 							default: 
-								error("class.user.php line " . __LINE__ . ": '" . $oSelector . "' ongeldige waarde"); 
+								//error("class.user.php line " . __LINE__ . ": '" . $oSelector . "' ongeldige waarde"); 
+								return FALSE; 
 						}
 					} 
 				} else {
@@ -1075,7 +1076,7 @@
 
 					if (is_null($this->iStatus)) $this->iStatus=0;  
 					if (is_null($this->arStatus)) $this->arStatus = array(); 
-					if (is_null($this->arMailalerts)) $this->arMailalerts = array(); 
+					if (is_null($this->arMailalerts)) $this->arMailalerts = settings("mailalert"); 
 					
 					if (is_null($this->bVisible)) $this->visible(TRUE);
 					if (!isset($this->arVisible["firstname"])) $this->visible("firstname", VISIBILITY_VISIBLE);
@@ -1264,7 +1265,8 @@
 		 
 		 
 		public function getURL() { // returns pad naar profiel
-			return fixPath(($this->alias() != "") ? ($this->alias())  : ("profile.php?id=" . $this->iID)); 
+			//return fixPath(($this->alias() != "") ? ($this->alias())  : ("profile.php?id=" . $this->iID)); 
+			return fixPath(($this->alias() != "") ? ("profile.php?alias=" . $this->alias())  : ("profile.php?id=" . $this->iID)); 
 		}
 		
 		public function getLink($bHTML = TRUE) { // link to article details  (html: "<a href="profiel.html">Voornaam Naam</a>") 
