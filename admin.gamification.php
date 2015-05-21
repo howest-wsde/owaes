@@ -300,7 +300,7 @@
 									?>
 							</fieldset>
 							<fieldset>
-								<legend>Warnings</legend>
+								<legend>Waarschuwingen</legend>
 								<?
 									$i = 1;
 
