@@ -703,7 +703,8 @@
 								if (!isset($this->arVisible[$oSelector])) $this->load();
 								return $this->arVisible[$oSelector]; 
 							default: 
-								error("class.user.php line " . __LINE__ . ": '" . $oSelector . "' ongeldige waarde"); 
+								//error("class.user.php line " . __LINE__ . ": '" . $oSelector . "' ongeldige waarde"); 
+								return FALSE; 
 						}
 					} 
 				} else {

@@ -157,5 +157,8 @@ CREATE TABLE IF NOT EXISTS `tblMailalerts` (
 		ALTER TABLE `tblConfig` DROP `id`;
 		ALTER TABLE `tblConfig` ADD PRIMARY KEY(`key`);
 	</sql> 
-	
+	<sql name="tblMailalerts-key" tag="13">  
+		ALTER TABLE `tblMailalerts` ADD `sleutel` VARCHAR( 25 ) NOT NULL DEFAULT '' AFTER `user` ;
+		ALTER TABLE `tblMailalerts` CHANGE `sent` `sent` BIGINT( 20 ) UNSIGNED NULL DEFAULT NULL ;
+	</sql>  
 </queries>

@@ -5,12 +5,18 @@
 		private $arLink = NULL; 
 		private $strMessage = NULL; 
 		private $iDeadline = NULL; 
-		private $iSent = NULL; 
+		private $iSent = NULL;  
+		private $strSleutel = NULL;  
 			
 		public function mailalert() {
 //			$this->iUser = $iUser;  
-		}
+		} 
 		
+		public function cancel($strSleutel) { 
+			$oDB = new database();
+			$strSQL = "update tblMailalerts set sent = 0 where sent is NULL and sleutel = '" . $oDB->escape($strSleutel) . "'; "; 
+			$oDB->execute($strSQL);  
+		}
 		
 		public function id($iID = NULL) { // get / set ID (enkel set via DB)
 			if (!is_null($iID)) $this->iID = $iID; 
@@ -33,7 +39,12 @@
 		public function message($strMessage = NULL) {
 			if (!is_null($strMessage)) $this->strMessage = $strMessage; 
 			return $this->strMessage; 	
-		}
+		} 
+		
+		public function sleutel($strSleutel = NULL) {
+			if (!is_null($strSleutel)) $this->strSleutel = $strSleutel; 
+			return $this->strSleutel; 	
+		} 
 		
 		public function deadline($iDeadline = NULL) {
 			if (!is_null($iDeadline)) $this->iDeadline = ($iDeadline > 943920000) ? $iDeadline : owaestime()+$iDeadline; 
@@ -45,36 +56,41 @@
 			return $this->iSent; 	
 		}
 		
+		public function user($iUser = NULL) {
+			if (!is_null($iUser)) $this->iUser = $iUser; 
+			return $this->iUser; 	
+		}
+		
 		public function update() {   
 			$arVelden = array(
 				"id" => $this->iID, 
-				"user" => $this->iUser, 
+				"user" => $this->iUser,  
+				"sleutel" => $this->strSleutel,  
 				"link" => json_encode($this->arLink), 
 				"message" => $this->strMessage, 
 				"deadline" => $this->iDeadline, 
 				"sent" => $this->iSent,  
 			);   
-		
+		 
 			$oDB = new database();
 			if (is_null($this->iID)) {
 				$arVeldKeys = array(); 
 				$arWaarden = array(); 
 				foreach ($arVelden as $strVeld=>$strWaarde) {
 					$arVeldKeys[] = $strVeld; 
-					$arWaarden[] = "'" . $oUser->escape($strWaarde) . "'"; 
+					$arWaarden[] = $oDB->escape($strWaarde, TRUE); 
 				}
 				$strSQL = "insert into tblMailalerts (" . implode(", ", $arVeldKeys) . ") values (" . implode(", ", $arWaarden) . ");"; 
 				$oDB->execute($strSQL);  
-				$this->id($oUser->lastInsertID()); 
+				$this->id($oDB->lastInsertID()); 
 			} else { 
 				$arUpdates = array(); 
 				foreach ($arVelden as $strVeld=>$strWaarde) {
-					$arUpdates[] = $strVeld . " = '" . $oUser->escape($strWaarde) . "'"; 
+					$arUpdates[] = $strVeld . " = " . $oDB->escape($strWaarde, TRUE); 
 				}
 				$strSQL = "update tblMailalerts set " . implode(", ", $arUpdates) . " where id = " . $this->id() . ";"; 
 				$oDB->execute($strSQL);  
 			} 
-		 
 		}
 		
 	}

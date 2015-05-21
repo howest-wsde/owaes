@@ -182,13 +182,17 @@
 			return (isset($arRecord[$strID])) ? $arRecord[$strID] : NULL; 
 		} 
 		
-		public function escape($strTekst) { // mysql_real_escape_string
+		public function escape($strTekst, $bQuotes = FALSE) { // mysql_real_escape_string (bquotes sets ' around)
 			//echo ($strTekst); 
 			//echo "<br />" . mysql_real_escape_string($strTekst); 	 
 			// global $dbPDO; 
+			if ($bQuotes) {
+				if (is_null($strTekst)) return "NULL"; 
+			}
 			$strTekst = str_replace('"', "\\\"", $strTekst);
 			$strTekst = str_replace("'", "\\'", $strTekst);
-			return $strTekst;  // $dbPDO->quote($strTekst); // mysql_real_escape_string($strTekst); 	
+			
+			return ($bQuotes) ? "'$strTekst'" : $strTekst;  // $dbPDO->quote($strTekst); // mysql_real_escape_string($strTekst); 	
 		}
 		
 		public function fields() {
