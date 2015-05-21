@@ -30,8 +30,10 @@
 		private $strToName = "Benedikt Beun";
 		private $strSubject = "OWAES"; 
 		private $strMessage = ""; 
+		private $oTemplate = NULL; 
 		 
 		public function email($strTo = "", $strSubject = "", $strMessage = "") { 
+			$this->template("[body]"); 
 			if ($strTo != "") {
 				$this->strToMail = $strTo; 
 				$this->strToName = $strTo; 
@@ -50,11 +52,20 @@
 			$this->strMessage = $strHTML; 
 		}
 		
+		public function template($strTemplate = NULL) {
+			if (!is_null($strTemplate)) $this->oTemplate = template($strTemplate);
+			return $this->oTemplate; 
+		}
+		
 		public function setSubject($strSubject) {
 			$this->strSubject = $strSubject; 
 		}
 		
 		public function send() { 
+			$oTemplate = $this->template(); 
+			$oTemplate->tag("body", $this->strMessage);   
+			$strMessage = $oTemplate->html(); 
+			
 			if (settings("mail", "smtp")) {
 				$oPHPmailer = new PHPMailer(); 
 				
@@ -74,7 +85,8 @@
 				$oPHPmailer->Subject    = $this->strSubject;			
 				$oPHPmailer->AltBody    = "To view the message, please use an HTML compatible email viewer!"; // optional, comment out and test
 				
-				$oPHPmailer->MsgHTML($this->strMessage);
+				
+				$oPHPmailer->MsgHTML($strMessage);
 				
 				if(!$oPHPmailer->Send()) {
 					//echo "Mailer Error: " . $oPHPmailer->ErrorInfo;
@@ -91,7 +103,7 @@
 				$strHeaders .= 'To: ' . $this->strToName . ' <' . $this->strToMail . '>' . "\r\n";
 				//$strHeaders .= 'From: ' . $this->strFromName . ' <' . $this->strFromMail . '>' . "\r\n"; 
 				
-				mail($this->strToMail, $this->strSubject, $this->strMessage, $strHeaders);
+				mail($this->strToMail, $this->strSubject, $strMessage, $strHeaders);
 			}
 			
  		}

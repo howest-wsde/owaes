@@ -33,13 +33,16 @@
 		$oUser->lastname($_POST["lastname"]); 
 		if ($_POST["email"] == "") {
 			$arErrors["email"] = "E-mailadres is verplicht"; 
+		} else if (!validEmail($_POST["email"])) {
+			$arErrors["email"] = "Ongeldig e-mailadres"; 
 		} else {
 			if (!$oUser->email($_POST["email"])) $arErrors["email"] = "Dit e-mailadres bestaat reeds in het systeem";  
-		}
+		} 
 		$oUser->alias("", TRUE); 
 		$oUser->password($_POST["pass"]);
 		$oUser->algemenevoorwaarden(settings("startvalues", "algemenevoorwaarden")); 
 		$oUser->visible(settings("startvalues", "visibility"));
+		
 		if ($_POST["pass"] == "") $arErrors["password"] = "Wachtwoord is verplicht"; 
 		if ($_POST["pass"] != $_POST["pass-repeat"]) $arErrors["pass-repeat"] = "Wachtwoord komt niet overeen";  
 		if (count($arErrors) == 0)  {
@@ -274,7 +277,7 @@
                     <div class="form-group">
                         <label for="email" class="control-label col-lg-3">E-mailadres:</label>
                         <div class="col-lg-9">
-                            <input type="text" name="email" class="email form-control" id="username" placeholder="E-mailadres" value="<?php echo inputfield($oUser->email()); ?>" />
+                            <input type="email" name="email" class="email form-control" id="username" placeholder="E-mailadres" value="<?php echo inputfield($oUser->email()); ?>" />
                             <?php
                         	    if (isset($arErrors["email"])) echo ("<strong class=\"text-danger\">" . $arErrors["email"] . "</strong>"); 
 						    ?>
