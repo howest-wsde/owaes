@@ -7,6 +7,7 @@
 		private $iDeadline = NULL; 
 		private $iSent = NULL;  
 		private $strSleutel = NULL;  
+		private $bUniekeSleutel = FALSE; 
 			
 		public function mailalert() {
 //			$this->iUser = $iUser;  
@@ -41,8 +42,9 @@
 			return $this->strMessage; 	
 		} 
 		
-		public function sleutel($strSleutel = NULL) {
+		public function sleutel($strSleutel = NULL, $bUnique = NULL) {
 			if (!is_null($strSleutel)) $this->strSleutel = $strSleutel; 
+			if (!is_null($bUnique)) $this->bUniekeSleutel = $bUnique; 
 			return $this->strSleutel; 	
 		} 
 		
@@ -62,6 +64,8 @@
 		}
 		
 		public function update() {   
+			$oDB = new database(); 
+		
 			$arVelden = array(
 				"id" => $this->iID, 
 				"user" => $this->iUser,  
@@ -72,7 +76,6 @@
 				"sent" => $this->iSent,  
 			);   
 		 
-			$oDB = new database();
 			if (is_null($this->iID)) {
 				$arVeldKeys = array(); 
 				$arWaarden = array(); 

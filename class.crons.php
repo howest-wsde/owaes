@@ -20,8 +20,12 @@
 				),
 				array(
 					"sleutel" => "mailalert", 
-					"refresh" => 1, // *60 // check elke 5 minuten 
-				)
+					"refresh" => 5*60, // check elke 5 minuten 
+				),
+				/*array(
+					"sleutel" => "reminder", 
+					"refresh" => 1, //120*60, // check elke 2 uur
+				),*/
 			); 
 			shuffle($ar2DO); // wordt geshuffled voor moest er een fout of timeout gebeuren in één van bovenstaande
 			
@@ -40,6 +44,9 @@
 						case "mailalert": 
 							$this->checkMails();
 							break; 
+						//case "reminder": 
+						//	$this->checkReminders();
+						//	break; 
 					}
 					json("settings/crons.json", $arCrons);
 				}  
@@ -180,5 +187,28 @@
 			}
 			echo ("<li>cron mails done ($iSent mails)</li>"); 
 		}
+		
+		/*
+		public function checkReminders() {
+			$oDB = new database();  
+			$oDB->execute("select m.id, count(m.id) as aantal, m.author, s.clickdate
+								from tblMarketSubscriptions s inner join tblMarket m on s.market = m.id 
+								where s.overruled = 0 and s.status = " . SUBSCRIBE_SUBSCRIBE . " group by m.id; "); 
+			while ($oDB->nextRecord()) {
+				$oUser = user($oDB->get("author")); 
+				if ($oDB->get("clickdate") <= owaestime() - $oUser->mailalert("remindersubscription")) { 
+					$oOwaes = owaesitem($oDB->get("id")); 
+					$oAlert = new mailalert(); 
+					$oAlert->user($oUser->id()); 
+					$oAlert->link("market", $oDB->get("id")); 
+					$oAlert->deadline(0);  
+					$oAlert->sleutel("market.reminder." . $oDB->get("id"));  
+					
+					$oAlert->message("Herinnering: U heeft nog " . $oDB->get("aantal") . " openstaande inschrijving" . (($oDB->get("aantal")==1)?"":"en") . " voor de opdracht \"" . $oOwaes->title() . "\"");   
+					$oAlert->update();  
+				}
+			}
+		}
+		*/
 	}
 	
