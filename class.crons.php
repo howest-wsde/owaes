@@ -146,7 +146,8 @@
 		
 		public function checkMails() {
 			$oDB = new database(); 
-			$oDB2 = new database(); 
+			$oDB2 = new database();
+			$iSent = 0;  
 			$oDB->execute("select distinct user as user from tblMailalerts where deadline <= " . owaestime() . " and sent is null; "); 
 			while ($oDB->nextRecord()) {
 				$iUser = $oDB->get("user");
@@ -173,10 +174,11 @@
 					$oMail->setBody(implode("<hr />", $arMail));  
 					$oMail->setSubject("OWAES melding"); 
 				$oMail->send();  
+				$iSent ++; 
 				
-				//$oDB2->execute("update tblMailalerts set sent = " . owaestime() . " where user = $iUser and sent is null; "); 
+				$oDB2->execute("update tblMailalerts set sent = " . owaestime() . " where user = $iUser and sent is null; "); 
 			}
-			echo ("<li>cron mails done</li>"); 
+			echo ("<li>cron mails done ($iSent mails)</li>"); 
 		}
 	}
 	
