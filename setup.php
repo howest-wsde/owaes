@@ -18,13 +18,14 @@
 			"user" => NULL, 
 			"password" => NULL,  
 		), 
-	); 
+	);  
+	
 	$strConfigFile = '<?php 
 $arConfig["database"] = array(
 	"host" => "HOST",
 	"name" => "NAME",
 	"user" => "USER",
-	"password" => "PASS", 
+	"password" => \'PASS\', 
 );'; 
 	
 	if (isset($_POST["domainname"])) {
@@ -38,12 +39,10 @@ $arConfig["database"] = array(
 		foreach ($arUpdates as $strKey=>$strVal) { 
 			$oDB->execute("INSERT INTO tblConfig (`key`, `value`) VALUES('$strKey', '" . $oDB->escape(json_encode($strVal)) . "') ON DUPLICATE KEY UPDATE `key`=VALUES(`key`), `value`=VALUES(`value`);"); 
 		} 
+		redirect("login.php"); 
 	} 
-
-	if (settings("database", "loaded")
-		&& settings("domain", "name") 
-		&& settings("domain", "root") 
-		&& settings("domain", "absroot")) redirect("login.php"); 
+	
+	if (settingsOK()) redirect("login.php"); 
 		
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -87,6 +86,21 @@ $arConfig["database"] = array(
     	<div class="body content content-account-settings container"> 
             <div class="container sideleftcenter">
                 <form method="post" name="frmprofile" id="frmprofile" class="form-horizontal" enctype="multipart/form-data">  
+                	<?php 
+						$arFolders = array("upload", "cache", "settings"); 
+						$arNotOK = array(); 
+						foreach ($arFolders as $strFolder) {
+							if (!is_writable("$strFolder")) $arNotOK[] = $strFolder; 
+						}
+						
+						if (count($arNotOK)>0) {
+							echo ("<fieldset>
+									<legend>Folders</legend> 
+									<p>Please make folder(s) <strong>" . implode("</strong>, <strong>", $arNotOK) . "</strong> write enabled</p>
+								</fieldset>"); 
+						} 
+						 
+					?>
                 	<?php if (!file_exists("inc.config.db.php") || !settings("database", "loaded")) { ?>
                         <fieldset>
                             <legend>Database</legend>
@@ -122,7 +136,7 @@ $arConfig["database"] = array(
                                 </div> 
                             </div>   
                         </fieldset>
-                    <?php } else { ?> 
+                    <?php } else if (!(settings("domain", "name") && settings("domain", "root") && settings("domain", "absroot"))) { ?> 
                         <fieldset>
                             <legend>Domeinnaam</legend>
                             <div class="form-group">

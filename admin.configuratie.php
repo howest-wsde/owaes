@@ -10,6 +10,15 @@
 
 	$oPage->addJS("script/confVal.js");
 
+	function periodInSeconds($rb, $value) {
+		$period = $rb;
+		$result = intval($value) * 24 * 3600;
+
+		if ($period == "week") $result = intval($value) * 168 * 3600;
+
+		return $result;
+	}
+
 	function getPeriod($seconds, $from) {
 		$hours = $seconds / 3600;
 		$days = $hours / 24;
@@ -189,43 +198,15 @@
 		/* ------------- */
 
 		/* Mail alert */
-		if (isset($_POST["rbNMwhen"]) && isset($_POST["txtNewMessage"])) {
-			$period = $_POST["rbNMwhen"];
-			$result = intval($_POST["txtNewMessage"]) * 24 * 3600;
+		if (isset($_POST["rbNMwhen"]) && isset($_POST["txtNewMessage"])) prepareAndExecuteStmt("mailalert.newmessage", periodInSeconds($_POST["rbNMwhen"], $_POST["txtNewMessage"]), $dbPDO);
 
-			if ($period == "week") $result = intval($_POST["txtNewMessage"]) * 168 * 3600;
-
-			prepareAndExecuteStmt("mailalert.newmessage", $result, $dbPDO);
-		}
-
-		if (isset($_POST["rbNSwhen"]) && isset($_POST["txtNewSub"])) {
-			$period = $_POST["rbNSwhen"];
-			$result = intval($_POST["txtNewSub"]) * 24 * 3600;
-
-			if ($period == "week") $result = intval($_POST["txtNewSub"]) * 168 * 3600;
-
-			prepareAndExecuteStmt("mailalert.newsubscription", $result, $dbPDO);
-		}
+		if (isset($_POST["rbNSwhen"]) && isset($_POST["txtNewSub"])) prepareAndExecuteStmt("mailalert.newsubscription", periodInSeconds($_POST["rbNSwhen"], $_POST["txtNewSub"]), $dbPDO);
 
 		if (isset($_POST["txtPlatform"])) prepareAndExecuteStmt("mailalert.platform", intval($_POST["txtPlatform"]), $dbPDO);
 
-		if (isset($_POST["rbRSwhen"]) && isset($_POST["txtRemSub"])) {
-			$period = $_POST["rbRSwhen"];
-			$result = intval($_POST["txtRemSub"]) * 24 * 3600;
+		if (isset($_POST["rbRSwhen"]) && isset($_POST["txtRemSub"])) prepareAndExecuteStmt("mailalert.remindersubscription", periodInSeconds($_POST["rbRSwhen"], $_POST["txtRemSub"]), $dbPDO);
 
-			if ($period == "week") $result = intval($_POST["txtRemSub"]) * 168 * 3600;
-
-			prepareAndExecuteStmt("mailalert.remindersubscription", $result, $dbPDO);
-		}
-
-		if (isset($_POST["rbRUwhen"]) && isset($_POST["txtRemUnread"])) {
-			$period = $_POST["rbRUwhen"];
-			$result = intval($_POST["txtRemUnread"]) * 24 * 3600;
-
-			if ($period == "week") $result = intval($_POST["txtRemUnread"]) * 168 * 3600;
-
-			prepareAndExecuteStmt("mailalert.reminderunread", $result, $dbPDO);
-		}
+		if (isset($_POST["rbRUwhen"]) && isset($_POST["txtRemUnread"])) prepareAndExecuteStmt("mailalert.reminderunread", periodInSeconds($_POST["rbRUwhen"], $_POST["txtRemUnread"]), $dbPDO);
 
 		/* ------------- */
 
@@ -269,7 +250,7 @@
 	</head>
 	<body id="index">
 		<? echo $oPage->startTabs(); ?>
-		<div class="body content container">
+		<div class="body content">
 			<div class="container">
 				<div class="row">
 					<? echo $oSecurity->me()->html("user.html"); ?>
@@ -283,7 +264,7 @@
 							<fieldset>
 								<legend>Startwaarden</legend>
 								<p>
-									<label for="txtTemplateFolder">Template folder:</label><br/>
+									<label for="txtTemplateFolder">Template map:</label><br/>
 									<input type="text" name="txtTemplateFolder" id="txtTemplateFolder" value="<? echo settings("domain", "templatefolder"); ?>"/>
 								</p>
 								<p>
@@ -302,7 +283,7 @@
 							<fieldset>
 								<legend>Debugging</legend>
 								<p class="naastElkaar">
-									<label for="chkShowwarnings">Show warnings</label>
+									<label for="chkShowwarnings">Waarschuwingen tonen</label>
 									<input type="checkbox" name="chkShowwarnings" id="chkShowwarnings" value="showwarnings" <? print((settings("debugging", "showwarnings") == TRUE) ? "checked='checked'" : ""); ?>/>
 								</p>
 								<p class="naastElkaar">
@@ -355,7 +336,7 @@
 								</p>
 								<p class="naastElkaar">
 									<label for="txtMin">Min:</label><br/>
-									<input type="number" name="txtMin" id="txtMin" min="0" value="<? echo settings("credits", "min"); ?>"/>
+									<input type="number" name="txtMin" id="txtMin" min="0" max="<? echo settings("credits", "max"); ?>" value="<? echo settings("credits", "min"); ?>"/>
 								</p>
 								<p class="naastElkaar">
 									<label for="txtMax">Max:</label><br/>
@@ -385,7 +366,7 @@
 									<input type="text" name="txtHost" id="txtHost" value="<? echo settings("mail", "Host"); ?>"/>
 								</p>
 								<p>
-									<label for="chkAuth">Authentication</label>
+									<label for="chkAuth">Authenticatie</label>
 									<input type="checkbox" name="chkAuth" id="chkAuth" value="SMTPAuth" <? print((settings("mail", "SMTPAuth") == TRUE) ? "checked='checked'" : ""); ?>/>
 								</p>
 								<p>
@@ -393,15 +374,15 @@
 									<input type="text" name="txtSecure" id="txtSecure" value="<? echo settings("mail", "SMTPSecure"); ?>"/>
 								</p>
 								<p>
-									<label for="txtPort">Port:</label><br/>
+									<label for="txtPort">Poort:</label><br/>
 									<input type="number" name="txtPort" id="txtPort" min="0" max="65535" value="<? echo settings("mail", "Port"); ?>"/>
 								</p>
 								<p>
-									<label for="txtUsername">Username:</label><br/>
+									<label for="txtUsername">Gebruikersnaam:</label><br/>
 									<input type="text" name="txtUsername" id="txtUsername" value="<? echo settings("mail", "Username"); ?>"/>
 								</p>
 								<p>
-									<label for="txtPasswd">Password:</label><br/>
+									<label for="txtPasswd">Wachtwoord:</label><br/>
 									<input type="password" name="txtPasswd" id="txtPasswd" value="<? echo settings("mail", "Password"); ?>"/>
 								</p>
 							</fieldset>
@@ -416,7 +397,7 @@
 									<input type="text" name="txtFbSecret" id="txtFbSecret" value="<? echo settings("facebook", "loginapp", "secret"); ?>"/>
 								</p>
 							</fieldset>
-							<fieldset>
+							<fieldset id="mailalert">
 								<legend>Mail alert</legend>
 								<p>
 									<label for="txtPlatform">Platform:</label><br/>
@@ -458,6 +439,32 @@
         	<? echo $oPage->footer(); ?>
         </div>
 	<script>
+		function convertDayToWeek(d) {
+			return (d % 7 == 0) ? d / 7 : 0;
+		}
+
+		function convertWeekToDay(w) {
+			return ((w * 7) % 7 == 0) ? w * 7 : 0;
+		}
+
+		function convert(rb, txt) {
+			var result = null;
+			var txt = parseInt(txt);
+
+			if (!isNaN(txt)) {
+				if (rb == "day") {
+					result = convertWeekToDay(txt);
+				}
+				else {
+					result = convertDayToWeek(txt);
+				}
+
+				result = (result != 0) ? result : txt;
+			}
+
+			return result;
+		}
+
 		function enableDisableFields(state, fields) {
 			var lenFields = fields.length;
 
@@ -517,10 +524,39 @@
 			});
 
 			var txtStart = document.getElementById("txtStart");
+			var txtMin = document.getElementById("txtMin");
 			var txtMax = document.getElementById("txtMax");
 
 			txtMax.addEventListener("blur", function() {
 				txtStart.max = txtMax.value;
+				txtMin.max = txtMax.value;
+			});
+
+			$("#mailalert input:radio").on("click", function() {
+				if (this.name == "rbNMwhen") {
+					var txtNewMessage = document.getElementById("txtNewMessage");
+					var result = convert(this.value, txtNewMessage.value);
+
+					txtNewMessage.value = (result != null) ? result : txtNewMessage.value;
+				}
+				else if (this.name == "rbNSwhen") {
+					var txtNewSub = document.getElementById("txtNewSub");
+					var result = convert(this.value, txtNewSub.value);
+
+					txtNewSub.value = (result != null) ? result : txtNewSub.value;
+				}
+				else if (this.name == "rbRSwhen") {
+					var txtRemSub = document.getElementById("txtRemSub");
+					var result = convert(this.value, txtRemSub.value);
+
+					txtRemSub.value = (result != null) ? result : txtRemSub.value;
+				}
+				else if (this.name == "rbRUwhen") {
+					var txtRemUnread = document.getElementById("txtRemUnread");
+					var result = convert(this.value, txtRemUnread.value);
+
+					txtRemUnread.value = (result != null) ? result : txtRemUnread.value;
+				}
 			});
 		});
 	</script>
