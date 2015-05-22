@@ -47,11 +47,7 @@ function validateAddActivity(bShowAlerts) {
 	var $txtCronsIndicators = $("#txtCronsIndicators").val();
 	var $txtHTWFD = $("#txtHTWFD").val();
 	var $txtDateSpeed = $("#txtDateSpeed").val();
-	var $dDStart = $("#dDStart").val();
-	var $dMStart = $("#dMStart").val();
-	var $dYStart = $("#dYStart").val();
-	var $tHStart = $("#tHStart").val();
-	var $tMStart = $("#tMStart").val();
+	var $txtStartdate = $("#txtStartdate").val();
 	var $txtIndicatorMultiplier = $("#txtIndicatorMultiplier").val();
 	var $txtOwaesAdd = $("#txtOwaesAdd").val();
 	
@@ -218,44 +214,15 @@ function validateAddActivity(bShowAlerts) {
 		arFouten["txtDateSpeed"] = "Gelieve een datum snelheid mee te geven.";
 	}
 
-	if ($dDStart == "") {
-		arFouten["dDStart"] = "Gelieve een dag mee te geven.";
+	if ($txtStartdate == "") {
+		arFouten["txtStartdate"] = "Gelieve een start datum mee te geven.";
 	}
 
-	if ($dDStart < 1 || $dDStart > 31) {
-		arFouten["dDStart"] = "Gelieve een geldig dag mee te geven.";
-	}
+	var ddmmY = /(0[1-9]|[12][0-9]|3[01])[\-](0[1-9]|1[012])[\-](19|20)\d\d/;
+	var dmY = /([1-9]|[12][0-9]|3[01])[\-]([1-9]|1[012])[\-](19/20)\d\d/;
 
-	if ($dMStart == "") {
-		arFouten["dMStart"] = "Gelieve een maand mee te geven.";
-	}
-
-	if ($dMStart < 1 || $dMStart > 12) {
-		arFouten["dMStart"] = "Gelieve een geldig maand mee te geven.";
-	}
-
-	if ($dYStart == "") {
-		arFouten["dYStart"] = "Gelieve een jaartal mee te geven.";
-	}
-
-	if ($dYStart < (new Date().getFullYear - 1) && $dYStart > new Date().getFullYear) {
-		arFouten["dYStart"] = "Gelieve een geldig jaartal mee te geven.";
-	}
-
-	if ($tHStart == "") {
-		arFouten["tHStart"] = "Gelieve een uur mee te geven.";
-	}
-
-	if ($tHStart < 0 || $tHStart > 23) {
-		arFouten["tHStart"] = "Gelieve een geldig uur mee te geven.";
-	}
-
-	if ($tMStart == "") {
-		arFouten["tMStart"] = "Gelieve een minuut mee te geven.";
-	}
-
-	if ($tMStart < 0 || $tMStart > 59) {
-		arFouten["tMStart"] = "Gelieve een geldig minuut mee te geven.";
+	if (!ddmmY.test($txtStartdate) || !dmY.test($txtStartdate)) {
+		arFouten["txtStartdate"] = "Gelieve een geldig start datum mee te geven.";
 	}
 
 	if ($txtIndicatorMultiplier == "") {

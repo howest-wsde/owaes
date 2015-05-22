@@ -19,49 +19,6 @@
 		$stmt->execute();
 	}
 
-	function createDateTime($unixTimestamp) {
-		date_default_timezone_set('UTC');
-
-		$date = date('d/m/Y', $unixTimestamp);
-		$time = date('H:i', $unixTimestamp);
-
-		$d = explode('/', $date);
-		$t = explode(':', $time);
-
-		$day = intval($d[0]);
-		$month = intval($d[1]);
-		$year = intval($d[2]);
-
-		$hour = intval($t[0]);
-		$minute = intval($t[1]);
-
-		$dateTime = array(
-			"date" => array(
-				"day" => $day,
-				"month" => $month,
-				"year" => $year
-			),
-			"time" => array(
-				"hour" => $hour,
-				"minute" => $minute,
-				"second" => 0
-			)
-		);
-
-		return $dateTime;
-	}
-
-	function makeUnixTimestamp($dt) {
-		date_default_timezone_set('UTC');
-
-		$date = $dt["date"];
-		$time = $dt["time"];
-
-		$unixTimestamp = mktime($time["hour"], $time["minute"], $time["second"], $date["month"], $date["day"], $date["year"]);
-
-		return intval($unixTimestamp);
-	}
-
 	function getPeriod($seconds, $from) {
 		$hours = $seconds / 3600;
 		$days = $hours / 24;
@@ -140,22 +97,7 @@
 
 		/* Datum */
 		if (isset($_POST["txtDateSpeed"])) prepareAndExecuteStmt("date.speed", doubleval($_POST["txtDateSpeed"]), $dbPDO);
-		if (isset($_POST["dDStart"]) && isset($_POST["dMStart"]) && isset($_POST["dYStart"]) && isset($_POST["tHStart"]) && isset($_POST["tMStart"])) {
-			$dateTime = array(
-				"date" => array(
-					"day" => intval($_POST["dDStart"]),
-					"month" => intval($_POST["dMStart"]),
-					"year" => intval($_POST["dYStart"])
-				),
-				"time" => array(
-					"hour" => intval($_POST["tHStart"]),
-					"minute" => intval($_POST["tMStart"]),
-					"second" => 0
-				)
-			);
-
-			prepareAndExecuteStmt("date.start", makeUnixTimestamp($dateTime), $dbPDO);
-		}
+		if (isset($_POST["txtStartdate"])) prepareAndExecuteStmt("date.start", ddmmyyyyTOdate($_POST["txtStartdate"]), $dbPDO);
 
 		/* ------------- */
 
@@ -374,12 +316,8 @@
 									<input type="number" name="txtDateSpeed" id="txtDateSpeed" min="0" value="<? echo settings("date", "speed"); ?>"/>
 								</p>
 								<p class="naastElkaar">
-									<label for="dDStart">Start:</label><br/>
-									<input type="number" name="dDStart" id="dDStart" min="1" max="31" value="<? echo createDateTime(settings("date", "start"))["date"]["day"]; ?>"/>/
-									<input type="number" name="dMStart" id="dMStart" min="1" max="12" value="<? echo createDateTime(settings("date", "start"))["date"]["month"]; ?>"/>/
-									<input type="number" name="dYStart" id="dYStart" min="2014" value="<? echo createDateTime(settings("date", "start"))["date"]["year"]; ?>"/>&nbsp;&nbsp;&nbsp;
-									<input type="number" name="tHStart" id="tHStart" min="0" max="23" value="<? echo createDateTime(settings("date", "start"))["time"]["hour"]; ?>"/>:
-									<input type="number" name="tMStart" id="tMStart" min="0" max="59" value="<? echo createDateTime(settings("date", "start"))["time"]["minute"]; ?>"/>
+									<label for="startdate">Start:</label><br/>
+									<input type="text" name="txtStartdate" id="txtStartdate" placeholder="start datum" value="<? echo date("d-m-Y", settings("date", "start")); ?>"/> 
 								</p>
 							</fieldset>
 							<fieldset>
@@ -416,6 +354,17 @@
 			printValue("txtSocial", "sSoc");
 			printValue("txtMental", "sMen");
 			printValue("txtEmotional", "sEmo");
+
+			$("#txtStartdate").datepicker({
+				dateFormat: "dd-mm-yy",
+				showAnim: "slideDown",
+				changeMonth: true,
+				changeYear: true,
+				yearRange: "2014:" + new Date().getFullYear + "",
+				monthNames: ["Januari", "Februari", "Maart", "April", "Mei", "Juni", "Juli", "Augustus", "September", "Oktober", "November", "December"],
+				monthNamesShort: ["Jan", "Feb", "Maa", "Apr", "mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
+				defaultDate: "y"
+			});
 		});
 	</script>
 	</body>
