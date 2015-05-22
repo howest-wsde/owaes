@@ -1,4 +1,4 @@
-<?
+<?php
 	define ("TIMEOUT_DEFAULT", 0); 
 	define ("TIMEOUT_CLICKED", 2); 
 	define ("TIMEOUT_WAITING", 1); 
@@ -17,11 +17,16 @@
 				array(
 					"sleutel" => "status", 
 					"refresh" => 3*60 // check elke 3 minuten 
+				),
+				array(
+					"sleutel" => "mailalert", 
+					"refresh" => 1, // *60 // check elke 5 minuten 
 				)
 			); 
 			shuffle($ar2DO); // wordt geshuffled voor moest er een fout of timeout gebeuren in één van bovenstaande
 			
 			foreach ($ar2DO as $arCron) {
+				if (!isset($arCrons[$arCron["sleutel"]])) $arCrons[$arCron["sleutel"]] = 0; 
 				if (owaesTime() - $arCrons[$arCron["sleutel"]] > $arCron["refresh"]) { // ) { // check elke 30 minuten 
 					$this->indicators();  
 					$arCrons[$arCron["sleutel"]] = owaesTime(); 
@@ -31,6 +36,9 @@
 							break; 
 						case "status": 
 							$this->checkStatus();
+							break; 
+						case "mailalert": 
+							$this->checkMails();
 							break; 
 					}
 					json("settings/crons.json", $arCrons);
@@ -133,6 +141,42 @@
 				user($oDB->get("id"))->status(TRUE); 
 			}
 			echo ("<li>cron status done</li>"); 
+		}
+		
+		
+		public function checkMails() {
+			$oDB = new database(); 
+			$oDB2 = new database(); 
+			$oDB->execute("select distinct user as user from tblMailalerts where deadline <= " . owaestime() . " and sent is null; "); 
+			while ($oDB->nextRecord()) {
+				$iUser = $oDB->get("user");
+				$arMail = array(); 
+				$oDB2->execute("select * from tblMailalerts where user = $iUser and sent is null; "); 
+				while ($oDB2->nextRecord()) {
+					$arLink = json_decode($oDB2->get("link"), TRUE);
+					switch($arLink["type"]) {
+						case "market": 
+							$arMail[] = '<a href="' . fixpath("owaes.php?owaes=" . $arLink["id"], TRUE) . '">' . $oDB2->get("message") . "</a>"; 
+							break; 
+						case "conversation": 
+							$arMail[] = '<a href="' . fixpath("conversation.php?u=" . $arLink["id"], TRUE) . '">' . $oDB2->get("message") . "</a>"; 
+							break; 
+						default: 	
+							$arMail[] = $oDB2->get("message"); 
+					} 
+				}
+				$oUser = user($iUser); 
+				$oUser->unlocked(TRUE); // als e-mailadres hidden staat kan deze anders niet gezien worden
+				$oMail = new email(); 
+					$oMail->setTo($oUser->email(), $oUser->getName());
+					$oMail->template("mailtemplate.html");  
+					$oMail->setBody(implode("<hr />", $arMail));  
+					$oMail->setSubject("OWAES melding"); 
+				$oMail->send();  
+				
+				//$oDB2->execute("update tblMailalerts set sent = " . owaestime() . " where user = $iUser and sent is null; "); 
+			}
+			echo ("<li>cron mails done</li>"); 
 		}
 	}
 	

@@ -1,4 +1,4 @@
-<?
+<?php
 	require_once "class.owaes.item.php"; 
 	require_once "class.owaes.list.php";
 	require_once "class.page.php";
@@ -33,6 +33,7 @@
 	
 	require_once 'class.notification.php';
 	require_once 'class.reports.php';
+	require_once 'class.mailalert.php';
 	
 	//require_once 'htmlpurifier-4.6.0/library/HTMLPurifier.auto.php';
 

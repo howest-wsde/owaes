@@ -1,0 +1,11 @@
+#!/bin/sh
+# Shell script gaat een Python script uitvoeren
+# om PHP script update.php uit te voeren in de browser.
+
+changed_files="$(git diff-tree -r --name-only --no-commit-id ORIG_HEAD HEAD)"
+
+check_run() {
+	echo "$changed_files" | grep --quiet "$1" && eval "$2"
+}
+
+check_run _sql.inc "python -m webbrowser -t 'http://localhost/owaes/update.php'"

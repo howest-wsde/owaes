@@ -1,9 +1,10 @@
-<?
+<?php
 define ("SUBSCRIBE_CANCEL", -1);
 define ("SUBSCRIBE_SUBSCRIBE", 0); 
 define ("SUBSCRIBE_CONFIRMED", 2);
 define ("SUBSCRIBE_DECLINED", 3);
 define ("SUBSCRIBE_ANNULATION", 4);
+define ("SUBSCRIBE_FINISHED", 5);
  
 
 class subscription {

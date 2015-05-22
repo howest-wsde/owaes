@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE);  
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
@@ -18,11 +18,11 @@
 	$oExperience = new experience(me());  
 	$oExperience->detail("reason", "pageload");     
 	$oExperience->add(1);  
-	
+	 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?>
         <script>
@@ -36,12 +36,12 @@
 
 			// GOOGLE MAP
 			var map; 
-			<?
+			<?php
 				list($iLatMe, $iLongMe) = user(me())->LatLong();  
 				if ($iLatMe * $iLongMe != 0) {
 					echo ("var startpos = new google.maps.LatLng($iLatMe, $iLongMe);"); 	
 				} else {
-					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longtitude") . ");"); 	
+					echo ("var startpos = new google.maps.LatLng(" . settings("geo", "latitude") . ", " . settings("geo", "longitude") . ");"); 	
 				}
 			?> 
 			
@@ -55,7 +55,7 @@
 				};
 				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-				<?  
+				<?php  
 					$oOwaesList = new owaeslist(); 
 					$oOwaesList->filterByState(STATE_RECRUTE);  
 					$oOwaesList->filterPassedDate(owaesTime()); 
@@ -111,17 +111,18 @@
 			}
             	
 			function showMarket(iID) {
-				$("#map-item").html("<div class='info'>Bezig met laden...</div>").show().load("get/htm/owaes/owaes-map.html?id=" + iID);
+				//$("#map-item").html("<div class='info'>Bezig met laden...</div>").show().load("get/htm/owaes/owaes-map.html?id=" + iID);
+				$("#map-item").html("<div class='info'>Bezig met laden...</div>").show().load("get.owaes.php?format=htm&file=owaes-map.html&id=" + iID);
 			} 
 			
 		</script>
     </head>
     <body id="index">
-        <? echo $oPage->startTabs(); ?> 
+        <?php echo $oPage->startTabs(); ?> 
     	<div class="body content content-home container">
         	
             	<div class="row">
-					<? /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+					<?php /*echo $oSecurity->me()->html("leftuserprofile.html"); */
                     echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
@@ -131,13 +132,13 @@
                 <div class="panel-group" id="accordionGraphs">
                    <div class="row">
                     <div class="col-md-1">
-                        <div rel="<? echo $oMe->alias(); ?>" class="">
-                            <a href="<? echo $oMe->getURL(); ?>"><? echo $oMe->getImage("90x90"); ?></a>
+                        <div rel="<?php echo $oMe->alias(); ?>" class="">
+                            <a href="<?php echo $oMe->getURL(); ?>"><?php echo $oMe->getImage("90x90"); ?></a>
                         </div>
                     </div>
                     
                     <div class="col-md-5 detailUser">
-                    	<?
+                    	<?php
  
                         	$iExp1 = $oMe->experience()->total(); 
                         	$iExp2 = $oMe->experience()->total(TRUE); 
@@ -152,11 +153,11 @@
 							}
 							*/
 						?>
-                        <p class="gebruikers-naam"><a href="<? echo $oMe->getURL(); ?>"><? echo $oMe->getName(); ?></a></p>
-                        <p class="level">Level <span class="levelvalue"><? echo $oMe->level(); ?></span></p>
-                        <div class="progress progress-experience" title="Vooruitgang: <? echo $iPercent2; ?>%" >
-                            <div class="progress-bar progress-bar-experience" role="progressbar" aria-valuenow="<? echo $oMe->experience()->total(); ?>" aria-valuemin="0" aria-valuemax="<? echo $oMe->experience()->leveltreshold(); ?>" style="width: <? echo $iPercent1; ?>%;">
-                                <span class="sr-only"><? echo $iPercent1; ?>% Complete</span>
+                        <p class="gebruikers-naam"><a href="<?php echo $oMe->getURL(); ?>"><?php echo $oMe->getName(); ?></a></p>
+                        <p class="level">Level <span class="levelvalue"><?php echo $oMe->level(); ?></span></p>
+                        <div class="progress progress-experience" title="Vooruitgang: <?php echo $iPercent2; ?>%" >
+                            <div class="progress-bar progress-bar-experience" role="progressbar" aria-valuenow="<?php echo $oMe->experience()->total(); ?>" aria-valuemin="0" aria-valuemax="<?php echo $oMe->experience()->leveltreshold(); ?>" style="width: <?php echo $iPercent1; ?>%;">
+                                <span class="sr-only"><?php echo $iPercent1; ?>% Complete</span>
                             </div>
                         </div>
                         <!--<p class="pull-right"><a href="#">Tips</a></p>-->
@@ -165,40 +166,40 @@
                     <div class="col-md-4">
                         <div class="indicatoren">
                             <div class="indicator">
-                                <img src="img/userSocialIcon.png" alt="Sociaal" title="Sociaal: <? echo $oMe->social(); ?>%" />
-                                <div class="progress progress-sociaal" title="Sociaal: <? echo $oMe->social(); ?>%">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->social(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->social(); ?>%;">
-                                        <span class="sr-only"><? echo $oMe->social(); ?>% Sociaal</span>
+                                <img src="img/userSocialIcon.png" alt="Sociaal" title="Sociaal: <?php echo $oMe->social(); ?>%" />
+                                <div class="progress progress-sociaal" title="Sociaal: <?php echo $oMe->social(); ?>%">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $oMe->social(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $oMe->social(); ?>%;">
+                                        <span class="sr-only"><?php echo $oMe->social(); ?>% Sociaal</span>
                                     </div>
                                     <span class="progressIndicator"><!--+2%--></span>
                                 </div>
                             </div>
                             
                             <div class="indicator">
-                                <img src="img/userFysiekIcon.png" alt="Fysiek" title="Fysiek: <? echo $oMe->physical(); ?>%" />
-                                <div class="progress progress-fysiek" title="Fysiek: <? echo $oMe->physical(); ?>%">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->physical(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->physical(); ?>%;">
-                                        <span class="sr-only"><? echo $oMe->physical(); ?>% Fysiek</span>
+                                <img src="img/userFysiekIcon.png" alt="Fysiek" title="Fysiek: <?php echo $oMe->physical(); ?>%" />
+                                <div class="progress progress-fysiek" title="Fysiek: <?php echo $oMe->physical(); ?>%">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $oMe->physical(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $oMe->physical(); ?>%;">
+                                        <span class="sr-only"><?php echo $oMe->physical(); ?>% Fysiek</span>
                                     </div>
                                      <span class="progressIndicator"><!--+4%--></span>
                                 </div>
                             </div>
                             
                             <div class="indicator">
-                             <img src="img/userMentalIcon.png" alt="Kennis" title="Kennis: <? echo $oMe->mental(); ?>%" />
-                                <div class="progress progress-mentaal" title="Kennis: <? echo $oMe->mental(); ?>%" >
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->mental(); ?>" aria-valuemin="0" aria-valuemax="100" style="width:<? echo $oMe->mental(); ?>%;">
-                                        <span class="sr-only"><? echo $oMe->mental(); ?>% Kennis</span>
+                             <img src="img/userMentalIcon.png" alt="Kennis" title="Kennis: <?php echo $oMe->mental(); ?>%" />
+                                <div class="progress progress-mentaal" title="Kennis: <?php echo $oMe->mental(); ?>%" >
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $oMe->mental(); ?>" aria-valuemin="0" aria-valuemax="100" style="width:<?php echo $oMe->mental(); ?>%;">
+                                        <span class="sr-only"><?php echo $oMe->mental(); ?>% Kennis</span>
                                     </div>
                                      <span class="progressIndicator"><!--+5%--></span>
                                 </div>
                             </div>
                             
                             <div class="indicator">
-                             <img src="img/userEmotionalIcon.png" alt="Welzijn" title="Welzijn: <? echo $oMe->emotional(); ?>%" />
-                                <div class="progress progress-welzijn" title="Welzijn: <? echo $oMe->emotional(); ?>%">
-                                    <div class="progress-bar" role="progressbar" aria-valuenow="<? echo $oMe->emotional(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <? echo $oMe->emotional(); ?>%;"> 
-                                        <span class="sr-only"><? echo $oMe->emotional(); ?>% Welzijn</span>
+                             <img src="img/userEmotionalIcon.png" alt="Welzijn" title="Welzijn: <?php echo $oMe->emotional(); ?>%" />
+                                <div class="progress progress-welzijn" title="Welzijn: <?php echo $oMe->emotional(); ?>%">
+                                    <div class="progress-bar" role="progressbar" aria-valuenow="<?php echo $oMe->emotional(); ?>" aria-valuemin="0" aria-valuemax="100" style="width: <?php echo $oMe->emotional(); ?>%;"> 
+                                        <span class="sr-only"><?php echo $oMe->emotional(); ?>% Welzijn</span>
                                     </div>
                                      <span class="progressIndicator"><!--+1%--></span>
                                 </div>
@@ -207,7 +208,7 @@
                     </div>
                     
                      <div class="col-md-2 containerCredits">
-                        <p class="credits"><? echo $oMe->credits(); ?></p><span class="icon icon-credits icon-credits-green"></span>
+                        <p class="credits"><?php echo $oMe->credits(); ?></p><span class="icon icon-credits icon-credits-green"></span>
                     </div>
                     
                   
@@ -223,7 +224,7 @@
                             <h2>Vooruitgang:</h2>
                                 <div class="col-md-4">
                                     <h3>Ervaring</h3>
-                                    <? 
+                                    <?php 
 										$oExp = $oMe->experience(); 
 										$arExp = $oExp->timeline(); // / SLOW 
 										foreach ($arExp as $i=>$arV) $arExp[$i][0]*=1000;  
@@ -243,7 +244,7 @@
                                     <script>
 	$(function() {
 		
-		var dataExp = <? echo json_encode($arExp); ?>; 
+		var dataExp = <?php echo json_encode($arExp); ?>; 
 		var optionsExp = {
 			xaxis: {
 				mode: "time",
@@ -255,13 +256,13 @@
             }, 
 			grid: {
 				backgroundColor: "#ffffff", 
-				markings:  [{ yaxis: <? echo json_encode($arLevelBounds); ?> } ],  
+				markings:  [{ yaxis: <?php echo json_encode($arLevelBounds); ?> } ],  
 			},
 			yaxis: {
 				min: 0,
-				max: <? echo round($arLevels[count($arLevels)-1]*1.1);  ?>,
+				max: <?php echo round($arLevels[count($arLevels)-1]*1.1);  ?>,
 				color:"#e3e3e3",  
-				ticks: <? echo json_encode($arTicks); ?>, 
+				ticks: <?php echo json_encode($arTicks); ?>, 
 			},
 		};
 		
@@ -286,7 +287,7 @@
 			},
 		};
 		
-		<?
+		<?php
 			$arIndicatoren = $oMe->indicatorenTimeline(); 
 			$arShow = array(
 						array(
@@ -313,7 +314,7 @@
 			foreach ($arShow as $strKey=>$arData) foreach ($arData["data"] as $i=>$arVal) $arShow[$strKey]["data"][$i][0]*=1000; 
 		?>
 		
-		$.plot("#indicatorenMeter", <? echo json_encode($arShow); ?>, optionsIndi);  
+		$.plot("#indicatorenMeter", <?php echo json_encode($arShow); ?>, optionsIndi);  
 	});
 									</script> 
                                     <div id="expMeter" style="width: 350px; height: 205px;display: block; "></div>
@@ -325,7 +326,7 @@
                                     <img class="size" src="img/graphIndicatoren.png" alt="" style="display: none; " />
                                 </div>
                                 <div class="col-md-4 creditmeter">
-                                    <h3><? echo ucfirst(settings("credits", "name", "x")); ?></h3>
+                                    <h3><?php echo ucfirst(settings("credits", "name", "x")); ?></h3>
                                     <!-- <img class="size" src="img/creditMeter.png"/> -->
                                     <img class="creditmetermeter size" src="img/creditmetermeter.png" alt="" />
                                     <img class="creditmeterpointer size" src="img/creditmeterpointer.png" alt="" />
@@ -352,7 +353,7 @@
 
                 <div class="row masonry">
                 
-				<? 
+				<?php 
 					$oNotification = new notification(me()); 
 					$arMessages = $oNotification->getList(5);  
 					if (count($arMessages)>0) {
@@ -362,25 +363,25 @@
 								<div class="layoutBlocks border">
 									<h2>Recente berichten</h2>
 									 
-									<?
+									<?php
 										foreach ($arMessages as $arMessage) {
 											?><div class="notific">
-												<a href="<? echo isset($arMessage["link"]) ? $arMessage["link"] : "#"; ?>">
+												<a href="<?php echo isset($arMessage["link"]) ? $arMessage["link"] : "#"; ?>">
 									   
-															<h4 class="not-heading"><? echo $arMessage["title"]; ?></h4> 
-															<div class="not-time"><? echo str_date($arMessage["time"]); ?></div> 
-															<div class="not-msg"><? echo $arMessage["message"]; ?></div> 
+															<h4 class="not-heading"><?php echo $arMessage["title"]; ?></h4> 
+															<div class="not-time"><?php echo str_date($arMessage["time"]); ?></div> 
+															<div class="not-msg"><?php echo $arMessage["message"]; ?></div> 
 													  
 												</a>
-											</div><?
+											</div><?php
 										}
 									?>
 								</div>
 						   </div>
-						<?
+						<?php
                 	}
 				?>
-                <? /*
+                <?php /*
                 <!-- Quests -->  
                 		<div class="col-md-6 clearfix masonrybox" style="z-index: 980;">
                         	<div class="layoutBlocks border">
@@ -534,7 +535,7 @@
                          </div>
                          */ ?>
  
-                        <?
+                        <?php
 						
 						
 						
@@ -542,7 +543,7 @@
                             $oOwaesList->filterByState(STATE_RECRUTE);  
                             $oOwaesList->filterPassedDate(owaesTime());  
                             $oOwaesList->filterByUser(me(), FALSE); 
-							$oOwaesList->notInvolved(me()); 
+							$oOwaesList->involved(me(), FALSE); 
                             $oOwaesList->optiOrder();  
                             $oOwaesList->limit(2);  
                             if (count($oOwaesList->getList()) > 0) { 
@@ -563,12 +564,12 @@
                                         <!-- <p class="meer"><a href="#">meer...</a></p> -->
                                     </div>
                                  </div>											
-                                <?
+                                <?php
                             }
                         ?> 
                          
              
-                        <?
+                        <?php
                             $oOwaesList = new owaeslist(); 
                             $oOwaesList->filterByState(STATE_RECRUTE);  
                             $oOwaesList->filterPassedDate(owaesTime());  
@@ -593,15 +594,16 @@
                                             <!-- <p class="meer"><a href="#">meer...</a></p> -->
                                         </div>
                                      </div>
-                                <?
+                                <?php
                             }
                         ?>  
                          
                          
-						<?
+						<?php
                             $oOwaesList = new owaeslist(); 
 							$oOwaesList->filterByCreator(me());
-							$oOwaesList->filterByState(array(STATE_RECRUTE, STATE_SELECTED));
+							$oOwaesList->open(TRUE); 
+														
                             if (count($oOwaesList->getList()) > 0) { 
                                 ?>
                                     <!-- Recent aangemaakte activiteiten --> 
@@ -621,11 +623,11 @@
                                             <!-- <p class="meer"><a href="#">meer...</a></p> -->
                                         </div>
                                      </div>
-                                <?
+                                <?php
                             }
                         ?>   
                          
-						<?
+						<?php
                             $oOwaesList = new owaeslist();   
 							$oOwaesList->payment(me(), "tobepayed"); 
                             if (count($oOwaesList->getList()) > 0) { 
@@ -645,7 +647,7 @@
                                             </div> 
                                         </div>
                                      </div>
-                                <?
+                                <?php
                             }
 							
                             $oOwaesList = new owaeslist();    
@@ -655,7 +657,7 @@
                                     <!-- Recent aangemaakte activiteiten --> 
                                      <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
                                         <div class="layoutBlocks border">
-                                            <h2>Nog te betalen xxx</h2>
+                                            <h2>Nog te betalen</h2>
             
                                             <div class="list-group">
                                                 
@@ -667,12 +669,12 @@
                                             </div> 
                                         </div>
                                      </div>
-                                <?
+                                <?php
                             }
                         ?>  
                           
                           
-						<?
+						<?php
 							$oSubscriptions = new subscriptions(); 
 							$oSubscriptions->filter("user", me()); 
 							$oSubscriptions->filter("state", array(SUBSCRIBE_SUBSCRIBE));  
@@ -695,25 +697,25 @@
                                             <!-- <p class="meer"><a href="#">meer...</a></p> -->
                                         </div>
                                      </div>
-                                <?
+                                <?php
                             }
                         ?>  
                         
                     <!-- </div> -->
                 </div> 
-        	<? echo $oPage->endTabs(); ?>
+        	<?php echo $oPage->endTabs(); ?>
         </div>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?> 
+        	<?php echo $oPage->footer(); ?> 
         </div> 
         <script>
             $(document).ready(function () {
-                initCreditmeter(<? echo intval(($oMe->credits()-settings("credits", "min"))/(settings("credits", "max")-settings("credits", "min"))*100) ; ?>);
-				<? 
+                initCreditmeter(<?php echo intval(($oMe->credits()-settings("credits", "min"))/(settings("credits", "max")-settings("credits", "min"))*100) ; ?>);
+				<?php 
 					$oActions = new actions(me());  
 				?> 
-				loadModals(<? echo json_encode($oActions->modals()); ?>);
+				loadModals(<?php echo json_encode($oActions->modals()); ?>);
 
                 var driehoek = document.getElementsByClassName("iconExpand")[0];
                 var spanCollapsed = document.getElementsByClassName("icon icon-collapsed")[0];

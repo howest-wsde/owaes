@@ -1,4 +1,4 @@
-<?
+<?php
 	error_reporting(E_ALL);
 	ini_set('display_errors', '1');
 	
@@ -7,8 +7,15 @@
 	$i_GLOBAL_starttijd = time(); 
 
 	include "inc.config.php"; 
+	include "inc.functions.php"; // handy functions (date, filehandling, ...) 
+	
+	if (file_exists("inc.config.db.php")) {
+		include "inc.config.db.php"; 
+	} else {
+		loadsetup();  
+	}
+	
 	include "inc.classes.php";   // loads all classes 
-	include "inc.functions.php"; // handy functions (date, filehandling, ...)
 	
 	// $oUser = new user();         // will be used as global in some classes
 	$oPage = new page(); 		 // will be used as global in some classes

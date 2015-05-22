@@ -1,8 +1,13 @@
-<?php 
-	$dbPDO = new PDO("mysql:host=" . $arConfig["database"]["host"] . ";dbname=" . $arConfig["database"]["name"], $arConfig["database"]["user"], $arConfig["database"]["password"]);
+<?php  
+	try {
+		$dbPDO = new PDO("mysql:host=" . settings("database", "host") . ";dbname=" . settings("database", "name"), settings("database", "user"), settings("database", "password"));
+		$arConfig["database"]["loaded"] = TRUE; 
+	} catch( PDOException $Exception ) {
+		$arConfig["database"]["loaded"] = FALSE; 
+	} 
 
 	$ar_GLOBAL_queries = array(); 
-
+	
 	class database { // wordt gebruikt om SQL-queries uit te voeren, enkel gebruiken vanuit andere classes, niet in 'gewone' php-pages 
 			
 		private $strSQL = ""; 
@@ -22,6 +27,12 @@
 				$this->sql($strSQL); 
 				if ($bExecute) $this->execute(); 
 			} 
+		}
+		
+		public function active() {
+			global $dbPDO; 
+			var_dump($dbPDO); 
+			return FALSE; 
 		}
 		
 		public function sql($strSQL = NULL) { // sets of gets de SQL-query
@@ -70,6 +81,7 @@
 						break; 
 					case "delete": 
 					case "update": 
+					case "create": 
 						$oResult = $dbPDO->exec($strSQL);  
 						break; 
 					default: 
@@ -170,18 +182,23 @@
 			return (isset($arRecord[$strID])) ? $arRecord[$strID] : NULL; 
 		} 
 		
-		public function escape($strTekst) { // mysql_real_escape_string
+		public function escape($strTekst, $bQuotes = FALSE) { // mysql_real_escape_string (bquotes sets ' around)
 			//echo ($strTekst); 
 			//echo "<br />" . mysql_real_escape_string($strTekst); 	 
 			// global $dbPDO; 
+			if ($bQuotes) {
+				if (is_null($strTekst)) return "NULL"; 
+			}
 			$strTekst = str_replace('"', "\\\"", $strTekst);
 			$strTekst = str_replace("'", "\\'", $strTekst);
-			return $strTekst;  // $dbPDO->quote($strTekst); // mysql_real_escape_string($strTekst); 	
+			
+			return ($bQuotes) ? "'$strTekst'" : $strTekst;  // $dbPDO->quote($strTekst); // mysql_real_escape_string($strTekst); 	
 		}
 		
 		public function fields() {
 			return $this->arFieldNames; 
 		}
+		 
 	  
 	}
 	 

@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(FALSE); // not needed to be logged in  
 	$oProfile = user($_GET["id"]); 
@@ -7,6 +7,6 @@
     <head> 
     </head>
     <body id="profile">  
-		<? echo $oProfile->html("userpopup.html"); ?> 
+		<?php echo $oProfile->html("userpopup.html"); ?> 
     </body>
 </html>

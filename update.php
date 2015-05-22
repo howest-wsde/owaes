@@ -1,6 +1,6 @@
 <?php
-	include "inc.default.php"; // should be included in EVERY file
-
+	include_once "inc.default.php";
+ 
 	function isTblDbChanges($dbPDO) {
 		$query = "SHOW TABLES LIKE 'tblDbChanges'";
 
@@ -24,21 +24,29 @@
 
 		$result = $dbPDO->exec($query["sql"]);
 
-		if ($result == 0) {
-			$error = "<b>Script terminated: Query NOT successful executed!<br/>IMPORTANT: Some queries might not have been executed.";
-			die($error);
-		}
+		//if ($result !== false) { // WEGGEDAAN, WANT NIET ALLE QUERIES GEVEN EEN RESULT TERUG 
+			// Update tblDbChanges with applied changes
+			$query2 = "INSERT INTO tblDbChanges (date, tag, action) VALUES (NOW(), :tag, :action)";
+
+			$stmt = $dbPDO->prepare($query2);
+			$stmt->bindParam(":tag", $query["tag"]);
+			$stmt->bindParam(":action", $query["name"]);
+			$stmt->execute();
+		//} else {
+		//	$result = "<b>No changes!</b><br/>Note: already executed or error in the query.";
+		//	$result .= "<p>Resolve error &quot;already executed&quot; by checking tblDbChanges for duplicate. The query probably got executed with another tag.</p>";
+		//}
 
 		print("Output:<br/>" . $result . "<br/><br/>");
-
-		// Update tblDbChanges with applied changes
-		$query2 = "INSERT INTO tblDbChanges (date, tag, action) VALUES (NOW(), :tag, :action)";
-
-		$stmt = $dbPDO->prepare($query2);
-		$stmt->bindParam(":tag", $query["tag"]);
-		$stmt->bindParam(":action", $query["name"]);
-		$stmt->execute();
 	}
+
+
+	// connectie met database
+	global $arConfig;
+
+
+	$dbPDO = new PDO("mysql:host=" . settings("database", "host") . ";dbname=" . settings("database", "name"), settings("database", "user"), settings("database", "password"));
+
 
 	// Check if tblDbChanges exists
 	if (!isTblDbChanges($dbPDO)) {
@@ -72,6 +80,7 @@
 	$query = "SELECT tag, action FROM tblDbChanges";
 	$result = $dbPDO->query($query);
 
+
 	$newQueries = array();
 	$executedQueries = array();
 	$i = 0;
@@ -89,6 +98,7 @@
 
 		$i++;
 	}
+
 
 	$i = 0;
 
@@ -115,6 +125,7 @@
 		}
 	}
 
+
 	if (count($newQueries) > 0) {
 		$newQueries = array_unique($newQueries, SORT_REGULAR);
 
@@ -129,4 +140,6 @@
 			}
 		}
 	}
+	
+	echo "update done"; 
 ?>

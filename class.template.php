@@ -132,6 +132,7 @@
 		
 		public function fixedTerms($strHTML) {
 			$arFixed = array(
+				"absroot" => settings("domain", "absroot"), 
 				"credit" => settings("credits", "name", "1"), 
 				"credits" => settings("credits", "name", "x"), 
 				"Credit" => ucfirst(settings("credits", "name", "1")),  

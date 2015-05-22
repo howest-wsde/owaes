@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	
 	// message.ajax.php wordt elke 30 secondes opgeroepen (via function ping in owaes.js)

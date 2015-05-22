@@ -32,11 +32,11 @@
 		return $strHTML; 
 	}
 	 
-	function owaesTime() {
+	function owaesTime() { 
 		$iSpeed = settings("date", "speed"); 
 		$iStart = settings("date", "start");
 		$iDiff = settings("date", "servertime");
-		
+		 
 		$iTime = ((time()-$iStart)*$iSpeed) + $iStart + $iDiff; 
 		return $iTime; 	
 	}
@@ -225,12 +225,57 @@
 	function javatime($iTime) {
 		return $iTime * 1000; 	
 	}
-	
+ 	
 	function settings($strA, $strB = NULL, $strC = NULL) {
 		global $arConfig; 
-		if (isset($strC)) return isset($arConfig[$strA][$strB][$strC]) ? $arConfig[$strA][$strB][$strC] : FALSE; 
-		if (isset($strB)) return isset($arConfig[$strA][$strB]) ? $arConfig[$strA][$strB] : FALSE; 
-		return isset($arConfig[$strA]) ? $arConfig[$strA] : FALSE; 
+		 
+		if (isset($strC)) {
+			if (isset($arConfig[$strA][$strB][$strC])) return $arConfig[$strA][$strB][$strC];
+		} else if (isset($strB)) {
+			if (isset($arConfig[$strA][$strB])) return $arConfig[$strA][$strB]; 
+		} else if (isset($arConfig[$strA])) return $arConfig[$strA]; 
+		
+		if (!isset($arConfig["settings-loaded"])) {
+			if (settings("database", "loaded")) { 
+				$oDB = new database("SELECT `key`, `value` FROM `tblConfig`"); 
+				$oDB->execute(); 
+				while ($oDB->nextRecord()) { 
+					$arKeys = explode(".", $oDB->get("key")); 
+					$oValue = json_decode($oDB->get("value"), FALSE);  
+					switch (count($arKeys)) {
+						case 1:
+							$arConfig[$arKeys[0]] = $oValue; 
+							break;
+						case 2:
+							$arConfig[$arKeys[0]][$arKeys[1]] = $oValue;
+							break;
+						case 3:
+							$arConfig[$arKeys[0]][$arKeys[1]][$arKeys[2]] = $oValue;
+							break;
+					}
+				}  
+				$arConfig["settings-loaded"] = TRUE; 
+			}
+			
+			if (is_null($arConfig["domain"]["name"]) 
+				|| is_null($arConfig["domain"]["root"]) 
+				|| is_null($arConfig["domain"]["absroot"]) 
+				) {
+					loadSetup();
+				}
+			
+			
+			if (isset($strC)) {
+				if (isset($arConfig[$strA][$strB][$strC])) return $arConfig[$strA][$strB][$strC];
+			} else if (isset($strB)) {
+				if (isset($arConfig[$strA][$strB])) return $arConfig[$strA][$strB]; 
+			} else if (isset($arConfig[$strA])) return $arConfig[$strA]; 
+		}
+		return FALSE; 
+	}
+	
+	function loadSetup() {
+		if (filename() != "setup.php") redirect("setup.php"); 
 	}
 	
 	
@@ -349,9 +394,9 @@
 		global $arConfig;  
 		if ((strrpos($strURL, "://") === false) && (substr($strURL, 0, 2)!="//")) {  // relatief pad 
 			if (substr($strURL, 0, 1) == "/"){ 
-				return ($bAbsolute ? $arConfig["domain"]["absroot"] : $arConfig["domain"]["root"]) . substr($strURL, 1); 
+				return ($bAbsolute ? settings("domain", "absroot") : settings("domain", "root")) . substr($strURL, 1); 
 			} else { 
-				return ($bAbsolute ? $arConfig["domain"]["absroot"] : $arConfig["domain"]["root"]) . $strURL; 
+				return ($bAbsolute ? settings("domain", "absroot") : settings("domain", "root")) . $strURL; 
 			}
 		} else { // absoluut pad
 			return $strURL;  
@@ -373,6 +418,29 @@
 	function textarea($strTekst) {
 		return str_replace('<', '&lt;', $strTekst); 
 	} 
+	 
+	function selectbox($arValues = array()) {
+		$arAttributes = array(); 
+		$arOptions = array(); 
+		foreach ($arValues as $strKey=>$strVal) {
+			switch(strtolower($strKey)) {
+				case "value": 
+					break; 
+				case "options": 
+					foreach ($strVal as $strOptionVal => $strOptionName) {
+						if (isset($arValues["value"]) && $arValues["value"]==$strOptionVal) {
+							$arOptions[] = "<option value=\"" . str_replace('"', '&quot;', $strOptionVal) . "\" selected=\"selected\">$strOptionName</option>"; 
+						} else {
+							$arOptions[] = "<option value=\"" . str_replace('"', '&quot;', $strOptionVal) . "\">$strOptionName</option>"; 
+						}
+					}
+					break; 
+				default: 
+					$arAttributes[] = "$strKey = \"$strVal\""; 
+			}	
+		}
+		return "<select " . implode("", $arAttributes) . ">" . implode("", $arOptions) . "</select>"; 
+	}
 	
 	function str2url($str, $strExt=""){
 		$a = array('À', 'Á', 'Â', 'Ã', 'Ä', 'Å', 'Æ', 'Ç', 'È', 'É', 'Ê', 'Ë', 'Ì', 'Í', 'Î', 'Ï', 'Ð', 'Ñ', 'Ò', 'Ó', 'Ô', 'Õ', 'Ö', 'Ø', 'Ù', 'Ú', 'Û', 'Ü', 'Ý', 'ß', 'à', 'á', 'â', 'ã', 'ä', 'å', 'æ', 'ç', 'è', 'é', 'ê', 'ë', 'ì', 'í', 'î', 'ï', 'ñ', 'ò', 'ó', 'ô', 'õ', 'ö', 'ø', 'ù', 'ú', 'û', 'ü', 'ý', 'ÿ', 'Ā', 'ā', 'Ă', 'ă', 'Ą', 'ą', 'Ć', 'ć', 'Ĉ', 'ĉ', 'Ċ', 'ċ', 'Č', 'č', 'Ď', 'ď', 'Đ', 'đ', 'Ē', 'ē', 'Ĕ', 'ĕ', 'Ė', 'ė', 'Ę', 'ę', 'Ě', 'ě', 'Ĝ', 'ĝ', 'Ğ', 'ğ', 'Ġ', 'ġ', 'Ģ', 'ģ', 'Ĥ', 'ĥ', 'Ħ', 'ħ', 'Ĩ', 'ĩ', 'Ī', 'ī', 'Ĭ', 'ĭ', 'Į', 'į', 'İ', 'ı', 'Ĳ', 'ĳ', 'Ĵ', 'ĵ', 'Ķ', 'ķ', 'Ĺ', 'ĺ', 'Ļ', 'ļ', 'Ľ', 'ľ', 'Ŀ', 'ŀ', 'Ł', 'ł', 'Ń', 'ń', 'Ņ', 'ņ', 'Ň', 'ň', 'ŉ', 'Ō', 'ō', 'Ŏ', 'ŏ', 'Ő', 'ő', 'Œ', 'œ', 'Ŕ', 'ŕ', 'Ŗ', 'ŗ', 'Ř', 'ř', 'Ś', 'ś', 'Ŝ', 'ŝ', 'Ş', 'ş', 'Š', 'š', 'Ţ', 'ţ', 'Ť', 'ť', 'Ŧ', 'ŧ', 'Ũ', 'ũ', 'Ū', 'ū', 'Ŭ', 'ŭ', 'Ů', 'ů', 'Ű', 'ű', 'Ų', 'ų', 'Ŵ', 'ŵ', 'Ŷ', 'ŷ', 'Ÿ', 'Ź', 'ź', 'Ż', 'ż', 'Ž', 'ž', 'ſ', 'ƒ', 'Ơ', 'ơ', 'Ư', 'ư', 'Ǎ', 'ǎ', 'Ǐ', 'ǐ', 'Ǒ', 'ǒ', 'Ǔ', 'ǔ', 'Ǖ', 'ǖ', 'Ǘ', 'ǘ', 'Ǚ', 'ǚ', 'Ǜ', 'ǜ', 'Ǻ', 'ǻ', 'Ǽ', 'ǽ', 'Ǿ', 'ǿ');
@@ -654,4 +722,6 @@
 		return $strTxt; 
 	}
 	
-?>
+	function validEmail($strMail) {
+		return (filter_var($strMail, FILTER_VALIDATE_EMAIL));
+	}

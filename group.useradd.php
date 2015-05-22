@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = security(TRUE); 
 //	if (!$oSecurity->admin()) $oSecurity->doLogout(); 

@@ -1,4 +1,4 @@
-<?  
+<?php  
 	define ("STATE_RECRUTE", 0); 
 	define ("STATE_SELECTED", 1); 
 	define ("STATE_FINISHED", 2); 
@@ -440,7 +440,18 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 							$oNotification->message(user($iUser)->getName() . " en " . (count($arSubscriptions)-1) . " andere personen schreven zich in voor de opdracht");
 							$oNotification->sender($iUser); 
 							break; 
-					}
+					} 
+					
+					if ($this->author()->mailalert("newsubscription")) {
+						$oAlert = new mailalert(); 
+						$oAlert->user($this->author()->id()); 
+						$oAlert->link("market", $this->id()); 
+						$oAlert->deadline($this->author()->mailalert("newsubscription"));  
+						$oAlert->sleutel("market." . $this->id()); 
+						$oAlert->message(user($iUser)->getName() . " schreef zich in voor de opdracht \"" . $this->title() . "\"");  
+						$oAlert->update();  
+					} 
+					
 					$oNotification->key("subscription." .  $this->id()); 
 					$oNotification->link(fixPath($this->getLink())); 
 					$oNotification->send(); 
@@ -694,7 +705,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$arFlow[20]["count"] ++; 
 						break; 
 					case SUBSCRIBE_CONFIRMED: 
-						$arFlow[30]["count"] ++; 
+					case SUBSCRIBE_FINISHED: 
+						$arFlow[30]["count"] ++;  
 						break; 
 					default:  
 				}
@@ -1008,8 +1020,15 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					}
 					return "vrij te kiezen"; 
 				case "timing": 
-					$iTiming = $this->timing();  
-					return ($iTiming >0) ? $iTiming . " uur" : "geen tijdsduur ingesteld"; 
+					$iTiming = $this->timing(); 
+					if ($iTiming == 0) {
+						return "geen tijdsduur ingesteld"; 
+					} else {
+						
+						$iUur = floor($iTiming); 
+						$iMin = round($iTiming*60)%60; 
+						return (($iMin==0) ? "$iUur uur" : ($iUur . "u " . $iMin)); 
+					}
 				case "createdate": 
 					return str_date($this->iDate, "datum"); 
 				case "locationimg":  // :100x100
@@ -1170,6 +1189,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$this->loadMomenten(); 
 				}
 			}
+			if (isset($this->arMomenten[intval($iDatum)])) $strStatus = "REPLACE"; 
 			$this->arMomenten[intval($iDatum)] = array(
 				"start" => $iStart,  
 				"tijd" => $iTijd, 
@@ -1186,7 +1206,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		}
 		 
 		public function removeMoment($iDatum) {  // timing verwijderen ($iTiming = unix time)
-			if (is_null($this->arMomenten)) $this->loadMomenten(); 
+			if (is_null($this->arMomenten)) $this->loadMomenten();  
 			if (isset($this->arMomenten[intval($iDatum)])) {
 				switch($this->arMomenten[intval($iDatum)]){
 					case "NEW": 
@@ -1194,7 +1214,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						break;
 					default: 
 						$this->arMomenten[intval($iDatum)]["status"] = "DELETE"; 
-				}
+				} 
 				return TRUE; 
 			} else return FALSE;  
 		} 
@@ -1312,6 +1332,10 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$oDB->execute("delete from tblMarketDates where market = '" . $this->iID . "' and datum = '$iDate';"); 
 						break; 
 					case "NEW":  
+						$oDB->execute("insert into tblMarketDates (market, datum, start, tijd) values ('" . $this->iID . "', '" . $iDate . "', '" . $arDetails["start"] . "', '" . $arDetails["tijd"] . "');"); 
+						break; 
+					case "REPLACE":  
+						$oDB->execute("delete from tblMarketDates where market = '" . $this->iID . "' and datum = '$iDate';"); 
 						$oDB->execute("insert into tblMarketDates (market, datum, start, tijd) values ('" . $this->iID . "', '" . $iDate . "', '" . $arDetails["start"] . "', '" . $arDetails["tijd"] . "');"); 
 						break; 
 					default: 

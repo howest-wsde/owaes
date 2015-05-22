@@ -1,4 +1,4 @@
-<?
+<?php
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
@@ -8,7 +8,7 @@
 	
 	$oNotification = new notification(); 
 	$oNotification->read("subscription." . $iID );  
-	
+	 
 	if (!$oOwaesItem->userrights("select", me())) {  
 		redirect("owaes.php?owaes=" . $iID); 
 		exit(); 
@@ -39,7 +39,7 @@
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <?
+        <?php
         	echo $oPage->getHeader(); 
 		?> 
         <script>
@@ -77,8 +77,8 @@
 					$(this).find(".nieuwafgekeurd").each(function(){
 						arAfgekeurd[arAfgekeurd.length] = $(this).val(); 
 					})
-					if (arGoedgekeurd.length > 0) arModals[arModals.length] = "modal.mailconfirm.php?m=<? echo $iID; ?>&s=1&u=" + arGoedgekeurd.join(","); 
-					if (arAfgekeurd.length > 0) arModals[arModals.length] = "modal.mailconfirm.php?m=<? echo $iID; ?>&s=0&u=" + arAfgekeurd.join(","); 
+					if (arGoedgekeurd.length > 0) arModals[arModals.length] = "modal.mailconfirm.php?m=<?php echo $iID; ?>&s=1&u=" + arGoedgekeurd.join(","); 
+					if (arAfgekeurd.length > 0) arModals[arModals.length] = "modal.mailconfirm.php?m=<?php echo $iID; ?>&s=0&u=" + arAfgekeurd.join(","); 
 					if (arModals.length > 0) {
 						arModals[arModals.length - 1] += "&refresh=1"; 
 						loadModals(arModals); 
@@ -92,25 +92,26 @@
     </head>
     <body id="owaes"> 
     	<div class="body">                
-            <? echo $oPage->startTabs(); ?> 
+            <?php echo $oPage->startTabs(); ?> 
             <div class="container content content-marktitem">
             	<div class="row">
-					<?
+					<?php
 						echo $oSecurity->me()->html("user.html");
                     ?>
                 </div> 
                 <div class="ownerDetail">  
-					<? echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
+					<?php echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
 					
-                    <? if ($oOwaesItem->state() == STATE_DELETED) { ?>
+                    <?php if ($oOwaesItem->state() == STATE_DELETED) { ?>
 						<p>Dit item werd verwijderd</p>
-					<? } else { ?>
+					<?php } else { ?>
                         <form method="post" class="selecteerform"> 
                             <div class="row">
                                 <div class="col-md-6 nieuwInschrijvingen">
                                     <div class="bucket box sameheight col-md-4" id="nieuw">
                                         <h2>Nieuw</h2>
-                                        <?  
+                                        <?php  
+											$iCount = 0; 
                                             foreach ($oOwaesItem->subscriptions() as $iUser=>$oValue) {
                                                 switch ($oValue->state()) {
                                                     case SUBSCRIBE_SUBSCRIBE: 
@@ -125,6 +126,10 @@
                                                         break;  
                                                 } 
                                             }  
+											if ($iCount == 0) { 
+												$oMailalerts = new mailalert(); 
+												$oMailalerts->cancel("market." . $iID);  	
+											}
                                         ?>
                                     </div>
                                 </div>
@@ -133,7 +138,7 @@
                                     <div class="row geweigerd">
                                         <div class="bucket box sameheight col-md-4" id="geweigerd">
                                             <h2>Niet geselecteerd</h2>
-                                            <? 
+                                            <?php 
                                                 foreach ($oOwaesItem->subscriptions() as $iUser=>$oValue) {
                                                     switch ($oValue->state()) {
                                                         case SUBSCRIBE_DECLINED: 
@@ -151,16 +156,17 @@
                                     </div>
                                     
                                     <div class="row geselecteerd">
-                                        <?
+                                        <?php
                                             $iConfirmed = 0;  
                                         ?>
                                         <div class="buckets">
                                         <div class="bucket box sameheight col-md-4" id="geselecteerd">
                                             <h2>Geselecteerd</h2>
-                                            <?
+                                            <?php
                                                 foreach ($oOwaesItem->subscriptions() as $iUser=>$oValue) {
                                                     switch ($oValue->state()) {
                                                         case SUBSCRIBE_CONFIRMED: 
+                                                        case SUBSCRIBE_FINISHED: 
                                                             $iConfirmed ++; 
                                                             $oUser = user($iUser);
                                                             $oTransaction = $oValue->payment(); 
@@ -194,7 +200,7 @@
                                 </div>
                             </div>
                           
-                            <?
+                            <?php
 								if ($oOwaesItem->userrights("edit", me())) echo (' <a href="' . fixPath("owaesadd.php?edit=" . $iID) . '" class="knop edit btn btn-default btn-sm pull-right">aanpassen</a> '); 
                             
                                 if ($oOwaesItem->state() != STATE_FINISHED) echo ('<input type="submit" value="inschrijvingen afsluiten" name="close" class="knoprood btn btn-default btn-sm pull-right" /> ');  
@@ -206,13 +212,13 @@
                        
                             ?> 
                         </form>
-					<? } ?>
+					<?php } ?>
             	</div> 
-				<? echo $oPage->endTabs(); ?>
+				<?php echo $oPage->endTabs(); ?>
             </div>
         </div>
         <div class="footer">
-        	<? echo $oPage->footer(); ?>
+        	<?php echo $oPage->footer(); ?>
         </div>
    
     </body>
