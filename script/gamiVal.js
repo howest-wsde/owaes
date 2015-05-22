@@ -83,11 +83,11 @@ function validateAddActivity(bShowAlerts) {
 
 	for (var i = 0; i < aantalLevels; i++) {
 		if (thresholds[i] == "") {
-			arFouten["txtLevel" + i + "Threshold"] = "Gelieve een threshold mee te geven voor level " + i + ".";
+			arFouten["txtLevel" + i + "Threshold"] = "Gelieve een drempel mee te geven voor level " + i + ".";
 		}
 
 		if (thresholds[i] < 0) {
-			arFouten["txtLevel" + i + "Threshold"] = "Gelieve een geldig threshold mee te geven voor level " + i + ".";
+			arFouten["txtLevel" + i + "Threshold"] = "Gelieve een geldig drempel mee te geven voor level " + i + ".";
 		}
 
 		if (multipliers[i] == "") {
@@ -158,35 +158,35 @@ function validateAddActivity(bShowAlerts) {
 		}
 
 		if (physicals[i] == "") {
-			arFouten["txtW" + (i + 1) + "Physical"] = "Gelieve een nummer in te geven voor physical in warning " + (i + 1) + ".";
+			arFouten["txtW" + (i + 1) + "Physical"] = "Gelieve een nummer in te geven voor fysiek in warning " + (i + 1) + ".";
 		}
 
 		if (physicals[i] < 0) {
-			arFouten["txtW" + (i + 1) + "Physical"] = "Gelieve een geldig nummer in te geven voor physical in warning " + (i + 1) + ".";
+			arFouten["txtW" + (i + 1) + "Physical"] = "Gelieve een geldig nummer in te geven voor fysiek in warning " + (i + 1) + ".";
 		}
 
 		if (socials[i] == "") {
-			arFouten["txtW" + (i + 1) + "Social"] = "Gelieve een nummer in te geven voor social in warning " + (i + 1) + ".";
+			arFouten["txtW" + (i + 1) + "Social"] = "Gelieve een nummer in te geven voor sociaal in warning " + (i + 1) + ".";
 		}
 
 		if (socials[i] < 0) {
-			arFouten["txtW" + (i + 1) + "Social"] = "Gelieve een geldig nummer in te geven voor social in warning " + (i + 1) + ".";
+			arFouten["txtW" + (i + 1) + "Social"] = "Gelieve een geldig nummer in te geven voor sociaal in warning " + (i + 1) + ".";
 		}
 
 		if (mentals[i] == "") {
-			arFouten["txtW" + (i + 1) + "Mental"] = "Gelieve een nummer in te geven voor mental in warning " + (i + 1) + ".";
+			arFouten["txtW" + (i + 1) + "Mental"] = "Gelieve een nummer in te geven voor kennis in warning " + (i + 1) + ".";
 		}
 
 		if (mentals[i] < 0) {
-			arFouten["txtW" + (i + 1) + "Mental"] = "Gelieve een geldig nummer in te geven voor mental in warning " + (i + 1) + ".";
+			arFouten["txtW" + (i + 1) + "Mental"] = "Gelieve een geldig nummer in te geven voor kennis in warning " + (i + 1) + ".";
 		}
 
 		if (emotionals[i] == "") {
-			arFouten["txtW" + (i + 1) + "Emotional"] = "Gelieve een nummer in te geven voor emotional in warning " + (i + 1) + ".";
+			arFouten["txtW" + (i + 1) + "Emotional"] = "Gelieve een nummer in te geven voor welzijn in warning " + (i + 1) + ".";
 		}
 
 		if (emotionals[i] < 0) {
-			arFouten["txtW" + (i + 1) + "Emotional"] = "Gelieve een geldig nummer in te geven voor emotional in warning " + (i + 1) + ".";
+			arFouten["txtW" + (i + 1) + "Emotional"] = "Gelieve een geldig nummer in te geven voor welzijn in warning " + (i + 1) + ".";
 		}
 
 		if (indisoms[i] == "") {

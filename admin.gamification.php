@@ -260,19 +260,19 @@
 							<fieldset>
 								<legend>Startwaarden</legend>
 								<p>
-									<label for="txtPhysical">Physical:</label>&nbsp;&nbsp;<span id="sPhy"></span>
+									<label for="txtPhysical">Fysiek:</label>&nbsp;&nbsp;<span id="sPhy"></span>
 									<input step="1" onchange="printValue('txtPhysical', 'sPhy')" style="background-color: #ff3131;" type="range" name="txtPhysical" id="txtPhysical" min="0" max="100" value="<? echo settings("startvalues", "physical"); ?>"/>
 								</p>
 								<p>
-									<label for="txtSocial">Social:</label>&nbsp;&nbsp;<span id="sSoc"></span>
+									<label for="txtSocial">Sociaal:</label>&nbsp;&nbsp;<span id="sSoc"></span>
 									<input step="1" onchange="printValue('txtSocial', 'sSoc')" style="background-color: #8dc63f;" type="range" name="txtSocial" id="txtSocial" min="0" max="100" value="<? echo settings("startvalues", "social"); ?>"/>
 								</p>
 								<p>
-									<label for="txtMental">Mental:</label>&nbsp;&nbsp;<span id="sMen"></span>
+									<label for="txtMental">Kennis:</label>&nbsp;&nbsp;<span id="sMen"></span>
 									<input step="1" onchange="printValue('txtMental', 'sMen')" style="background-color: #0072bc;" type="range" name="txtMental" id="txtMental" min="0" max="100" value="<? echo settings("startvalues", "mental"); ?>"/>
 								</p>
 								<p>
-									<label for="txtEmotional">Emotional:</label>&nbsp;&nbsp;<span id="sEmo"></span>
+									<label for="txtEmotional">Welzijn:</label>&nbsp;&nbsp;<span id="sEmo"></span>
 									<input step="1" onchange="printValue('txtEmotional', 'sEmo')" style="background-color: #ffcc00;" type="range" name="txtEmotional" id="txtEmotional" min="0" max="100" value="<? echo settings("startvalues", "emotional"); ?>"/>
 								</p>
 							</fieldset>
@@ -286,7 +286,7 @@
 										<div class="naastElkaar">
 										<h2>Level <? echo $i; ?></h2>
 										<p>
-											<label for="txtLevel<? print($i . "Threshold"); ?>">Threshold:</label><br/>
+											<label for="txtLevel<? print($i . "Threshold"); ?>">Drempel:</label><br/>
 											<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="0.001"  value="<? echo $level["threshold"]; ?>"/>
 										</p>
 										<p>
@@ -300,7 +300,7 @@
 									?>
 							</fieldset>
 							<fieldset>
-								<legend>Warnings</legend>
+								<legend>Waarschuwingen</legend>
 								<?
 									$i = 1;
 
@@ -325,19 +325,19 @@
 											<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.001" value="<? echo $warning["waardering"]; ?>"/>
 										</p>
 										<p>
-											<label for="txtW<? print($i . "Physical"); ?>">Physical:</label><br/>
+											<label for="txtW<? print($i . "Physical"); ?>">Fysiek:</label><br/>
 											<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="0.001" value="<? echo $warning["physical"]; ?>"/>
 										</p>
 										<p>
-											<label for="txtW<? print($i . "Social"); ?>">Social:</label><br/>
+											<label for="txtW<? print($i . "Social"); ?>">Sociaal:</label><br/>
 											<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="0.001" value="<? echo $warning["social"]; ?>"/>
 										</p>
 										<p>
-											<label for="txtW<? print($i . "Mental"); ?>">Mental:</label><br/>
+											<label for="txtW<? print($i . "Mental"); ?>">Kennis:</label><br/>
 											<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="0.001" value="<? echo $warning["mental"]; ?>"/>
 										</p>
 										<p>
-											<label for="txtW<? print($i . "Emotional"); ?>">Emotional:</label><br/>
+											<label for="txtW<? print($i . "Emotional"); ?>">Welzijn:</label><br/>
 											<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="0.001" value="<? echo $warning["emotional"]; ?>"/>
 										</p>
 										<p>

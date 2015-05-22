@@ -53,7 +53,7 @@ function validateAddActivity(bShowAlerts) {
 	var $txtRemUnread = $("#txtRemUnread").val();
 
 	if ($txtTemplateFolder == "") {
-		arFouten["txtTemplateFolder"] = "Gelieve een template folder mee te geven.";
+		arFouten["txtTemplateFolder"] = "Gelieve een template map mee te geven.";
 	}
 
 	if ($txtLokatie == "") {
