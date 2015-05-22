@@ -254,16 +254,15 @@
 							break;
 					}
 				}  
-				$arConfig["settings-loaded"] = TRUE; 
+				$arConfig["settings-loaded"] = TRUE;
+				
+				if (file_exists("_sql.inc")) if (filemtime("_sql.inc") != $arConfig["setup"]["database"]) {
+					$oDB->execute("INSERT INTO tblConfig (`key`, `value`) VALUES('setup.database', '" . filemtime("_sql.inc") . "') ON DUPLICATE KEY UPDATE `key`=VALUES(`key`), `value`=VALUES(`value`);"); 
+					if (filename(FALSE) != "update.php") redirect ("update.php?redirect=" . urlEncode(filename(TRUE))); 
+				} 
 			}
 			
-			if (is_null($arConfig["domain"]["name"]) 
-				|| is_null($arConfig["domain"]["root"]) 
-				|| is_null($arConfig["domain"]["absroot"]) 
-				) {
-					loadSetup();
-				}
-			
+			if (!settingsOK()) loadSetup();			
 			
 			if (isset($strC)) {
 				if (isset($arConfig[$strA][$strB][$strC])) return $arConfig[$strA][$strB][$strC];
@@ -275,7 +274,19 @@
 	}
 	
 	function loadSetup() {
-		if (filename() != "setup.php") redirect("setup.php"); 
+		if (filename(FALSE) != "setup.php") redirect("setup.php"); 
+	}
+	
+	function settingsOK() {
+		$arChecks = array(
+			"database" => settings("database", "loaded"), 
+			"domeinsettings" => settings("domain", "name") && settings("domain", "root") && settings("domain", "absroot"), 
+			"writable folders" => is_writable("upload") && is_writable("cache") && is_writable("settings"), 
+			"update.php" => TRUE, 
+		);  
+		$bCheck = TRUE; 
+		foreach (array_values($arChecks) as $bVal) if (!$bVal) $bCheck = FALSE; 
+		return $bCheck; 
 	}
 	
 	

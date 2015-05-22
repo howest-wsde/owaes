@@ -18,9 +18,9 @@
 	}
 
 	function applyChanges($dbPDO, $query) {
-		print("<hr/><br/>");
-		print($query["name"] . "\tTag: " . $query["tag"] . "<br/>");
-		print($query["sql"] . "<br/><br/>");
+		say ("<hr/><br/>");
+		say ($query["name"] . "\tTag: " . $query["tag"] . "<br/>");
+		say ($query["sql"] . "<br/><br/>");
 
 		$result = $dbPDO->exec($query["sql"]);
 
@@ -37,7 +37,7 @@
 		//	$result .= "<p>Resolve error &quot;already executed&quot; by checking tblDbChanges for duplicate. The query probably got executed with another tag.</p>";
 		//}
 
-		print("Output:<br/>" . $result . "<br/><br/>");
+		say ("Output:<br/>" . $result . "<br/><br/>");
 	}
 
 
@@ -65,7 +65,7 @@
 			$result = "tblDbChanges created!";
 		}
 
-		print($result . "<br/><br/>");
+		say ($result . "<br/><br/>");
 	}
 
 	// Read queries from _sql.inc
@@ -131,7 +131,7 @@
 
 		if ((count($newQueries) == 1) && (is_null($newQueries[0]))) {
 			$msg = "Database is up-to-date";
-			die($msg);
+			say ($msg);
 		}
 
 		foreach ($newQueries as $query) {
@@ -141,5 +141,11 @@
 		}
 	}
 	
-	echo "update done"; 
+	say ("update done");
+	
+	if (isset($_GET["redirect"])) redirect($_GET["redirect"]); 
+	
+	function say($strText) {
+		if (!isset($_GET["redirect"])) echo $strText; 
+	}
 ?>
