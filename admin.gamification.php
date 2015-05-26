@@ -184,6 +184,10 @@
 			#txtEmotional::-ms-fill-upper, #txtEmotional::-ms-fill-lower {
 				background-color: #ffcc00;
 			}
+
+			.levels {
+				height: 160px;
+			}
 		</style>
 	</head>
 	<body id="index">
@@ -225,15 +229,15 @@
 
 									foreach ($arConfig["levels"] as $level) {
 	?>
-										<div class="naastElkaar">
+										<div class="naastElkaar levels">
 										<h2>Level <? echo $i; ?></h2>
 										<p>
 											<label for="txtLevel<? print($i . "Threshold"); ?>">Drempel:</label><br/>
-											<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="0.001"  value="<? echo $level["threshold"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="1"  value="<? echo $level["threshold"]; ?>"/>
 										</p>
 										<p>
 											<label for="txtLevel<? print($i . "Multiplier"); ?>">Vermenigvuldigingsfactor:</label><br/>
-											<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.001" value="<? echo $level["multiplier"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.01" value="<? echo $level["multiplier"]; ?>"/>
 										</p>
 										</div>
 										<?
@@ -252,39 +256,39 @@
 										<h2>Warning <? echo $i; ?></h2>
 										<p>
 											<label for="txtW<? print($i . "Schenkingen"); ?>">Schenkingen:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="0.001" value="<? echo $warning["schenkingen"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="1" value="<? echo $warning["schenkingen"]; ?>"/>
 										</p>
 										<p>
 											<label for="txtW<? print($i . "Trans"); ?>">Transactiediversiteit:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.001" value="<? echo $warning["transactiediversiteit"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.01" value="<? echo $warning["transactiediversiteit"]; ?>"/>
 										</p>
 										<p>
 											<label for="txtW<? print($i . "Credits"); ?>">Credits:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="0.001" value="<? echo $warning["credits"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="1" value="<? echo $warning["credits"]; ?>"/>
 										</p>
 										<p>
 											<label for="txtW<? print($i . "Waardering"); ?>">Waardering:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.001" value="<? echo $warning["waardering"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.1" value="<? echo $warning["waardering"]; ?>"/>
 										</p>
 										<p>
 											<label for="txtW<? print($i . "Physical"); ?>">Fysiek:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="0.001" value="<? echo $warning["physical"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="1" value="<? echo $warning["physical"]; ?>"/>
 										</p>
 										<p>
 											<label for="txtW<? print($i . "Social"); ?>">Sociaal:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="0.001" value="<? echo $warning["social"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="1" value="<? echo $warning["social"]; ?>"/>
 										</p>
 										<p>
 											<label for="txtW<? print($i . "Mental"); ?>">Kennis:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="0.001" value="<? echo $warning["mental"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="1" value="<? echo $warning["mental"]; ?>"/>
 										</p>
 										<p>
 											<label for="txtW<? print($i . "Emotional"); ?>">Welzijn:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="0.001" value="<? echo $warning["emotional"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="1" value="<? echo $warning["emotional"]; ?>"/>
 										</p>
 										<p>
 											<label for="txtW<? print($i . "IndiSom"); ?>">Indicatorsom:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="0.001" value="<? echo $warning["indicatorsom"]; ?>"/>
+											<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="1" value="<? echo $warning["indicatorsom"]; ?>"/>
 										</p>
 										</div>
 										<?
