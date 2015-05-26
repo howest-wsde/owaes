@@ -157,5 +157,8 @@
 			"platform" => 1, 
 			"reminderunread" => 259200,
 			"remindersubscription" => 259200,
+		), 
+		"setup" => array(
+			"database" => 0, 
 		)
 	);   

@@ -128,7 +128,7 @@
                                             }  
 											if ($iCount == 0) { 
 												$oMailalerts = new mailalert(); 
-												$oMailalerts->cancel("market." . $iID);  	
+												$oMailalerts->cancel("market." . $iID);  	 	
 											}
                                         ?>
                                     </div>
