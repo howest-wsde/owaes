@@ -2,3 +2,4 @@
 /_DB backup
 /_temp
 /.project
+/cache/*
