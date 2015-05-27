@@ -8,6 +8,7 @@
 	$oPage->addJS("script/admin.js");
 	$oPage->addCSS("style/admin.css");
 
+	$oPage->addCSS("style/configuratie.css");
 	$oPage->addJS("script/confVal.js");
 
 	function periodInSeconds($rb, $value) {
@@ -217,40 +218,6 @@
 <html>
 	<head>
 		<? echo $oPage->getHeader(); ?>
-		<style>
-			h1 {
-				font-size: 20pt;
-			}
-
-			h2 {
-				font-size: 13pt;
-			}
-
-			legend {
-				font-size: 12pt;
-			}
-
-			fieldset {
-				padding: 0 0 30px 0;
-				width: 800px;
-			}
-
-			fieldset > p {
-				padding: 0 0 0 20px;
-			}
-
-			.enabled {
-				background: #ffffff;
-			}
-
-			.disabled {
-				background: #dadada;
-			}
-
-			.credits p {
-				height: 70px;
-			}
-		</style>
 	</head>
 	<body id="index">
 		<? echo $oPage->startTabs(); ?>
@@ -298,10 +265,10 @@
 							<fieldset>
 								<legend>Verzekeringen</legend>
 								<p>
-									<input style="width: 350px;" type="text" name="txtV1" id="txtV1" value="<? echo settings("verzekeringen", "1"); ?>"/>
+									<input type="text" name="txtV1" id="txtV1" value="<? echo settings("verzekeringen", "1"); ?>"/>
 								</p>
 								<p>
-									<input style="width: 350px;" type="text" name="txtV2" id="txtV2" value="<? echo settings("verzekeringen", "2"); ?>"/>
+									<input type="text" name="txtV2" id="txtV2" value="<? echo settings("verzekeringen", "2"); ?>"/>
 								</p>
 							</fieldset>
 							<fieldset>
@@ -407,25 +374,25 @@
 									<label for="txtPlatform">Platform:</label><br/>
 									<input type="number" name="txtPlatform" id="txtPlatform" min="0" value="<? echo settings("mailalert", "platform"); ?>"/>
 								</p>
-								<p class="naastElkaar">
+								<p class="naastElkaar tijdMail">
 									<label for="txtNewMessage">Nieuw bericht:</label><br/>
 									<input type="radio" name="rbNMwhen" id="rbNMDay" value="day" <? echo getPeriod(settings("mailalert", "newmessage"), "day"); ?>/><label for="rbNMDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbNMwhen" id="rbNMWeek" value="week" <? echo getPeriod(settings("mailalert", "newmessage"), "week"); ?>/><label for="rbNMWeek">Week</label><br/>
 									<input type="number" name="txtNewMessage" id="txtNewMessage" min="0" value="<? echo convertSeconds(settings("mailalert", "newmessage")); ?>"/>
 								</p>
-								<p class="naastElkaar">
+								<p class="naastElkaar tijdMail">
 									<label for="txtNewSub">Nieuw aanbieding:</label><br/>
 									<input type="radio" name="rbNSwhen" id="rbNSDay" value="day" <? echo getPeriod(settings("mailalert", "newsubscription"), "day"); ?>/><label for="rbNSDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbNSwhen" id="rbNSWeek" value="week" <? echo getPeriod(settings("mailalert", "newsubscription"), "week"); ?>/><label for="rbNSWeek">Week</label><br/>
 									<input type="number" name="txtNewSub" id="txtNewSub" min="0" value="<? echo convertSeconds(settings("mailalert", "newsubscription")); ?>"/>
 								</p>
-								<p class="naastElkaar">
+								<p class="naastElkaar tijdMail">
 									<label for="txtRemSub">Herinnering aanbieding:</label><br/>
 									<input type="radio" name="rbRSwhen" id="rbRSDay" value="day" <? echo getPeriod(settings("mailalert", "remindersubscription"), "day"); ?>/><label for="rbRSDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbRSwhen" id="rbRSWeek" value="week" <? echo getPeriod(settings("mailalert", "remindersubscription"), "week"); ?>/><label for="rbRSWeek">Week</label><br/>
 									<input type="number" name="txtRemSub" id="txtRemSub" min="0" value="<? echo convertSeconds(settings("mailalert", "remindersubscription")); ?>"/>
 								</p>
-								<p class="naastElkaar">
+								<p class="naastElkaar tijdMail">
 									<label for="txtRemUnread">Ongelezen herinnering:</label><br/>
 									<input type="radio" name="rbRUwhen" id="rbRUDay" value="day" <? echo getPeriod(settings("mailalert", "reminderunread"), "day"); ?>/><label for="rbRUDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbRUwhen" id="rbRUWeek" value="week" <? echo getPeriod(settings("mailalert", "reminderunread"), "week"); ?>/><label for="rbRUWeek">Week</label><br/>

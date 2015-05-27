@@ -8,6 +8,7 @@
 	$oPage->addJS("script/admin.js");
 	$oPage->addCSS("style/admin.css");
 
+	$oPage->addCSS("style/gamification.css");
 	$oPage->addJS("script/gamiVal.js");
 
 	function prepareAndExecuteStmt($key, $val, $dbPDO) {
@@ -114,81 +115,6 @@
 <html>
 	<head>
 		<? echo $oPage->getHeader(); ?>
-		<style>
-			h1 {
-				font-size: 20pt;
-			}
-
-			h2 {
-				font-size: 13pt;
-			}
-
-			legend {
-				font-size: 12pt;
-			}
-
-			fieldset {
-				padding: 0 0 30px 0;
-				width: 800px;
-			}
-
-			fieldset > p, fieldset > div {
-				padding: 0 0 0 20px;
-			}
-
-			input[type="range"] {
-				width: 500px;
-				height: 10px;
-				-webkit-appearance: none;
-			}
-
-			input[type="range"]::-webkit-slider-thumb {
-				-webkit-appearance: none;
-				border: 0;
-				border-radius: 50%;
-				width: 18px;
-				height: 18px;
-				border: 1px solid #a0a0a0;
-				background: #e4e4e4;
-			}
-
-			input::-moz-range-track {
-				background: transparent;
-				border: 0;
-			}
-
-			input[type="range"]::-ms-track {
-				background: transparent;
-				border-color: transparent;
-				color: transparent;
-			}
-
-			input[type="range"]::-ms-thumb {
-				border-radius: 50%;
-				border: 2px solid #e4e4e4;
-				background: #e4e4e4;
-			}
-
-			#txtPhysical::-ms-fill-upper, #txtPhysical::-ms-fill-lower {
-				background-color: #ff3131;
-			}
-
-			#txtSocial::-ms-fill-upper, #txtSocial::-ms-fill-lower {
-				background-color: #8dc63f;
-			}
-
-			#txtMental::-ms-fill-upper, #txtMental::-ms-fill-lower {
-				background-color: #0072bc;
-			}
-
-			#txtEmotional::-ms-fill-upper, #txtEmotional::-ms-fill-lower {
-				background-color: #ffcc00;
-			}
-
-			.levels {
-				height: 160px;
-			}
-		</style>
 	</head>
 	<body id="index">
 		<? echo $oPage->startTabs(); ?>
@@ -252,44 +178,44 @@
 
 									foreach ($arConfig["warnings"] as $warning) {
 	?>
-										<div class="naastElkaar">
-										<h2>Warning <? echo $i; ?></h2>
-										<p>
-											<label for="txtW<? print($i . "Schenkingen"); ?>">Schenkingen:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="1" value="<? echo $warning["schenkingen"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Trans"); ?>">Transactiediversiteit:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.01" value="<? echo $warning["transactiediversiteit"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Credits"); ?>">Credits:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="1" value="<? echo $warning["credits"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Waardering"); ?>">Waardering:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.1" value="<? echo $warning["waardering"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Physical"); ?>">Fysiek:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="1" value="<? echo $warning["physical"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Social"); ?>">Sociaal:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="1" value="<? echo $warning["social"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Mental"); ?>">Kennis:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="1" value="<? echo $warning["mental"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Emotional"); ?>">Welzijn:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="1" value="<? echo $warning["emotional"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "IndiSom"); ?>">Indicatorsom:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="1" value="<? echo $warning["indicatorsom"]; ?>"/>
-										</p>
+										<div class="naastElkaar warnings">
+											<h2>Warning <? echo $i; ?></h2>
+											<p>
+												<label for="txtW<? print($i . "Schenkingen"); ?>">Schenkingen:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="1" value="<? echo $warning["schenkingen"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Trans"); ?>">Transactiediversiteit:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.01" value="<? echo $warning["transactiediversiteit"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Credits"); ?>">Credits:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="1" value="<? echo $warning["credits"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Waardering"); ?>">Waardering:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.1" value="<? echo $warning["waardering"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Physical"); ?>">Fysiek:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="1" value="<? echo $warning["physical"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Social"); ?>">Sociaal:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="1" value="<? echo $warning["social"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Mental"); ?>">Kennis:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="1" value="<? echo $warning["mental"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Emotional"); ?>">Welzijn:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="1" value="<? echo $warning["emotional"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "IndiSom"); ?>">Indicatorsom:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="1" value="<? echo $warning["indicatorsom"]; ?>"/>
+											</p>
 										</div>
 										<?
 										$i++;
