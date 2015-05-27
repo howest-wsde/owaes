@@ -2,3 +2,5 @@
 /_DB backup
 /_temp
 /.project
+/cache/*
+inc.config.db.php
