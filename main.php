@@ -138,20 +138,13 @@
                     </div>
                     
                     <div class="col-md-5 detailUser">
-                    	<?php
- 
+                    	<?php 
                         	$iExp1 = $oMe->experience()->total(); 
-                        	$iExp2 = $oMe->experience()->total(TRUE); 
+                        	$iExp2 = $oMe->experience()->total(TRUE);
 							$iPrevTreshold = $oMe->experience()->leveltreshold(FALSE);  
-							$iNextTreshold = $oMe->experience()->leveltreshold(TRUE);
+							$iNextTreshold = $oMe->experience()->leveltreshold(TRUE); 
 							$iPercent1 = round(($iExp1-$iPrevTreshold)/($iNextTreshold-$iPrevTreshold)*100); 
 							$iPercent2 = round(($iExp2-$iPrevTreshold)/($iNextTreshold-$iPrevTreshold)*100); 
-							/*
-							if (!isset($_GET["start"])) {
-								$iExp2 = $iExp1; 
-								$iPercent2 = $iPercent1;  
-							}
-							*/
 						?>
                         <p class="gebruikers-naam"><a href="<?php echo $oMe->getURL(); ?>"><?php echo $oMe->getName(); ?></a></p>
                         <p class="level">Level <span class="levelvalue"><?php echo $oMe->level(); ?></span></p>
