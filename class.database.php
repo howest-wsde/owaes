@@ -17,7 +17,7 @@
 		private $arResult; 
 		private $iRecord = 0; 
 		private $iInsertedID = 0; 
-		private $arFieldNames = NULL;  
+		private $arFieldNames = NULL;   
 
 		public function database($strSQL = NULL, $bExecute = false) {   /*
 			optional parameters: $strSQL : Query direct setten (sql("..") ); 
@@ -39,6 +39,7 @@
 			if (!is_null($strSQL)) $this->strSQL = $strSQL; 
 			return $this->strSQL; 
 		}
+		 
 		
 		public function execute($strSQL = NULL){ /* executes DB-query, returns number of records (length)
 			optional parameter $strSQL: eerst SQL-aanpassen, anders wordt deze gebruikt die geset werd met sql("..")
