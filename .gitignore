@@ -4,3 +4,5 @@
 /.project
 /cache/*
 inc.config.db.php
+*.old
+*.new
