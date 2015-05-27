@@ -451,6 +451,15 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$oAlert->message(user($iUser)->getName() . " schreef zich in voor de opdracht \"" . $this->title() . "\"");  
 						$oAlert->update();  
 					} 
+					if ($this->author()->mailalert("remindersubscription")) {
+						$oAlert = new mailalert(); 
+						$oAlert->user($this->author()->id()); 
+						$oAlert->link("market", $this->id()); 
+						$oAlert->deadline($this->author()->mailalert("remindersubscription"));  
+						$oAlert->sleutel("market." . $this->id()); 
+						$oAlert->message("Herinnering: U reageerde nog niet op de inschrijving van " . user($iUser)->getName() . " voor de opdracht \"" . $this->title() . "\"");  
+						$oAlert->update();  
+					} 
 					
 					$oNotification->key("subscription." .  $this->id()); 
 					$oNotification->link(fixPath($this->getLink())); 
@@ -1163,9 +1172,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				//return "<div class=\"locationbox\" style=\"background: url('" . cache($strURL, "png") . "'); \"></div>";  
                 return "<img class=\"locationbox\" src=\"" . cache($strURL, "png") . "\" ></img>";  
 			} else {
-				$strURL = "http://maps.googleapis.com/maps/api/staticmap?center=" . ($this->iLocationLat+.005) . "," . $this->iLocationLong . "&zoom=13&size=" . $iWidth . "x" . $iHeight . "&maptype=roadmap&markers=color:blue%7C" . $this->iLocationLat . "," . $this->iLocationLong . "&sensor=false"; 
-				//return "<div class=\"locationbox\" style=\"background: url('" . cache($strURL, "png") . "'); \"><span>" . $this->location() . "</span></div>";  
-                return "<img class=\"locationbox\" src=\"" . cache($strURL, "png") . "\" ><span>" . $this->location() . "</span></img>";  
+				if ($this->iLocationLat != 0 || $this->iLocationLong != 0) {
+					$strURL = "http://maps.googleapis.com/maps/api/staticmap?center=" . ($this->iLocationLat+.005) . "," . $this->iLocationLong . "&zoom=13&size=" . $iWidth . "x" . $iHeight . "&maptype=roadmap&markers=color:blue%7C" . $this->iLocationLat . "," . $this->iLocationLong . "&sensor=false"; 
+					//return "<div class=\"locationbox\" style=\"background: url('" . cache($strURL, "png") . "'); \"><span>" . $this->location() . "</span></div>";  
+					return "<img class=\"locationbox\" src=\"" . cache($strURL, "png") . "\" ><span>" . $this->location() . "</span></img>";  
+				} else return ""; // "<span>" . $this->location() . "</span>"; 
 			}
 		}
 		

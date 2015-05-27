@@ -5,4 +5,5 @@
 	<li><a href="admin.notsigned.php">Nieuwe gebruikers</a></li>
 	<li><a href="meldingen.php">Meldingen</a></li>
 	<li><a href="admin.configuratie.php">Configuraties</a></li>
+	<li><a href="admin.gamification.php">Gamification</a></li>
 </ul>
