@@ -11,13 +11,11 @@
 	$oPage->addCSS("style/gamification.css");
 	$oPage->addJS("script/gamiVal.js");
 
-	function prepareAndExecuteStmt($key, $val, $dbPDO) {
-		$query = "UPDATE `tblConfig` SET `value` = ? WHERE `key` LIKE ?";
+	function prepareAndExecuteStmt($key, $val) {
+		$query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
 
-		$stmt = $dbPDO->prepare($query);
-		$stmt->bindParam(1, json_encode($val));
-		$stmt->bindParam(2, $key);
-		$stmt->execute();
+		$oDB = new database();
+		$oDB->execute($query);
 	}
 
 	function getPeriod($seconds, $from) {
@@ -43,10 +41,10 @@
 
 	if (isset($_POST["btnOpslaan"])) {
 		/* Startwaarden */
-		if (isset($_POST["txtPhysical"])) prepareAndExecuteStmt("startvalues.physical", intval($_POST["txtPhysical"]), $dbPDO);
-		if (isset($_POST["txtSocial"])) prepareAndExecuteStmt("startvalues.social", intval($_POST["txtSocial"]), $dbPDO);
-		if (isset($_POST["txtMental"])) prepareAndExecuteStmt("startvalues.mental", intval($_POST["txtMental"]), $dbPDO);
-		if (isset($_POST["txtEmotional"])) prepareAndExecuteStmt("startvalues.emotional", intval($_POST["txtEmotional"]), $dbPDO);
+		if (isset($_POST["txtPhysical"])) prepareAndExecuteStmt("startvalues.physical", intval($_POST["txtPhysical"]));
+		if (isset($_POST["txtSocial"])) prepareAndExecuteStmt("startvalues.social", intval($_POST["txtSocial"]));
+		if (isset($_POST["txtMental"])) prepareAndExecuteStmt("startvalues.mental", intval($_POST["txtMental"]));
+		if (isset($_POST["txtEmotional"])) prepareAndExecuteStmt("startvalues.emotional", intval($_POST["txtEmotional"]));
 
 		/* ------------- */
 
@@ -54,8 +52,8 @@
 		$i = 0;
 
 		foreach ($arConfig["levels"] as $level) {
-			if (isset($_POST["txtLevel" . $i . "Threshold"])) prepareAndExecuteStmt("levels." . $i . ".threshold", doubleval($_POST["txtLevel" . $i . "Threshold"]), $dbPDO);
-			if (isset($_POST["txtLevel" . $i . "Multiplier"])) prepareAndExecuteStmt("levels." . $i . ".multiplier", doubleval($_POST["txtLevel" . $i . "Multiplier"]), $dbPDO);
+			if (isset($_POST["txtLevel" . $i . "Threshold"])) prepareAndExecuteStmt("levels." . $i . ".threshold", doubleval($_POST["txtLevel" . $i . "Threshold"]));
+			if (isset($_POST["txtLevel" . $i . "Multiplier"])) prepareAndExecuteStmt("levels." . $i . ".multiplier", doubleval($_POST["txtLevel" . $i . "Multiplier"]));
 
 			$i++;
 		}
@@ -66,15 +64,15 @@
 		$i = 1;
 
 		foreach ($arConfig["warnings"] as $warning) {
-			if (isset($_POST["txtW" . $i . "Schenkingen"])) prepareAndExecuteStmt("warnings." . $i . ".schenkingen", doubleval($_POST["txtW" . $i . "Schenkingen"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Trans"])) prepareAndExecuteStmt("warnings." . $i . ".transactiediversiteit", doubleval($_POST["txtW" . $i . "Trans"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Credits"])) prepareAndExecuteStmt("warnings." . $i . ".credits", doubleval($_POST["txtW" . $i . "Credits"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Waardering"])) prepareAndExecuteStmt("warnings." . $i . ".waardering", doubleval($_POST["txtW" . $i . "Waardering"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Physical"])) prepareAndExecuteStmt("warnings." . $i . ".physical", intval($_POST["txtW" . $i . "Physical"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Social"])) prepareAndExecuteStmt("warnings." . $i . ".social", intval($_POST["txtW" . $i . "Social"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Mental"])) prepareAndExecuteStmt("warnings." . $i . ".mental", intval($_POST["txtW" . $i . "Mental"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Emotional"])) prepareAndExecuteStmt("warnings." . $i . ".emotional", intval($_POST["txtW" . $i . "Emotional"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "IndiSom"])) prepareAndExecuteStmt("warnings." . $i . ".indicatorsom", intval($_POST["txtW" . $i . "IndiSom"]), $dbPDO);
+			if (isset($_POST["txtW" . $i . "Schenkingen"])) prepareAndExecuteStmt("warnings." . $i . ".schenkingen", doubleval($_POST["txtW" . $i . "Schenkingen"]));
+			if (isset($_POST["txtW" . $i . "Trans"])) prepareAndExecuteStmt("warnings." . $i . ".transactiediversiteit", doubleval($_POST["txtW" . $i . "Trans"]));
+			if (isset($_POST["txtW" . $i . "Credits"])) prepareAndExecuteStmt("warnings." . $i . ".credits", doubleval($_POST["txtW" . $i . "Credits"]));
+			if (isset($_POST["txtW" . $i . "Waardering"])) prepareAndExecuteStmt("warnings." . $i . ".waardering", doubleval($_POST["txtW" . $i . "Waardering"]));
+			if (isset($_POST["txtW" . $i . "Physical"])) prepareAndExecuteStmt("warnings." . $i . ".physical", intval($_POST["txtW" . $i . "Physical"]));
+			if (isset($_POST["txtW" . $i . "Social"])) prepareAndExecuteStmt("warnings." . $i . ".social", intval($_POST["txtW" . $i . "Social"]));
+			if (isset($_POST["txtW" . $i . "Mental"])) prepareAndExecuteStmt("warnings." . $i . ".mental", intval($_POST["txtW" . $i . "Mental"]));
+			if (isset($_POST["txtW" . $i . "Emotional"])) prepareAndExecuteStmt("warnings." . $i . ".emotional", intval($_POST["txtW" . $i . "Emotional"]));
+			if (isset($_POST["txtW" . $i . "IndiSom"])) prepareAndExecuteStmt("warnings." . $i . ".indicatorsom", intval($_POST["txtW" . $i . "IndiSom"]));
 
 			$i++;
 		}
@@ -88,23 +86,23 @@
 
 			if ($period == "week") $result = intval($_POST["txtCronsIndicators"]) * 168 * 3600;
 
-			prepareAndExecuteStmt("crons.indicators", $result, $dbPDO);
+			prepareAndExecuteStmt("crons.indicators", $result);
 		}
 
-		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"]), $dbPDO);
-		if (isset($_POST["txtX"])) prepareAndExecuteStmt("crons.x", doubleval($_POST["txtX"]), $dbPDO);
+		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"]));
+		if (isset($_POST["txtX"])) prepareAndExecuteStmt("crons.x", doubleval($_POST["txtX"]));
 
 		/* ------------- */
 
 		/* Datum */
-		if (isset($_POST["txtDateSpeed"])) prepareAndExecuteStmt("date.speed", doubleval($_POST["txtDateSpeed"]), $dbPDO);
-		if (isset($_POST["txtStartdate"])) prepareAndExecuteStmt("date.start", ddmmyyyyTOdate($_POST["txtStartdate"]), $dbPDO);
+		if (isset($_POST["txtDateSpeed"])) prepareAndExecuteStmt("date.speed", doubleval($_POST["txtDateSpeed"]));
+		if (isset($_POST["txtStartdate"])) prepareAndExecuteStmt("date.start", ddmmyyyyTOdate($_POST["txtStartdate"]));
 
 		/* ------------- */
 
 		/* Indicatoren */
-		if (isset($_POST["txtIndicatorMultiplier"])) prepareAndExecuteStmt("indicatoren.multiplier", doubleval($_POST["txtIndicatorMultiplier"]), $dbPDO);
-		if (isset($_POST["txtOwaesAdd"])) prepareAndExecuteStmt("indicatoren.owaesadd", doubleval($_POST["txtOwaesAdd"]), $dbPDO);
+		if (isset($_POST["txtIndicatorMultiplier"])) prepareAndExecuteStmt("indicatoren.multiplier", doubleval($_POST["txtIndicatorMultiplier"]));
+		if (isset($_POST["txtOwaesAdd"])) prepareAndExecuteStmt("indicatoren.owaesadd", doubleval($_POST["txtOwaesAdd"]));
 
 		/* ------------- */
 
