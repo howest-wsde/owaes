@@ -246,6 +246,10 @@
 			.disabled {
 				background: #dadada;
 			}
+
+			.credits p {
+				height: 70px;
+			}
 		</style>
 	</head>
 	<body id="index">
@@ -328,7 +332,7 @@
 									<input type="text" name="txtLokatie" id="txtLokatie" value="<? echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
 								</p>
 							</fieldset>
-							<fieldset>
+							<fieldset class="credits">
 								<legend>Credits</legend>
 								<p class="naastElkaar">
 									<label for="txtStart">Start:</label></br>
