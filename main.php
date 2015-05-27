@@ -155,7 +155,7 @@
 						?>
                         <p class="gebruikers-naam"><a href="<?php echo $oMe->getURL(); ?>"><?php echo $oMe->getName(); ?></a></p>
                         <p class="level">Level <span class="levelvalue"><?php echo $oMe->level(); ?></span></p>
-                        <div class="progress progress-experience" title="Vooruitgang: <?php echo $iPercent2; ?>%" >
+                        <div class="progress progress-experience" title="Vooruitgang: <?php echo $iPercent1; ?>%" >
                             <div class="progress-bar progress-bar-experience" role="progressbar" aria-valuenow="<?php echo $oMe->experience()->total(); ?>" aria-valuemin="0" aria-valuemax="<?php echo $oMe->experience()->leveltreshold(); ?>" style="width: <?php echo $iPercent1; ?>%;">
                                 <span class="sr-only"><?php echo $iPercent1; ?>% Complete</span>
                             </div>

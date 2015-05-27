@@ -46,7 +46,7 @@
 		}
 		
 		public function modals() { 
-			$arModalURLs = array(); 
+			$arModalURLs = array();  
 			foreach ($this->getList() as $oAction) {
 				switch($oAction->type()) {
 					case "transaction": 
@@ -62,13 +62,17 @@
 						$oAction->done(owaestime()); 
 						$oAction->update();  
 						break; 
-					case "experience": 
-						$arModalURLs[] = "modal.experience.php"; 
+					case "experience":  
 						if ( user($this->iUser)->experience()->level(FALSE) != user($this->iUser)->experience()->level(TRUE)) { 
+							$arModalURLs[] = "modal.experience.php";  
 							$arModalURLs[] = "modal.nextlevel.php"; 
-						} 
-						$oAction->done(owaestime()); 
-						$oAction->update();  
+							$oAction->done(owaestime()); 
+							$oAction->update();  
+						}  else if ( user($this->iUser)->experience()->total(TRUE) - user($this->iUser)->experience()->total() >= 10) { 
+							$arModalURLs[] = "modal.experience.php";  
+							$oAction->done(owaestime()); 
+							$oAction->update();  
+						}
 						break; 
 				} 
 			} 
@@ -113,7 +117,7 @@
 				if (is_numeric($iDate)) {
 					$this->iDoneDate = $iDate; 
 				} elseif (is_bool($iDate)) {
-					$this->iDoneDate = ($iDate ? owaestime() : NULL);
+					$this->iDoneDate = ($iDate ? owaestime() : 0);
 				}
 			}
 			return ($this->iDoneDate != 0); 
@@ -145,7 +149,7 @@
 			$strData = json_encode($this->arData);  
 			$oDB = new database(); 
 			
-			$oDB->execute("select * from tblActions where user = " . $iUser . " and actie = '" . $oDB->escape($strActie) . "' and data = '" . $oDB->escape($strData) . "'; "); 
+			$oDB->execute("select * from tblActions where user = " . $iUser . " and actie = '" . $oDB->escape($strActie) . "' and data = '" . $oDB->escape($strData) . "' order by id desc; "); 
 			if ($oDB->nextRecord())  $this->loadRecord($oDB->record()); //$this->iID = $oDB->get("id");  
 		}
 		
@@ -179,7 +183,7 @@
 				} 
 				$oDB->sql("update tblActions set " . implode(",", $arUpdates) . " where id = " . $this->iID . ";"); 
 				$oDB->execute(); 
-			}	
+			}	 
 		}
 		
 		

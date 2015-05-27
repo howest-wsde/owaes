@@ -31,7 +31,7 @@
 			return (isset($this->arDetails[$strKey])) ? $this->arDetails[$strKey] : NULL; 
 		}
 		
-		public function add($iNumber, $bConfirmed = FALSE) { // experience toevoegen (standaard niet confirmed)
+		public function add($iNumber, $bConfirmed = FALSE) { // experience toevoegen (standaard niet confirmed) 
 			$arLevels = settings("levels"); 
 			$iLevel = $this->level(); 
 			$iMultiplier = isset($arLevels[$iLevel]["multiplier"]) ? $arLevels[$iLevel]["multiplier"] : 1; 
