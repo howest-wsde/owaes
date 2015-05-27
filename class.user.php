@@ -2058,8 +2058,15 @@
 					return $this->experience()->total(TRUE); 
 				case "leveltreshold": 
 					return $this->experience()->leveltreshold(); 
+				case "leveltreshold:min": 
+					return $this->experience()->leveltreshold(FALSE); 
 				case "levelpercentage": 
-					return floor(100 * $this->experience()->total() / $this->experience()->leveltreshold()); 
+					$iExp1 = $this->experience()->total();  
+					$iPrevTreshold = $this->experience()->leveltreshold(FALSE);  
+					$iNextTreshold = $this->experience()->leveltreshold(TRUE); 
+					return round(($iExp1-$iPrevTreshold)/($iNextTreshold-$iPrevTreshold)*100);  
+					
+					// return floor(100 * $this->experience()->total() / $this->experience()->leveltreshold()); 
 				case "social": 
 					return $this->social(); 
 				case "physical": 
