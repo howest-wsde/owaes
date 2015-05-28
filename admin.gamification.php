@@ -8,15 +8,14 @@
 	$oPage->addJS("script/admin.js");
 	$oPage->addCSS("style/admin.css");
 
+	$oPage->addCSS("style/gamification.css");
 	$oPage->addJS("script/gamiVal.js");
 
-	function prepareAndExecuteStmt($key, $val, $dbPDO) {
-		$query = "UPDATE `tblConfig` SET `value` = ? WHERE `key` LIKE ?";
+	function prepareAndExecuteStmt($key, $val) {
+		$query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
 
-		$stmt = $dbPDO->prepare($query);
-		$stmt->bindParam(1, json_encode($val));
-		$stmt->bindParam(2, $key);
-		$stmt->execute();
+		$oDB = new database();
+		$oDB->execute($query);
 	}
 
 	function getPeriod($seconds, $from) {
@@ -42,10 +41,10 @@
 
 	if (isset($_POST["btnOpslaan"])) {
 		/* Startwaarden */
-		if (isset($_POST["txtPhysical"])) prepareAndExecuteStmt("startvalues.physical", intval($_POST["txtPhysical"]), $dbPDO);
-		if (isset($_POST["txtSocial"])) prepareAndExecuteStmt("startvalues.social", intval($_POST["txtSocial"]), $dbPDO);
-		if (isset($_POST["txtMental"])) prepareAndExecuteStmt("startvalues.mental", intval($_POST["txtMental"]), $dbPDO);
-		if (isset($_POST["txtEmotional"])) prepareAndExecuteStmt("startvalues.emotional", intval($_POST["txtEmotional"]), $dbPDO);
+		if (isset($_POST["txtPhysical"])) prepareAndExecuteStmt("startvalues.physical", intval($_POST["txtPhysical"]));
+		if (isset($_POST["txtSocial"])) prepareAndExecuteStmt("startvalues.social", intval($_POST["txtSocial"]));
+		if (isset($_POST["txtMental"])) prepareAndExecuteStmt("startvalues.mental", intval($_POST["txtMental"]));
+		if (isset($_POST["txtEmotional"])) prepareAndExecuteStmt("startvalues.emotional", intval($_POST["txtEmotional"]));
 
 		/* ------------- */
 
@@ -53,8 +52,8 @@
 		$i = 0;
 
 		foreach ($arConfig["levels"] as $level) {
-			if (isset($_POST["txtLevel" . $i . "Threshold"])) prepareAndExecuteStmt("levels." . $i . ".threshold", doubleval($_POST["txtLevel" . $i . "Threshold"]), $dbPDO);
-			if (isset($_POST["txtLevel" . $i . "Multiplier"])) prepareAndExecuteStmt("levels." . $i . ".multiplier", doubleval($_POST["txtLevel" . $i . "Multiplier"]), $dbPDO);
+			if (isset($_POST["txtLevel" . $i . "Threshold"])) prepareAndExecuteStmt("levels." . $i . ".threshold", doubleval($_POST["txtLevel" . $i . "Threshold"]));
+			if (isset($_POST["txtLevel" . $i . "Multiplier"])) prepareAndExecuteStmt("levels." . $i . ".multiplier", doubleval($_POST["txtLevel" . $i . "Multiplier"]));
 
 			$i++;
 		}
@@ -65,15 +64,15 @@
 		$i = 1;
 
 		foreach ($arConfig["warnings"] as $warning) {
-			if (isset($_POST["txtW" . $i . "Schenkingen"])) prepareAndExecuteStmt("warnings." . $i . ".schenkingen", doubleval($_POST["txtW" . $i . "Schenkingen"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Trans"])) prepareAndExecuteStmt("warnings." . $i . ".transactiediversiteit", doubleval($_POST["txtW" . $i . "Trans"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Credits"])) prepareAndExecuteStmt("warnings." . $i . ".credits", doubleval($_POST["txtW" . $i . "Credits"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Waardering"])) prepareAndExecuteStmt("warnings." . $i . ".waardering", doubleval($_POST["txtW" . $i . "Waardering"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Physical"])) prepareAndExecuteStmt("warnings." . $i . ".physical", intval($_POST["txtW" . $i . "Physical"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Social"])) prepareAndExecuteStmt("warnings." . $i . ".social", intval($_POST["txtW" . $i . "Social"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Mental"])) prepareAndExecuteStmt("warnings." . $i . ".mental", intval($_POST["txtW" . $i . "Mental"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "Emotional"])) prepareAndExecuteStmt("warnings." . $i . ".emotional", intval($_POST["txtW" . $i . "Emotional"]), $dbPDO);
-			if (isset($_POST["txtW" . $i . "IndiSom"])) prepareAndExecuteStmt("warnings." . $i . ".indicatorsom", intval($_POST["txtW" . $i . "IndiSom"]), $dbPDO);
+			if (isset($_POST["txtW" . $i . "Schenkingen"])) prepareAndExecuteStmt("warnings." . $i . ".schenkingen", doubleval($_POST["txtW" . $i . "Schenkingen"]));
+			if (isset($_POST["txtW" . $i . "Trans"])) prepareAndExecuteStmt("warnings." . $i . ".transactiediversiteit", doubleval($_POST["txtW" . $i . "Trans"]));
+			if (isset($_POST["txtW" . $i . "Credits"])) prepareAndExecuteStmt("warnings." . $i . ".credits", doubleval($_POST["txtW" . $i . "Credits"]));
+			if (isset($_POST["txtW" . $i . "Waardering"])) prepareAndExecuteStmt("warnings." . $i . ".waardering", doubleval($_POST["txtW" . $i . "Waardering"]));
+			if (isset($_POST["txtW" . $i . "Physical"])) prepareAndExecuteStmt("warnings." . $i . ".physical", intval($_POST["txtW" . $i . "Physical"]));
+			if (isset($_POST["txtW" . $i . "Social"])) prepareAndExecuteStmt("warnings." . $i . ".social", intval($_POST["txtW" . $i . "Social"]));
+			if (isset($_POST["txtW" . $i . "Mental"])) prepareAndExecuteStmt("warnings." . $i . ".mental", intval($_POST["txtW" . $i . "Mental"]));
+			if (isset($_POST["txtW" . $i . "Emotional"])) prepareAndExecuteStmt("warnings." . $i . ".emotional", intval($_POST["txtW" . $i . "Emotional"]));
+			if (isset($_POST["txtW" . $i . "IndiSom"])) prepareAndExecuteStmt("warnings." . $i . ".indicatorsom", intval($_POST["txtW" . $i . "IndiSom"]));
 
 			$i++;
 		}
@@ -87,23 +86,23 @@
 
 			if ($period == "week") $result = intval($_POST["txtCronsIndicators"]) * 168 * 3600;
 
-			prepareAndExecuteStmt("crons.indicators", $result, $dbPDO);
+			prepareAndExecuteStmt("crons.indicators", $result);
 		}
 
-		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"]), $dbPDO);
-		if (isset($_POST["txtX"])) prepareAndExecuteStmt("crons.x", doubleval($_POST["txtX"]), $dbPDO);
+		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"]));
+		if (isset($_POST["txtX"])) prepareAndExecuteStmt("crons.x", doubleval($_POST["txtX"]));
 
 		/* ------------- */
 
 		/* Datum */
-		if (isset($_POST["txtDateSpeed"])) prepareAndExecuteStmt("date.speed", doubleval($_POST["txtDateSpeed"]), $dbPDO);
-		if (isset($_POST["txtStartdate"])) prepareAndExecuteStmt("date.start", ddmmyyyyTOdate($_POST["txtStartdate"]), $dbPDO);
+		if (isset($_POST["txtDateSpeed"])) prepareAndExecuteStmt("date.speed", doubleval($_POST["txtDateSpeed"]));
+		if (isset($_POST["txtStartdate"])) prepareAndExecuteStmt("date.start", ddmmyyyyTOdate($_POST["txtStartdate"]));
 
 		/* ------------- */
 
 		/* Indicatoren */
-		if (isset($_POST["txtIndicatorMultiplier"])) prepareAndExecuteStmt("indicatoren.multiplier", doubleval($_POST["txtIndicatorMultiplier"]), $dbPDO);
-		if (isset($_POST["txtOwaesAdd"])) prepareAndExecuteStmt("indicatoren.owaesadd", doubleval($_POST["txtOwaesAdd"]), $dbPDO);
+		if (isset($_POST["txtIndicatorMultiplier"])) prepareAndExecuteStmt("indicatoren.multiplier", doubleval($_POST["txtIndicatorMultiplier"]));
+		if (isset($_POST["txtOwaesAdd"])) prepareAndExecuteStmt("indicatoren.owaesadd", doubleval($_POST["txtOwaesAdd"]));
 
 		/* ------------- */
 
@@ -114,81 +113,6 @@
 <html>
 	<head>
 		<? echo $oPage->getHeader(); ?>
-		<style>
-			h1 {
-				font-size: 20pt;
-			}
-
-			h2 {
-				font-size: 13pt;
-			}
-
-			legend {
-				font-size: 12pt;
-			}
-
-			fieldset {
-				padding: 0 0 30px 0;
-				width: 800px;
-			}
-
-			fieldset > p, fieldset > div {
-				padding: 0 0 0 20px;
-			}
-
-			input[type="range"] {
-				width: 500px;
-				height: 10px;
-				-webkit-appearance: none;
-			}
-
-			input[type="range"]::-webkit-slider-thumb {
-				-webkit-appearance: none;
-				border: 0;
-				border-radius: 50%;
-				width: 18px;
-				height: 18px;
-				border: 1px solid #a0a0a0;
-				background: #e4e4e4;
-			}
-
-			input::-moz-range-track {
-				background: transparent;
-				border: 0;
-			}
-
-			input[type="range"]::-ms-track {
-				background: transparent;
-				border-color: transparent;
-				color: transparent;
-			}
-
-			input[type="range"]::-ms-thumb {
-				border-radius: 50%;
-				border: 2px solid #e4e4e4;
-				background: #e4e4e4;
-			}
-
-			#txtPhysical::-ms-fill-upper, #txtPhysical::-ms-fill-lower {
-				background-color: #ff3131;
-			}
-
-			#txtSocial::-ms-fill-upper, #txtSocial::-ms-fill-lower {
-				background-color: #8dc63f;
-			}
-
-			#txtMental::-ms-fill-upper, #txtMental::-ms-fill-lower {
-				background-color: #0072bc;
-			}
-
-			#txtEmotional::-ms-fill-upper, #txtEmotional::-ms-fill-lower {
-				background-color: #ffcc00;
-			}
-
-			.levels {
-				height: 160px;
-			}
-		</style>
 	</head>
 	<body id="index">
 		<? echo $oPage->startTabs(); ?>
@@ -252,44 +176,44 @@
 
 									foreach ($arConfig["warnings"] as $warning) {
 	?>
-										<div class="naastElkaar">
-										<h2>Warning <? echo $i; ?></h2>
-										<p>
-											<label for="txtW<? print($i . "Schenkingen"); ?>">Schenkingen:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="1" value="<? echo $warning["schenkingen"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Trans"); ?>">Transactiediversiteit:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.01" value="<? echo $warning["transactiediversiteit"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Credits"); ?>">Credits:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="1" value="<? echo $warning["credits"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Waardering"); ?>">Waardering:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.1" value="<? echo $warning["waardering"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Physical"); ?>">Fysiek:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="1" value="<? echo $warning["physical"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Social"); ?>">Sociaal:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="1" value="<? echo $warning["social"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Mental"); ?>">Kennis:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="1" value="<? echo $warning["mental"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "Emotional"); ?>">Welzijn:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="1" value="<? echo $warning["emotional"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtW<? print($i . "IndiSom"); ?>">Indicatorsom:</label><br/>
-											<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="1" value="<? echo $warning["indicatorsom"]; ?>"/>
-										</p>
+										<div class="naastElkaar warnings">
+											<h2>Warning <? echo $i; ?></h2>
+											<p>
+												<label for="txtW<? print($i . "Schenkingen"); ?>">Schenkingen:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="1" value="<? echo $warning["schenkingen"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Trans"); ?>">Transactiediversiteit:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.01" value="<? echo $warning["transactiediversiteit"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Credits"); ?>">Credits:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="1" value="<? echo $warning["credits"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Waardering"); ?>">Waardering:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.1" value="<? echo $warning["waardering"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Physical"); ?>">Fysiek:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="1" value="<? echo $warning["physical"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Social"); ?>">Sociaal:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="1" value="<? echo $warning["social"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Mental"); ?>">Kennis:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="1" value="<? echo $warning["mental"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "Emotional"); ?>">Welzijn:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="1" value="<? echo $warning["emotional"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtW<? print($i . "IndiSom"); ?>">Indicatorsom:</label><br/>
+												<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="1" value="<? echo $warning["indicatorsom"]; ?>"/>
+											</p>
 										</div>
 										<?
 										$i++;
