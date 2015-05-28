@@ -4,7 +4,7 @@
 		$arConfig["database"]["loaded"] = TRUE; 
 	} catch( PDOException $Exception ) {
 		$arConfig["database"]["loaded"] = FALSE; 
-	} 
+	}  
 
 	$ar_GLOBAL_queries = array(); 
 	
