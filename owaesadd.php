@@ -17,6 +17,7 @@
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
 	$oOwaesItem = owaesitem($iID);
 	
+	$iMaxCredits = min(settings("startvalues", "credits"), $oMe->credits()); 
 	 
 	$arPossiblePosters = array();  
 	$arOwaesTypes = owaesType()->getAllTypes();
@@ -475,7 +476,7 @@ input.time {width: 100%; display: block; }
                             
                            <div class="row row-credits"> 
                                <div class="col-lg-10">
-                                <input type="text" min="0" max="4800" name="credits" id="creditsfield" class="auto border" value="<?php echo $oOwaesItem->credits(); ?>" />
+                                <input type="text" min="0" max="<? echo $iMaxCredits; ?>" name="credits" id="creditsfield" class="auto border" value="<?php echo $oOwaesItem->credits(); ?>" />
                                </div>
                            </div>
                         </div>
