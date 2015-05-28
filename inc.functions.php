@@ -236,7 +236,7 @@
 		} else if (isset($arConfig[$strA])) return $arConfig[$strA]; 
 		
 		if (!isset($arConfig["settings-loaded"])) {
-			if (settings("database", "loaded")) { 
+			if (settings("database", "loaded")) {  
 				$oDB = new database("SELECT `key`, `value` FROM `tblConfig`"); 
 				$oDB->execute(); 
 				while ($oDB->nextRecord()) { 
@@ -258,11 +258,11 @@
 				
 				if (file_exists("_sql.inc")) if (filemtime("_sql.inc") != $arConfig["setup"]["database"]) {
 					$oDB->execute("INSERT INTO tblConfig (`key`, `value`) VALUES('setup.database', '" . filemtime("_sql.inc") . "') ON DUPLICATE KEY UPDATE `key`=VALUES(`key`), `value`=VALUES(`value`);"); 
-					if (filename(FALSE) != "update.php") redirect ("update.php?redirect=" . urlEncode(filename(TRUE))); 
+					if (filename(FALSE) != "update.php") loadSetup("update.php?redirect=" . urlEncode(filename(TRUE))); 
 				} 
-			}
-			
-			if (!settingsOK()) loadSetup();			
+				
+				if (!settingsOK()) loadSetup();	
+			} else loadSetup();	
 			
 			if (isset($strC)) {
 				if (isset($arConfig[$strA][$strB][$strC])) return $arConfig[$strA][$strB][$strC];
@@ -273,8 +273,9 @@
 		return FALSE; 
 	}
 	
-	function loadSetup() {
-		if (filename(FALSE) != "setup.php") redirect("setup.php"); 
+	function loadSetup($strFile = "setup.php") {
+		$arFiles = array("setup.php", "update.php"); 
+		if (!in_array(filename(FALSE), $arFiles)) redirect ($strFile); 
 	}
 	
 	function settingsOK() {

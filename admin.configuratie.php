@@ -83,13 +83,11 @@
 		return $encodeCipher;
 	}
 
-	function prepareAndExecuteStmt($key, $val, $dbPDO) {
-		$query = "UPDATE `tblConfig` SET `value` = ? WHERE `key` LIKE ?";
+	function prepareAndExecuteStmt($key, $val) {
+		$query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
 
-		$stmt = $dbPDO->prepare($query);
-		$stmt->bindParam(1, json_encode($val));
-		$stmt->bindParam(2, $key);
-		$stmt->execute();
+		$oDB = new database();
+		$oDB->execute($query);
 	}
 
 	function issetAndNotEmpty($field) {
@@ -104,19 +102,19 @@
 
 	if (isset($_POST["btnOpslaan"])) {
 		/* Startwaarden */
-		if (issetAndNotEmpty($_POST["txtTemplateFolder"])) prepareAndExecuteStmt("domain.templatefolder", $_POST["txtTemplateFolder"], $dbPDO);
+		if (issetAndNotEmpty($_POST["txtTemplateFolder"])) prepareAndExecuteStmt("domain.templatefolder", $_POST["txtTemplateFolder"]);
 
 		$test = FALSE;
 		if (isset($_POST["chkAlgemenevoorwaarden"])) $test = TRUE;
 
-		prepareAndExecuteStmt("startvalues.algemenevoorwaarden", $test, $dbPDO);
+		prepareAndExecuteStmt("startvalues.algemenevoorwaarden", $test);
 
 		$test = FALSE;
 		if (isset($_POST["chkVisibility"])) $test = TRUE;
 
-		prepareAndExecuteStmt("startvalues.visibility", $test, $dbPDO);
+		prepareAndExecuteStmt("startvalues.visibility", $test);
 
-		if (isset($_POST["txtAnalytics"])) prepareAndExecuteStmt("analytics", $_POST["txtAnalytics"], $dbPDO);
+		if (isset($_POST["txtAnalytics"])) prepareAndExecuteStmt("analytics", $_POST["txtAnalytics"]);
 
 		/* ------------- */
 
@@ -124,40 +122,40 @@
 		$test = FALSE;
 		if (isset($_POST["chkShowwarnings"])) $test = TRUE;
 
-		prepareAndExecuteStmt("debugging.showwarnings", $test, $dbPDO);
+		prepareAndExecuteStmt("debugging.showwarnings", $test);
 
 		$test = FALSE;
 		if (isset($_POST["chkDemo"])) $test = TRUE;
 
-		prepareAndExecuteStmt("debugging.demo", $test, $dbPDO);
+		prepareAndExecuteStmt("debugging.demo", $test);
 
 		/* ------------- */
 
 		/* Verzekeringen */
-		if (issetAndNotEmpty($_POST["txtV1"])) prepareAndExecuteStmt("verzekeringen.1", $_POST["txtV1"], $dbPDO);
-		if (issetAndNotEmpty($_POST["txtV2"])) prepareAndExecuteStmt("verzekeringen.2", $_POST["txtV2"], $dbPDO);
+		if (issetAndNotEmpty($_POST["txtV1"])) prepareAndExecuteStmt("verzekeringen.1", $_POST["txtV1"]);
+		if (issetAndNotEmpty($_POST["txtV2"])) prepareAndExecuteStmt("verzekeringen.2", $_POST["txtV2"]);
 
 		/* ------------- */
 
 		/* Tijdzone en lokatie */
-		prepareAndExecuteStmt("date.timezone", $_POST["lstTimezone"], $dbPDO);
+		prepareAndExecuteStmt("date.timezone", $_POST["lstTimezone"]);
 
 		if (isset($_POST["txtLokatie"])) {
 			$coord = addressToCoordinates($_POST["txtLokatie"]);
 
-			prepareAndExecuteStmt("geo.latitude", $coord["latitude"], $dbPDO);
-			prepareAndExecuteStmt("geo.longitude", $coord["longitude"], $dbPDO);
+			prepareAndExecuteStmt("geo.latitude", $coord["latitude"]);
+			prepareAndExecuteStmt("geo.longitude", $coord["longitude"]);
 		}
 
 		/* ------------- */
 
 		/* Credits */
-		if (isset($_POST["txtStart"])) prepareAndExecuteStmt("startvalues.credits", intval($_POST["txtStart"]), $dbPDO);
-		if (isset($_POST["txtMin"])) prepareAndExecuteStmt("credits.min", intval($_POST["txtMin"]), $dbPDO);
-		if (isset($_POST["txtMax"])) prepareAndExecuteStmt("credits.max", intval($_POST["txtMax"]), $dbPDO);
-		if (issetAndNotEmpty($_POST["txtEenheid"])) prepareAndExecuteStmt("credits.name.1", $_POST["txtEenheid"], $dbPDO);
-		if (issetAndNotEmpty($_POST["txtMeervoud"])) prepareAndExecuteStmt("credits.name.x", $_POST["txtMeervoud"], $dbPDO);
-		if (issetAndNotEmpty($_POST["txtOverdracht"])) prepareAndExecuteStmt("credits.name.overdracht", $_POST["txtOverdracht"], $dbPDO);
+		if (isset($_POST["txtStart"])) prepareAndExecuteStmt("startvalues.credits", intval($_POST["txtStart"]));
+		if (isset($_POST["txtMin"])) prepareAndExecuteStmt("credits.min", intval($_POST["txtMin"]));
+		if (isset($_POST["txtMax"])) prepareAndExecuteStmt("credits.max", intval($_POST["txtMax"]));
+		if (issetAndNotEmpty($_POST["txtEenheid"])) prepareAndExecuteStmt("credits.name.1", $_POST["txtEenheid"]);
+		if (issetAndNotEmpty($_POST["txtMeervoud"])) prepareAndExecuteStmt("credits.name.x", $_POST["txtMeervoud"]);
+		if (issetAndNotEmpty($_POST["txtOverdracht"])) prepareAndExecuteStmt("credits.name.overdracht", $_POST["txtOverdracht"]);
 
 		/* ------------- */
 
@@ -165,18 +163,18 @@
 		$test = FALSE;
 		if (isset($_POST["chkSMTP"])) $test = TRUE;
 
-		prepareAndExecuteStmt("mail.smtp", $test, $dbPDO);
+		prepareAndExecuteStmt("mail.smtp", $test);
 
-		if (isset($_POST["txtHost"])) prepareAndExecuteStmt("mail.Host", $_POST["txtHost"], $dbPDO);
+		if (isset($_POST["txtHost"])) prepareAndExecuteStmt("mail.Host", $_POST["txtHost"]);
 		
 		$test = FALSE;
 		if (isset($_POST["chkAuth"])) $test = TRUE;
 
-		prepareAndExecuteStmt("mail.SMTPAuth", $test, $dbPDO);
+		prepareAndExecuteStmt("mail.SMTPAuth", $test);
 
-		if (isset($_POST["txtSecure"])) prepareAndExecuteStmt("mail.SMTPSecure", $_POST["txtSecure"], $dbPDO);
-		if (isset($_POST["txtPort"])) prepareAndExecuteStmt("mail.Port", intval($_POST["txtPort"]), $dbPDO);
-		if (isset($_POST["txtUsername"])) prepareAndExecuteStmt("mail.Username", $_POST["txtUsername"], $dbPDO);
+		if (isset($_POST["txtSecure"])) prepareAndExecuteStmt("mail.SMTPSecure", $_POST["txtSecure"]);
+		if (isset($_POST["txtPort"])) prepareAndExecuteStmt("mail.Port", intval($_POST["txtPort"]));
+		if (isset($_POST["txtUsername"])) prepareAndExecuteStmt("mail.Username", $_POST["txtUsername"]);
 
 		$pwd = null;
 
@@ -188,26 +186,26 @@
 			}
 		}
 
-		prepareAndExecuteStmt("mail.Password", $pwd, $dbPDO);
+		prepareAndExecuteStmt("mail.Password", $pwd);
 
 		/* ------------- */
 
 		/* Facebook loginapp */
-		if (isset($_POST["txtFbId"])) prepareAndExecuteStmt("facebook.loginapp.id", $_POST["txtFbId"], $dbPDO);
-		if (isset($_POST["txtFbSecret"])) prepareAndExecuteStmt("facebook.loginapp.secret", $_POST["txtFbSecret"], $dbPDO);
+		if (isset($_POST["txtFbId"])) prepareAndExecuteStmt("facebook.loginapp.id", $_POST["txtFbId"]);
+		if (isset($_POST["txtFbSecret"])) prepareAndExecuteStmt("facebook.loginapp.secret", $_POST["txtFbSecret"]);
 
 		/* ------------- */
 
 		/* Mail alert */
-		if (isset($_POST["rbNMwhen"]) && isset($_POST["txtNewMessage"])) prepareAndExecuteStmt("mailalert.newmessage", periodInSeconds($_POST["rbNMwhen"], $_POST["txtNewMessage"]), $dbPDO);
+		if (isset($_POST["rbNMwhen"]) && isset($_POST["txtNewMessage"])) prepareAndExecuteStmt("mailalert.newmessage", periodInSeconds($_POST["rbNMwhen"], $_POST["txtNewMessage"]));
 
-		if (isset($_POST["rbNSwhen"]) && isset($_POST["txtNewSub"])) prepareAndExecuteStmt("mailalert.newsubscription", periodInSeconds($_POST["rbNSwhen"], $_POST["txtNewSub"]), $dbPDO);
+		if (isset($_POST["rbNSwhen"]) && isset($_POST["txtNewSub"])) prepareAndExecuteStmt("mailalert.newsubscription", periodInSeconds($_POST["rbNSwhen"], $_POST["txtNewSub"]));
 
-		if (isset($_POST["txtPlatform"])) prepareAndExecuteStmt("mailalert.platform", intval($_POST["txtPlatform"]), $dbPDO);
+		if (isset($_POST["txtPlatform"])) prepareAndExecuteStmt("mailalert.platform", intval($_POST["txtPlatform"]));
 
-		if (isset($_POST["rbRSwhen"]) && isset($_POST["txtRemSub"])) prepareAndExecuteStmt("mailalert.remindersubscription", periodInSeconds($_POST["rbRSwhen"], $_POST["txtRemSub"]), $dbPDO);
+		if (isset($_POST["rbRSwhen"]) && isset($_POST["txtRemSub"])) prepareAndExecuteStmt("mailalert.remindersubscription", periodInSeconds($_POST["rbRSwhen"], $_POST["txtRemSub"]));
 
-		if (isset($_POST["rbRUwhen"]) && isset($_POST["txtRemUnread"])) prepareAndExecuteStmt("mailalert.reminderunread", periodInSeconds($_POST["rbRUwhen"], $_POST["txtRemUnread"]), $dbPDO);
+		if (isset($_POST["rbRUwhen"]) && isset($_POST["txtRemUnread"])) prepareAndExecuteStmt("mailalert.reminderunread", periodInSeconds($_POST["rbRUwhen"], $_POST["txtRemUnread"]));
 
 		/* ------------- */
 
