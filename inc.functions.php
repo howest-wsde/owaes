@@ -258,7 +258,7 @@
 				
 				if (file_exists("_sql.inc")) if (filemtime("_sql.inc") != $arConfig["setup"]["database"]) {
 					$oDB->execute("INSERT INTO tblConfig (`key`, `value`) VALUES('setup.database', '" . filemtime("_sql.inc") . "') ON DUPLICATE KEY UPDATE `key`=VALUES(`key`), `value`=VALUES(`value`);"); 
-					if (filename(FALSE) != "update.php") redirect ("update.php?redirect=" . urlEncode(filename(TRUE))); 
+					if (filename(FALSE) != "update.php") loadSetup("update.php?redirect=" . urlEncode(filename(TRUE))); 
 				} 
 				
 				if (!settingsOK()) loadSetup();	
@@ -273,8 +273,9 @@
 		return FALSE; 
 	}
 	
-	function loadSetup() {
-		if (filename(FALSE) != "setup.php") redirect("setup.php"); 
+	function loadSetup($strFile = "setup.php") {
+		$arFiles = array("setup.php", "update.php"); 
+		if (!in_array(filename(FALSE), $arFiles)) redirect ($strFile); 
 	}
 	
 	function settingsOK() {
