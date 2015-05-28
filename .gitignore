@@ -6,3 +6,4 @@
 inc.config.db.php
 *.old
 *.new
+/upload
