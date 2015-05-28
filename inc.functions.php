@@ -262,7 +262,7 @@
 				} 
 				
 				if (!settingsOK()) loadSetup();	
-			}	
+			} else loadSetup();	
 			
 			if (isset($strC)) {
 				if (isset($arConfig[$strA][$strB][$strC])) return $arConfig[$strA][$strB][$strC];
