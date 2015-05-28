@@ -236,10 +236,7 @@
 		} else if (isset($arConfig[$strA])) return $arConfig[$strA]; 
 		
 		if (!isset($arConfig["settings-loaded"])) {
-			if (settings("database", "loaded")) { 
-echo "hier (1)"; 
-exit(); 
-
+			if (settings("database", "loaded")) {  
 				$oDB = new database("SELECT `key`, `value` FROM `tblConfig`"); 
 				$oDB->execute(); 
 				while ($oDB->nextRecord()) { 
