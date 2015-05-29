@@ -234,7 +234,7 @@
 								<legend>Startwaarden</legend>
 								<p>
 									<label for="txtTemplateFolder">Template map:</label><br/>
-									<input type="text" name="txtTemplateFolder" id="txtTemplateFolder" value="<? echo settings("domain", "templatefolder"); ?>"/>
+									<input type="text" class="form-control" name="txtTemplateFolder" id="txtTemplateFolder" value="<? echo settings("domain", "templatefolder"); ?>"/>
 								</p>
 								<p>
 									<label for="chkAlgemenevoorwaarden">Algemene voorwaarden</label>
@@ -246,7 +246,7 @@
 								</p>
 								<p>
 									<label for="txtAnalytics">Google analytics:</label><br/>
-									<input type="text" name="txtAnalytics" id="txtAnalytics" value="<? echo settings("analytics"); ?>"/>
+									<input type="text" class="form-control" name="txtAnalytics" id="txtAnalytics" value="<? echo settings("analytics"); ?>"/>
 								</p>
 							</fieldset>
 							<fieldset>
@@ -263,17 +263,17 @@
 							<fieldset>
 								<legend>Verzekeringen</legend>
 								<p>
-									<input type="text" name="txtV1" id="txtV1" value="<? echo settings("verzekeringen", "1"); ?>"/>
+									<input type="text" class="form-control" name="txtV1" id="txtV1" value="<? echo settings("verzekeringen", "1"); ?>"/>
 								</p>
 								<p>
-									<input type="text" name="txtV2" id="txtV2" value="<? echo settings("verzekeringen", "2"); ?>"/>
+									<input type="text" class="form-control" name="txtV2" id="txtV2" value="<? echo settings("verzekeringen", "2"); ?>"/>
 								</p>
 							</fieldset>
 							<fieldset>
 								<legend>Tijdzone en lokatie</legend>
 								<p class="naastElkaar">
 									<label for="lstTimezone">Tijdzone:</label><br/>
-									<select id="lstTimezone" name="lstTimezone">
+									<select id="lstTimezone" name="lstTimezone" class="form-control">
 									<?
 										$zones = timezone_identifiers_list();
 
@@ -294,34 +294,34 @@
 								</p>
 								<p class="naastElkaar">
 									<label for="txtLokatie">Standaard lokatie:</label><br/>
-									<input type="text" name="txtLokatie" id="txtLokatie" value="<? echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
+									<input type="text" class="form-control" name="txtLokatie" id="txtLokatie" value="<? echo coordinatesToAddress(settings("geo", "latitude"), settings("geo", "longitude")); ?>"/>
 								</p>
 							</fieldset>
 							<fieldset class="credits">
 								<legend>Credits</legend>
 								<p class="naastElkaar">
 									<label for="txtStart">Start:</label></br>
-									<input type="number" name="txtStart" id="txtStart" min="0" max="<? echo settings("credits", "max"); ?>"  value="<? echo settings("startvalues", "credits"); ?>"/>
+									<input type="number" class="form-control" name="txtStart" id="txtStart" min="0" max="<? echo settings("credits", "max"); ?>"  value="<? echo settings("startvalues", "credits"); ?>"/>
 								</p>
 								<p class="naastElkaar">
 									<label for="txtMin">Min:</label><br/>
-									<input type="number" name="txtMin" id="txtMin" min="0" max="<? echo settings("credits", "max"); ?>" value="<? echo settings("credits", "min"); ?>"/>
+									<input type="number" class="form-control" name="txtMin" id="txtMin" min="0" max="<? echo settings("credits", "max"); ?>" value="<? echo settings("credits", "min"); ?>"/>
 								</p>
 								<p class="naastElkaar">
 									<label for="txtMax">Max:</label><br/>
-									<input type="number" name="txtMax" id="txtMax" min="0" value="<? echo settings("credits", "max"); ?>"/>
+									<input type="number" class="form-control" name="txtMax" id="txtMax" min="0" value="<? echo settings("credits", "max"); ?>"/>
 								</p>
 								<p class="naastElkaar">
 									<label for="txtEenheid">Eenheid:</label><br/>
-									<input type="text" name="txtEenheid" id="txtEenheid" value="<? echo settings("credits", "name", "1"); ?>"/>
+									<input type="text" class="form-control" name="txtEenheid" id="txtEenheid" value="<? echo settings("credits", "name", "1"); ?>"/>
 								</p>
 								<p class="naastElkaar">
 									<label for="txtMeervoud">Meervoud:</label><br/>
-									<input type="text" name="txtMeervoud" id="txtMeervoud" value="<? echo settings("credits", "name", "x"); ?>"/>
+									<input type="text" class="form-control" name="txtMeervoud" id="txtMeervoud" value="<? echo settings("credits", "name", "x"); ?>"/>
 								</p>
 								<p class="naastElkaar">
 									<label for="txtOverdracht">Overdracht:</label><br/>
-									<input type="text" name="txtOverdracht" id="txtOverdracht" value="<? echo settings("credits", "name", "overdracht"); ?>"/>
+									<input type="text" class="form-control" name="txtOverdracht" id="txtOverdracht" value="<? echo settings("credits", "name", "overdracht"); ?>"/>
 								</p>
 							</fieldset>
 							<fieldset>
@@ -332,7 +332,7 @@
 								</p>
 								<p>
 									<label for="txtHost">Host:</label><br/>
-									<input type="text" name="txtHost" id="txtHost" value="<? echo settings("mail", "Host"); ?>"/>
+									<input type="text" class="form-control" name="txtHost" id="txtHost" value="<? echo settings("mail", "Host"); ?>"/>
 								</p>
 								<p>
 									<label for="chkAuth">Authenticatie</label>
@@ -340,61 +340,61 @@
 								</p>
 								<p>
 									<label for="txtSecure">Secure:</label><br/>
-									<input type="text" name="txtSecure" id="txtSecure" value="<? echo settings("mail", "SMTPSecure"); ?>"/>
+									<input type="text" class="form-control" name="txtSecure" id="txtSecure" value="<? echo settings("mail", "SMTPSecure"); ?>"/>
 								</p>
 								<p>
 									<label for="txtPort">Poort:</label><br/>
-									<input type="number" name="txtPort" id="txtPort" min="0" max="65535" value="<? echo settings("mail", "Port"); ?>"/>
+									<input type="number" class="form-control" name="txtPort" id="txtPort" min="0" max="65535" value="<? echo settings("mail", "Port"); ?>"/>
 								</p>
 								<p>
 									<label for="txtUsername">Gebruikersnaam:</label><br/>
-									<input type="text" name="txtUsername" id="txtUsername" value="<? echo settings("mail", "Username"); ?>"/>
+									<input type="text" class="form-control" name="txtUsername" id="txtUsername" value="<? echo settings("mail", "Username"); ?>"/>
 								</p>
 								<p>
 									<label for="txtPasswd">Wachtwoord:</label><br/>
-									<input type="password" name="txtPasswd" id="txtPasswd" value="<? echo settings("mail", "Password"); ?>"/>
+									<input type="password" class="form-control" name="txtPasswd" id="txtPasswd" value="<? echo settings("mail", "Password"); ?>"/>
 								</p>
 							</fieldset>
 							<fieldset>
 								<legend>Facebook loginapp</legend>
 								<p class="naastElkaar">
 									<label for="txtFbId">Id:</label><br/>
-									<input type="text" name="txtFbId" id="txtFbId" value="<? echo settings("facebook", "loginapp", "id"); ?>"/>
+									<input type="text" class="form-control" name="txtFbId" id="txtFbId" value="<? echo settings("facebook", "loginapp", "id"); ?>"/>
 								</p>
 								<p class="naastElkaar">
 									<label for="txtFbSecret">Secret:</label><br/>
-									<input type="text" name="txtFbSecret" id="txtFbSecret" value="<? echo settings("facebook", "loginapp", "secret"); ?>"/>
+									<input type="text" class="form-control" name="txtFbSecret" id="txtFbSecret" value="<? echo settings("facebook", "loginapp", "secret"); ?>"/>
 								</p>
 							</fieldset>
 							<fieldset id="mailalert">
 								<legend>Mail alert</legend>
 								<p>
 									<label for="txtPlatform">Platform:</label><br/>
-									<input type="number" name="txtPlatform" id="txtPlatform" min="0" value="<? echo settings("mailalert", "platform"); ?>"/>
+									<input type="number" class="form-control" name="txtPlatform" id="txtPlatform" min="0" value="<? echo settings("mailalert", "platform"); ?>"/>
 								</p>
 								<p class="naastElkaar tijdMail">
 									<label for="txtNewMessage">Nieuw bericht:</label><br/>
 									<input type="radio" name="rbNMwhen" id="rbNMDay" value="day" <? echo getPeriod(settings("mailalert", "newmessage"), "day"); ?>/><label for="rbNMDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbNMwhen" id="rbNMWeek" value="week" <? echo getPeriod(settings("mailalert", "newmessage"), "week"); ?>/><label for="rbNMWeek">Week</label><br/>
-									<input type="number" name="txtNewMessage" id="txtNewMessage" min="0" value="<? echo convertSeconds(settings("mailalert", "newmessage")); ?>"/>
+									<input type="number" class="form-control" name="txtNewMessage" id="txtNewMessage" min="0" value="<? echo convertSeconds(settings("mailalert", "newmessage")); ?>"/>
 								</p>
 								<p class="naastElkaar tijdMail">
 									<label for="txtNewSub">Nieuw aanbieding:</label><br/>
 									<input type="radio" name="rbNSwhen" id="rbNSDay" value="day" <? echo getPeriod(settings("mailalert", "newsubscription"), "day"); ?>/><label for="rbNSDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbNSwhen" id="rbNSWeek" value="week" <? echo getPeriod(settings("mailalert", "newsubscription"), "week"); ?>/><label for="rbNSWeek">Week</label><br/>
-									<input type="number" name="txtNewSub" id="txtNewSub" min="0" value="<? echo convertSeconds(settings("mailalert", "newsubscription")); ?>"/>
+									<input type="number" class="form-control" name="txtNewSub" id="txtNewSub" min="0" value="<? echo convertSeconds(settings("mailalert", "newsubscription")); ?>"/>
 								</p>
 								<p class="naastElkaar tijdMail">
 									<label for="txtRemSub">Herinnering aanbieding:</label><br/>
 									<input type="radio" name="rbRSwhen" id="rbRSDay" value="day" <? echo getPeriod(settings("mailalert", "remindersubscription"), "day"); ?>/><label for="rbRSDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbRSwhen" id="rbRSWeek" value="week" <? echo getPeriod(settings("mailalert", "remindersubscription"), "week"); ?>/><label for="rbRSWeek">Week</label><br/>
-									<input type="number" name="txtRemSub" id="txtRemSub" min="0" value="<? echo convertSeconds(settings("mailalert", "remindersubscription")); ?>"/>
+									<input type="number" class="form-control" name="txtRemSub" id="txtRemSub" min="0" value="<? echo convertSeconds(settings("mailalert", "remindersubscription")); ?>"/>
 								</p>
 								<p class="naastElkaar tijdMail">
 									<label for="txtRemUnread">Ongelezen herinnering:</label><br/>
 									<input type="radio" name="rbRUwhen" id="rbRUDay" value="day" <? echo getPeriod(settings("mailalert", "reminderunread"), "day"); ?>/><label for="rbRUDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbRUwhen" id="rbRUWeek" value="week" <? echo getPeriod(settings("mailalert", "reminderunread"), "week"); ?>/><label for="rbRUWeek">Week</label><br/>
-									<input type="number" name="txtRemUnread" id="txtRemUnread" min="0" value="<? echo convertSeconds(settings("mailalert", "reminderunread")); ?>"/>
+									<input type="number" class="form-control" name="txtRemUnread" id="txtRemUnread" min="0" value="<? echo convertSeconds(settings("mailalert", "reminderunread")); ?>"/>
 								</p>
 							</fieldset>
 							<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>	
@@ -439,10 +439,12 @@
 
 			for (var i = 0; i < lenFields; i++) {
 				if (!state) {
-					fields[i].className = "disabled";
+					fields[i].classList.remove("enabled");
+					fields[i].classList.add("disabled");
 				}
 				else {
-					fields[i].className = "enabled";
+					fields[i].classList.remove("disabled");
+					fields[i].classList.add("enabled");
 
 					if (fields[i].classList.contains("fout")) {
 						fields[i].classList.remove("enabled");
