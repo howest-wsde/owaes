@@ -2,15 +2,12 @@
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
 	$oMe = user(me()); 
-	
-	//$oPage->addJS("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
+	 
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
-	$oPage->addJS("script/owaesadd.js?v2");
-	//$oPage->addJS("ckeditor/ckeditor.js");
-	//$oPage->addJS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.js"); 
-	//$oPage->addCSS("http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"); 
-	//$oPage->addCSS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.css"); 
-	
+	$oPage->addJS("script/owaesadd.js?v2"); 
+	$oPage->addJS("script/dropzone.js"); 
+
+	$oPage->addCSS("https://rawgit.com/enyo/dropzone/master/dist/dropzone.css"); 
 	
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
@@ -22,7 +19,6 @@
 	$arPossiblePosters = array();  
 	$arOwaesTypes = owaesType()->getAllTypes();
 	foreach($arOwaesTypes as $strKey=>$strTitle) {
-		//$oTempType = owaestype($strKey);
 		$arPossiblePosters[$strKey] = array(
 			"user" => array(), 
 			"group" => array(), 
@@ -180,6 +176,25 @@
 				$("select#person").change(function(){
 					setTypes(); 
 				}) 
+				//$("input[type=file]").addClass("test").dropzone({ url: "/file/post" });
+				
+
+				Dropzone.options.dropzone = {
+				  accept: function(file, done) { 
+					//$("div#dropzone").addClass("loading"); 
+					//$("dd.submit input").addClass("disabled").attr("disabled", "disabled"); 
+					//done();
+				  },
+				  init: function() {
+					//this.on("addedfile", function() { 
+					//  if (this.files[1]!=null){
+					//	this.removeFile(this.files[0]);
+					//  }
+					//});
+				  }
+				};
+				$("div#dropzone").dropzone({ url: "upload.php" });
+					
             });
 			
 			
@@ -248,6 +263,8 @@ div#tags ul.tags {position: absolute; z-index: 999; background: white; border: 1
 div#tags ul.tags li {padding: 3px 10px; cursor: pointer; }
 div#tags ul.tags li:hover {background: #efefef; }
 input.time {width: 100%; display: block; }
+
+#dropzone {color: #919191; cursor: pointer; padding: 10px 30px; }
   
 								</style>
     </head>
@@ -256,15 +273,15 @@ input.time {width: 100%; display: block; }
     	<div class="body content content-market content-market-add container">
         	
             	<div class="row">
-					<?php /*echo $oSecurity->me()->html("leftuserprofile.html"); */
-                    echo $oSecurity->me()->html("user.html");
+					<?php 
+						echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                 <div class="container sidecenterright"> 
                  
                 <div class="errors"></div>
                 
-                <form method="post" class="form-horizontal" id="frmowaesadd" name="frmowaesadd">
+                <form method="post" class="form-horizontal" id="frmowaesadd" name="frmowaesadd"  enctype="multipart/form-data">
                 	<?php  
 						$arOwaesTypes = owaesType()->getAllTypes();
 						
@@ -383,10 +400,24 @@ input.time {width: 100%; display: block; }
 										$strKey = "tag" . ++$iTagCount; 
 										echo ("<span class=\"tag\" id=\"$strKey\"><span>$strTag</span><a title=\"verwijderen\" href=\"#\" rel=\"$strKey\">x</a><input type=\"hidden\" name=\"tag[]\" value=\"$strTag\"></span>"); 	
 									}
-								?><input type="text" name="tag[]" id="tag" class="tag" placeholder="kernwoorden, gescheiden door komma's" /> 
+								?><input type="text" name="tag[]" id="tag" class="tag" placeholder="Kernwoorden, gescheiden door komma's" /> 
                                 </div></div> 
                                 </div> 
                                 
+                                
+                                <div class="form-group">
+                                	<div class="row"><div class="col-lg-2"><h4>Bijlages</h4></div></div> 
+                                    <div class="col-lg-12"> 
+                                        <div id="dropzone" class="invoer">
+                                        	Klik om bestanden toe te voegen 
+                                            <div class="fallback">
+                                               <input name="file" type="file" multiple />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                 
+                                 
                                 <div class="form-group"> 
                                     <div class="col-lg-12"> 
                                         <a href="#tijdlocatie" class="tabchange">volgende</a>  
