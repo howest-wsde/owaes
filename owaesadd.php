@@ -4,17 +4,12 @@
 	$oMe = user(me()); 
 	 
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
-	$oPage->addJS("script/owaesadd.js?v2"); 
-	$oPage->addJS("script/dropzone.js"); 
-
-	$oPage->addCSS("https://rawgit.com/enyo/dropzone/master/dist/dropzone.css"); 
+	$oPage->addJS("script/owaesadd.js?v2");  
 	
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
 	$oOwaesItem = owaesitem($iID);
-	
-	$iMaxCredits = min(settings("startvalues", "credits"), $oMe->credits()); 
 	 
 	$arPossiblePosters = array();  
 	$arOwaesTypes = owaesType()->getAllTypes();
@@ -47,6 +42,11 @@
 		$oOwaesItem->type($strType); 
 		$bNEW = TRUE; 
 	}  
+	
+	$iMaxCredits = ((owaesType($strType)->direction()==DIRECTION_EARN) ? 
+						min(settings("startvalues", "credits"), $oMe->credits()) :  // verdienen
+						min(settings("startvalues", "credits"), settings("credits", "max") - $oMe->credits())); // uitgeven 
+						
 	 
 	if ($oOwaesItem->editable() !== TRUE) { 
 		stop($oOwaesItem->editable()); 
@@ -79,7 +79,7 @@
 		$oOwaesItem->body($_POST["description"]); 
 		$oOwaesItem->details("verzekeringen", (isset($_POST["verzekering"])?$_POST["verzekering"]:array())); 
 		$oOwaesItem->location($_POST["locationfixed"], $_POST["locationlat"], $_POST["locationlong"]); 
-		
+
 		foreach ($oOwaesItem->data() as $iDate) {
 			$oOwaesItem->removeMoment($iDate);
 		}  
@@ -110,9 +110,14 @@
 					break; 
 			} 
 		} 
-			
+		
+		for ($i=0; $i<count($_FILES["file"]["name"]); $i++) {
+ 			$strTempFN = owaestime() . "." . $_FILES["file"]["name"][$i];  
+			move_uploaded_file($_FILES["file"]["tmp_name"][$i], "upload/market/$strTempFN");  
+		} 
 		$oOwaesItem->update(); 
-
+		
+		
 		if ($bNEW) {
 			$oMe = user(me()); 
 			$iAddValue = settings("indicatoren", "owaesadd") ? settings("indicatoren", "owaesadd") : 2; 
@@ -175,28 +180,20 @@
 				})
 				$("select#person").change(function(){
 					setTypes(); 
-				}) 
-				//$("input[type=file]").addClass("test").dropzone({ url: "/file/post" });
-				
-
-				Dropzone.options.dropzone = {
-				  accept: function(file, done) { 
-					//$("div#dropzone").addClass("loading"); 
-					//$("dd.submit input").addClass("disabled").attr("disabled", "disabled"); 
-					//done();
-				  },
-				  init: function() {
-					//this.on("addedfile", function() { 
-					//  if (this.files[1]!=null){
-					//	this.removeFile(this.files[0]);
-					//  }
-					//});
-				  }
-				};
-				$("div#dropzone").dropzone({ url: "upload.php" });
-					
+				})  
+				$(document).on("change", "input.fileupload", function(){ 
+					if (!$(this).attr("id")) {
+						strID = "fileupload" + Math.floor(Math.random()*10000);
+						$(this).attr("id", strID); 
+						$(this).after($("<a href='#' class='delfileinput'>verwijderen</a>").attr("rel", strID).click(function(){
+							$("input#" + $(this).attr("rel")).remove(); 
+							$(this).remove(); 
+							return false; 	
+						})); 
+						$(this).parent().append($('<input name="file[]" type="file" class="fileupload" placeholder="Bijlages (optioneel)" multiple />')); 
+					}
+				})
             });
-			
 			
 			<?php
 				$arJsonPosters = array(); 
@@ -223,10 +220,7 @@
 				}
 			}
 
-		</script> 
-        <style> 
-
-		</style>
+		</script>  
           <style>
 .invalidtime {border: 1px solid red; }								
 .invoer {
@@ -263,8 +257,10 @@ div#tags ul.tags {position: absolute; z-index: 999; background: white; border: 1
 div#tags ul.tags li {padding: 3px 10px; cursor: pointer; }
 div#tags ul.tags li:hover {background: #efefef; }
 input.time {width: 100%; display: block; }
-
-#dropzone {color: #919191; cursor: pointer; padding: 10px 30px; }
+div.fileuploaddiv {overflow: auto; }
+input.fileupload {float: left; clear: both; }
+a.delfileinput {display: block; padding: 3px; }
+ 
   
 								</style>
     </head>
@@ -281,7 +277,7 @@ input.time {width: 100%; display: block; }
                  
                 <div class="errors"></div>
                 
-                <form method="post" class="form-horizontal" id="frmowaesadd" name="frmowaesadd"  enctype="multipart/form-data">
+                <form method="post" class="form-horizontal" id="frmowaesadd" name="frmowaesadd" enctype="multipart/form-data">
                 	<?php  
 						$arOwaesTypes = owaesType()->getAllTypes();
 						
@@ -408,13 +404,10 @@ input.time {width: 100%; display: block; }
                                 <div class="form-group">
                                 	<div class="row"><div class="col-lg-2"><h4>Bijlages</h4></div></div> 
                                     <div class="col-lg-12"> 
-                                        <div id="dropzone" class="invoer">
-                                        	Klik om bestanden toe te voegen 
-                                            <div class="fallback">
-                                               <input name="file" type="file" multiple />
-                                            </div>
+                                    	<div class="form-control fileuploaddiv">
+	                                        <input name="file[]" type="file" class="fileupload" placeholder="Bijlages (optioneel)" multiple /> 
                                         </div>
-                                    </div>
+                                    </div> 
                                 </div>
                                  
                                  
