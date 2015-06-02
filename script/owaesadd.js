@@ -403,8 +403,8 @@ function validateAddActivity(bShowAlerts) {
 	}
     if (!($credits > 0)) {
 		arFouten["creditsfield"] = "Gelieve meer dan 0 " + vocabulaire("credits") + " te geven/vragen."; 
-	}
-    if ($credits > $(".content-market-add #creditsfield").attr("max")) {
+	} 
+    if (Math.floor($credits) > Math.floor($(".content-market-add #creditsfield").attr("max"))) { 
 		arFouten["creditsfield"] = "Er geldt een maximum van " + $(".content-market-add #creditsfield").attr("max") + " " + vocabulaire("credits") + " per opdracht."; 
 	}
     if ($("input#voorwaarden:checked").length == 0) arFouten["voorwaarden"] = "Gelieve de gebruiksvoorwaarden aan te vinken.";   // Ik bevestig dat dit aanbod conform de gebruiksvoorwaarden is. 
