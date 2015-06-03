@@ -38,8 +38,7 @@
 		private $iEmotional = NULL;
 		private $iSocial = NULL;
 		private $iAuthor = NULL;  
-		private $iGroup = NULL;  
-		private $strIMG = NULL; 
+		private $iGroup = NULL;   
 		private $oSubscriptions = NULL; 
 		private $arSubscriptions = array(); 
 		private $arTransactions = NULL; 
@@ -49,6 +48,7 @@
 		private $arTags = NULL; 
 		private $iType = NULL;  
 		private $arDetails = NULL; 
+		private $arFiles = NULL; 
 		
 		public function snap() {
 			$arSnap = array(
@@ -69,7 +69,6 @@
 				"iSocial" => $this->iSocial, 
 				"iAuthor" => $this->iAuthor, 
 				"iGroup" => $this->iGroup, 
-				"strIMG" => $this->strIMG, 
 				//"oSubscriptions" => $this->oSubscriptions, 
 				//"arSubscriptions" => $this->arSubscriptions, 
 				//"arTransactions" => $this->arTransactions, 
@@ -79,6 +78,7 @@
 				"arTags" => $this->arTags, 
 				"iType" => $this->iType,  
 				"arDetails" => $this->arDetails,  
+				"arFiles" => $this->arFiles,  
 			); 
 			return $arSnap; 	
 		}
@@ -198,8 +198,12 @@
 					if (is_array($arDetails)) foreach ($arDetails as $strKey=>$oVal) {
 						if (!isset($this->arDetails[$strKey])) $this->details($strKey, $oVal);  
 					}
-					break; 	 
-
+					break; 
+				case "files": 
+					if (is_null($this->arFiles)) $this->arFiles = array(); 
+					$arFiles = json_decode($strValue, TRUE); 
+					if (is_array($arFiles)) foreach ($arFiles as $strFile) $this->arFiles[] = $strFile; 
+					break;  
 			}	
 		}
 		
@@ -235,6 +239,7 @@
 					if (is_null($this->arTags)) $this->arTags = array();   
 					if (is_null($this->arMomenten)) $this->arMomenten = array();   
 					if (is_null($this->arDetails)) $this->arDetails = array();   
+					if (is_null($this->arFiles)) $this->arFiles = array();   
 				} 	 
 			}
 		}
@@ -555,6 +560,30 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		
 		public function html($strTemplate) { // vraagt pad van template en returns de html met replaced [tags]  
 			$oHTML = template($strTemplate); 
+			 
+			foreach ($oHTML->loops() as $strTag=>$arLoops) {
+				switch($strTag) {
+			
+					case "files":  
+						$arList = $this->files();  
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $strFile) {   
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$strResult = $strSubHTML; 
+								$arFile = explode(".", $strFile, 2); 
+								$strResult = str_replace("[file:name]", $arFile[1], $strResult);
+								$strResult = str_replace("[file:url]", fixPath("upload/market/$strFile"), $strResult);  
+								$arResults[$strSubHTML][] = $strResult;
+							} 
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("files", $strSubHTML, $strResult); 
+						}
+						break; 
+				}
+			}
+			
 			
 			foreach ($oHTML->tags() as $strTag) {
 				$strResult = $this->HTMLvalue($strTag);  
@@ -1164,6 +1193,24 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			return $this->iLocationLong; 	
 		} 
 		
+		
+		public function addFile($strFile) {
+			if (is_null($this->arFiles)) $this->load();
+			$this->arFiles[] = $strFile; 
+			return $this->arFiles; 
+		}
+		public function files($strNew = NULL, $bAdd = TRUE) {
+			if (is_null($this->arFiles)) $this->load();
+			if (!is_null($strNew)) {
+				if ($bAdd) {
+					$this->arFiles[] = $strFile; // add item
+				} else {
+					$this->arFiles = array_diff($this->arFiles, array($strNew)); // remove item 
+				}
+			}
+			return $this->arFiles; 
+		}
+		
 		public function locationIMG($iWidth=270, $iHeight=300) {  // returns HTML (div) met Google-map (TODO: nu staat er geen check op al dan niet ingesteld zijn van locatie) 
 			// 	https://developers.google.com/maps/documentation/staticmaps/?hl=nl&csw=1 
 			//$strURL = "http://maps.googleapis.com/maps/api/staticmap?center=Brooklyn+Bridge,New+York,NY&zoom=13&size=600x300&maptype=roadmap&markers=color:blue%7Clabel:S%7C40.702147,-74.015794&markers=color:green%7Clabel:G%7C40.711614,-74.012318&markers=color:red%7Ccolor:red%7Clabel:C%7C40.718217,-73.998284&sensor=false"; // 600 x 300
@@ -1244,6 +1291,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			return $arData; 
 		}
 		
+		
 		public function timing($iTiming = NULL) { // get / set tijdsduur (uur)
 			if (!is_null($iTiming)) $this->iTiming = intval($iTiming); 
 			if (is_null($this->arMomenten)) $this->loadMomenten(); 
@@ -1311,11 +1359,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		public function update() { // save 
 			$oDB = new database();   
 			if ($this->iID == 0) {
-				$strSQL = "insert into tblMarket (author, createdby, groep, mtype, title, body, date, lastupdate, img, location, location_lat, location_long, timingtype, timing, physical, mental, emotional, social, credits, details, state) values(" . $this->iAuthor . ", " . me() . ", " . $this->iGroup . ", '" . ($this->type()->id()) . "', '" . $oDB->escape($this->strTitle) . "', '" . $oDB->escape($this->strBody) . "', '" . $this->iDate . "', '" . owaesTime() . "' , 'img', '" . $oDB->escape($this->strLocation) . "', '" . $oDB->escape($this->iLocationLat) . "', '" . $oDB->escape($this->iLocationLong) . "', '" . $this->strTiming . "', '" . $this->iTiming . "', '" . $this->physical() . "', '" . $this->mental() . "', '" . $this->emotional() . "', '" . $this->social() . "', '" . $this->iCredits . "', '" . $oDB->escape(json_encode($this->arDetails)) . "', '" . ($this->state()) . "'); "; 
+				$strSQL = "insert into tblMarket (author, createdby, groep, mtype, title, body, date, lastupdate, location, location_lat, location_long, timingtype, timing, physical, mental, emotional, social, credits, details, state, files) values(" . $this->iAuthor . ", " . me() . ", " . $this->iGroup . ", '" . ($this->type()->id()) . "', '" . $oDB->escape($this->strTitle) . "', '" . $oDB->escape($this->strBody) . "', '" . $this->iDate . "', '" . owaesTime() . "' , '" . $oDB->escape($this->strLocation) . "', '" . $oDB->escape($this->iLocationLat) . "', '" . $oDB->escape($this->iLocationLong) . "', '" . $this->strTiming . "', '" . $this->iTiming . "', '" . $this->physical() . "', '" . $this->mental() . "', '" . $this->emotional() . "', '" . $this->social() . "', '" . $this->iCredits . "', '" . $oDB->escape(json_encode($this->arDetails)) . "', '" . ($this->state()) . "',  '" . $oDB->escape(json_encode($this->arFiles)) . "'); "; 
 				$oDB->execute($strSQL); 
 				$this->iID = $oDB->lastInsertID();  
 			} else { 
-				$strSQL = "update tblMarket set lastupdate = '" . owaesTime() . "', author = " . $this->author()->id() . ", groep = " . $this->iGroup . ", mtype = '" . ($this->type()->id()) . "', title = '" . $oDB->escape($this->title()) . "', body = '" . $oDB->escape($this->body()) . "', img = 'img', location = '" . $oDB->escape($this->strLocation) . "', location_lat = '" . $this->iLocationLat . "', location_long = '" . $this->iLocationLong . "', timing = '" . $this->timing() . "', timingtype = '" . $this->timingtype() . "', physical = '" . $this->physical() . "', mental = '" . $this->mental() . "', emotional = '" . $this->emotional() . "', social = '" . $this->social() . "', credits = '" . $this->credits() . "', details = '" . $oDB->escape(json_encode($this->arDetails)) . "', state = '" . ($this->state()) . "' where id = " . $this->iID . ";";  
+				$strSQL = "update tblMarket set lastupdate = '" . owaesTime() . "', author = " . $this->author()->id() . ", groep = " . $this->iGroup . ", mtype = '" . ($this->type()->id()) . "', title = '" . $oDB->escape($this->title()) . "', body = '" . $oDB->escape($this->body()) . "', location = '" . $oDB->escape($this->strLocation) . "', location_lat = '" . $this->iLocationLat . "', location_long = '" . $this->iLocationLong . "', timing = '" . $this->timing() . "', timingtype = '" . $this->timingtype() . "', physical = '" . $this->physical() . "', mental = '" . $this->mental() . "', emotional = '" . $this->emotional() . "', social = '" . $this->social() . "', credits = '" . $this->credits() . "', details = '" . $oDB->escape(json_encode($this->arDetails)) . "', state = '" . ($this->state()) . "', files = '" . $oDB->escape(json_encode($this->arFiles)) . "' where id = " . $this->iID . ";";  
 				$oDB->execute($strSQL); 
 			} 
 			if (!is_null($this->arTags)) foreach ($this->arTags as $strTag=>$arDetails) {

@@ -32,7 +32,7 @@
 		$oProfile->telephone($_POST["telephone"]); 
 		$oProfile->visible("telephone", $_POST["showtelephone"]); 
 		$oProfile->birthdate(ddmmyyyyTOdate($_POST["birthdate"]));  
-		$oProfile->visible("birthdate", $_POST["showbirthdate"]); 
+		$oProfile->visible("birthdate", $_POST["showbirthdate"]);  
 		 
 		$bImageUploaded = FALSE; 
 		if ($_FILES["img"]["error"] == 0){  

@@ -27,7 +27,7 @@
 					case "if": 
 						$strTag = implode(":", array_slice($arTagSplit,1));  
 						break; 	
-					case "file": 
+					case "include": 
 						if (count($arTagSplit)==2) $strTag = NULL; 
 						break; 
 				}
@@ -83,8 +83,8 @@
 			return $this->arTags[$strTag]; 
 		}
 		 
-		private function includes($strHTML) { /* [file:userprofile.friend.html]  */
-			$xReg = "/\[file:([\s\S]*?)\]/"; 
+		private function includes($strHTML) { /* [include:userprofile.friend.html]  */
+			$xReg = "/\[include:([\s\S]*?)\]/"; 
 			while (preg_match($xReg, $strHTML)) {
 				preg_match_all($xReg, $strHTML, $arResult);  
 				for ($i=0;$i<count($arResult[0]);$i++) {   

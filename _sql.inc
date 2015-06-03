@@ -161,13 +161,10 @@ CREATE TABLE IF NOT EXISTS `tblMailalerts` (
 		ALTER TABLE `tblMailalerts` ADD `sleutel` VARCHAR( 25 ) NOT NULL DEFAULT '' AFTER `user` ;
 		ALTER TABLE `tblMailalerts` CHANGE `sent` `sent` BIGINT( 20 ) UNSIGNED NULL DEFAULT NULL ;
 	</sql>  
-	<!--sql name="tblUserMailSettings" tag="14">
-		CREATE TABLE IF NOT EXISTS `tblUserMailSettings` (
-			`id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-			`user` bigint(20) unsigned NOT NULL,
-			`sleutel` varchar(20) NOT NULL,
-			`timing` bigint(20) NOT NULL DEFAULT '0',
-			PRIMARY KEY (`id`)
-		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-	</sql -->
+	<sql name="market-attachments" tag="14">  
+		ALTER TABLE `tblMarket` CHANGE `img` `files` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+		update tblMarket set files = '{}' where files = 'img'; 
+	</sql>  
+	
+
 </queries>

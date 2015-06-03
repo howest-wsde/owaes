@@ -1030,7 +1030,7 @@
 					if (is_null($this->arStatus)) $this->arStatus = json_decode($strValue, TRUE); 
 					break;
 				case "mailalerts": 
-					if (is_null($this->arMailalerts)) $this->arMailalerts = ($strValue=="") ? array() : json_decode($strValue, TRUE); 
+					if (is_null($this->arMailalerts)) $this->arMailalerts = ($strValue=="") ? settings("mailalert") : json_decode($strValue, TRUE); 
 					break;
 			}
 		}
