@@ -382,7 +382,7 @@
 		return $strCache; 
 	}
 
-	function content($fn) {
+	function content($fn) { 
 		$handle = fopen($fn, "r");
 		$contents = fread($handle, filesize($fn));
 		fclose($handle);

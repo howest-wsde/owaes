@@ -1,4 +1,4 @@
-﻿// --- Variables --- //
+﻿﻿// --- Variables --- //
 /*#region Variables*/
 
 //c : color
@@ -190,6 +190,11 @@ span.icon-verzekeringen:before {
     //font-size: @fontextralarge;
 }
 
+span.icon-file:before {
+    content: "\e661"; //icon: "save"
+    //font-size: @fontextralarge;
+}
+
 span.icon-addtogroup:before {
     content: "\e624"; //icon: "database" 
     //font-size: @fontextralarge;
@@ -298,10 +303,10 @@ a.iconExpand:hover, a.iconExpand:link, a.iconExpand:active {
 #persoonzoekenresult div.userpopup {margin: 0 10px 10px 0; float: left; }
 
 .owaesdetails {
-	overflow: auto; 
-	.icon {float: left; display: inline-block;  }
-	.value {padding-left: 38px; width: 100%; display: block; padding-bottom: 15px;  }
-}
+	overflow: hidden; text-overflow: ellipsis; position: relative;  
+	.icon {float: left; display: inline-block;  position: absolute; left: 0; }
+	.value {padding-left: 21px; width: 100%; display: block; padding-bottom: 15px;  padding-top: 3px; } 
+} 
 .info {margin: 15px 0; }
 
 .modaltransaction input.credits {margin: 2px 7px; width: 70px; padding: 0 5px; }
