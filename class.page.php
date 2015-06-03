@@ -16,6 +16,7 @@
 			$this->setMeta("description", "OWAES");  
 			$this->setMeta("content-language", "NL"); 
 			$this->setMeta("content-language", "NL"); 
+			$this->setMeta("viewport", "initial-scale=1, maximum-scale=1");
 			
 			$this->addCSS("style/reset-min.css"); 
             $this->addCSS("style/bootstrap.css");

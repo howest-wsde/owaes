@@ -110,10 +110,13 @@
 					break; 
 			} 
 		} 
-		
+		 
+		foreach ($oOwaesItem->files() as $strFile) {
+			if (!in_array($strFile, $_POST["existingfile"])) $oOwaesItem->files($strFile, FALSE); // remove file
+		}
 		for ($i=0; $i<count($_FILES["file"]["name"]); $i++) {
  			$strTempFN = owaestime() . "." . $_FILES["file"]["name"][$i];  
-			move_uploaded_file($_FILES["file"]["tmp_name"][$i], "upload/market/$strTempFN");  
+			if (move_uploaded_file($_FILES["file"]["tmp_name"][$i], "upload/market/$strTempFN")) $oOwaesItem->addFile($strTempFN); 
 		} 
 		$oOwaesItem->update(); 
 		
@@ -181,6 +184,10 @@
 				$("select#person").change(function(){
 					setTypes(); 
 				})  
+				$("a.delfileinput").click(function(){ // for existing files
+					$(this).parent().remove(); 
+					return false; 	
+				})
 				$(document).on("change", "input.fileupload", function(){ 
 					if (!$(this).attr("id")) {
 						strID = "fileupload" + Math.floor(Math.random()*10000);
@@ -260,6 +267,8 @@ input.time {width: 100%; display: block; }
 div.fileuploaddiv {overflow: auto; }
 input.fileupload {float: left; clear: both; }
 a.delfileinput {display: block; padding: 3px; }
+div.existingfile {padding: 2px; }
+div.existingfile a.delfileinput {display: inline; }
  
   
 								</style>
@@ -403,8 +412,13 @@ a.delfileinput {display: block; padding: 3px; }
                                 
                                 <div class="form-group">
                                 	<div class="row"><div class="col-lg-2"><h4>Bijlages</h4></div></div> 
-                                    <div class="col-lg-12"> 
+                                    <div class="col-lg-12">  
                                     	<div class="form-control fileuploaddiv">
+                                        	<?
+												foreach ($oOwaesItem->files() as $strFile) {
+													echo ('<div class="existingfile">' . $strFile . ' <input type="hidden" name="existingfile[]" value="' . $strFile . '" />(<a href="#del" class="delfileinput">verwijderen</a>)</div>'); 
+												}
+											?>
 	                                        <input name="file[]" type="file" class="fileupload" placeholder="Bijlages (optioneel)" multiple /> 
                                         </div>
                                     </div> 

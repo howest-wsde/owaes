@@ -560,6 +560,30 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		
 		public function html($strTemplate) { // vraagt pad van template en returns de html met replaced [tags]  
 			$oHTML = template($strTemplate); 
+			 
+			foreach ($oHTML->loops() as $strTag=>$arLoops) {
+				switch($strTag) {
+			
+					case "files":  
+						$arList = $this->files();  
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $strFile) {   
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$strResult = $strSubHTML; 
+								$arFile = explode(".", $strFile, 2); 
+								$strResult = str_replace("[file:name]", $arFile[1], $strResult);
+								$strResult = str_replace("[file:url]", fixPath("upload/market/$strFile"), $strResult);  
+								$arResults[$strSubHTML][] = $strResult;
+							} 
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("files", $strSubHTML, $strResult); 
+						}
+						break; 
+				}
+			}
+			
 			
 			foreach ($oHTML->tags() as $strTag) {
 				$strResult = $this->HTMLvalue($strTag);  
@@ -1173,6 +1197,17 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		public function addFile($strFile) {
 			if (is_null($this->arFiles)) $this->load();
 			$this->arFiles[] = $strFile; 
+			return $this->arFiles; 
+		}
+		public function files($strNew = NULL, $bAdd = TRUE) {
+			if (is_null($this->arFiles)) $this->load();
+			if (!is_null($strNew)) {
+				if ($bAdd) {
+					$this->arFiles[] = $strFile; // add item
+				} else {
+					$this->arFiles = array_diff($this->arFiles, array($strNew)); // remove item 
+				}
+			}
 			return $this->arFiles; 
 		}
 		
