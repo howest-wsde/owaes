@@ -557,9 +557,10 @@ dl.userinfo {
     -webkit-transform: skewX(40deg);
     transform: skewX(40deg);
     margin: -23px 0 0 -44px;
-    width: 2000px;
+    width: 57.68em; /* 2000px */
     height: 68px;
     border: 2px solid @cSecundary;
+    border-right: none;
 
     .icon-credits:before {
         margin: 0 0 0 5px;
@@ -3035,7 +3036,7 @@ input[type="number"] {
     }
 
     .navbar-default {
-        border-right: 0;
+        /*border-right: 0; border-right*/
 
         .navbar-nav {
             //margin: 0 -650px 0 0 !important;
@@ -3093,13 +3094,13 @@ input[type="number"] {
 
     .panel-profile-sm {
         .panel-body {
-            width: 650px;
+            width: 40.62em; /* 650px */
         }
     }
 
     .navbar-default {
-        .navbar-nav {
-            margin: 0 -650px 0 0 !important;
+        .navbar-right {
+            margin: 0 -11.87em 0 0 !important; /* 0 -650px 0 0 !important */
 
             li > a {
                 width: auto;
@@ -3135,6 +3136,12 @@ input[type="number"] {
             }
         }
     }
+    
+    .navbar-default {
+        .navbar-right {
+            margin: 0 -13.45em 0 0 !important;
+        }
+    }
 }
 
 @media (max-width: 1005px) {
@@ -3157,6 +3164,12 @@ input[type="number"] {
       }
     }
   }
+
+    .navbar-default {
+        .navbar-right {
+            margin: 0 -15.5em 0 0 !important;
+        }
+    }
 }
 
 @media (max-width: 991px) {
@@ -3252,11 +3265,23 @@ input[type="number"] {
             }
         }
     }
+
+    .navbar-default {
+        .navbar-right {
+            margin: 0 -16.3em 0 0 !important;
+        }
+    }
 }
 
 @media (max-width: 940px) {
     .indicatoren {
         max-width: 145px;
+    }
+
+    .navbar-default {
+        .navbar-right {
+            margin: 0 -18.5em 0 0 !important;
+        }
     }
 }
 
@@ -3270,6 +3295,14 @@ input[type="number"] {
     .navbar-right {
         z-index: 500;
         position: relative;
+    }
+}
+
+@media (max-width: 900px) {
+    .navbar-default {
+        .navbar-right {
+            margin: 0 -20.3em 0 0 !important;
+        }
     }
 }
 
@@ -3531,7 +3564,7 @@ input[type="number"] {
 
 @media (min-width: 768px) and (max-width: 835px) {
     .navbar-default .navbar-nav {
-        margin: 0 -740px 0 0 !important;
+        margin: 0 -22em 0 0 !important; /* 0 -740px 0 0 !important */
 
         > li.first {
             display: none;
@@ -3541,6 +3574,10 @@ input[type="number"] {
 
 @media (min-width: 768px) {
     .navbar-default {
+    	/* Zwarte boorden */
+	border-left: none;
+	border-right: none;
+
         background-color: transparent;
         border-bottom: solid 3px @cSecundary;
         //position:fixed; //hack voor geen horiz. scroll => gele zijkant menu
@@ -3574,8 +3611,8 @@ input[type="number"] {
         .navbar-nav.navbar-right {
             background-color: @cDefault;
             float: right;
-            width: 1300px;
-            margin: 0 -500px 0 0;
+            width: 922px; /* 1300px (916px) */
+            margin: 0 -120px 0 0; /* -500px (-115px) */
 
             &:before {
                 background-color: @cWhite;
