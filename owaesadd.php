@@ -5,7 +5,7 @@
 	
 	//$oPage->addJS("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
-	$oPage->addJS("script/owaesadd.js?v2");
+	$oPage->addJS("script/owaesadd.js?v3");
 	//$oPage->addJS("ckeditor/ckeditor.js");
 	//$oPage->addJS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.js"); 
 	//$oPage->addCSS("http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"); 
