@@ -53,6 +53,22 @@
 				"threshold" => 25000, 
 				"multiplier" => 2, 
 			), 
+			7 => array( 
+				"threshold" => 50000, 
+				"multiplier" => 2, 
+			), 
+			8 => array( 
+				"threshold" => 100000, 
+				"multiplier" => 2, 
+			), 
+			9 => array( 
+				"threshold" => 200000, 
+				"multiplier" => 2, 
+			), 
+			10 => array( 
+				"threshold" => 400000, 
+				"multiplier" => 2, 
+			), 
 		), 
 		"warnings" => array( 
 			1 => array( 

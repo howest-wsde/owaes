@@ -33,8 +33,8 @@
 		
 		public function add($iNumber, $bConfirmed = FALSE) { // experience toevoegen (standaard niet confirmed) 
 			$arLevels = settings("levels"); 
-			$iLevel = $this->level(); 
-			$iMultiplier = isset($arLevels[$iLevel]["multiplier"]) ? $arLevels[$iLevel]["multiplier"] : 1; 
+			$iLevel = $this->level();  
+			$iMultiplier = isset($arLevels[$iLevel]["multiplier"]) ? $arLevels[$iLevel]["multiplier"] : 1;  
 			$iNumber *= $iMultiplier; 
 
 			$oDB = new database(); 
