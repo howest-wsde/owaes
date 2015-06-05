@@ -144,6 +144,9 @@
 				"x" => "owa",
 				"overdracht" => "owa-overdracht",
 			), 
+			"donation" => array(
+				"limit" => 3000, // only possible to donate if you have more than [limit] credits
+			), 
 		), 
 		"verzekeringen" => array( 
 			1 => "Schade aan derden verzekerd",
