@@ -415,8 +415,9 @@ div.existingfile a.delfileinput {display: inline; }
                                     <div class="col-lg-12">  
                                     	<div class="form-control fileuploaddiv">
                                         	<?
-												foreach ($oOwaesItem->files() as $strFile) {
-													echo ('<div class="existingfile">' . $strFile . ' <input type="hidden" name="existingfile[]" value="' . $strFile . '" />(<a href="#del" class="delfileinput">verwijderen</a>)</div>'); 
+												foreach ($oOwaesItem->files() as $strFile) {  
+													$arFile = explode(".", $strFile, 2); 
+													echo ('<div class="existingfile">' . $arFile[1] . ' <input type="hidden" name="existingfile[]" value="' . $strFile . '" />(<a href="#del" class="delfileinput">verwijderen</a>)</div>'); 
 												}
 											?>
 	                                        <input name="file[]" type="file" ext="pdf,doc,docx,txt,jpg,jpeg,gif,bmp,png,xls,xlsx,md,ppt,pps,odt,ods,odp,csv,svg" class="fileupload" placeholder="Bijlages (optioneel)" multiple /> 

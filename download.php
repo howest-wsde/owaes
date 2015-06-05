@@ -49,8 +49,9 @@
 		}
 	}
 	if (isset($_GET["m"])) {
-		$strFilePath = "upload/market/" . md5($_GET["f"]);  
-		$strFileName = $_GET["f"]; 
+		$strFilePath = "upload/market/" . md5($_GET["f"]); 
+		$arFile = explode(".", $_GET["f"], 2);  
+		$strFileName = $arFile[1]; 
 	} 
 	 
 	if ($strFilePath && file_exists($strFilePath)) {
