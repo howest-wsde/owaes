@@ -36,10 +36,12 @@
 			2 => array( 
 				"threshold" => 1400, 
 				"multiplier" =>1.25, 
+				"addedrights" => array("message", "addfriend", "groepslijst", "donate"), 
 			), 
 			3 => array( 
 				"threshold" => 3000, 
 				"multiplier" => 1.5, 
+				"addedrights" => array("gebruikerslijst"), 
 			), 
 			4 => array( 
 				"threshold" => 8000, 
