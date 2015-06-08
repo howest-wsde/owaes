@@ -82,14 +82,9 @@
 		}
 		 
 		public function rechten($strWat) { 
-			$iThisLevel = $this->level(); 
-			$bReturn = FALSE; 
-			foreach (settings("levels") as $iLevel=>$arSettings) {
-				if ($iThisLevel >= $iLevel) {
-					if (isset($arSettings["addedrights"]) && (in_array($strWat, $arSettings["addedrights"]))) $bReturn = TRUE; 	
-				} 
-			} 
-			return $bReturn;  
+			if (settings("rights", $strWat)) {
+				return ($this->level() >= settings("rights", $strWat)); 
+			} else return FALSE; 
 		}
 		
 		public function leveltreshold($bNext = TRUE) {  // returns experience nodig voor volgende level (bNext = false > vorige level)

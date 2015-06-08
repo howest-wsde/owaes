@@ -10,12 +10,13 @@
 
 	$oPage->addCSS("style/gamification.css");
 	$oPage->addJS("script/gamiVal.js");
-
-	function prepareAndExecuteStmt($key, $val) {
-		$query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
+	 
+	function prepareAndExecuteStmt($strKey, $strVal) {
+		// $query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
 
 		$oDB = new database();
-		$oDB->execute($query);
+		$oDB->execute("INSERT INTO tblConfig (`key`, `value`) VALUES('$strKey', '" . $oDB->escape(json_encode($strVal)) . "') ON DUPLICATE KEY UPDATE `key`=VALUES(`key`), `value`=VALUES(`value`);");
+		//echo "<p>" . $oDB->sql() . "</p>"; 
 	}
 
 	function getPeriod($seconds, $from) {
@@ -92,19 +93,17 @@
 		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"]));
 		if (isset($_POST["txtX"])) prepareAndExecuteStmt("crons.x", doubleval($_POST["txtX"]));
 
-		/* ------------- */
-
-		/* Datum */
-		if (isset($_POST["txtDateSpeed"])) prepareAndExecuteStmt("date.speed", doubleval($_POST["txtDateSpeed"]));
-		if (isset($_POST["txtStartdate"])) prepareAndExecuteStmt("date.start", ddmmyyyyTOdate($_POST["txtStartdate"]));
-
-		/* ------------- */
-
+		/* ------------- */ 
+ 
 		/* Indicatoren */
 		if (isset($_POST["txtIndicatorMultiplier"])) prepareAndExecuteStmt("indicatoren.multiplier", doubleval($_POST["txtIndicatorMultiplier"]));
 		if (isset($_POST["txtOwaesAdd"])) prepareAndExecuteStmt("indicatoren.owaesadd", doubleval($_POST["txtOwaesAdd"]));
 
 		/* ------------- */
+		
+		foreach (settings("rights") as $strKey => $iCurrent) {
+			 prepareAndExecuteStmt("rights.$strKey", $_POST["rechten-$strKey"]);
+		}
 
 		redirect(filename());
 	}
@@ -113,6 +112,9 @@
 <html>
 	<head>
 		<? echo $oPage->getHeader(); ?>
+        <style>
+			div.form-group {overflow: auto; }
+		</style>
 	</head>
 	<body id="index">
 		<? echo $oPage->startTabs(); ?>
@@ -163,34 +165,45 @@
 												<label for="txtLevel<? print($i . "Multiplier"); ?>">Vermenigvuldigingsfactor:</label><br/>
 												<input class="form-control" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.01" value="<? echo $level["multiplier"]; ?>"/>
 											</p>
-											<p>
-												<label for="txtLevel<? print($i . "Addedrights"); ?>">Added rights:</label><br/>
-												<div class="invoer" id="addedrights">
-												<?php
-													$iRightCount = 0;
-													
-													if (!isset($level["addedrights"]) || empty($level["addedrights"])) {
-														print("<input type='text' name='addedright[]' id='lvl" . $i . "Addedright' class='tag' placeholder=\"Rechten, gescheiden door komma's\"/>");
-													}
-													else {
-														foreach ($level["addedrights"] as $addedright) {
-															$strKey = "lvl" . $i . "Addright" . ++$iRightCount;
-												?>
-															<span class="tag" id="<? echo $strKey; ?>">
-																<span><? echo $addedright; ?></span>
-																<a title="verwijderen" href="#" rel="<? echo $strKey; ?>">x</a>
-																<input type="hidden" name="lvl<? echo $i;  ?>Addedright[]" value="<? echo $addedright; ?>"/>
-															</span>
-														<? }
-													} ?>
-												</div>
-											</p>
+											
 										</div>
 										<?
 										$i++;
 									}
 									?>
 							</fieldset>
+                            
+                            
+							<fieldset>
+								<legend>Rechten</legend>
+                                <div class="form-group">
+                                <?  
+									$arRechten = array(
+										"message" => "berichten sturen", 
+										"addfriend" => "vrienden toevoegen", 
+										"groepslijst" => "groepen bekijken", 
+										"donate" => "schenking uitvoeren", 
+										"gebruikerslijst" => "gebruikerslijst bekijken", 
+										"add-infra" => "'Delen' toevoegen", 
+										"add-opleiding" => "Opleiding toevoegen", 
+										"add-ervaring" => "Ervaringsopdracht toevoegen", 
+									); 
+									foreach (settings("rights") as $strRecht=>$iVal) {
+										?><div class="form-group">
+                                            <label for="rechten-<? echo $strRecht; ?>" class="control-label col-lg-3"><? echo isset($arRechten[$strRecht]) ? $arRechten[$strRecht] : $strRecht; ?>:</label>
+                                            <div class="col-lg-9">
+                                                <select class="form-control" name="rechten-<? echo $strRecht; ?>"><?
+                                                	foreach (settings("levels") as $iLevel => $arDetails) { 
+														echo ("<option value=\"$iLevel\" " . (($iLevel==$iVal)?"selected=selected":"") . ">vanaf level $iLevel</option>"); 	
+													}
+												?></select>
+                                            </div> 
+                                        </div><?
+									}
+								?></div>
+                            </fieldset>
+                            
+                            
 							<fieldset>
 								<legend>Waarschuwingen</legend>
 								<?
@@ -259,17 +272,7 @@
 									<input type="number" class="form-control" name="txtX" id="txtX" value="<? echo settings("crons", "x"); ?>"/>
 								</p>
 							</fieldset>
-							<fieldset>
-								<legend>Datum</legend>
-								<p class="naastElkaar">
-									<label for="txtDateSpeed">Snelheid:</label><br/>
-									<input type="number" class="form-control" name="txtDateSpeed" id="txtDateSpeed" min="0" value="<? echo settings("date", "speed"); ?>"/>
-								</p>
-								<p class="naastElkaar">
-									<label for="startdate">Start:</label><br/>
-									<input type="text" class="form-control" name="txtStartdate" id="txtStartdate" placeholder="start datum" value="<? echo date("d-m-Y", settings("date", "start")); ?>"/> 
-								</p>
-							</fieldset>
+                             
 							<fieldset>
 								<legend>Indicatoren</legend>
 								<p class="naastElkaar">
@@ -299,24 +302,6 @@
 			span.innerHTML = sliderID.value;
 		}
 
-		function addTag(strTag) {
-			if (strTag != "") {
-				strKey = "addedright_" + ($("div#addedrights span.tag").length+1) + "_" + Math.floor(1000*Math.random()); 
-				$("input.tag").before(
-					$("<span />").addClass("tag").attr("id", strKey).append(
-						$("<span>").text(strTag.trim())
-					).append(
-						$("<a />").attr("title", "verwijderen").text("x").attr("href", "#").attr("rel", strKey).click(function(){
-							$("#" + $(this).attr("rel")).remove(); 
-							return false; 
-						})
-					).append(
-						$("<input />").attr("name", "addedright[]").attr("type", "hidden").val(strTag.trim())
-					)
-				)
-			}
-			$("input.tag").focus(); 
-		}
 
 		window.addEventListener("DOMContentLoaded", function() {
 			printValue("txtPhysical", "sPhy");
@@ -335,78 +320,6 @@
 				defaultDate: "y"
 			});
 
-			rxSplitTags = /[,;]/; 
-			$("input.tag").focus(function(){
-				$("div#tags").addClass("actief"); 
-			}).blur(function(){
-				$("div#tags").removeClass("actief"); 
-			}).keydown(function(e){
-				switch(e.keyCode){
-					case 13: 
-						strVal = $(this).val(); 
-						arVal = strVal.split(rxSplitTags);  
-						while (arVal.length > 0) {
-							strVal = arVal.shift(); 
-							addTag(strVal); 
-						} 
-						$(this).val("");
-						return false; 
-						break; 	
-					case 44: 
-					case 59: 
-						if ($(this).val() == "") {
-							$(this).val($("div#tags span.tag:last input").val());
-							$("div#tags span.tag:last").remove(); 
-							return false; 
-						}
-						break; 
-				} 
-			}).keyup(function(){
-				strVal = $(this).val(); 
-				arVal = strVal.split(rxSplitTags);  
-				while (arVal.length > 1) {
-					strVal = arVal.shift(); 
-					addTag(strVal); 
-				} 
-				strVal = arVal.join(""); 
-				$(this).val(strVal);
-				
-				if (strVal != "") { 
-					// $("div#tags ul.tags").load();   
-					$.getJSON( "tags.php", { s: strVal } ).done(function( arTags ) {
-						if ($("div#tags ul.tags").length == 0) $("div#tags").append(
-							$("<ul />").addClass("tags")
-						);
-						$("div#tags ul.tags li").remove(); 
-						for (i=0; i<=arTags.length; i++){
-							strTag = arTags[i];
-							$("div#tags ul.tags").append( 
-								$("<li />").text(strTag).attr("rel", strTag).click(function(){
-									$("input.tag").val("");
-									addTag($(this).attr("rel")); 
-									$("div#tags ul.tags").remove(); 
-								})
-							);
-						}  
-						if (arTags.length == 0) $("div#tags ul.tags").remove(); 
-						});
-				} else $("div#tags ul.tags").remove(); 
-			}).change(function(){ 
-				setTimeout(function() {  
-					strVal = $("input.tag").val(); 
-					arVal = strVal.split(rxSplitTags);  
-					while (arVal.length > 0) {
-						strVal = arVal.shift(); 
-						addTag(strVal); 
-					} 
-					$("input.tag").val("");
-					$("div#tags ul.tags").remove(); 
-				}, 500); // timeout is nodig om click op list-item tijd te geven 
-			})
-			$("div#tags span.tag a").click(function(){
-				$("#" + $(this).attr("rel")).remove(); 
-				return false; 
-			});
 		});
 	</script>
 	</body>

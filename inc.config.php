@@ -35,13 +35,11 @@
 			), 
 			2 => array( 
 				"threshold" => 1400, 
-				"multiplier" =>1.25, 
-				"addedrights" => array("message", "addfriend", "groepslijst", "donate"), 
+				"multiplier" =>1.25,  
 			), 
 			3 => array( 
 				"threshold" => 3000, 
-				"multiplier" => 1.5, 
-				"addedrights" => array("gebruikerslijst"), 
+				"multiplier" => 1.5,  
 			), 
 			4 => array( 
 				"threshold" => 8000, 
@@ -71,6 +69,16 @@
 				"threshold" => 400000, 
 				"multiplier" => 2, 
 			), 
+		), 
+		"rights" => array( /* person can use this right as of level x  */
+			"message" => 2, 
+			"addfriend" => 2, 
+			"groepslijst" => 2, 
+			"donate" => 2, 
+			"gebruikerslijst" => 3, 
+			"add-infra" => 2, 
+			"add-opleiding" => 3, 
+			"add-ervaring" => 4, 
 		), 
 		"warnings" => array( 
 			1 => array( 
