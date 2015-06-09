@@ -8,10 +8,24 @@
             <h4 class="modal-title">[[Credits]] schenken</h4>
           </div>
           <div class="modal-body"> 
-            <p>Draag <input type="number" name="credits" value="[credits]" pattern="[1-9][0-9]*" min="1" max="[max]" title="Draag minimum 1 [[credit]] over" placeholder="[[credits]]" class="credits" /> [[credits]] over naar [firstname]. </p>   
+            <p>Draag <input type="number" name="credits" value="[credits]" pattern="[1-9][0-9]*" min="1" max="[max]" title="Draag minimum 1 [[credit]] over" placeholder="[[credits]]" class="credits" onchange="testSchenking(this);" /> [[credits]] over naar [firstname]. </p>   
+            <div class="alert alert-danger schenkerror" style="display: none; "></div>
             <div class="col-lg-12">
                 <textarea name="comment" class="form-control" placeholder="Informatie over schenking (verplicht)"></textarea> 
             </div>
+			<script>
+                function testSchenking(oEl) {
+                    iVal = $(oEl).val() * 1; 
+					iMax = [max]; 
+                    if (iVal > iMax) {
+                        $("button.save-form").addClass("disabled"); 
+                        $(".schenkerror").html("Er geldt een limiet van [max] [[credits]]! ").show(); 
+                    } else {
+                        $("button.save-form").removeClass("disabled"); 
+                        $(".schenkerror").hide(); 
+                    }
+                }
+            </script> 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-success save-form" data-dismiss="modal">versturen</button>
