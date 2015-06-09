@@ -15,7 +15,7 @@
 		// $query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
 
 		$oDB = new database();
-		$oDB->execute("INSERT INTO tblConfig (`key`, `value`) VALUES('$strKey', '" . $oDB->escape(json_encode($strVal)) . "') ON DUPLICATE KEY UPDATE `key`=VALUES(`key`), `value`=VALUES(`value`);");
+		$oDB->execute("INSERT INTO tblConfig (`sleutel`, `waarde`) VALUES('$strKey', '" . $oDB->escape(json_encode($strVal)) . "') ON DUPLICATE KEY UPDATE `sleutel`=VALUES(`sleutel`), `waarde`=VALUES(`waarde`);");
 		//echo "<p>" . $oDB->sql() . "</p>"; 
 	}
 
@@ -90,8 +90,7 @@
 			prepareAndExecuteStmt("crons.indicators", $result);
 		}
 
-		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"]));
-		if (isset($_POST["txtX"])) prepareAndExecuteStmt("crons.x", doubleval($_POST["txtX"]));
+		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"])); 
 
 		/* ------------- */ 
  
@@ -179,11 +178,11 @@
                                 <div class="form-group">
                                 <?  
 									$arRechten = array(
-										"message" => "berichten sturen", 
-										"addfriend" => "vrienden toevoegen", 
-										"groepslijst" => "groepen bekijken", 
-										"donate" => "schenking uitvoeren", 
-										"gebruikerslijst" => "gebruikerslijst bekijken", 
+										"message" => "Berichten sturen", 
+										"addfriend" => "Vrienden toevoegen", 
+										"groepslijst" => "Groepen bekijken", 
+										"donate" => "Schenking uitvoeren", 
+										"gebruikerslijst" => "Gebruikerslijst bekijken", 
 										"add-infra" => "'Delen' toevoegen", 
 										"add-opleiding" => "Opleiding toevoegen", 
 										"add-ervaring" => "Ervaringsopdracht toevoegen", 
@@ -257,20 +256,18 @@
 							</fieldset>
 							<fieldset>
 								<legend>Taken planner</legend>
-								<p class="naastElkaar">
+								<p class="">
 									<label for="txtCronsIndicators">Indicatoren verlagen:</label><br/>
 									<input type="radio" name="rbWhen" id="rbDay" value="day" <? echo getPeriod(settings("crons", "indicators"), "day"); ?>/><label for="rbDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbWhen" id="rbWeek" value="week" <? echo getPeriod(settings("crons", "indicators"), "week"); ?>/><label for="rbWeek">Week</label><br/>
 									<input type="number" class="form-control" name="txtCronsIndicators" id="txtCronsIndicators" min="0" value="<? echo getCronsIndicator(settings("crons", "indicators")); ?>"/>
+                                    <small>(Elke X tijd zakken de indicatoren 1 in waarde)</small>
 								</p>
-								<p class="naastElkaar">
+								<p class="">
 									<label for="txtHTWFD">Aantal uren werken voor delay:</label><br/>
 									<input type="number" class="form-control" name="txtHTWFD" id="txtHTWFD" value="<? echo settings("crons", "hourstoworkfordelay"); ?>"/>
-								</p>
-								<p class="naastElkaar">
-									<label for="txtX">x</label><br/>
-									<input type="number" class="form-control" name="txtX" id="txtX" value="<? echo settings("crons", "x"); ?>"/>
-								</p>
+                                    <small>(Wanneer een opdracht van bv. 100 uren duurtijd bevestigd wordt, zullen de indicatoren van de bevestigde gebruiker gedurende X * [indicatoren-verlagen-waarde] dagen niet zakken)</small>
+								</p> 
 							</fieldset>
                              
 							<fieldset>
@@ -278,10 +275,12 @@
 								<p class="naastElkaar">
 									<label for="txtIndicatorMultiplier">Vermenigvuldigingsfactor:</label><br/>
 									<input type="number" class="form-control" name="txtIndicatorMultiplier" id="txtIndicatorMultiplier" min="0" value="<? echo settings("indicatoren", "multiplier"); ?>"/>
+                                    <small>Bij het verdienen van indicatoren bij het uitvoeren van een opdracht wordt een waarde X toegevoegd per indicator (bv. opdracht = 50% sociaal, 25% fysiek, 25% Kennis) -&gt; Gebruiker krijgt 2 * X sociaal, X fysiek en X kennis</small>
 								</p>
 								<p class="naastElkaar">
-									<label for="txtOwaesAdd">Aantal toevoegen:</label><br/>
+									<label for="txtOwaesAdd">Aantal bij toevoegen:</label><br/>
 									<input type="number" class="form-control" name="txtOwaesAdd" id="txtOwaesAdd" min="0" value="<? echo settings("indicatoren", "owaesadd"); ?>"/>
+                                    <small>Bij het toevoegen van een nieuw item krijg je van elke indicator X waarde bij</small>
 								</p>
 							</fieldset>
 							<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>

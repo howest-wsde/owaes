@@ -1,3 +1,4 @@
+
 <div class="modal fade modaltransaction" id="transaction-[market:id]-[user:id]">
   <div class="modal-dialog">
     <form action="[currentfile]">
@@ -10,7 +11,21 @@
           </div>
           <div class="modal-body">
             <h3>[title]</h3> 
-            <p>Draag <input type="text" name="credits" value="[credits]" pattern="[1-9][0-9]*" title="Draag minimum 1 [[credit]] over" placeholder="[[credits]]" class="credits" /> [[credits]] over naar [firstname]. </p>  
+            <p>Draag <input type="number" min="1" max="[max]" name="credits" value="[credits]" pattern="[1-9][0-9]*" title="Draag minimum 1 [[credit]] over" placeholder="[[credits]]" class="credits" onchange="testTransaction(this);" /> [[credits]] over naar [firstname]. </p>  
+            <div class="alert alert-danger transactionerror" style="display: none; "></div>
+			<script>
+                function testTransaction(oEl) {
+                    iVal = $(oEl).val() * 1; 
+					iMax = [max]; 
+                    if (iVal > iMax) {
+                        $("button.save-form").addClass("disabled"); 
+                        $(".transactionerror").html("U kunt maximum [max] [[credits]] overdagen! ").show(); 
+                    } else {
+                        $("button.save-form").removeClass("disabled"); 
+                        $(".transactionerror").hide(); 
+                    }
+                }
+            </script> 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-success save-form" data-dismiss="modal">versturen</button>
