@@ -572,8 +572,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 							foreach ($arResults as $strSubHTML=>$arDummy) {
 								$strResult = $strSubHTML; 
 								$arFile = explode(".", $strFile, 2); 
-								$strResult = str_replace("[file:name]", $arFile[1], $strResult);
-								$strResult = str_replace("[file:url]", fixPath("upload/market/$strFile"), $strResult);  
+								$strResult = str_replace("[file:name]", $arFile[1], $strResult); 
+								$strResult = str_replace("[file:url]", fixPath("download.php?m=" . $this->id() . "&f=" . $strFile), $strResult);  
 								$arResults[$strSubHTML][] = $strResult;
 							} 
 						}

@@ -10,12 +10,13 @@
 
 	$oPage->addCSS("style/gamification.css");
 	$oPage->addJS("script/gamiVal.js");
-
-	function prepareAndExecuteStmt($key, $val) {
-		$query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
+	 
+	function prepareAndExecuteStmt($strKey, $strVal) {
+		// $query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
 
 		$oDB = new database();
-		$oDB->execute($query);
+		$oDB->execute("INSERT INTO tblConfig (`key`, `value`) VALUES('$strKey', '" . $oDB->escape(json_encode($strVal)) . "') ON DUPLICATE KEY UPDATE `key`=VALUES(`key`), `value`=VALUES(`value`);");
+		//echo "<p>" . $oDB->sql() . "</p>"; 
 	}
 
 	function getPeriod($seconds, $from) {
@@ -92,19 +93,17 @@
 		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"]));
 		if (isset($_POST["txtX"])) prepareAndExecuteStmt("crons.x", doubleval($_POST["txtX"]));
 
-		/* ------------- */
-
-		/* Datum */
-		if (isset($_POST["txtDateSpeed"])) prepareAndExecuteStmt("date.speed", doubleval($_POST["txtDateSpeed"]));
-		if (isset($_POST["txtStartdate"])) prepareAndExecuteStmt("date.start", ddmmyyyyTOdate($_POST["txtStartdate"]));
-
-		/* ------------- */
-
+		/* ------------- */ 
+ 
 		/* Indicatoren */
 		if (isset($_POST["txtIndicatorMultiplier"])) prepareAndExecuteStmt("indicatoren.multiplier", doubleval($_POST["txtIndicatorMultiplier"]));
 		if (isset($_POST["txtOwaesAdd"])) prepareAndExecuteStmt("indicatoren.owaesadd", doubleval($_POST["txtOwaesAdd"]));
 
 		/* ------------- */
+		
+		foreach (settings("rights") as $strKey => $iCurrent) {
+			 prepareAndExecuteStmt("rights.$strKey", $_POST["rechten-$strKey"]);
+		}
 
 		redirect(filename());
 	}
@@ -113,6 +112,9 @@
 <html>
 	<head>
 		<? echo $oPage->getHeader(); ?>
+        <style>
+			div.form-group {overflow: auto; }
+		</style>
 	</head>
 	<body id="index">
 		<? echo $oPage->startTabs(); ?>
@@ -152,23 +154,56 @@
 									$i = 0;
 
 									foreach ($arConfig["levels"] as $level) {
-	?>
+									?>
 										<div class="naastElkaar levels">
-										<h2>Level <? echo $i; ?></h2>
-										<p>
-											<label for="txtLevel<? print($i . "Threshold"); ?>">Drempel:</label><br/>
-											<input class="form-control" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="1"  value="<? echo $level["threshold"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtLevel<? print($i . "Multiplier"); ?>">Vermenigvuldigingsfactor:</label><br/>
-											<input class="form-control" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.01" value="<? echo $level["multiplier"]; ?>"/>
-										</p>
+											<h2>Level <? echo $i; ?></h2>
+											<p>
+												<label for="txtLevel<? print($i . "Threshold"); ?>">Drempel:</label><br/>
+												<input class="form-control" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="1"  value="<? echo $level["threshold"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtLevel<? print($i . "Multiplier"); ?>">Vermenigvuldigingsfactor:</label><br/>
+												<input class="form-control" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.01" value="<? echo $level["multiplier"]; ?>"/>
+											</p>
+											
 										</div>
 										<?
 										$i++;
 									}
 									?>
 							</fieldset>
+                            
+                            
+							<fieldset>
+								<legend>Rechten</legend>
+                                <div class="form-group">
+                                <?  
+									$arRechten = array(
+										"message" => "berichten sturen", 
+										"addfriend" => "vrienden toevoegen", 
+										"groepslijst" => "groepen bekijken", 
+										"donate" => "schenking uitvoeren", 
+										"gebruikerslijst" => "gebruikerslijst bekijken", 
+										"add-infra" => "'Delen' toevoegen", 
+										"add-opleiding" => "Opleiding toevoegen", 
+										"add-ervaring" => "Ervaringsopdracht toevoegen", 
+									); 
+									foreach (settings("rights") as $strRecht=>$iVal) {
+										?><div class="form-group">
+                                            <label for="rechten-<? echo $strRecht; ?>" class="control-label col-lg-3"><? echo isset($arRechten[$strRecht]) ? $arRechten[$strRecht] : $strRecht; ?>:</label>
+                                            <div class="col-lg-9">
+                                                <select class="form-control" name="rechten-<? echo $strRecht; ?>"><?
+                                                	foreach (settings("levels") as $iLevel => $arDetails) { 
+														echo ("<option value=\"$iLevel\" " . (($iLevel==$iVal)?"selected=selected":"") . ">vanaf level $iLevel</option>"); 	
+													}
+												?></select>
+                                            </div> 
+                                        </div><?
+									}
+								?></div>
+                            </fieldset>
+                            
+                            
 							<fieldset>
 								<legend>Waarschuwingen</legend>
 								<?
@@ -237,17 +272,7 @@
 									<input type="number" class="form-control" name="txtX" id="txtX" value="<? echo settings("crons", "x"); ?>"/>
 								</p>
 							</fieldset>
-							<fieldset>
-								<legend>Datum</legend>
-								<p class="naastElkaar">
-									<label for="txtDateSpeed">Snelheid:</label><br/>
-									<input type="number" class="form-control" name="txtDateSpeed" id="txtDateSpeed" min="0" value="<? echo settings("date", "speed"); ?>"/>
-								</p>
-								<p class="naastElkaar">
-									<label for="startdate">Start:</label><br/>
-									<input type="text" class="form-control" name="txtStartdate" id="txtStartdate" placeholder="start datum" value="<? echo date("d-m-Y", settings("date", "start")); ?>"/> 
-								</p>
-							</fieldset>
+                             
 							<fieldset>
 								<legend>Indicatoren</legend>
 								<p class="naastElkaar">
@@ -277,6 +302,7 @@
 			span.innerHTML = sliderID.value;
 		}
 
+
 		window.addEventListener("DOMContentLoaded", function() {
 			printValue("txtPhysical", "sPhy");
 			printValue("txtSocial", "sSoc");
@@ -293,6 +319,7 @@
 				monthNamesShort: ["Jan", "Feb", "Maa", "Apr", "mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
 				defaultDate: "y"
 			});
+
 		});
 	</script>
 	</body>

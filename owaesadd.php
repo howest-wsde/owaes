@@ -112,11 +112,11 @@
 		} 
 		 
 		foreach ($oOwaesItem->files() as $strFile) {
-			if (!in_array($strFile, $_POST["existingfile"])) $oOwaesItem->files($strFile, FALSE); // remove file
+			if (!in_array($strFile, isset($_POST["existingfile"])?$_POST["existingfile"]:array())) $oOwaesItem->files($strFile, FALSE); // remove file
 		}
 		for ($i=0; $i<count($_FILES["file"]["name"]); $i++) {
- 			$strTempFN = owaestime() . "." . $_FILES["file"]["name"][$i];  
-			if (move_uploaded_file($_FILES["file"]["tmp_name"][$i], "upload/market/$strTempFN")) $oOwaesItem->addFile($strTempFN); 
+ 			$strTempFN = owaestime() . "." . $_FILES["file"]["name"][$i];
+			if (move_uploaded_file($_FILES["file"]["tmp_name"][$i], "upload/market/" . md5($strTempFN))) $oOwaesItem->addFile($strTempFN); 
 		} 
 		$oOwaesItem->update(); 
 		
@@ -197,7 +197,7 @@
 							$(this).remove(); 
 							return false; 	
 						})); 
-						$(this).parent().append($('<input name="file[]" type="file" class="fileupload" placeholder="Bijlages (optioneel)" multiple />')); 
+						$(this).parent().append($('<input name="file[]" type="file" ext="pdf,doc,docx,txt,jpg,jpeg,gif,bmp,png,xls,xlsx,md,ppt,pps,odt,ods,odp,csv,svg" class="fileupload" placeholder="Bijlages (optioneel)" multiple />')); 
 					}
 				})
             });
@@ -415,11 +415,12 @@ div.existingfile a.delfileinput {display: inline; }
                                     <div class="col-lg-12">  
                                     	<div class="form-control fileuploaddiv">
                                         	<?
-												foreach ($oOwaesItem->files() as $strFile) {
-													echo ('<div class="existingfile">' . $strFile . ' <input type="hidden" name="existingfile[]" value="' . $strFile . '" />(<a href="#del" class="delfileinput">verwijderen</a>)</div>'); 
+												foreach ($oOwaesItem->files() as $strFile) {  
+													$arFile = explode(".", $strFile, 2); 
+													echo ('<div class="existingfile">' . $arFile[1] . ' <input type="hidden" name="existingfile[]" value="' . $strFile . '" />(<a href="#del" class="delfileinput">verwijderen</a>)</div>'); 
 												}
 											?>
-	                                        <input name="file[]" type="file" class="fileupload" placeholder="Bijlages (optioneel)" multiple /> 
+	                                        <input name="file[]" type="file" ext="pdf,doc,docx,txt,jpg,jpeg,gif,bmp,png,xls,xlsx,md,ppt,pps,odt,ods,odp,csv,svg" class="fileupload" placeholder="Bijlages (optioneel)" multiple /> 
                                         </div>
                                     </div> 
                                 </div>

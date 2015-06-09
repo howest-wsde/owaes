@@ -5,9 +5,16 @@
 	$iUser = intval($_GET["u"]); 
 	$oUser = user($iUser); 
 	
+	$oMe = user(me()); 
+	
+	if (!$oMe->levelrights("donate")) exit(); 
+	
+	$iMax = $oMe->credits() - settings("credits", "donation", "limit"); 
+	if ($iMax < 0) $iMax = 0; 
+	
 	if (isset($_POST["credits"])) {   
 		$iCredits = intval($_POST["credits"]); 
-		if ($iCredits > 0) {
+		if ($iCredits > 0 && $iCredits <= $iMax) {
 			$oPayment = new payment(); 
 			$oPayment->sender(me()); 
 			$oPayment->receiver($iUser);  
@@ -27,7 +34,9 @@
 		exit();  
 	} 
  
-	$strHTML = $oUser->html("modal.schenking.html"); 
+ 	$oTekst = template("modal.schenking.html"); 
+	$oTekst->tag("max", $iMax); 
+	$strHTML = $oUser->html($oTekst->html()); 
 	
 //	$strHTML = str_replace("[credit]", 1515515151, $strHTML); 
 	

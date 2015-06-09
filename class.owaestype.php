@@ -16,21 +16,21 @@
 					"title" => "Werkervaring", 
 					"iconclass" => "icon-werkervaring", 
 					"direction" => DIRECTION_SPEND, 
-					"minimumlevel" => 4, 
+					"minimumlevel" => settings("rights", "add-ervaring"), 
 				), 
 				2 => array(
 					"key" => "opleiding", 
 					"title" => "Opleiding", 
 					"iconclass" => "icon-opleiding", 
 					"direction" => DIRECTION_EARN,
-					"minimumlevel" => 3, 
+					"minimumlevel" => settings("rights", "add-opleiding"), 
 				), 
 				3 => array(
 					"key" => "infra", 
 					"title" => "Delen",  
 					"iconclass" => "icon-delen", 
 					"direction" => DIRECTION_EARN,
-					"minimumlevel" => 2, 
+					"minimumlevel" => settings("rights", "add-infra"), 
 				), 
 			); 	
 			foreach ($this->arTypes as $iKey=>$arType) {

@@ -33,8 +33,8 @@
 		
 		public function add($iNumber, $bConfirmed = FALSE) { // experience toevoegen (standaard niet confirmed) 
 			$arLevels = settings("levels"); 
-			$iLevel = $this->level(); 
-			$iMultiplier = isset($arLevels[$iLevel]["multiplier"]) ? $arLevels[$iLevel]["multiplier"] : 1; 
+			$iLevel = $this->level();  
+			$iMultiplier = isset($arLevels[$iLevel]["multiplier"]) ? $arLevels[$iLevel]["multiplier"] : 1;  
 			$iNumber *= $iMultiplier; 
 
 			$oDB = new database(); 
@@ -79,6 +79,12 @@
 				if (($iExp >= $arSettings["threshold"]) && ($iLevel > $this->iLevel)) $this->iLevel = $iLevel;  
 			} 
 			return $this->iLevel; 
+		}
+		 
+		public function rechten($strWat) { 
+			if (settings("rights", $strWat)) {
+				return ($this->level() >= settings("rights", $strWat)); 
+			} else return FALSE; 
 		}
 		
 		public function leveltreshold($bNext = TRUE) {  // returns experience nodig voor volgende level (bNext = false > vorige level)
