@@ -237,11 +237,11 @@
 		
 		if (!isset($arConfig["settings-loaded"])) {
 			if (settings("database", "loaded")) {  
-				$oDB = new database("SELECT `key`, `value` FROM `tblConfig`"); 
+				$oDB = new database("SELECT `sleutel`, `waarde` FROM `tblConfig`"); 
 				$oDB->execute(); 
 				while ($oDB->nextRecord()) { 
-					$arKeys = explode(".", $oDB->get("key")); 
-					$oValue = json_decode($oDB->get("value"), FALSE);  
+					$arKeys = explode(".", $oDB->get("sleutel")); 
+					$oValue = json_decode($oDB->get("waarde"), FALSE);  
 					switch (count($arKeys)) {
 						case 1:
 							$arConfig[$arKeys[0]] = $oValue; 
@@ -257,7 +257,7 @@
 				$arConfig["settings-loaded"] = TRUE;
 				
 				if (file_exists("_sql.inc")) if (filemtime("_sql.inc") != $arConfig["setup"]["database"]) {
-					$oDB->execute("INSERT INTO tblConfig (`key`, `value`) VALUES('setup.database', '" . filemtime("_sql.inc") . "') ON DUPLICATE KEY UPDATE `key`=VALUES(`key`), `value`=VALUES(`value`);"); 
+					$oDB->execute("INSERT INTO tblConfig (`sleutel`, `waarde`) VALUES('setup.database', '" . filemtime("_sql.inc") . "') ON DUPLICATE KEY UPDATE `sleutel`=VALUES(`sleutel`), `waarde`=VALUES(`waarde`);"); 
 					if (filename(FALSE) != "update.php") loadSetup("update.php?redirect=" . urlEncode(filename(TRUE))); 
 				} 
 				

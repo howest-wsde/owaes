@@ -164,7 +164,9 @@ CREATE TABLE IF NOT EXISTS `tblMailalerts` (
 	<sql name="market-attachments" tag="14">  
 		ALTER TABLE `tblMarket` CHANGE `img` `files` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
 		update tblMarket set files = '{}' where files = 'img'; 
+	</sql> 
+	<sql name="tblMarket-sleutel" tag="15">  
+		ALTER TABLE `tblConfig` CHANGE `key` `sleutel` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+		ALTER TABLE `tblConfig` CHANGE `value` `waarde` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ;
 	</sql>  
-	
-
 </queries>

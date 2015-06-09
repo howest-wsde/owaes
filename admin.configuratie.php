@@ -84,7 +84,7 @@
 	}
 
 	function prepareAndExecuteStmt($key, $val) {
-		$query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
+		$query = "UPDATE `tblConfig` SET `waarde` = '" . json_encode($val) . "' WHERE `sleutel` LIKE '" . $key . "';";
 
 		$oDB = new database();
 		$oDB->execute($query);
