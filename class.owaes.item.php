@@ -403,8 +403,12 @@
 									$strSubscription .= "<p>Uw inschrijving werd afgezen</p>";
 								default: 
 									if (user(me())->algemenevoorwaarden()) {
-										$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> "; 
-									} else {
+										if (user(me())->credits() >= $this->credits()) {
+											$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
+										} else {
+											$strSubscription .= "<a href=\"modal.alert.php?a=a&t=t\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
+										}
+									} else { 
 										$strSubscription .= "<a href=\"modal.algemenevoorwaarden.php\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> "; 
 									}
 							} 
@@ -860,10 +864,24 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$arFlow[20]["class"][] = "current";  
 					
 						if (user(me())->algemenevoorwaarden()) {
+/*
+							if (user(me())->credits() >= $this->credits()) {
+								$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
+							} else {
+								$strSubscription .= "<a href=\"modal.alert.php?a=a&t=t\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
+							}
+							*/
+							
 							if ($this->subscriptionLink()) {
 								//$arFlow[20]["href"] = $this->subscriptionLink();  
-								$arFlow[20]["href"] = "modal.subscribe.php?m=" . $this->id();  
-								$arFlow[20]["class"][] = "domodal"; 
+								$bCredits = ($this->task()) ? TRUE : (user(me())->credits() >= $this->credits()); 
+								if ($bCredits) {
+									$arFlow[20]["href"] = "modal.subscribe.php?m=" . $this->id();  
+									$arFlow[20]["class"][] = "domodal"; 
+								} else {
+									$arFlow[20]["href"] = "modal.alert.php?t=" . urlencode("Onvoldoende credits") . "&a=" . urlencode("U heeft niet voldoende credits om in te schrijven voor dit item. ");  
+									$arFlow[20]["class"][] = "domodal";  
+								}
 							}
 						} else {
 							$arFlow[20]["href"] = "modal.voorwaarden.php"; 
