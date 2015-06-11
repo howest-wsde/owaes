@@ -19,8 +19,13 @@ fieldset > p {
 	padding: 0 0 0 1.25em;
 }
 
-#txtV1, #txtV2 {
-	width: 21.87em;
+#inhoud input[type="text"], #inhoud input[type="password"] {
+	width: 176px;
+}
+
+#inhoud input[name^="txtV"] {
+	width: 22.5em;
+	max-width: 22.5em;
 }
 
 .enabled {
@@ -86,19 +91,19 @@ fieldset > p {
 }
 
 @media(max-width: 360px) {
-	#txtV1, #txtV2 {
+	#inhoud input[name^="txtV"] {
 		width: 18em;
 	}
 }
 
 @media(max-width: 310px) {
-	fieldset, #txtV1, #txtV2 {
+	fieldset, #inhoud input[name^="txtV"] {
 		width: 15em;
 	}
 }
 
 @media(max-width: 250px) and (min-width: 200px) {
-	#txtV1, #txtV2 {
+	#inhoud input[name^="txtV"] {
 		width: 176px;
 	}
 }

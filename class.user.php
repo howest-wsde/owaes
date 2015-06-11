@@ -315,6 +315,7 @@
 				$this->arStatus["warnings"] = $arWarnings; 
 				foreach ($arWarnings as $iWarning => $arValues) $this->iStatus = $iWarning; 
 				$arMails = array(); 
+				if (!isset($this->arStatus["status"])) $this->arStatus["status"] = $this->iStatus; 
 				if ($this->arStatus["status"] != $this->iStatus) {
 					if ($this->arStatus["status"] > $this->iStatus) { // heeft het nu beter gedaan
 						switch($this->iStatus) {
@@ -1030,7 +1031,7 @@
 					if (is_null($this->arStatus)) $this->arStatus = json_decode($strValue, TRUE); 
 					break;
 				case "mailalerts": 
-					if (is_null($this->arMailalerts)) $this->arMailalerts = ($strValue=="") ? array() : json_decode($strValue, TRUE); 
+					if (is_null($this->arMailalerts)) $this->arMailalerts = ($strValue=="") ? settings("mailalert") : json_decode($strValue, TRUE); 
 					break;
 			}
 		}
@@ -1616,16 +1617,8 @@
 			return $this->iLevel; 
 		}
 		public function levelrights($strWat) {
-			$iLevel = $this->level(); 
 			if ($this->admin()) return TRUE; 
-			switch ($strWat) {
-				case "donate": return $iLevel >= 4; 
-				case "message": return $iLevel >= 2; 
-				case "addfriend": return $iLevel >= 2; 
-				case "groepslijst": return $iLevel >= 2; 
-				case "gebruikerslijst": return $iLevel >= 3; 
-			}
-			return FALSE; 
+			return $this->experience()->rechten($strWat);  
 		}
 		
 		public function actions() {
