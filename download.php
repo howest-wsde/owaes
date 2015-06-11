@@ -30,20 +30,35 @@
 		return $status;
 	}
 	 
-	$oLog = new log("download", array("url" => $oPage->filename())); 
+	//$oLog = new log("download", array("url" => $oPage->filename())); 
+	$strFilePath = FALSE; 
+	$strFileName = "unknown.file"; 
 
-	$iUser = intval($_GET["u"]); 
-	$strFile = $_GET["f"]; 
+	if (isset($_GET["u"])) {
+		$iUser = intval($_GET["u"]); 
+		$strFile = $_GET["f"]; 
+		
+		$oUser = user($iUser);  
+		$arBestand = $oUser->files($strFile); 
+
+		if ($arBestand && file_exists($arBestand["location"])) { 
+			$strFilePath = $arBestand["location"];  
+			$strFileName = $arBestand["filename"];
+		}  else {
+			redirect($oUser->getURL());
+		}
+	}
+	if (isset($_GET["m"])) {
+		$strFilePath = "upload/market/" . md5($_GET["f"]); 
+		$arFile = explode(".", $_GET["f"], 2);  
+		$strFileName = $arFile[1]; 
+	} 
 	 
-	$oUser = user($iUser);  
-	$arBestand = $oUser->files($strFile); 
-	
-	if ($arBestand && file_exists($arBestand["location"])) { 
+	if ($strFilePath && file_exists($strFilePath)) {
 		$mimetype = 'application/force-download';
 		header('Content-Type: ' . $mimetype );
-		header('Content-Disposition: attachment; filename="' . $arBestand["filename"] . '"'); 
-		readfile_chunked($arBestand["location"]);	
+		header('Content-Disposition: attachment; filename="' . $strFileName . '"'); 
+		readfile_chunked($strFilePath);	
 	}  else {
-		redirect($oUser->getURL());
-	}
-?>
+		echo ("bestand niet gevonden"); 
+	} 

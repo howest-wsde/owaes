@@ -8,6 +8,9 @@
 	$iUser = intval($_GET["u"]); 
 	$oUser = user($iUser); 
 	
+	$oMe = user(me()); 
+	$iMax = $oMe->credits();  
+	
 	if (isset($_POST["cancel"])) { 
 		$oActions = new actions(me()); 
 		$oAction = $oActions->search(array(
@@ -39,7 +42,7 @@
 		 */
 		$iCredits = intval($_POST["credits"]); 
 		if ($iCredits > 0) {
-		
+			if ($iCredits > $iMax) $iCredits = $iMax; 
 			foreach ($oMarket->subscriptions(array("state"=>SUBSCRIBE_CONFIRMED)) as $iParty=>$oSubscription) {
 				$oPayment = $oSubscription->payment(); 
 				if ($oPayment->sender() == me()) {
@@ -102,8 +105,11 @@
 		}
 		exit();  
 	} 
-
-	$strHTML = $oMarket->html("modal.transaction.html");
+	
+	$oTemplate = template("modal.transaction.html"); 
+	$oTemplate->tag("max", $iMax); 
+	$strHTML = $oTemplate->html(); 
+	$strHTML = $oMarket->html($strHTML);
 	$strHTML = $oUser->html($strHTML); 
 	
 //	$strHTML = str_replace("[credit]", 1515515151, $strHTML); 

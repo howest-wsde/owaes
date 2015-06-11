@@ -10,12 +10,13 @@
 
 	$oPage->addCSS("style/gamification.css");
 	$oPage->addJS("script/gamiVal.js");
-
-	function prepareAndExecuteStmt($key, $val) {
-		$query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
+	 
+	function prepareAndExecuteStmt($strKey, $strVal) {
+		// $query = "UPDATE `tblConfig` SET `value` = '" . json_encode($val) . "' WHERE `key` LIKE '" . $key . "';";
 
 		$oDB = new database();
-		$oDB->execute($query);
+		$oDB->execute("INSERT INTO tblConfig (`sleutel`, `waarde`) VALUES('$strKey', '" . $oDB->escape(json_encode($strVal)) . "') ON DUPLICATE KEY UPDATE `sleutel`=VALUES(`sleutel`), `waarde`=VALUES(`waarde`);");
+		//echo "<p>" . $oDB->sql() . "</p>"; 
 	}
 
 	function getPeriod($seconds, $from) {
@@ -89,22 +90,19 @@
 			prepareAndExecuteStmt("crons.indicators", $result);
 		}
 
-		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"]));
-		if (isset($_POST["txtX"])) prepareAndExecuteStmt("crons.x", doubleval($_POST["txtX"]));
+		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"])); 
 
-		/* ------------- */
-
-		/* Datum */
-		if (isset($_POST["txtDateSpeed"])) prepareAndExecuteStmt("date.speed", doubleval($_POST["txtDateSpeed"]));
-		if (isset($_POST["txtStartdate"])) prepareAndExecuteStmt("date.start", ddmmyyyyTOdate($_POST["txtStartdate"]));
-
-		/* ------------- */
-
+		/* ------------- */ 
+ 
 		/* Indicatoren */
 		if (isset($_POST["txtIndicatorMultiplier"])) prepareAndExecuteStmt("indicatoren.multiplier", doubleval($_POST["txtIndicatorMultiplier"]));
 		if (isset($_POST["txtOwaesAdd"])) prepareAndExecuteStmt("indicatoren.owaesadd", doubleval($_POST["txtOwaesAdd"]));
 
 		/* ------------- */
+		
+		foreach (settings("rights") as $strKey => $iCurrent) {
+			 prepareAndExecuteStmt("rights.$strKey", $_POST["rechten-$strKey"]);
+		}
 
 		redirect(filename());
 	}
@@ -113,6 +111,9 @@
 <html>
 	<head>
 		<? echo $oPage->getHeader(); ?>
+        <style>
+			div.form-group {overflow: auto; }
+		</style>
 	</head>
 	<body id="index">
 		<? echo $oPage->startTabs(); ?>
@@ -152,23 +153,56 @@
 									$i = 0;
 
 									foreach ($arConfig["levels"] as $level) {
-	?>
+									?>
 										<div class="naastElkaar levels">
-										<h2>Level <? echo $i; ?></h2>
-										<p>
-											<label for="txtLevel<? print($i . "Threshold"); ?>">Drempel:</label><br/>
-											<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="1"  value="<? echo $level["threshold"]; ?>"/>
-										</p>
-										<p>
-											<label for="txtLevel<? print($i . "Multiplier"); ?>">Vermenigvuldigingsfactor:</label><br/>
-											<input style="width: 75px;" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.01" value="<? echo $level["multiplier"]; ?>"/>
-										</p>
+											<h2>Level <? echo $i; ?></h2>
+											<p>
+												<label for="txtLevel<? print($i . "Threshold"); ?>">Drempel:</label><br/>
+												<input class="form-control" type="number" name="txtLevel<?  print($i . "Threshold"); ?>" id="txtLevel<?  print($i . "Threshold"); ?>" min="0" step="1"  value="<? echo $level["threshold"]; ?>"/>
+											</p>
+											<p>
+												<label for="txtLevel<? print($i . "Multiplier"); ?>">Vermenigvuldigingsfactor:</label><br/>
+												<input class="form-control" type="number" name="txtLevel<?  print($i . "Multiplier"); ?>" id="txtLevel<?  print($i . "Multiplier"); ?>" min="0" step="0.01" value="<? echo $level["multiplier"]; ?>"/>
+											</p>
+											
 										</div>
 										<?
 										$i++;
 									}
 									?>
 							</fieldset>
+                            
+                            
+							<fieldset>
+								<legend>Rechten</legend>
+                                <div class="form-group">
+                                <?  
+									$arRechten = array(
+										"message" => "Berichten sturen", 
+										"addfriend" => "Vrienden toevoegen", 
+										"groepslijst" => "Groepen bekijken", 
+										"donate" => "Schenking uitvoeren", 
+										"gebruikerslijst" => "Gebruikerslijst bekijken", 
+										"add-infra" => "'Delen' toevoegen", 
+										"add-opleiding" => "Opleiding toevoegen", 
+										"add-ervaring" => "Ervaringsopdracht toevoegen", 
+									); 
+									foreach (settings("rights") as $strRecht=>$iVal) {
+										?><div class="form-group">
+                                            <label for="rechten-<? echo $strRecht; ?>" class="control-label col-lg-3"><? echo isset($arRechten[$strRecht]) ? $arRechten[$strRecht] : $strRecht; ?>:</label>
+                                            <div class="col-lg-9">
+                                                <select class="form-control" name="rechten-<? echo $strRecht; ?>"><?
+                                                	foreach (settings("levels") as $iLevel => $arDetails) { 
+														echo ("<option value=\"$iLevel\" " . (($iLevel==$iVal)?"selected=selected":"") . ">vanaf level $iLevel</option>"); 	
+													}
+												?></select>
+                                            </div> 
+                                        </div><?
+									}
+								?></div>
+                            </fieldset>
+                            
+                            
 							<fieldset>
 								<legend>Waarschuwingen</legend>
 								<?
@@ -180,39 +214,39 @@
 											<h2>Warning <? echo $i; ?></h2>
 											<p>
 												<label for="txtW<? print($i . "Schenkingen"); ?>">Schenkingen:</label><br/>
-												<input style="width: 75px;" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="1" value="<? echo $warning["schenkingen"]; ?>"/>
+												<input class="form-control" type="number" name="txtW<? print($i . "Schenkingen"); ?>" id="txtW<? print($i . "Schenkingen"); ?>" min="0" step="1" value="<? echo $warning["schenkingen"]; ?>"/>
 											</p>
 											<p>
 												<label for="txtW<? print($i . "Trans"); ?>">Transactiediversiteit:</label><br/>
-												<input style="width: 75px;" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.01" value="<? echo $warning["transactiediversiteit"]; ?>"/>
+												<input class="form-control" type="number" name="txtW<? print($i . "Trans"); ?>" id="txtW<? print($i . "Trans"); ?>" min="0" step="0.01" value="<? echo $warning["transactiediversiteit"]; ?>"/>
 											</p>
 											<p>
 												<label for="txtW<? print($i . "Credits"); ?>">Credits:</label><br/>
-												<input style="width: 75px;" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="1" value="<? echo $warning["credits"]; ?>"/>
+												<input class="form-control" type="number" name="txtW<? print($i . "Credits"); ?>" id="txtW<? print($i . "Credits"); ?>" min="0" step="1" value="<? echo $warning["credits"]; ?>"/>
 											</p>
 											<p>
 												<label for="txtW<? print($i . "Waardering"); ?>">Waardering:</label><br/>
-												<input style="width: 75px;" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.1" value="<? echo $warning["waardering"]; ?>"/>
+												<input class="form-control" type="number" name="txtW<? print($i . "Waardering"); ?>" id="txtW<? print($i . "Waardering"); ?>" min="0" step="0.1" value="<? echo $warning["waardering"]; ?>"/>
 											</p>
 											<p>
 												<label for="txtW<? print($i . "Physical"); ?>">Fysiek:</label><br/>
-												<input style="width: 75px;" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="1" value="<? echo $warning["physical"]; ?>"/>
+												<input class="form-control" type="number" name="txtW<? print($i . "Physical"); ?>" id="txtW<? print($i . "Physical"); ?>" min="0" step="1" value="<? echo $warning["physical"]; ?>"/>
 											</p>
 											<p>
 												<label for="txtW<? print($i . "Social"); ?>">Sociaal:</label><br/>
-												<input style="width: 75px;" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="1" value="<? echo $warning["social"]; ?>"/>
+												<input class="form-control" type="number" name="txtW<? print($i . "Social"); ?>" id="txtW<? print($i . "Social"); ?>" min="0" step="1" value="<? echo $warning["social"]; ?>"/>
 											</p>
 											<p>
 												<label for="txtW<? print($i . "Mental"); ?>">Kennis:</label><br/>
-												<input style="width: 75px;" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="1" value="<? echo $warning["mental"]; ?>"/>
+												<input class="form-control" type="number" name="txtW<? print($i . "Mental"); ?>" id="txtW<? print($i . "Mental"); ?>" min="0" step="1" value="<? echo $warning["mental"]; ?>"/>
 											</p>
 											<p>
 												<label for="txtW<? print($i . "Emotional"); ?>">Welzijn:</label><br/>
-												<input style="width: 75px;" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="1" value="<? echo $warning["emotional"]; ?>"/>
+												<input class="form-control" type="number" name="txtW<? print($i . "Emotional"); ?>" id="txtW<? print($i . "Emotional"); ?>" min="0" step="1" value="<? echo $warning["emotional"]; ?>"/>
 											</p>
 											<p>
 												<label for="txtW<? print($i . "IndiSom"); ?>">Indicatorsom:</label><br/>
-												<input style="width: 75px;" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="1" value="<? echo $warning["indicatorsom"]; ?>"/>
+												<input class="form-control" type="number" name="txtW<? print($i . "IndiSom"); ?>" id="txtW<? print($i . "IndiSom"); ?>" min="0" step="1" value="<? echo $warning["indicatorsom"]; ?>"/>
 											</p>
 										</div>
 										<?
@@ -222,41 +256,31 @@
 							</fieldset>
 							<fieldset>
 								<legend>Taken planner</legend>
-								<p class="naastElkaar">
+								<p class="">
 									<label for="txtCronsIndicators">Indicatoren verlagen:</label><br/>
 									<input type="radio" name="rbWhen" id="rbDay" value="day" <? echo getPeriod(settings("crons", "indicators"), "day"); ?>/><label for="rbDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbWhen" id="rbWeek" value="week" <? echo getPeriod(settings("crons", "indicators"), "week"); ?>/><label for="rbWeek">Week</label><br/>
-									<input type="number" name="txtCronsIndicators" id="txtCronsIndicators" min="0" value="<? echo getCronsIndicator(settings("crons", "indicators")); ?>"/>
+									<input type="number" class="form-control" name="txtCronsIndicators" id="txtCronsIndicators" min="0" value="<? echo getCronsIndicator(settings("crons", "indicators")); ?>"/>
+                                    <small>(Elke X tijd zakken de indicatoren 1 in waarde)</small>
 								</p>
-								<p class="naastElkaar">
+								<p class="">
 									<label for="txtHTWFD">Aantal uren werken voor delay:</label><br/>
-									<input type="number" name="txtHTWFD" id="txtHTWFD" value="<? echo settings("crons", "hourstoworkfordelay"); ?>"/>
-								</p>
-								<p class="naastElkaar">
-									<label for="txtX">x</label><br/>
-									<input type="number" name="txtX" id="txtX" value="<? echo settings("crons", "x"); ?>"/>
-								</p>
+									<input type="number" class="form-control" name="txtHTWFD" id="txtHTWFD" value="<? echo settings("crons", "hourstoworkfordelay"); ?>"/>
+                                    <small>(Wanneer een opdracht van bv. 100 uren duurtijd bevestigd wordt, zullen de indicatoren van de bevestigde gebruiker gedurende X * [indicatoren-verlagen-waarde] dagen niet zakken)</small>
+								</p> 
 							</fieldset>
-							<fieldset>
-								<legend>Datum</legend>
-								<p class="naastElkaar">
-									<label for="txtDateSpeed">Snelheid:</label><br/>
-									<input type="number" name="txtDateSpeed" id="txtDateSpeed" min="0" value="<? echo settings("date", "speed"); ?>"/>
-								</p>
-								<p class="naastElkaar">
-									<label for="startdate">Start:</label><br/>
-									<input type="text" name="txtStartdate" id="txtStartdate" placeholder="start datum" value="<? echo date("d-m-Y", settings("date", "start")); ?>"/> 
-								</p>
-							</fieldset>
+                             
 							<fieldset>
 								<legend>Indicatoren</legend>
 								<p class="naastElkaar">
 									<label for="txtIndicatorMultiplier">Vermenigvuldigingsfactor:</label><br/>
-									<input type="number" name="txtIndicatorMultiplier" id="txtIndicatorMultiplier" min="0" value="<? echo settings("indicatoren", "multiplier"); ?>"/>
+									<input type="number" class="form-control" name="txtIndicatorMultiplier" id="txtIndicatorMultiplier" min="0" value="<? echo settings("indicatoren", "multiplier"); ?>"/>
+                                    <small>Bij het verdienen van indicatoren bij het uitvoeren van een opdracht wordt een waarde X toegevoegd per indicator (bv. opdracht = 50% sociaal, 25% fysiek, 25% Kennis) -&gt; Gebruiker krijgt 2 * X sociaal, X fysiek en X kennis</small>
 								</p>
 								<p class="naastElkaar">
-									<label for="txtOwaesAdd">Aantal toevoegen:</label><br/>
-									<input type="number" name="txtOwaesAdd" id="txtOwaesAdd" min="0" value="<? echo settings("indicatoren", "owaesadd"); ?>"/>
+									<label for="txtOwaesAdd">Aantal bij toevoegen:</label><br/>
+									<input type="number" class="form-control" name="txtOwaesAdd" id="txtOwaesAdd" min="0" value="<? echo settings("indicatoren", "owaesadd"); ?>"/>
+                                    <small>Bij het toevoegen van een nieuw item krijg je van elke indicator X waarde bij</small>
 								</p>
 							</fieldset>
 							<input type="submit" name="btnOpslaan" value="Opslaan" class="btn btn-default btn-save"/>
@@ -277,6 +301,7 @@
 			span.innerHTML = sliderID.value;
 		}
 
+
 		window.addEventListener("DOMContentLoaded", function() {
 			printValue("txtPhysical", "sPhy");
 			printValue("txtSocial", "sSoc");
@@ -293,6 +318,7 @@
 				monthNamesShort: ["Jan", "Feb", "Maa", "Apr", "mei", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
 				defaultDate: "y"
 			});
+
 		});
 	</script>
 	</body>

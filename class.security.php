@@ -107,7 +107,8 @@
             //echo "doLogin"; 
 			$this->setLoggedIn(FALSE); 
 			$this->strError = ""; 
-			$strUser = mysql_escape_string($strUser); 
+			$oDBquery = new database(); 
+			$strUser = $oDBquery->escape($strUser); 
 			$strPass = is_null($strPass) ? NULL : md5(trim($strPass)); 
 			$strSession = uniqueKey(); 
 			
@@ -115,7 +116,7 @@
 			$arWhere[] = (strrpos($strUser, "@") === false) 
 				? "login = '" . $strUser . "'" 
 				: "mail = '" . $strUser . "'"; 
-			$oDBquery = new database("select * from tblUsers where " . implode(" and ", $arWhere) . " limit 0, 1; ");  
+			$oDBquery->sql("select * from tblUsers where " . implode(" and ", $arWhere) . " limit 0, 1; ");  
 			if ($oDBquery->execute() > 0) {
 				if (($oDBquery->get("actief")==0)||($oDBquery->get("deleted")==1)) {
 					$this->strError = "Deze account werd geblokkeerd"; 

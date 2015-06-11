@@ -403,7 +403,7 @@ function validateAddActivity(bShowAlerts) {
 	}
     if (!($credits > 0)) {
 		arFouten["creditsfield"] = "Gelieve meer dan 0 " + vocabulaire("credits") + " te geven/vragen."; 
-	} 
+	}
     if (Math.floor($credits) > Math.floor($(".content-market-add #creditsfield").attr("max"))) { 
 		arFouten["creditsfield"] = "Er geldt een maximum van " + $(".content-market-add #creditsfield").attr("max") + " " + vocabulaire("credits") + " per opdracht."; 
 	}

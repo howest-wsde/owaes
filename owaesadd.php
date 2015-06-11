@@ -3,7 +3,6 @@
 	$oSecurity = new security(TRUE); 
 	$oMe = user(me()); 
 	
-	//$oPage->addJS("http://code.jquery.com/ui/1.10.3/jquery-ui.js");
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
 	$oPage->addJS("script/owaesadd.js?v3");
 	//$oPage->addJS("ckeditor/ckeditor.js");
@@ -11,18 +10,14 @@
 	//$oPage->addCSS("http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"); 
 	//$oPage->addCSS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.css"); 
 	
-	
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
 	$oOwaesItem = owaesitem($iID);
 	
-	$iMaxCredits = min(settings("startvalues", "credits"), $oMe->credits()); 
-	 
 	$arPossiblePosters = array();  
 	$arOwaesTypes = owaesType()->getAllTypes();
 	foreach($arOwaesTypes as $strKey=>$strTitle) {
-		//$oTempType = owaestype($strKey);
 		$arPossiblePosters[$strKey] = array(
 			"user" => array(), 
 			"group" => array(), 
@@ -51,6 +46,11 @@
 		$oOwaesItem->type($strType); 
 		$bNEW = TRUE; 
 	}  
+	 
+	$iMaxCredits = ((owaesType($strType)->direction()==DIRECTION_EARN) ? 
+						min(settings("startvalues", "credits"), $oMe->credits()) :  // verdienen
+						min(settings("startvalues", "credits"), settings("credits", "max") - $oMe->credits())); // uitgeven 
+						
 	 
 	if ($oOwaesItem->editable() !== TRUE) { 
 		stop($oOwaesItem->editable()); 
@@ -115,8 +115,16 @@
 			} 
 		} 
 			
+		foreach ($oOwaesItem->files() as $strFile) {
+			if (!in_array($strFile, isset($_POST["existingfile"])?$_POST["existingfile"]:array())) $oOwaesItem->files($strFile, FALSE); // remove file
+		}
+		for ($i=0; $i<count($_FILES["file"]["name"]); $i++) {
+ 			$strTempFN = owaestime() . "." . $_FILES["file"]["name"][$i];
+			if (move_uploaded_file($_FILES["file"]["tmp_name"][$i], "upload/market/" . md5($strTempFN))) $oOwaesItem->addFile($strTempFN); 
+		} 
 		$oOwaesItem->update(); 
 
+		
 		if ($bNEW) {
 			$oMe = user(me()); 
 			$iAddValue = settings("indicatoren", "owaesadd") ? settings("indicatoren", "owaesadd") : 2; 
@@ -180,8 +188,23 @@
 				$("select#person").change(function(){
 					setTypes(); 
 				}) 
+				$("a.delfileinput").click(function(){ // for existing files
+					$(this).parent().remove(); 
+					return false; 	
+				})
+				$(document).on("change", "input.fileupload", function(){ 
+					if (!$(this).attr("id")) {
+						strID = "fileupload" + Math.floor(Math.random()*10000);
+						$(this).attr("id", strID); 
+						$(this).after($("<a href='#' class='delfileinput'>verwijderen</a>").attr("rel", strID).click(function(){
+							$("input#" + $(this).attr("rel")).remove(); 
+							$(this).remove(); 
+							return false; 	
+						})); 
+						$(this).parent().append($('<input name="file[]" type="file" ext="pdf,doc,docx,txt,jpg,jpeg,gif,bmp,png,xls,xlsx,md,ppt,pps,odt,ods,odp,csv,svg" class="fileupload" placeholder="Bijlages (optioneel)" multiple />')); 
+					}
+				})
             });
-			
 			
 			<?php
 				$arJsonPosters = array(); 
@@ -210,9 +233,6 @@
 
 		</script> 
         <style> 
-
-		</style>
-          <style>
 .invalidtime {border: 1px solid red; }								
 .invoer {
   display: block;
@@ -248,6 +268,12 @@ div#tags ul.tags {position: absolute; z-index: 999; background: white; border: 1
 div#tags ul.tags li {padding: 3px 10px; cursor: pointer; }
 div#tags ul.tags li:hover {background: #efefef; }
 input.time {width: 100%; display: block; }
+div.fileuploaddiv {overflow: auto; }
+input.fileupload {float: left; clear: both; }
+a.delfileinput {display: block; padding: 3px; }
+div.existingfile {padding: 2px; }
+div.existingfile a.delfileinput {display: inline; }
+  
   
 								</style>
     </head>
@@ -256,7 +282,7 @@ input.time {width: 100%; display: block; }
     	<div class="body content content-market content-market-add container">
         	
             	<div class="row">
-					<?php /*echo $oSecurity->me()->html("leftuserprofile.html"); */
+					<?php 
                     echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
@@ -264,7 +290,7 @@ input.time {width: 100%; display: block; }
                  
                 <div class="errors"></div>
                 
-                <form method="post" class="form-horizontal" id="frmowaesadd" name="frmowaesadd">
+                <form method="post" class="form-horizontal" id="frmowaesadd" name="frmowaesadd" enctype="multipart/form-data">
                 	<?php  
 						$arOwaesTypes = owaesType()->getAllTypes();
 						
@@ -383,10 +409,27 @@ input.time {width: 100%; display: block; }
 										$strKey = "tag" . ++$iTagCount; 
 										echo ("<span class=\"tag\" id=\"$strKey\"><span>$strTag</span><a title=\"verwijderen\" href=\"#\" rel=\"$strKey\">x</a><input type=\"hidden\" name=\"tag[]\" value=\"$strTag\"></span>"); 	
 									}
-								?><input type="text" name="tag[]" id="tag" class="tag" placeholder="kernwoorden, gescheiden door komma's" /> 
+								?><input type="text" name="tag[]" id="tag" class="tag" placeholder="Kernwoorden, gescheiden door komma's" /> 
                                 </div></div> 
                                 </div> 
                                 
+                                
+                                <div class="form-group">
+                                	<div class="row"><div class="col-lg-2"><h4>Bijlages</h4></div></div> 
+                                    <div class="col-lg-12">  
+                                    	<div class="form-control fileuploaddiv">
+                                        	<?
+												foreach ($oOwaesItem->files() as $strFile) {  
+													$arFile = explode(".", $strFile, 2); 
+													echo ('<div class="existingfile">' . $arFile[1] . ' <input type="hidden" name="existingfile[]" value="' . $strFile . '" />(<a href="#del" class="delfileinput">verwijderen</a>)</div>'); 
+												}
+											?>
+	                                        <input name="file[]" type="file" ext="pdf,doc,docx,txt,jpg,jpeg,gif,bmp,png,xls,xlsx,md,ppt,pps,odt,ods,odp,csv,svg" class="fileupload" placeholder="Bijlages (optioneel)" multiple /> 
+                                        </div>
+                                    </div> 
+                                </div>
+                                 
+                                 
                                 <div class="form-group"> 
                                     <div class="col-lg-12"> 
                                         <a href="#tijdlocatie" class="tabchange">volgende</a>  

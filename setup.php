@@ -30,14 +30,14 @@ $arConfig["database"] = array(
 	
 	if (isset($_POST["domainname"])) {
 		$oDB = new database(); 
-		$oDB->execute("CREATE TABLE IF NOT EXISTS `tblConfig` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `key` varchar(255) NOT NULL, `value` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`) ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=80 ;"); 
+		$oDB->execute("CREATE TABLE IF NOT EXISTS `tblConfig` (`id` bigint(20) NOT NULL AUTO_INCREMENT, `sleutel` varchar(255) NOT NULL, `waarde` varchar(255) DEFAULT NULL, PRIMARY KEY (`id`) ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=80 ;"); 
 		$arUpdates = array(
 			"domain.name" => $_POST["domainname"], 
 			"domain.root" => $_POST["domainroot"], 
 			"domain.absroot" => $_POST["domainabsroot"], 
 		); 
 		foreach ($arUpdates as $strKey=>$strVal) { 
-			$oDB->execute("INSERT INTO tblConfig (`key`, `value`) VALUES('$strKey', '" . $oDB->escape(json_encode($strVal)) . "') ON DUPLICATE KEY UPDATE `key`=VALUES(`key`), `value`=VALUES(`value`);"); 
+			$oDB->execute("INSERT INTO tblConfig (`sleutel`, `waarde`) VALUES('$strKey', '" . $oDB->escape(json_encode($strVal)) . "') ON DUPLICATE KEY UPDATE `sleutel`=VALUES(`sleutel`), `waarde`=VALUES(`waarde`);"); 
 		} 
 		redirect("login.php"); 
 	} 

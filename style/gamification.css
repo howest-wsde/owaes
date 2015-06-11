@@ -68,12 +68,16 @@ input[type="range"]::-ms-thumb {
 	background-color: #ffcc00;
 }
 
+#frmGameConfig input[type="number"] {
+	width: 120px;
+}
+
 .levels {
-	height: 160px;
+	height: 190px;
 }
 
 .warnings {
-	height: 590px;
+	height: 750px;
 }
 
 @media(max-width: 770px) {

@@ -8,3 +8,4 @@ inc.config.db.php
 *.new
 /upload
 /settings/crons.json
+*.orig

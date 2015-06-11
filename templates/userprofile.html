@@ -45,7 +45,7 @@
             <h3>Vrienden <span class="badge">[friends:count]</span></h3>
 
             <div class="list-group">
-                [for:friends:3][file:userprofile.friend.html][/for:friends:3]  
+                [for:friends:3][include:userprofile.friend.html][/for:friends:3]  
                 <a name="morefriends"></a>
             </div>
             [if:friends>3]
@@ -75,7 +75,7 @@
             <h3>Volgend <span class="badge">[followed:count]</span></h3>
 
             <div class="list-group">
-                [for:followed:3][file:userprofile.friend.html][/for:followed:3]  
+                [for:followed:3][include:userprofile.friend.html][/for:followed:3]  
                 <a name="morefollowed"></a>
             </div>
             [if:followed>3]
@@ -87,7 +87,7 @@
             <h3>Volgers <span class="badge">[followers:count]</span></h3>
 
             <div class="list-group">
-                [for:followers:3][file:userprofile.friend.html][/for:followers:3]  
+                [for:followers:3][include:userprofile.friend.html][/for:followers:3]  
                 <a name="morefollowers"></a>
             </div>
             [if:followers>3]
@@ -100,7 +100,7 @@
                 <h3>Transactie's <span class="badge">[payments:count]</span></h3>
     
                 <div class="list-group">
-                    [for:payments:5][file:userprofile.payments.html][/for:payments:5] 
+                    [for:payments:5][include:userprofile.payments.html][/for:payments:5] 
                     <a name="morepayments"></a>
                 </div> 
                 [if:payments>5]<p class="meer"><a href="#morepayments" class="loadmore" user="[id]" start="6" list="payments" count="5" template="userprofile.payments.html">meer...</a></p>[/if:payments>5] 
@@ -159,7 +159,7 @@
                     <h3>Activiteiten <span class="badge">[activities:count]</span></h3>
     
                     <div class="list-group">
-                        [for:activities:5][file:userprofile.activities.html][/for:activities:5] 
+                        [for:activities:5][include:userprofile.activities.html][/for:activities:5] 
                   		<a name="moreactivities"></a>
                     </div> 
                     [if:activities>5]<p class="meer"><a href="#moreactivities" class="loadmore" user="[id]" start="6" list="activities" count="5" template="userprofile.activities.html">meer...</a></p>[/if:activities>5]

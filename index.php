@@ -1,6 +1,6 @@
 <?php
 	include "inc.default.php"; // should be included in EVERY file  
-
+	 
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	

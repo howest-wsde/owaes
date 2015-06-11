@@ -85,6 +85,7 @@
 							echo ("</tr>");  
 							while ($oDB->nextRecord()) {
 								$arStatus = json_decode($oDB->get("statusinfo"), TRUE); 
+								if (!is_array($arStatus)) $arStatus = array("warnings"=>array()); 
 								echo ("<tr>"); 
 								//  title='"); 
 								//if (isset($arStatus["warnings"])) var_dump($arStatus["warnings"]); 

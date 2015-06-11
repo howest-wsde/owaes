@@ -24,10 +24,10 @@
 	} 
 	
 	class email {  
-		private $strFromMail = "benedikt@beuntje.com";
-		private $strFromName = "Benedikt Beun";
-		private $strToMail = "benedikt@beuntje.com";
-		private $strToName = "Benedikt Beun";
+		private $strFromMail = "owaes@owaes.org";
+		private $strFromName = "OWAES";
+		private $strToMail = "owaes@owaes.org";
+		private $strToName = "OWAES";
 		private $strSubject = "OWAES"; 
 		private $strMessage = ""; 
 		private $oTemplate = NULL; 
@@ -77,8 +77,8 @@
 				$oPHPmailer->SMTPAuth   = settings("mail", "SMTPAuth"); // true;                  // enable SMTP authentication
 				$oPHPmailer->SMTPSecure = settings("mail", "SMTPSecure"); // "ssl";                 // sets the prefix to the servier
 				$oPHPmailer->Port       = settings("mail", "Port"); // 465;                   // set the SMTP port for the GMAIL server
-				$oPHPmailer->Username   = settings("mail", "Username"); // "esf.owaes@gmail.com";  // GMAIL username
-				$oPHPmailer->Password   = decryptor(settings("mail", "Password")); // "ESF-Howest-OWAES-2015";            // GMAIL password  
+				$oPHPmailer->Username   = settings("mail", "Username");   // GMAIL username
+				$oPHPmailer->Password   = decryptor(settings("mail", "Password"));             // GMAIL password  
 				 
 				$oPHPmailer->SetFrom($this->strFromMail, $this->strFromName);		 		
 				$oPHPmailer->AddAddress($this->strToMail, $this->strToName);			
