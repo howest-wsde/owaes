@@ -156,6 +156,15 @@
                                     </div> 
                                 </div>
                                 <div class="form-group">
+                                    <label for="dienstverlener" class="control-label col-lg-2">Dienstverlener:</label>
+                                    <div class="col-lg-10">
+                                        <select name="isdienstverlener"  class="dienstverlener form-control" id="dienstverlener">
+                                        	<option value="0">Geen dienstverlener</option>
+                                        	<option value="1">Dienstverlener (brengt leden aan en volgt op)</option>
+                                        </select> 
+                                    </div> 
+                                </div>
+                                <div class="form-group">
                                     <div class="col-lg-12">
                                         <input type="submit" value="Gegevens opslaan" id="profile" class="btn btn-default pull-right" name="changeprops" />
                                     </div>

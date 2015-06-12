@@ -403,10 +403,11 @@
 									$strSubscription .= "<p>Uw inschrijving werd afgezen</p>";
 								default: 
 									if (user(me())->algemenevoorwaarden()) {
-										if (user(me())->credits() >= $this->credits()) {
+										$bCredits = ($this->task()) ? TRUE : (user(me())->credits() >= $this->credits()); 
+										if ($bCredits) { 
 											$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
 										} else {
-											$strSubscription .= "<a href=\"modal.alert.php?a=a&t=t\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
+											$strSubscription .= "<a href=\"modal.alert.php?t=" . urlencode("Onvoldoende credits") . "&a=" . urlencode("U heeft niet voldoende credits om in te schrijven voor dit item. ") . "\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
 										}
 									} else { 
 										$strSubscription .= "<a href=\"modal.algemenevoorwaarden.php\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> "; 

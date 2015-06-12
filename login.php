@@ -31,6 +31,7 @@
 		$oUser->login(""); 
 		$oUser->firstname($_POST["firstname"]); 
 		$oUser->lastname($_POST["lastname"]); 
+		$oUser->dienstverlener($_POST["dienstverlener"]); 
 		if ($_POST["email"] == "") {
 			$arErrors["email"] = "E-mailadres is verplicht"; 
 		} else if (!validEmail($_POST["email"])) {
@@ -299,6 +300,22 @@
                             <?php
                             	if (isset($arErrors["pass-repeat"])) echo ("<strong class=\"text-danger\">" . $arErrors["pass-repeat"] . "</strong>"); 
 						    ?>
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label for="pass-repeat" class="control-label longlabel col-lg-3">Ik ken OWAES via:</label>
+                        <div class="col-lg-9">
+                            <select name="dienstverlener" class="form-control">
+                            	<option value="0"></option>
+								<?
+                                    $oDienstverleners = new grouplist(); 
+                                    $oDienstverleners->filterByDienstverlener(TRUE); 
+                                //	var_dump($oDienstverleners->getList()); 
+                                    foreach ($oDienstverleners->getList() as $oDienstverlener) {
+                                        echo ("<option value=\"" . $oDienstverlener->id() . "\">" . $oDienstverlener->naam() . "</option>"); 
+                                    }
+                                ?> 
+                            </select>
                         </div>
                     </div> 
                     <div class="form-group">

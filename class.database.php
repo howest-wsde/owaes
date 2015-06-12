@@ -60,7 +60,7 @@
 				
 				$arSQL = explode(" ", $strSQL); 
 				switch(strtolower($arSQL[0])) {
-					case "select":   
+					case "select": 
 						foreach($dbPDO->query($strSQL) as $oRow) {
 							$arRow = array(); 
 							if (count($arFieldNames)==0) {

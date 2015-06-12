@@ -1,4 +1,6 @@
 <queries>
+	<sql name="createDB" tag="0"> 
+	</sql>
 	<sql name="Create_tblConfig" tag="0">
 		CREATE TABLE IF NOT EXISTS `tblConfig` (
 	`id` bigint(20) NOT NULL AUTO_INCREMENT,
@@ -169,4 +171,8 @@ CREATE TABLE IF NOT EXISTS `tblMailalerts` (
 		ALTER TABLE `tblConfig` CHANGE `key` `sleutel` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
 		ALTER TABLE `tblConfig` CHANGE `value` `waarde` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ;
 	</sql>  
+	<sql name="dienstverleners" tag="16">  
+		ALTER TABLE `tblUsers` ADD `dienstverlener` BIGINT UNSIGNED NOT NULL DEFAULT '0' AFTER `mailalerts` ;
+		ALTER TABLE `tblGroups` ADD `isdienstverlener` INT( 1 ) UNSIGNED NOT NULL DEFAULT '0' AFTER `img` ;
+	</sql> 
 </queries>

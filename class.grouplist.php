@@ -12,6 +12,10 @@
 			 $this->arWhere[] = " g.deleted = 0 ";  
 		}
 		
+		public function filterByDienstverlener($bValue = TRUE) { 
+			$this->arWhere[] = " isdienstverlener = " . ($bValue?1:0) . " ";  
+		}
+		
 		public function user($iUser) { // select only groups where this user exists
 			$this->arJoin["user" . $iUser] = " inner join tblGroupUsers ug" . $iUser . " on g.id = ug" . $iUser . ".groep and ug" . $iUser . ".user = " . $iUser . " and ug" . $iUser . ".confirmed = 1 ";  
 			$this->reset(); 

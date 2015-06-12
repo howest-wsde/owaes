@@ -75,6 +75,7 @@
 		private $arStatus = NULL; 
 		private $bAlgemeneVoorwaarden = NULL; 
 		private $arMailalerts = NULL; 
+		private $iDienstverlener = NULL; 
 		
 		private $bNEW = TRUE; 
 		 
@@ -168,6 +169,9 @@
 								//$this->addFile($_FILES[$arFile[1]]["name"], $strFileLoc, $_POST[$arFile[0]], $_POST[$arFile[2]]); 
 							}
 							break; 
+						case "dienstverlener": 
+							$this->dienstverlener($strVal); 
+							break; 	
 						default:  
 							$arKey = explode("-", $strKey, 2);  
 							switch ($arKey[0]) {
@@ -915,6 +919,12 @@
 			return ($this->visible4me("description")) ? $this->strDescription : "";  
 		}
 		
+		public function dienstverlener($iDienstverlener = NULL) { // get / set omschrijving 
+			if (!is_null($iDienstverlener)) $this->iDienstverlener = intval($iDienstverlener); 
+			if (is_null($this->iDienstverlener)) $this->load();
+			return group($this->iDienstverlener); 
+		}
+		
 		public function email($strEmail = NULL, $bCheck = TRUE) { // get / set e-mailadres
 			if (!is_null($strEmail)) { 
 				if ($bCheck) {
@@ -963,6 +973,9 @@
 					break; 	
 				case "mail": 
 					if (is_null($this->strEmail)) $this->email($strValue, FALSE);
+					break; 	
+				case "dienstverlener": 
+					if (is_null($this->iDienstverlener)) $this->dienstverlener($strValue);
 					break; 	
 				case "birthdate": 
 					if (is_null($this->ibirthdate)) $this->birthdate($strValue);
@@ -1072,6 +1085,7 @@
 					if (is_null($this->strPassword)) $this->password(owaesTime()); 
 					if (is_null($this->iLastUpdate)) $this->lastupdate(owaesTime());
 					if (is_null($this->bAdmin)) $this->admin(FALSE);
+					if (is_null($this->iDienstverlener)) $this->dienstverlener(0);
 					if (is_null($this->arData)) $this->arData = array();
 					if (is_null($this->arBestanden)) $this->arBestanden = array(); 
 
@@ -1208,6 +1222,7 @@
 					"birthdate" => $this->birthdate(), 
 					"gender" => $this->gender(), 
 					"telephone" => $this->telephone(), 
+					"dienstverlener" => $this->iDienstverlener, 
 					"visible" => ($this->visible()?1:0), 
 					"showlastname" => ($this->visible("lastname")),
 					"showfirstname" => ($this->visible("firstname")),
