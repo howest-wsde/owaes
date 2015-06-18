@@ -3645,6 +3645,14 @@ input[type="number"] {
 }
 
 .form-control {height: auto; }
+.checkbox-control {
+	input  {width: 30px; }
+	label {font-weight: normal; }
+}
+.form-control.gepasseerd.fout {
+	border: 1px solid red; 
+}
+
 
 //mozilla only
 @-moz-document url-prefix() {
@@ -3698,9 +3706,6 @@ input[type="number"] {
     .form-control {
         height: auto;
     }
-	.form-control.gepasseerd.fout {
-		border: 1px solid red; 
-	}
 	
     /*@media (max-width: 924px) {
 

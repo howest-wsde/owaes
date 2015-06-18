@@ -49,6 +49,7 @@
 		if ($oMijnRechten->groupinfo()) {
 			$oGroep->naam($_POST["groepsnaam"]); 
 			$oGroep->website($_POST["groepsurl"]); 
+			$oGroep->isDienstverlener(isset($_POST["isdienstverlener"])); 
 			$oGroep->info($_POST["info"]); 	 	
 			if ($_FILES["img"]["error"] == 0){  
 				$strTmp = "upload/tmp/" . $_FILES["img"]["name"];  
@@ -157,13 +158,13 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="dienstverlener" class="control-label col-lg-2">Dienstverlener:</label>
-                                    <div class="col-lg-10">
-                                        <select name="isdienstverlener"  class="dienstverlener form-control" id="dienstverlener">
-                                        	<option value="0">Geen dienstverlener</option>
-                                        	<option value="1">Dienstverlener (brengt leden aan en volgt op)</option>
-                                        </select> 
-                                    </div> 
+                                    <div class="col-lg-10"><div class="checkbox-control form-control">
+                                        <input type="checkbox" name="isdienstverlener" id="isdienstverlener" value="1"   <? if ($oGroep->isDienstverlener()) echo ('checked="checked"');  ?> />
+                                        <label for="isdienstverlener">Deze groep vertegenwoordigt een dienstverlener</label>
+                                    </div></div>
                                 </div>
+ 
+                    
                                 <div class="form-group">
                                     <div class="col-lg-12">
                                         <input type="submit" value="Gegevens opslaan" id="profile" class="btn btn-default pull-right" name="changeprops" />

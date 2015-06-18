@@ -76,6 +76,7 @@
 		private $bAlgemeneVoorwaarden = NULL; 
 		private $arMailalerts = NULL; 
 		private $iDienstverlener = NULL; 
+		private $bMailVerified = NULL; 
 		
 		private $bNEW = TRUE; 
 		 
@@ -106,7 +107,13 @@
 							$this->lastname($strVal); 
 							break; 	
 						case "email": 
-							$this->email($strVal); 
+							if ($strVal != $this->email()) $this->changeEmail($strVal, TRUE);  
+							$oAlert = new action($this->id()); 
+							$oAlert->type("alert"); 
+							$oAlert->data("title", "E-mail validatie"); 
+							$oAlert->data("text", "Er werd een validatiemail gestuurd naar uw nieuw e-mailadres. De aanpassing wordt geldig vanaf deze bevestigd werd.");  
+							$oAlert->update();  
+							//$this->email($strVal); 
 							break; 	
 						case "description": 
 							$this->description($strVal); 
@@ -889,12 +896,75 @@
 				} else {
 					if ($this->unlocked()) {
 						$this->iActief = $iActief;  // actief-value kan enkel aangepast worden door admins
-						if ($iActief == 1) $oDB = new database("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values ('" . $this->id() . "', '" . owaestime() . "', 0, 0, 0, 0, 0, 0); ", TRUE); // bij ontdooien
+						if ($iActief == 1) $oDB = new database("insert into tblIndicators (user, datum, physical, mental, emotional, social, reason, link) values ('" . $this->id() . "', '" . owaestime() . "', 0, 0, 0, 0, 0, 0); ", TRUE); // nodig bij ontdooien
 					}
 				} 
 			}
 			if (is_null($this->iActief)) $this->load();
 			return ($this->iActief==1);    
+		}
+		
+
+		public function changeEmail($strEmail, $bDoChange = FALSE) {
+
+			$oDB = new database();  
+			$oDB->execute("select count(id) as aantal from tblUsers where mail='" . $oDB->escape($strEmail) . "' and id != "  . $this->id() . ";"); 
+			if ($oDB->get("aantal") > 0) return FALSE; 
+ 
+ 			if ($bDoChange) {
+				if ($this->id() == 0) {exit("Change mail kan enkel bij bestaande gebruikers (eerst opslaan)");}
+				
+				if (!$this->mailVerified()) {
+					$this->email($strEmail); 
+					$this->update(); 
+				}
+				
+				$strSleutel = md5(time() . $strEmail); 
+				$arFields = array(
+					"user" => $this->id(), 
+					"email" => "'" . $oDB->escape($strEmail) . "'", 
+					"sleutel" => "'" . $strSleutel . "'", 
+					"verified" => "0", 
+					"datum" => time(), 
+				); 
+				$oDB->sql("insert into tblUserEmailVerify (" . implode(", ", array_keys($arFields)) . ") values (" . implode(", ", array_values($arFields)) . "); ");
+				$oDB->execute(); 
+				$iInsertID = $oDB->lastInsertId(); 
+				$strURL = fixPath("verifymail.php?u=" . $this->id() . "&k=" . $strSleutel, TRUE); 
+				$oMail = new email(); 
+					$oMail->setTo($strEmail, $this->getName());
+					$oMail->template("mailtemplate.html");  
+					$strMailBody = $this->HTML("mail.subscribe.html"); 
+					$strMailBody = str_replace("[mailverify:url]", $strURL, $strMailBody); 
+					$oMail->setBody($strMailBody);   
+					$oMail->setSubject("OWAES inschrijving"); 
+				$oMail->send(); 
+			}
+			return TRUE; 
+		}
+		
+		public function validateEmail($strKey) {
+			$oDB = new database(); 
+			$oDB->execute("select * from tblUserEmailVerify where user = " . $this->id() . ";"); 	
+			while ($oDB->nextRecord()) {
+				if ($oDB->get("sleutel") == $strKey) {
+					$this->unlocked(TRUE); 
+					$this->email($oDB->get("email")); 
+					$this->mailVerified(TRUE); 
+					$this->update(); 
+					$oAlert = new action($this->id()); 
+					$oAlert->type("alert"); 
+					$oAlert->data("title", "E-mail gevalideerd"); 
+					$oAlert->data("text", "Uw e-mailadres werd gevalideerd");  
+					$oAlert->update();  
+				}
+			} 
+		}
+				
+		public function mailVerified($bMailVerified = NULL) {
+			if (!is_null($bMailVerified)) $this->bMailVerified = $bMailVerified;  
+			if (is_null($this->bMailVerified)) $this->load(); 
+			return ($this->bMailVerified);    
 		}
 		
 		public function algemenevoorwaarden($bAlgemeneVoorwaarden = NULL) { 
@@ -942,6 +1012,7 @@
 		}
 		
 		
+		
 		public function img($strIMG = NULL) { // get / set fotolocatie (relatief pad)
 			if (!is_null($strIMG)) $this->strIMG = $strIMG; 
 			if (is_null($this->strIMG)) $this->load();
@@ -982,6 +1053,9 @@
 					break; 	
 				case "actief": 
 					if (is_null($this->iActief)) $this->actief($strValue);
+					break; 	
+				case "mailverified": 
+					if (is_null($this->bMailVerified)) $this->mailVerified($strValue == 1);
 					break; 	
 				case "gender": 
 					if (is_null($this->strGender)) $this->gender($strValue);
@@ -1080,6 +1154,7 @@
 					if (is_null($this->strLastname)) $this->lastname("");
 					if (is_null($this->strDescription)) $this->description("");
 					if (is_null($this->strEmail)) $this->email("", FALSE);
+					if (is_null($this->bMailVerified)) $this->mailVerified(FALSE);
 					if (is_null($this->strIMG)) $this->img("");
 					if (is_null($this->strLocation)) $this->location("", 0, 0);
 					if (is_null($this->strPassword)) $this->password(owaesTime()); 
@@ -1217,6 +1292,7 @@
 					"description" => $this->description(), 
 					"img" => $this->img(), 
 					"mail" => $this->email(), 
+					"mailverified" => $this->mailVerified() ? 1 : 0, 
 					"actief" => ($this->actief()?1:0), 
 					"algemenevoorwaarden" => ($this->algemenevoorwaarden()?1:0), 
 					"birthdate" => $this->birthdate(), 

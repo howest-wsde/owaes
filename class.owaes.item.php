@@ -95,6 +95,7 @@
 		public function editable() { // editable for me() ? => returns TRUE or string error-code 
 			// TODO: GROEPEN MOETEN KUNNEN ZONDER LEVEL 
 			$oMe = user(me()); 
+			if (!$oMe->mailVerified()) return("emailverify"); 
 			if (!$oMe->algemenevoorwaarden()) return("voorwaarden"); 
 			if (!$oMe->admin()) { 
 				if ($this->group()) {
@@ -864,15 +865,13 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$arFlow[20]["title"] = "Inschrijven"; 
 						$arFlow[20]["class"][] = "current";  
 					
-						if (user(me())->algemenevoorwaarden()) {
-/*
-							if (user(me())->credits() >= $this->credits()) {
-								$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
-							} else {
-								$strSubscription .= "<a href=\"modal.alert.php?a=a&t=t\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
-							}
-							*/
-							
+						if (!user(me())->mailVerified()) { 
+							$arFlow[20]["href"] = "modal.mailnotverified.php"; 
+							$arFlow[20]["class"][] = "domodal";  
+						} else if (!user(me())->algemenevoorwaarden()) { 
+							$arFlow[20]["href"] = "modal.voorwaarden.php"; 
+							$arFlow[20]["class"][] = "domodal";  
+						} else {
 							if ($this->subscriptionLink()) {
 								//$arFlow[20]["href"] = $this->subscriptionLink();  
 								$bCredits = ($this->task()) ? TRUE : (user(me())->credits() >= $this->credits()); 
@@ -884,9 +883,6 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 									$arFlow[20]["class"][] = "domodal";  
 								}
 							}
-						} else {
-							$arFlow[20]["href"] = "modal.voorwaarden.php"; 
-							$arFlow[20]["class"][] = "domodal"; 
 						}
 						break;  
 				}

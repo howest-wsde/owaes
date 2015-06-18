@@ -175,4 +175,19 @@ CREATE TABLE IF NOT EXISTS `tblMailalerts` (
 		ALTER TABLE `tblUsers` ADD `dienstverlener` BIGINT UNSIGNED NOT NULL DEFAULT '0' AFTER `mailalerts` ;
 		ALTER TABLE `tblGroups` ADD `isdienstverlener` INT( 1 ) UNSIGNED NOT NULL DEFAULT '0' AFTER `img` ;
 	</sql> 
+	<sql name="mailverified" tag="16">  
+		ALTER TABLE `tblUsers` ADD `mailverified` INT NOT NULL DEFAULT '0' AFTER `mail` ;
+		update tblUsers set mailverified = 1; 
+	</sql> 
+	<sql name="tblUserEmailVerify" tag="16">  
+		CREATE TABLE IF NOT EXISTS `tblUserEmailVerify` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `email` varchar(255) NOT NULL,
+  `sleutel` varchar(255) NOT NULL,
+  `verified` int(11) NOT NULL DEFAULT '0',
+  `datum` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+	</sql> 
 </queries>

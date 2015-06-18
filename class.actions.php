@@ -2,6 +2,7 @@
 	class actions { 
 		private $iUser = NULL; 
 		private $arActions = array(); 
+		private $arModals = NULL; 
 	
 		public function actions($iUser) {
 			$this->iUser = $iUser;  
@@ -46,41 +47,46 @@
 		}
 		
 		public function modals() { 
-			$arModalURLs = array();  
-			foreach ($this->getList() as $oAction) {
-				switch($oAction->type()) {
-					case "transaction": 
-						$arModalURLs[] = "modal.transaction.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
-						break; 
-					case "feedback": 
-						if ((user($this->iUser)->level()>=3)&&($oAction->tododate() > owaestime()-(7*24*60*60))) {
-							$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
-						}
-						break; 
-					case "badge": 
-						$arModalURLs[] = "modal.badge.php?m=" . $oAction->data("type"); 
-						$oAction->done(owaestime()); 
-						$oAction->update();  
-						break; 
-					case "experience":  
-						if ( user($this->iUser)->experience()->level(FALSE) != user($this->iUser)->experience()->level(TRUE)) { 
-							$arModalURLs[] = "modal.experience.php";  
-							$arModalURLs[] = "modal.nextlevel.php"; 
+			if (is_null($this->arModals)) {
+				$arModalURLs = array();  
+				foreach ($this->getList() as $oAction) {
+					switch($oAction->type()) {
+						case "transaction": 
+							$arModalURLs[] = "modal.transaction.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
+							break; 
+						case "alert": 
+							$arModalURLs[] = "modal.alert.php?t=" . urlencode($oAction->data("title")) . "&a=" . urlencode($oAction->data("text")); 
 							$oAction->done(owaestime()); 
 							$oAction->update();  
-						}  else if ( user($this->iUser)->experience()->total(TRUE) - user($this->iUser)->experience()->total() >= 10) { 
-							$arModalURLs[] = "modal.experience.php";  
+							break; 
+						case "feedback": 
+							if ((user($this->iUser)->level()>=3)&&($oAction->tododate() > owaestime()-(7*24*60*60))) {
+								$arModalURLs[] = "modal.feedback.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
+							}
+							break; 
+						case "badge": 
+							$arModalURLs[] = "modal.badge.php?m=" . $oAction->data("type"); 
 							$oAction->done(owaestime()); 
 							$oAction->update();  
-						}
-						break; 
+							break; 
+						case "experience":  
+							if ( user($this->iUser)->experience()->level(FALSE) != user($this->iUser)->experience()->level(TRUE)) { 
+								$arModalURLs[] = "modal.experience.php";  
+								$arModalURLs[] = "modal.nextlevel.php"; 
+								$oAction->done(owaestime()); 
+								$oAction->update();  
+							}  else if ( user($this->iUser)->experience()->total(TRUE) - user($this->iUser)->experience()->total() >= 10) { 
+								$arModalURLs[] = "modal.experience.php";  
+								$oAction->done(owaestime()); 
+								$oAction->update();  
+							}
+							break; 
+					} 
 				} 
-			} 
-			return $arModalURLs; 
-		} 
-		
-		
-		
+				$this->arModals = $arModalURLs; 
+			}
+			return $this->arModals; 
+		}  
 	} 
 
 	class action {

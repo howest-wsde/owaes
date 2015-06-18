@@ -37,7 +37,7 @@
 		} else if (!validEmail($_POST["email"])) {
 			$arErrors["email"] = "Ongeldig e-mailadres"; 
 		} else {
-			if (!$oUser->email($_POST["email"])) $arErrors["email"] = "Dit e-mailadres bestaat reeds in het systeem";  
+			if (!$oUser->changeEmail($_POST["email"])) $arErrors["email"] = "Dit e-mailadres bestaat reeds in het systeem";  
 		} 
 		$oUser->alias("", TRUE); 
 		$oUser->password($_POST["pass"]);
@@ -48,20 +48,18 @@
 		if ($_POST["pass"] != $_POST["pass-repeat"]) $arErrors["pass-repeat"] = "Wachtwoord komt niet overeen";  
 		if (count($arErrors) == 0)  {
 			$oUser->update();  
-			$oMail = new email(); 
-				$oMail->setTo($oUser->email, $oUser->getName());
-				$strMail = $oUser->HTML("mail.subscribe.html");  
-				$oMail->setBody($strMail);  
-				$oMail->setSubject("OWAES inschrijving"); 
-			$oMail->send();  
+			me($oUser->id()); // SET me 
+			$oUser->changeEmail($_POST["email"], TRUE); 
+			
 			$oLog = new log("user aangemaakt", array(
 												"id" => $oUser->id(),  
 												"naam" => $oUser->login(), 
 												"login" => $oUser->getName(),  
-												"email" => $oUser->email,  
+												"email" => $oUser->email(),  
 												"postvalues" => $_POST, 
 											)); 
-			$bResult = $oSecurity->doLogin($_POST["email"], $_POST["pass"]); 
+			$bResult = $oSecurity->doLogin($oUser->login(), $_POST["pass"]); 
+ 
 			redirect($strRedirect); 
 			exit(); 
 		}
@@ -317,7 +315,8 @@
                                 ?> 
                             </select>
                         </div>
-                    </div> 
+                    </div>  
+                    
                     <div class="form-group">
                              <div class="col-lg-3"></div>
                              <div class="col-lg-6"><a href="modal.voorwaarden.php" class="domodal">gebruikersvoorwaarden</a></div>
