@@ -69,6 +69,9 @@
 							$oAction->done(owaestime()); 
 							$oAction->update();  
 							break; 
+						case "validateuser": 
+							$arModalURLs[] = "modal.confirmuser.php?u=" . $oAction->data("user");  
+							break; 
 						case "experience":  
 							if ( user($this->iUser)->experience()->level(FALSE) != user($this->iUser)->experience()->level(TRUE)) { 
 								$arModalURLs[] = "modal.experience.php";  
