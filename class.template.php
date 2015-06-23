@@ -137,7 +137,7 @@
 				"credits" => settings("credits", "name", "x"), 
 				"Credit" => ucfirst(settings("credits", "name", "1")),  
 				"Credits" => ucfirst(settings("credits", "name", "x")),  
-				"Creditoverdracht" => ucfirst(settings("credits", "name", "overdracht")),  
+				"Creditoverdracht" => ucfirst(settings("credits", "name", "overdracht")), 
 			); 
 			preg_match_all("/\[\[([\s\S]*?)\]\]/", $strHTML, $arResult);   
 			if (isset($arResult[1])) foreach ($arResult[1] as $strTerm){

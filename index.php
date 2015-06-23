@@ -106,6 +106,13 @@
 								<?php 
 							} else {
 								switch($oNew->editable()) {
+									case "emailverify": 
+										?>
+											<a href="modal.mailnotverified.php" class="domodal btn btn-default">
+												<span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
+											</a>
+										<?php 
+										break; 	
 									case "voorwaarden": 
 										?>
 											<a href="modal.voorwaarden.php" class="domodal btn btn-default">

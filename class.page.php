@@ -6,6 +6,7 @@
 		private $arMeta = array(); 
 		private $strTitle = "OWAES";  // Page title (this value is the default) 
 		private $arCSS = array(); 
+		private $arInlineScript = array(); 
 		private $arJS = array(); 
 		private $bLoggedInUser = FALSE; 
 		public $iUser = 0; 
@@ -61,6 +62,13 @@
 			
 		} 
 		
+		public function showActions() {
+			$oActions = new actions(me());
+			if (count($oActions->modals()) > 0)  {
+				$this->arInlineScript[] = "loadModals(" . json_encode($oActions->modals()) . ");"; 
+			}  
+		}
+		
 		public function getHeader() { // returns all setted inside-<head> information
 			global $arConfig;   
 			$strHTML = "\n\t\t<title>" . $this->strTitle . "</title>";
@@ -76,8 +84,11 @@
 				$strHTML .= "\n\t\t<script src=\"" . $strFile . "\"></script>"; 
 			} 
 			$strHTML .= "\n\t\t<script>
-				var strRoot = \"" . settings("domain", "root") . "\"; 
-			</script>"; 
+				var strRoot = \"" . settings("domain", "root") . "\"; "; 
+			if (count($this->arInlineScript)>0) {
+				$strHTML .= "\n$(document).ready(function(){" . implode("\n", $this->arInlineScript) . "})"; 
+			}
+			$strHTML .= "\n</script>"; 
 			
 			
 			return $strHTML; 
