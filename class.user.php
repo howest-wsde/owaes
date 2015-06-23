@@ -384,6 +384,7 @@
 								$this->unlocked(TRUE); 
 								$this->actief(0); 
 								$this->update(); 
+								$oDB = new database("update tblUserSessions set stop = '" . owaesTime() . "' where user = '" . $this->id() . "'; ", TRUE); 
 								$arMails["owaes"] = "Gebruiker " . $this->getName() . " werd geblokkeerd wegens te lage waarden (" . implode(", ", $arWarnings[$this->iStatus]) . ")";
 	 						}  
 					}
