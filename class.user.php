@@ -1131,9 +1131,9 @@
 			} else {
 				$oDB = new database();
 				if (!is_null($this->iID)) {
-					$strSQL = "select * from tblUsers where id = " . $this->iID . "; "; 
+					$strSQL = "select * from tblUsers where deleted = 0 and id = " . $this->iID . "; "; 
 				} else if (!is_null($this->strAlias)) {
-					$strSQL = "select * from tblUsers where alias = '" . $oDB->escape($this->strAlias) . "'; "; 
+					$strSQL = "select * from tblUsers where deleted = 0 and alias = '" . $oDB->escape($this->strAlias) . "'; "; 
 				} else {
 					error("Geen ID of alias gedefinieerd (class.user.php)");
 					return FALSE; 
@@ -1146,7 +1146,7 @@
 					if (is_null($this->strLocation)) $this->location($oDBrecord["location"], $oDBrecord["location_lat"], $oDBrecord["location_long"]);
 				
 				} else {
-					if (is_null($this->iID)) $this->id(0);
+					$this->id(0);
 					
 					if (is_null($this->iActief)) $this->actief(1);
 					if (is_null($this->strAlias)) $this->alias("");
@@ -1273,14 +1273,20 @@
 				$arWhere[] = " $strKey = '$strVal' "; 
 			} 
 			if ($bCumulative) {
-				$oUser->execute("select * from tblUsers where " . implode(" and ", $arWhere));
+				$oUser->execute("select * from tblUsers where deleted = 0 and " . implode(" and ", $arWhere));
 			} else {
-				$oUser->execute("select * from tblUsers where " . implode(" or ", $arWhere));
+				$oUser->execute("select * from tblUsers where deleted = 0 and (" . implode(" or ", $arWhere) . ")");
 			} 
 			if ($oUser->length() == 1) {
 				$this->id($oUser->get("id")); 
 				$this->load();
 			}
+		}
+		
+		public function delete($bSure = FALSE) {
+			if ($bSure && user(me())->admin()) {
+				$oDB = new database("update tblUsers set deleted = 1 where id = " . $this->id(), TRUE); 	
+			}	
 		}
 		
 		public function update() {  

@@ -70,6 +70,16 @@
 					$oMail->setBody($strMailBody);   
 					$oMail->setSubject("nieuwe OWAES inschrijving via " . $oUser->dienstverlener()->naam()); 
 				$oMail->send(); 
+			} else {
+				$arAdmins = new userlist(); 
+				$arAdmins->filter("admin"); 
+				foreach ($arAdmins->getList() as $oAdmin) {
+					$oAction = new action($oAdmin->id()); 
+					$oAction->type("validateuser");  
+					$oAction->data("user", me()); 
+					$oAction->tododate(owaestime()); 
+					$oAction->update();  
+				} 
 			}
 			
 			$oLog = new log("user aangemaakt", array(
