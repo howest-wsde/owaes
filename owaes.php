@@ -62,14 +62,12 @@
         
       
             
-                <div class="sidecenter"> 
-                
-                
-                
+                <div class="sidecenter">  
                 
 					<?php echo $oOwaesItem->HTML("owaesdetail.html");  ?> 
 				 	
-                    <div class="messages">
+                    <? if (user(me())->algemenevoorwaarden()) { ?>
+                    	<div class="messages">
                              <?php 
                    		        $oConversation = new conversation($oOwaesItem->author()->id());  
 						        $oConversation->filter("owaes", $iID); 
@@ -107,7 +105,8 @@
                                     <input class="btn btn-default pull-right" type="submit" name="addmessage" value="Verzenden" />
                                 </form>
                             </div> 
-                    </div>
+                    	</div>
+					<? } ?>
                    
             	</div> 
             <?php echo $oPage->endTabs(); ?>

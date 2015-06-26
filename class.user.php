@@ -1365,6 +1365,7 @@
 		 
 		public function getURL() { // returns pad naar profiel
 			//return fixPath(($this->alias() != "") ? ($this->alias())  : ("profile.php?id=" . $this->iID)); 
+			if (!user(me())->mailVerified()) return fixPath("error.php?e=mailverified"); 
 			return fixPath(($this->alias() != "") ? ("profile.php?alias=" . $this->alias())  : ("profile.php?id=" . $this->iID)); 
 		}
 		

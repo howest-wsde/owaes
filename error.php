@@ -39,6 +39,9 @@
 							case "level": 
 								echo ("<p>Om deze pagina te openen moet u eerst een hoger level behalen. </p>"); 
 								break; 	
+							case "mailverified": 
+								echo ("<p>Uw e-mailadres werd nog niet gevalideerd. Controleer uw mailbox en klik de validatielink om deze pagina te kunnen bezoeken. </p>"); 
+								break; 	
 							default: 
 								echo ("<p>U heeft niet de nodige rechten deze actie uit te voeren. </p>"); 
 						}

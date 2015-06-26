@@ -50,38 +50,7 @@
 			$oUser->update();  
 			me($oUser->id()); // SET me 
 			$oUser->changeEmail($_POST["email"], TRUE); 
-			
-			if ($oUser->dienstverlener()->id() > 0) { // dienstverlener geselecteerd
-			// ER 	echo "dwel diensteverlernerne"; 
-				$oDienstverlener = $oUser->dienstverlener()->admin();  
-				$oAction = new action($oDienstverlener->id()); 
-				$oAction->type("validateuser");  
-				$oAction->data("user", me()); 
-				$oAction->tododate(owaestime()); 
-				$oAction->update();  
 
-				$oMail = new email(); 
-					$oDienstverlener->unlocked(TRUE); 
-					$oMail->setTo($oDienstverlener->email(), $oDienstverlener->getName());
-					$oDienstverlener->unlocked(FALSE); 
-					$oMail->template("mailtemplate.html");  
-					$strMailBody = $oUser->HTML("mail.clientingeschreven.html"); 
-					$strMailBody = str_replace("[dienstverlener]", $oUser->dienstverlener()->naam(), $strMailBody); 
-					$oMail->setBody($strMailBody);   
-					$oMail->setSubject("nieuwe OWAES inschrijving via " . $oUser->dienstverlener()->naam()); 
-				$oMail->send(); 
-			} else {
-				$arAdmins = new userlist(); 
-				$arAdmins->filter("admin"); 
-				foreach ($arAdmins->getList() as $oAdmin) {
-					$oAction = new action($oAdmin->id()); 
-					$oAction->type("validateuser");  
-					$oAction->data("user", me()); 
-					$oAction->tododate(owaestime()); 
-					$oAction->update();  
-				} 
-			}
-			
 			$oLog = new log("user aangemaakt", array(
 												"id" => $oUser->id(),  
 												"naam" => $oUser->login(), 
