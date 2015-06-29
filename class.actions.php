@@ -70,7 +70,16 @@
 							$oAction->update();  
 							break; 
 						case "validateuser": 
-							$arModalURLs[] = "modal.confirmuser.php?u=" . $oAction->data("user");  
+							$oUser = user($oAction->data("user")); 
+							$oUser->load();  
+							if ($oUser->id()==0 || $oUser->algemenevoorwaarden()) { // niet meer nodig 
+								$oAction->done(TRUE); 
+								$oAction->update();  
+							} else {
+								$arQRY = array("u=" . $oAction->data("user"));  
+								if ($oAction->data("declinedby")) $arQRY[] = "d=" . $oAction->data("declinedby"); 
+								$arModalURLs[] = "modal.confirmuser.php?" . implode("&", $arQRY);  
+							}
 							break; 
 						case "experience":  
 							if ( user($this->iUser)->experience()->level(FALSE) != user($this->iUser)->experience()->level(TRUE)) { 
@@ -100,6 +109,10 @@
 		private $iDoneDate = 0; 
 		private $strType = NULL; 
 		private $arData = array(); 
+		
+		public function id() {
+			return $this->iID; 
+		}
 		
 		public function action($iUser = NULL) {
 			$this->iCreated = owaestime(); 
