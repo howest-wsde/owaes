@@ -488,8 +488,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$oAction->type("transaction"); 
 					$oAction->data("market", $this->id()); 
 					$oAction->data("user", $iReceiver); 
-					$iDate = owaestime() + (3*24*60*60); // default: vandaag + 3 dagen
-					foreach ($this->data() as $iSubDate) if ($iSubDate>0 && $iSubDate>$iDate) $iDate = $iSubDate + (2*24*60*60); // laatste uitvoerdatum + 2 dagen
+					$iDate = owaestime() + (settings("payment", "timing", "fixeddate")*24*60*60); // default: vandaag + 7 dagen
+					foreach ($this->data() as $iSubDate) if ($iSubDate>0 && $iSubDate>$iDate) $iDate = $iSubDate + (settings("payment", "timing", "nodate")*24*60*60); // laatste uitvoerdatum + 2 dagen
 					$oAction->tododate($iDate); 
 					$oAction->update(); 
 					

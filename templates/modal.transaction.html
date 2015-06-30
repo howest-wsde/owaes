@@ -1,10 +1,10 @@
 
 <div class="modal fade modaltransaction" id="transaction-[market:id]-[user:id]">
   <div class="modal-dialog">
-    <form action="[currentfile]">
+    <form action="[currentfile]" id="transactionmodal">
         <input type="hidden" name="refresh" value="[qry:refresh]" />
         <input type="hidden" name="market" value="[market:id]" />
-        <input type="hidden" name="receiver" value="[user:id]" />
+        <input type="hidden" name="receiver" value="[user:id]" /> 
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">[[Creditoverdracht]]</h4>
@@ -25,11 +25,26 @@
                         $(".transactionerror").hide(); 
                     }
                 }
+				function postpone(iTime) {
+					$("input#postpone").val(iTime); 
+					$("form#transactionmodal").submit(); 
+					return false; 
+				}
             </script> 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-success save-form" data-dismiss="modal">versturen</button>
-            <button type="button" class="btn btn-cancel later-form" data-dismiss="modal">niet nu</button>
+            <button type="button" class="btn btn-success save-form" data-dismiss="modal">versturen</button> 
+            <div class="btn-group">
+              <button type="button" class="btn btn-cancel dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                niet nu <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu postpone" style="text-align: left; ">
+                <li><a href="#" rel="1" class="postpone-form" data-dismiss="modal">morgen</a></li>
+                <li><a href="#" rel="7" class="postpone-form" data-dismiss="modal">volgende week</a></li>
+                <li><a href="#" rel="14" class="postpone-form" data-dismiss="modal">binnen 2 weken</a></li> 
+                <li><a href="#" rel="30" class="postpone-form" data-dismiss="modal">volgende maand</a></li> 
+              </ul> 
+            </div>
           </div>
         </div><!-- /.modal-content -->
     </form>
