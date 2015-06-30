@@ -84,7 +84,26 @@
                        
                         return $popup;
                     }
-				?>		
+					
+					
+ 
+					$oUsers = new userlist(); 
+					$arBullets = array(); 
+					foreach ($oUsers->getList() as $oUser) {
+						$arLL = $oUser->LatLong(); 
+						if ($arLL[0] * $arLL[1] != 0) $arBullets[] = $arLL; 
+					}
+					echo "arBullets = " . json_encode($arBullets)  . "; "; 
+					
+				?>	
+ 
+				for (i=0; i<arBullets.length; i++){ 
+					new google.maps.Marker({
+						map:map, 
+						position: new google.maps.LatLng(arBullets[i][0], arBullets[i][1]),  
+						icon: 'img/bullet.png', 
+					});  
+				}	
 			}
 			google.maps.event.addDomListener(window, 'load', initialize);
 			 
@@ -99,15 +118,18 @@
 					$("#map-item").hide(); 
 				});
 				google.maps.event.addListener(marker, 'click', function() {
-					showMarket(iID);  
-					/*
-					var infowindow = new google.maps.InfoWindow({
-						content: strInfo
-					}); 
-					infowindow.open(map, this);
-					*/
+					showMarket(iID);   
 				});
 
+			}
+			
+			function addBullet(oPos) { 
+				marker = new google.maps.Marker({
+					map:map,
+					draggable: false, 
+					position: oPos, 
+					icon: 'img/marker-sicijijs.png', 
+				});  
 			}
             	
 			function showMarket(iID) {
