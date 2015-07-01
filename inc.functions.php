@@ -386,7 +386,7 @@
 		}
 		$strCache = "cache/" . md5($strURL) . "." . $strExt; 
 		if (file_exists($strCache)) { 
-			if (($iHours == -1) || (filemtime($strCache)>owaesTime()-(60-60*$iHours))) return $strCache; 
+			if (($iHours == -1) || (filemtime($strCache)<owaesTime()-(60-60*$iHours))) return $strCache; 
 		}
 		copy($strURL, $strCache);	
 		return $strCache; 

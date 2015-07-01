@@ -55,7 +55,19 @@
 				};
 				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 
-				<?php  
+				<?php   
+					echo "arBullets = " . content(cache(fixPath("locations.json.php", TRUE), "json", 12)) . "; ";  // TTL 12 uur
+				?>
+				
+				for (i=0; i<arBullets.length; i++){ 
+					new google.maps.Marker({
+						map:map, 
+						position: new google.maps.LatLng(arBullets[i][0], arBullets[i][1]),  
+						icon: 'img/bullet.png', 
+					});  
+				}	
+				<?
+					
 					$oOwaesList = new owaeslist(); 
 					$oOwaesList->filterByState(STATE_RECRUTE);  
 					$oOwaesList->filterPassedDate(owaesTime()); 
@@ -87,23 +99,8 @@
 					
 					
  
-					$oUsers = new userlist(); 
-					$arBullets = array(); 
-					foreach ($oUsers->getList() as $oUser) {
-						$arLL = $oUser->LatLong(); 
-						if ($arLL[0] * $arLL[1] != 0) $arBullets[] = $arLL; 
-					}
-					echo "arBullets = " . json_encode($arBullets)  . "; "; 
-					
 				?>	
  
-				for (i=0; i<arBullets.length; i++){ 
-					new google.maps.Marker({
-						map:map, 
-						position: new google.maps.LatLng(arBullets[i][0], arBullets[i][1]),  
-						icon: 'img/bullet.png', 
-					});  
-				}	
 			}
 			google.maps.event.addDomListener(window, 'load', initialize);
 			 
