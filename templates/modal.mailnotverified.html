@@ -1,4 +1,6 @@
 <div class="modal fade" id="VWModal">
+<form action="[currentfile]" id="modalmailconfirm">
+	<input type="hidden" name="resend" value="1" />
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
@@ -11,8 +13,10 @@
 		Uw e-mailadres <em>[email]</em> werd nog niet gevalideerd. Controleer uw mailbox en klik de validatielink om verder te doen. 
       </div>
       <div class="modal-footer">
+        <button type="button" class="btn btn-default save-form">mail opnieuw sturen</button> 
       	<a class="btn btn-danger" href="logout.php">uitloggen</a> 
       </div>
     </div><!-- /.modal-content --> 
   </div><!-- /.modal-dialog -->
+</form>
 </div><!-- /.modal -->
