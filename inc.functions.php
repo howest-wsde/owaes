@@ -392,10 +392,14 @@
 	}
 
 	function content($fn) { 
-		$handle = fopen($fn, "r");
-		$contents = fread($handle, filesize($fn));
-		fclose($handle);
-		return $contents; 
+		try {
+			$handle = fopen($fn, "r");
+			$contents = fread($handle, filesize($fn));
+			fclose($handle);
+			return $contents; 
+		} catch (Exception $e) {
+			return ""; 
+		}
 	}
 	
 	function save($strFile, $strTekst){
