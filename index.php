@@ -131,7 +131,7 @@
 							}
 						?>
                         
-                        
+<? /* IN DEV
                         <!-- Split button -->
 <div class="btn-group">
   <button type="button" class="btn btn-default"><span class="icon icon-order-desc"></span><span class="title">Profielopbouw</span></button>
@@ -147,7 +147,7 @@
   </ul>
 </div>
 
- 
+ */ ?>
                     </div>
                 <?php //} ?>
                 
