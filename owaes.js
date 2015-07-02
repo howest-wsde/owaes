@@ -102,6 +102,12 @@ $(document).ready(function() {
 		arData = "cancel=1&" + arData;  
 		$.post(oForm.attr("action"), arData);  
 	})
+	$(document).on("click", ".postpone-form", function(){  
+		oForm = $(this).parentsUntil("form").parent(); 
+		arData = oForm.serialize(); 
+		arData = "postpone=" + $(this).attr("rel") + "&cancel=1&" + arData;  
+		$.post(oForm.attr("action"), arData);  
+	})
 	
 
 	$(document).on("click", ".save-form", function(){  

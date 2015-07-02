@@ -1,0 +1,28 @@
+
+<div class="modal fade modaltransaction" id="transaction-[market:id]-[user:id]">
+  <div class="modal-dialog">
+    <form action="[currentfile]"> 
+        <input type="hidden" name="user" value="[user:id]" />
+        <input type="hidden" id="actionfield" name="action" value="later" />
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Nieuwe gebruiker valideren</h4>
+          </div>
+          <div class="modal-body">
+            <p>Er heeft zich een nieuwe gebruiker aangemeld via [dienstverlener]. </p>
+            <p>Klik <em>bevestigen</em> als u deze gebruiker kent. </p>
+            <div class="well">
+            	<dl>
+                	[gegevens]
+                </dl>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success save-form" value="confirm" onclick="document.getElementById('actionfield').value='confirm';" data-dismiss="modal">bevestigen</button>
+            <button type="button" class="btn btn-danger save-form" value="decline" onclick="document.getElementById('actionfield').value='decline';" data-dismiss="modal">weigeren</button>
+            <button type="button" class="btn btn-cancel later-form" onclick="document.getElementById('actionfield').value='later';" data-dismiss="modal">niet nu</button>
+          </div>
+        </div><!-- /.modal-content -->
+    </form>
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

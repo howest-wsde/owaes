@@ -24,6 +24,12 @@
 			"visibility" => FALSE,
 			"algemenevoorwaarden" => FALSE,
 		), 
+		"payment" => array(
+			"timing" => array(
+				"fixeddate" => 2, // 2 dagen na uitvoerdatum popup voor betaling geven 
+				"nodate" => 7, // 7 dagen na bevestiging als geen uitvoerdatum vastgelegd
+			), 
+		), 
 		"levels" => array( 
 			0 => array( 
 				"threshold" => 0, 
