@@ -14,7 +14,12 @@
 	if (isset($_POST["profile"])) {
 		$oProfile->firstname($_POST["firstname"]); 
 		$oProfile->lastname($_POST["lastname"]);  
-		if (!$oProfile->email($_POST["email"])) $arErrors["email"] = "Het opgegeven e-mailadres bestaat reeds in het systeem en kan dus niet gebruikt worden voor deze account";  
+		if ($oProfile->changeEmail($_POST["email"])){
+			$oProfile->changeEmail($_POST["email"], TRUE); 
+			$arErrors["email"] = "Er werd een validatiemail gestuurd naar uw nieuw mailadres. Uw aanpassing gaat van kracht vanaf deze bevestigd wordt. ";  
+		} else {
+			$arErrors["email"] = "Het opgegeven e-mailadres bestaat reeds in het systeem en kan dus niet gebruikt worden voor deze account";  
+		}
 		$oProfile->alias($_POST["alias"], TRUE); 
 		if (!$oProfile->login($_POST["username"])) $arErrors["username"] = "De opgegeven gebruikersnaam bestond al. Er werd een nieuwe gegenereerd"; 
 		$oProfile->location($_POST["location"], $_POST["locationlat"], $_POST["locationlong"] ); 
@@ -248,9 +253,9 @@
                         <legend>Persoonlijke gegevens</legend>
                         <div class="form-group">
                             <label for="visible" class="control-label col-lg-2">Zichtbaar:</label>
-                            <div class="col-lg-10 checkbox">
+                            <div class="col-lg-10"><div class="checkbox-control form-control">
                                 <input type="checkbox" name="visible" id="visible" value="1" <?php if ($oProfile->visible()) echo 'checked="checked"' ?> /> <label for="visible">Dit profiel mag getoond worden in het overzicht van gebruikers</label>
-                            </div>
+                            </div></div>
                         </div>
                         <div class="form-group">
                             <label for="description" class="control-label col-lg-2">Over jezelf:</label>

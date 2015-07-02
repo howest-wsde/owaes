@@ -11,6 +11,16 @@
 		exit(); 	
 	}
 	
+	function rubbish($strTxt) { // replaces text with random characters. 
+		$arReplaces = array("azertyuiopmlkjhgfdsqwxcvbn", "AZERTYUIOPMLKJHGFDSQWXCVBN", "0123456789"); 
+		for ($i=0; $i<strlen($strTxt); $i++){
+			foreach ($arReplaces as $strReplace) {
+				$iChar = substr($strTxt, $i, 1);
+				if (strrpos($strReplace, $iChar)) $strTxt = substr($strTxt, 0, $i) . substr($strReplace, rand(0, strlen($strReplace)-1), 1) . substr($strTxt, $i+1);
+			}
+		}
+		return $strTxt;
+	}
 	
 	function specialHTMLtags($strHTML) { /* [htmlencode]huppeldepup<script>alert("test"); </script>[/htmlencode]  */
 		preg_match_all("/\[htmlencode\]([\s\S]*?)\[\/htmlencode\]/", $strHTML, $arResult); 
@@ -376,7 +386,7 @@
 		}
 		$strCache = "cache/" . md5($strURL) . "." . $strExt; 
 		if (file_exists($strCache)) { 
-			if (($iHours == -1) || (filemtime($strCache)>owaesTime()-(60-60*$iHours))) return $strCache; 
+			if (($iHours == -1) || (filemtime($strCache)<owaesTime()-(60-60*$iHours))) return $strCache; 
 		}
 		copy($strURL, $strCache);	
 		return $strCache; 

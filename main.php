@@ -14,7 +14,7 @@
     $oPage->tab("home");
 	
 	$oMe = user(me());  
- 
+	
 	$oExperience = new experience(me());  
 	$oExperience->detail("reason", "pageload");     
 	$oExperience->add(1);  
@@ -45,7 +45,7 @@
 				}
 			?> 
 			
-			var marker; 
+			var marker, arMapBullets = Array(), iPrevZoom = 12; 
 			function initialize() {
 				var mapOptions = {
 					zoom: 12,
@@ -54,8 +54,30 @@
 					mapTypeId: google.maps.MapTypeId.ROADMAP
 				};
 				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+				
+				google.maps.event.addDomListener(map,'zoom_changed', function() { 
+					iZoom = map.getZoom(); 
+					if ((iZoom > 13) != (iPrevZoom > 13)){
+						for (i=0; i<arMapBullets.length; i++){
+							arMapBullets[i].setMap((iZoom > 13) ? null : map);
+						}
+					}
+					iPrevZoom = iZoom; 
+				}); 
 
-				<?php  
+				<?php   
+					echo "arBullets = " . content(cache(fixPath("locations.json.php", TRUE), "json", 12)) . "; ";  // TTL 12 uur
+				?>
+				
+				for (i=0; i<arBullets.length; i++){ 
+					arMapBullets[arMapBullets.length] = new google.maps.Marker({
+						map:map, 
+						position: new google.maps.LatLng(arBullets[i][0], arBullets[i][1]),  
+						icon: 'img/bullet.png', 
+					});  
+				}	
+				<?
+					
 					$oOwaesList = new owaeslist(); 
 					$oOwaesList->filterByState(STATE_RECRUTE);  
 					$oOwaesList->filterPassedDate(owaesTime()); 
@@ -84,10 +106,14 @@
                        
                         return $popup;
                     }
-				?>		
+					
+					
+ 
+				?>	
+ 
 			}
 			google.maps.event.addDomListener(window, 'load', initialize);
-			 
+			
 			function addMarker(oPos, strType, strInfo, iID) { 
 				marker = new google.maps.Marker({
 					map:map,
@@ -99,15 +125,18 @@
 					$("#map-item").hide(); 
 				});
 				google.maps.event.addListener(marker, 'click', function() {
-					showMarket(iID);  
-					/*
-					var infowindow = new google.maps.InfoWindow({
-						content: strInfo
-					}); 
-					infowindow.open(map, this);
-					*/
+					showMarket(iID);   
 				});
 
+			}
+			
+			function addBullet(oPos) { 
+				marker = new google.maps.Marker({
+					map:map,
+					draggable: false, 
+					position: oPos, 
+					icon: 'img/marker-sicijijs.png', 
+				});  
 			}
             	
 			function showMarket(iID) {
@@ -337,7 +366,7 @@
                     <li><img class="mapPin" src="img/greenPin.png" alt="Werkervaring" />Werkervaring</li>
                     <li><img class="mapPin" src="img/redPin.png" alt="Delen" />Delen</li>
                     <li><img class="mapPin" src="img/orangePin.png" alt="Opleiding" />Opleiding</li>
-                    <!--<li><img class="mapPin" src="img/bluePin.png" alt="Personen" />Personen</li>-->
+                    <li><img class="mapPin" src="img/bullet.png" alt="Deelnemers" style="height: auto; margin: 7px; " />Deelnemers</li>
                 </ul>
             </div>
             <div id="map-item" style="display: none; "></div>

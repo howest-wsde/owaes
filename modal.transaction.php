@@ -18,9 +18,11 @@
 				"user" => $iUser, 
 				"market" => $iMarket, 
 			));  
-		if ($oAction) {
-			$oAction->tododate(owaestime() + (2*24*60*60)); // 2 dagen
-			$oAction->update();  
+		if ($oAction) { 
+			$iPostPone = isset($_POST["postpone"]) ? intval($_POST["postpone"]) : 2; 
+			echo $iPostPone; 
+			$oAction->tododate(owaestime() + ($iPostPone*24*60*60)); // x dagen
+			$oAction->update();   
 		}
 		exit(); 
 	} else if (isset($_POST["market"])) {  

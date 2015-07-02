@@ -95,6 +95,7 @@
 		public function editable() { // editable for me() ? => returns TRUE or string error-code 
 			// TODO: GROEPEN MOETEN KUNNEN ZONDER LEVEL 
 			$oMe = user(me()); 
+			if (!$oMe->mailVerified()) return("emailverify"); 
 			if (!$oMe->algemenevoorwaarden()) return("voorwaarden"); 
 			if (!$oMe->admin()) { 
 				if ($this->group()) {
@@ -403,10 +404,11 @@
 									$strSubscription .= "<p>Uw inschrijving werd afgezen</p>";
 								default: 
 									if (user(me())->algemenevoorwaarden()) {
-										if (user(me())->credits() >= $this->credits()) {
+										$bCredits = ($this->task()) ? TRUE : (user(me())->credits() >= $this->credits()); 
+										if ($bCredits) { 
 											$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
 										} else {
-											$strSubscription .= "<a href=\"modal.alert.php?a=a&t=t\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
+											$strSubscription .= "<a href=\"modal.alert.php?t=" . urlencode("Onvoldoende credits") . "&a=" . urlencode("U heeft niet voldoende credits om in te schrijven voor dit item. ") . "\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
 										}
 									} else { 
 										$strSubscription .= "<a href=\"modal.algemenevoorwaarden.php\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> "; 
@@ -486,8 +488,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$oAction->type("transaction"); 
 					$oAction->data("market", $this->id()); 
 					$oAction->data("user", $iReceiver); 
-					$iDate = owaestime() + (3*24*60*60); // default: vandaag + 3 dagen
-					foreach ($this->data() as $iSubDate) if ($iSubDate>0 && $iSubDate>$iDate) $iDate = $iSubDate + (2*24*60*60); // laatste uitvoerdatum + 2 dagen
+					$iDate = owaestime() + (settings("payment", "timing", "fixeddate")*24*60*60); // default: vandaag + 7 dagen
+					foreach ($this->data() as $iSubDate) if ($iSubDate>0 && $iSubDate>$iDate) $iDate = $iSubDate + (settings("payment", "timing", "nodate")*24*60*60); // laatste uitvoerdatum + 2 dagen
 					$oAction->tododate($iDate); 
 					$oAction->update(); 
 					
@@ -863,15 +865,13 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$arFlow[20]["title"] = "Inschrijven"; 
 						$arFlow[20]["class"][] = "current";  
 					
-						if (user(me())->algemenevoorwaarden()) {
-/*
-							if (user(me())->credits() >= $this->credits()) {
-								$strSubscription .= "<a href=\"subscribe.php?m=" . $this->iID . "&t=" . SUBSCRIBE_SUBSCRIBE . "\" class=\"btn btn-default btn-sm pull-right\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
-							} else {
-								$strSubscription .= "<a href=\"modal.alert.php?a=a&t=t\" class=\"btn btn-default btn-sm pull-right domodal\"><span class=\"icon icon-inschrijven\"></span>schrijf in</a> ";  
-							}
-							*/
-							
+						if (!user(me())->mailVerified()) { 
+							$arFlow[20]["href"] = "modal.mailnotverified.php"; 
+							$arFlow[20]["class"][] = "domodal";  
+						} else if (!user(me())->algemenevoorwaarden()) { 
+							$arFlow[20]["href"] = "modal.voorwaarden.php"; 
+							$arFlow[20]["class"][] = "domodal";  
+						} else {
 							if ($this->subscriptionLink()) {
 								//$arFlow[20]["href"] = $this->subscriptionLink();  
 								$bCredits = ($this->task()) ? TRUE : (user(me())->credits() >= $this->credits()); 
@@ -883,9 +883,6 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 									$arFlow[20]["class"][] = "domodal";  
 								}
 							}
-						} else {
-							$arFlow[20]["href"] = "modal.voorwaarden.php"; 
-							$arFlow[20]["class"][] = "domodal"; 
 						}
 						break;  
 				}
@@ -1164,11 +1161,13 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		public function title($strTitle = NULL) { // get / set titel
 			if (!is_null($strTitle)) $this->strTitle = $strTitle; 
 			if (is_null($this->strTitle)) $this->load();
+			if (!user(me())->mailVerified()) return rubbish($this->strTitle); 
 			return $this->strTitle; 
 		}
 		public function body($strBody = NULL) { // get / set description 
 			if (!is_null($strBody)) $this->strBody = $strBody; 
 			if (is_null($this->strBody)) $this->load();
+			if (!user(me())->mailVerified()) return rubbish($this->strBody); 
 			return $this->strBody; 
 		}
 		public function details($strItem, $oValue = NULL) { // get / set description 
@@ -1193,6 +1192,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				}
 			 
 			}
+			if (!user(me())->mailVerified()) return rubbish(($this->strLocation == "free") ? "" : $this->strLocation); 
 			return ($this->strLocation == "free") ? "" : $this->strLocation; 
 		} 
 		public function LatLong() { // returns arra(iLat, iLong)

@@ -23,6 +23,7 @@
 		private $iLastUpdate = NULL; 
 		private $arUserRights = array(); 
 		private $bDeleted = FALSE; 
+		private $bIsDienstverlener = FALSE; 
 		 
 		public function group($strKey=NULL) { // $strKey = ID or ALIAS // when not defined: create new user  
 			if (!is_null($strKey)) {
@@ -80,6 +81,12 @@
 			if (!is_null($strImage)) $this->strImage = $strImage; 
 			if (is_null($this->strImage)) $this->load();
 			return $this->strImage; 
+		}
+		
+		public function isDienstverlener($bIsDienstverlener = NULL) {
+			if (!is_null($bIsDienstverlener)) $this->bIsDienstverlener = $bIsDienstverlener; 
+			if (is_null($this->bIsDienstverlener)) $this->load();
+			return $this->bIsDienstverlener; 
 		}
 		
 		public function delete($bValue = NULL) {
@@ -203,6 +210,7 @@
 					if (is_null($this->strInfo)) $this->info($oDB->get("info")); 
 					if (is_null($this->iAdmin)) $this->admin($oDB->get("admin")); 
 					if (is_null($this->strImage)) $this->image($oDB->get("img")); 
+					if (is_null($this->bIsDienstverlener)) $this->isDienstverlener($oDB->get("isdienstverlener")==1); 
 					if (is_null($this->iLastUpdate)) $this->lastupdate($oDB->get("lastupdate")); 
 				} else {
 					if (is_null($this->strNaam)) $this->naam(""); 
@@ -211,6 +219,7 @@
 					if (is_null($this->strInfo)) $this->info(""); 
 					if (is_null($this->iAdmin)) $this->admin("");
 					if (is_null($this->strImage)) $this->image("");
+					if (is_null($this->bIsDienstverlener)) $this->isDienstverlener(FALSE);
 					if (is_null($this->iLastUpdate)) $this->lastupdate(owaesTime()); 
 				}
 			} else {
@@ -220,6 +229,7 @@
 				if (is_null($this->strInfo)) $this->info(""); 
 				if (is_null($this->iAdmin)) $this->admin("");
 				if (is_null($this->strImage)) $this->image("");
+				if (is_null($this->bIsDienstverlener)) $this->isDienstverlener(FALSE);
 				if (is_null($this->iLastUpdate)) $this->lastupdate(owaesTime()); 
 			}
 		}
@@ -232,6 +242,7 @@
 			if (!is_null($this->strInfo)) $arVelden["info"] = $this->strInfo; 
 			if (!is_null($this->iAdmin)) $arVelden["admin"] = $this->iAdmin; 
 			if (!is_null($this->strImage)) $arVelden["img"] = $this->strImage; 
+			if (!is_null($this->bIsDienstverlener)) $arVelden["isdienstverlener"] = $this->bIsDienstverlener ? 1 : 0; 
 			$arVelden["deleted"] = $this->bDeleted ? 1 : 0;  
 			$arVelden["lastupdate"] = $this->lastupdate(owaesTime()); 
 

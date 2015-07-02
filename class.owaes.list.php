@@ -276,6 +276,7 @@
 			*/
 		}
 		
+		
 		public function search($strSearch) {  
 			$arSearchQRY = array();  
 			$this->arSQLjoin["search"] = " left join tblMarketTags mt on m.id = mt.market "; 
