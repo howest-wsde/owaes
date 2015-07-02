@@ -57,7 +57,7 @@
 				
 				google.maps.event.addDomListener(map,'zoom_changed', function() { 
 					iZoom = map.getZoom(); 
-					if ((iZoom > 13) == (iPrevZoom > 13)){
+					if ((iZoom > 13) != (iPrevZoom > 13)){
 						for (i=0; i<arMapBullets.length; i++){
 							arMapBullets[i].setMap((iZoom > 13) ? null : map);
 						}
