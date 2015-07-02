@@ -131,23 +131,30 @@
 							}
 						?>
                         
-<? /* IN DEV
-                        <!-- Split button -->
-<div class="btn-group">
-  <button type="button" class="btn btn-default"><span class="icon icon-order-desc"></span><span class="title">Profielopbouw</span></button>
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-    <span class="caret"></span>
-    <span class="sr-only">Toggle Dropdown</span>
-  </button>
-  <ul class="dropdown-menu">
-    <li><a href="#zie page class ">Profielopbouw</a></li>
-    <li><a href="#">Datum creatie</a></li>
-    <li><a href="#">Datum uitvoering</a></li>
-    <li><a href="#">Afstand</a></li>
-  </ul>
-</div>
+                                                
+                        <div class="btn-group">
+                          <button type="button" class="btn btn-default"><span class="icon icon-order-desc"></span><span class="title">Profielopbouw</span></button>
+                          <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                          </button>
+                          <ul class="dropdown-menu">
+                            <li><a href="index.php?">Profielopbouw</a></li>
+                            <li><a href="#">Datum creatie</a></li>
+                            <li><a href="#">Datum uitvoering</a></li>
+                            <li><a href="#">Afstand</a></li>
+                          </ul>
+                        </div> 
+                        
+                        <?
+                        	vardump(qry(array(
+										"test" => 1, 
+										"ding", 
+										"ander" => 2, 
+										"nog", 
+									))); 
+						?>
 
- */ ?>
                     </div>
                 <?php //} ?>
                 

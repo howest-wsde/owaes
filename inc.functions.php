@@ -387,9 +387,8 @@
 		$strCache = "cache/" . md5($strURL) . "." . $strExt; 
 		if (file_exists($strCache)) { 
 			if (($iHours == -1) || (filemtime($strCache)<owaesTime()-(60-60*$iHours))) return $strCache; 
-		}
-		copy($strURL, $strCache);	
-		return $strCache; 
+		} 
+		return copy($strURL, $strCache) ? $strCache : $strURL; 
 	}
 
 	function content($fn) { 
@@ -645,6 +644,14 @@
 			if (count($arQRY)>0) $strFN .= "?" . implode("&", $arQRY); 
 		}
 		return $strFN;
+	}
+	
+	function qry($arNew){
+		vardump($arNew); 
+		$arQRY = array(); 
+		foreach ($_GET as $strKey=>$strVal) $arQRY[$strKey] = $strVal; 
+		foreach ($arNew as $strKey=>$strVal) $arQRY[$strKey] = $strVal; 
+		return $arQRY; 
 	}
 	
 	function randomstring($iLength = 20, $strChars = "azertyupsdfghjkmwxcvbnAZERTYUPQSDFGHJKLMWXCVBN23456789") {
