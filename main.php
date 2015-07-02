@@ -67,7 +67,7 @@
 
 				<?php   
 					//echo "arBullets = " . content(cache(fixPath("locations.json.php", TRUE), "json", 12)) . "; ";  // TTL 12 uur
-				?>
+				?>var arBullets = Array(); 
 				
 				for (i=0; i<arBullets.length; i++){ 
 					arMapBullets[arMapBullets.length] = new google.maps.Marker({
