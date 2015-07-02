@@ -176,7 +176,9 @@ CREATE TABLE IF NOT EXISTS `tblMailalerts` (
 		ALTER TABLE `tblGroups` ADD `isdienstverlener` INT( 1 ) UNSIGNED NOT NULL DEFAULT '0' AFTER `img` ;
 	</sql> 
 	<sql name="mailverified" tag="16">  
-		ALTER TABLE `tblUsers` ADD `mailverified` INT NOT NULL DEFAULT '0' AFTER `mail` ;
+		ALTER TABLE `tblUsers` ADD `mailverified` INT NOT NULL DEFAULT '0' AFTER `mail` ; 
+	</sql> 
+	<sql name="mailverifiedSet" tag="16">   
 		update tblUsers set mailverified = 1; 
 	</sql> 
 	<sql name="tblUserEmailVerify" tag="16">  

@@ -95,6 +95,7 @@
 							break; 
 					} 
 				} 
+				if (!user($this->iUser)->mailVerified()) $arModalURLs[] = "modal.mailnotverified.php";  
 				$this->arModals = $arModalURLs; 
 			}
 			return $this->arModals; 

@@ -122,6 +122,13 @@ span.icon-gebruikers:before {
     content: "\e672";
 }
 
+span.icon-order-desc:before {
+    content: "\e726";
+}
+span.icon-order-asc:before {
+    content: "\e726";
+}
+
 span.icon-friends:before {
     content: "\e674";
 }
@@ -307,7 +314,7 @@ a.iconExpand:hover, a.iconExpand:link, a.iconExpand:active {
 	.icon {float: left; display: inline-block;  position: absolute; left: 0; }
 	.value {padding-left: 21px; width: 100%; display: block; padding-bottom: 15px;  padding-top: 3px; } 
 } 
-.info {margin: 15px 0; }
+.info {margin: 5px 0; }
 
 .modaltransaction input.credits {margin: 2px 7px; width: 70px; padding: 0 5px; }
 .modalmailconfirm textarea {height: 180px;  }
@@ -327,10 +334,14 @@ input.loading {background: url('../img/loading.gif') no-repeat 10px center; padd
 	}
 }
 
+div.flow {
+	border-bottom: 1px solid rgba(255, 255, 255, 0.83);
+	padding-bottom: 7px;
+}
 ol.flow {
 	display: block; 
 	overflow: auto; 
-	margin: 10px 0; 
+	margin-bottom: 10px; 
 	background: @cFlowBGleft; /* Old browsers */
 	background: -moz-linear-gradient(left, @cFlowBGleft 0%, @cFlowBGright 100%); /* FF3.6+ */
 	background: -webkit-gradient(linear, left top, right top, color-stop(0%,@cFlowBGleft), color-stop(100%,@cFlowBGright)); /* Chrome,Safari4+ */
@@ -1449,7 +1460,7 @@ input[type="number"] {
         font-size: @fontextralarge;
     }
 
-    span.icon-plus {
+    span.icon-plus, span.icon-order-asc, span.icon-order-desc {
         font-size: 14px;
         margin-right: 10px;
     }

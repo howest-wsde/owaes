@@ -38,7 +38,7 @@
             $this->addJS("script/fullcalendar.min.js"); 
             $this->addCSS("style/fullcalendar.css");
 			
-			$this->addJS("owaes.js?v5");  
+			$this->addJS("owaes.js?v6");  
             $this->addJS("main.js?v5");
             $this->addJS("vocabularium.js.php");
             $this->addJS("ckeditor/ckeditor.js");

@@ -488,8 +488,8 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					$oAction->type("transaction"); 
 					$oAction->data("market", $this->id()); 
 					$oAction->data("user", $iReceiver); 
-					$iDate = owaestime() + (3*24*60*60); // default: vandaag + 3 dagen
-					foreach ($this->data() as $iSubDate) if ($iSubDate>0 && $iSubDate>$iDate) $iDate = $iSubDate + (2*24*60*60); // laatste uitvoerdatum + 2 dagen
+					$iDate = owaestime() + (settings("payment", "timing", "fixeddate")*24*60*60); // default: vandaag + 7 dagen
+					foreach ($this->data() as $iSubDate) if ($iSubDate>0 && $iSubDate>$iDate) $iDate = $iSubDate + (settings("payment", "timing", "nodate")*24*60*60); // laatste uitvoerdatum + 2 dagen
 					$oAction->tododate($iDate); 
 					$oAction->update(); 
 					
@@ -1161,11 +1161,13 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 		public function title($strTitle = NULL) { // get / set titel
 			if (!is_null($strTitle)) $this->strTitle = $strTitle; 
 			if (is_null($this->strTitle)) $this->load();
+			if (!user(me())->mailVerified()) return rubbish($this->strTitle); 
 			return $this->strTitle; 
 		}
 		public function body($strBody = NULL) { // get / set description 
 			if (!is_null($strBody)) $this->strBody = $strBody; 
 			if (is_null($this->strBody)) $this->load();
+			if (!user(me())->mailVerified()) return rubbish($this->strBody); 
 			return $this->strBody; 
 		}
 		public function details($strItem, $oValue = NULL) { // get / set description 
@@ -1190,6 +1192,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 				}
 			 
 			}
+			if (!user(me())->mailVerified()) return rubbish(($this->strLocation == "free") ? "" : $this->strLocation); 
 			return ($this->strLocation == "free") ? "" : $this->strLocation; 
 		} 
 		public function LatLong() { // returns arra(iLat, iLong)
