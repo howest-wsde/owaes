@@ -66,7 +66,7 @@
 				}); 
 
 				<?php   
-					echo "arBullets = " . content(cache(fixPath("locations.json.php", TRUE), "json", 12)) . "; ";  // TTL 12 uur
+					//echo "arBullets = " . content(cache(fixPath("locations.json.php", TRUE), "json", 12)) . "; ";  // TTL 12 uur
 				?>
 				
 				for (i=0; i<arBullets.length; i++){ 
