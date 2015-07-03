@@ -151,6 +151,7 @@
 			return $this->iStart; 			
 		}
 		
+		
 		public function enkalkuli($strField, $value, $value2=NULL) { /* doe sortering rekening houdend met ...
 				bv. "social", 100 -> gaat minder social doen
 					"mental", 10 -> zoekt achter items met "mental"
@@ -216,7 +217,7 @@
 							limit " . $this->offset() . ", " . $this->limit() . "; ";  
 				$oOWAES = new database($strSQL, true); 
 			 
-				
+				 
 //echo ("<style>table td, tr, th {border: 1px solid black; padding: 3px; }</style>"); 
 //echo "<div style='display: block; '>"; 
 //echo $oOWAES->table(TRUE); 
@@ -299,10 +300,26 @@
 		
 		public function filterByState($oState) { 
 			$this->arSQLwhere["filterByState"] = (is_array($oState)) ? ("m.state in (" . implode(",", $oState) . ")") : "m.state = $oState";  
-		} 
-		
+		}  
+
 		public function order($strOrder) {
-			array_unshift($this->arOrder, $strOrder); 
+			switch($strOrder) {
+				case "distance": 
+					$oMe = user(me()); 
+					$oOwaesList->enkalkuli("distance", $oMe->latitude(), $oMe->longitude());  
+					break; 
+				case "creation":  
+					$this->arOrder[] = "date desc"; 
+					break;  
+				case "taks": 
+					$this->arSQLjoin["mindate"] = "left join (select market, min(datum) as start from tblMarketDates group by market) mind on m.id = mind.market"; 
+					$this->arSQLselect["mindate"] = "mind.start as mindate"; 
+					$this->arOrder[] = "mindate desc"; 
+					break; 
+				default: 
+					if (!in_array($strOrder, $this->arOrder)) array_unshift($this->arOrder, $strOrder); 
+			}
+			
 		}
 		
 		public function filterByExecutor($iUser = NULL) {

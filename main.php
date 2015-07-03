@@ -65,8 +65,22 @@
 					iPrevZoom = iZoom; 
 				}); 
 
-				<?php   
-					echo "arBullets = " . content(cache(fixPath("locations.json.php", TRUE), "json", 12)) . "; ";  // TTL 12 uur 
+				<?php  
+					
+					$arLocations = json("cache/locations.json"); 
+					if (!isset($arLocations["date"]) || ($arLocations["date"]<owaestime()-12*60*60)) {
+						$arLocations["date"] = owaestime();  
+						$arLocations["coords"] = array(); 
+						$oUsers = new userlist();  
+						foreach ($oUsers->getList() as $oUser) {
+							$arLL = $oUser->LatLong(); 
+							if ($arLL[0] * $arLL[1] != 0) $arLocations["coords"][] = $arLL; 
+						} 
+						
+						json("cache/locations.json", $arLocations); 
+						
+					}
+					echo "arBullets = " . json_encode($arLocations["coords"]) . "; ";   
 					 
 				?>
 				

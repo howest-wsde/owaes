@@ -387,15 +387,21 @@
 		$strCache = "cache/" . md5($strURL) . "." . $strExt; 
 		if (file_exists($strCache)) { 
 			if (($iHours == -1) || (filemtime($strCache)<owaesTime()-(60-60*$iHours))) return $strCache; 
-		} 
-		return copy($strURL, $strCache) ? $strCache : $strURL; 
+		}  
+		if (!@copy($strURL, $strCache)) return $strURL;
+		 
+		return $strCache; 
 	}
 
 	function content($fn) { 
-		$handle = fopen($fn, "r");
-		$contents = fread($handle, filesize($fn));
-		fclose($handle);
-		return $contents; 
+		try {
+			$handle = fopen($fn, "r");
+			$contents = fread($handle, filesize($fn));
+			fclose($handle);
+			return $contents; 
+		} catch (Exception $e) {
+			return ""; 
+		}
 	}
 	
 	function save($strFile, $strTekst){
@@ -646,12 +652,14 @@
 		return $strFN;
 	}
 	
-	function qry($arNew){
-		vardump($arNew); 
-		$arQRY = array(); 
+	function qry($arNew = array(), $arDelete = array()){ // arNew = array("key"=>"newval", "other"=>"x") // arDelete = arra("weg", "ookweg"); 
+		$arQRY = array();
+		$arReturn = array(); 
 		foreach ($_GET as $strKey=>$strVal) $arQRY[$strKey] = $strVal; 
 		foreach ($arNew as $strKey=>$strVal) $arQRY[$strKey] = $strVal; 
-		return $arQRY; 
+		foreach ($arDelete as $strKey) unset($arQRY[$strKey]);  
+		foreach ($arQRY as $strKey=>$strVal) $arReturn[] = $strKey . "=" . urlencode($strVal); 
+		return implode("&", $arReturn); 
 	}
 	
 	function randomstring($iLength = 20, $strChars = "azertyupsdfghjkmwxcvbnAZERTYUPQSDFGHJKLMWXCVBN23456789") {
