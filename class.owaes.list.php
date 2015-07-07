@@ -214,7 +214,7 @@
 							" . implode(" ", array_values($this->arSQLjoin)) . " 
 							where (" . implode(") and (", array_values($this->arSQLwhere)) . ")
 							order by " . implode(",", $this->arOrder) . " 
-							limit " . $this->offset() . ", " . $this->limit() . "; ";  
+							limit " . $this->offset() . ", " . $this->limit() . "; "; 
 				$oOWAES = new database($strSQL, true); 
 			 
 				 
@@ -302,19 +302,36 @@
 			$this->arSQLwhere["filterByState"] = (is_array($oState)) ? ("m.state in (" . implode(",", $oState) . ")") : "m.state = $oState";  
 		}  
 
-		public function order($strOrder) {
+		public function order($strOrder, $bDesc = FALSE) {
 			switch($strOrder) {
 				case "distance": 
 					$oMe = user(me()); 
-					$oOwaesList->enkalkuli("distance", $oMe->latitude(), $oMe->longitude());  
+					
+	
+					$iLatitude = $oMe->latitude();
+					$iLongitude = $oMe->longitude();
+					if ($iLatitude*$iLongitude != 0) { // gebruiker heeft een thuislocatie ingesteld 
+						$iKM = "3956 * 2 * ASIN(
+								SQRT( POWER(SIN((m.location_lat - abs($iLatitude)) * pi()/180 / 2), 2) 
+								+ COS(m.location_long * pi()/180 ) * COS(abs($iLatitude) * pi()/180)  
+								* POWER(SIN((m.location_long - $iLongitude) * pi()/180 / 2), 2) )) * (m.location_long/(m.location_long+0.0001))";  
+						$this->arSQLselect["afstand"] = "((100-(-2*(50-$iKM)))/2) as afstand";  
+					} else { // gebruiker heeft GEEN thuislocatie ingesteld
+						$iKM = "100 * (m.location_long/(m.location_long+0.0001))";  
+						$this->arSQLselect["afstand"] = "((100-(-2*(50-$iKM)))/2) as afstand"; 
+					}				
+					 $this->arOrder[] = "afstand " . ($bDesc?"desc":"asc"); 
+					
+					
+				//	$this->enkalkuli("distance", );  
 					break; 
 				case "creation":  
-					$this->arOrder[] = "date desc"; 
+					$this->arOrder[] = "date " . ($bDesc?"desc":"asc");  
 					break;  
-				case "taks": 
-					$this->arSQLjoin["mindate"] = "left join (select market, min(datum) as start from tblMarketDates group by market) mind on m.id = mind.market"; 
-					$this->arSQLselect["mindate"] = "mind.start as mindate"; 
-					$this->arOrder[] = "mindate desc"; 
+				case "task": 
+					$this->arSQLjoin["mindate"] = "left join (select market, min(datum) as start from tblMarketDates where datum > 0 group by market) mind on m.id = mind.market"; 
+					$this->arSQLselect["mindate"] = "coalesce(mind.start, 9999999999) as mindate"; 
+					$this->arOrder[] = "mindate " . ($bDesc?"desc":"asc"); 
 					break; 
 				default: 
 					if (!in_array($strOrder, $this->arOrder)) array_unshift($this->arOrder, $strOrder); 

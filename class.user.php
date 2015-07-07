@@ -128,7 +128,11 @@
 							$this->birthdate(ddmmyyyyTOdate($strVal));  
 							break; 	 
 						case "location": 
-							$arLoc = getXY($strVal);  
+							if (trim($strVal) != "") {
+								$arLoc = getXY($strVal);  
+							} else {
+								$arLoc = array("latitude"=>0, "longitude"=>0); 
+							}
 							$this->location($strVal, $arLoc["latitude"], $arLoc["longitude"]); 
 							break; 	
 						case "showlocation": 
@@ -911,7 +915,7 @@
 			$oDB = new database();  
 			$oDB->execute("select count(id) as aantal from tblUsers where mail='" . $oDB->escape($strEmail) . "' and id != "  . $this->id() . ";"); 
 			if ($oDB->get("aantal") > 0) return FALSE; 
- 
+
  			if ($bDoChange) {
 				if ($this->id() == 0) {exit("Change mail kan enkel bij bestaande gebruikers (eerst opslaan)");}
 				

@@ -114,39 +114,47 @@
 							$oOwaesList->filterByState(STATE_RECRUTE); 
 							  
 							$oOwaesList->filterPassedDate(owaesTime()); 
+							$bDesc = isset($_GET["d"])?($_GET["d"]==1):FALSE; 
 							switch(isset($_GET["order"])?$_GET["order"]:"") {
 								case "distance": 
-									$oOwaesList->order("distance"); 
+									$oOwaesList->order("distance", $bDesc); 
 									$strOrder = "Afstand";  
 									break; 
 								case "creation": 
-									$oOwaesList->order("creation");  
+									$oOwaesList->order("creation", $bDesc);  
 									$strOrder = "Datum creatie";   
 									break; 
 								case "task": 
-									$oOwaesList->order("task");  
+									$oOwaesList->order("task", $bDesc);  
 									$strOrder = "Datum uitvoering";     
 									break; 
 								default: 
 									$oOwaesList->optiOrder($oMe); 
 									$strOrder = "Profielopbouw";  
+									$bDesc = FALSE; 
 							}
 							
 					?>
-                                            
+                                         
                     <div class="btn-group">
-                      <button type="button" class="btn btn-default"><span class="icon icon-order-desc"></span><span class="title"><? echo $strOrder; ?></span></button>
-                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <span class="caret"></span>
-                        <span class="sr-only">Toggle Dropdown</span>
-                      </button>
+                            <button type="button" href="index.php" class="btn btn-default" onclick="location.href='<? echo fixPath("index.php?" . qry(array("d"=>($bDesc?0:1)))); ?>';"><span class="icon icon-order-<? echo ($bDesc?"desc":"asc"); ?>"></span><span class="title"><? echo $strOrder; ?></span></button>
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="caret"></span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                            </button>
                       <ul class="dropdown-menu">
-                        <li><a href="<? echo fixPath("index.php?" . qry(array("order"=>"profile"))); ?>">Profielopbouw</a></li>
-                        <li><a href="<? echo fixPath("index.php?" . qry(array("order"=>"creation"))); ?>">Datum creatie</a></li>
-                        <li><a href="<? echo fixPath("index.php?" . qry(array("order"=>"task"))); ?>">Datum uitvoering</a></li>
-                        <li><a href="<? echo fixPath("index.php?" . qry(array("order"=>"distance"))); ?>">Afstand</a></li>
+                        <li><a href="<? echo fixPath("index.php?" . qry(array(), array("order", "d"))); ?>">Profielopbouw</a></li>
+                        <li><a href="<? echo fixPath("index.php?" . qry(array("order"=>"creation", "d"=>1))); ?>">Datum creatie</a></li>
+                        <li><a href="<? echo fixPath("index.php?" . qry(array("order"=>"task"), array("d"))); ?>">Datum uitvoering</a></li>
+                        <?
+                            if ($oMe->latitude() * $oMe->longitude() == 0) {
+                                echo ("<li><a href=\"" . fixPath("modal.adres.php") . "\" class=\"domodal\">Afstand</a></li>"); 
+                            } else {
+                                echo ("<li><a href=\"" . fixPath("index.php?" . qry(array("order"=>"distance"), array("d"))) . "\">Afstand</a></li>"); 
+                            }
+                        ?> 
                       </ul>
-                    </div> 
+                    </div>  
                      
                 </div> 
                 
