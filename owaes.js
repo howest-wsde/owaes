@@ -146,7 +146,7 @@ $(document).ready(function() {
 		iCol = $(this).index();
 		oTable = $(this).parentsUntil("table").parent();  
 		$(oTable).find("tr").each(function(){ 
-			$(this).attr("order", $(this).find("td:eq(" + iCol + ")").text().toUpperCase());
+			$(this).attr("order", orderValue($(this).find("td:eq(" + iCol + ")").text()));
 		}) 
 		$(oTable).find("tr:not(:eq(0))").each(function(){
 			oA = $(this); 
@@ -158,11 +158,17 @@ $(document).ready(function() {
 					if ($(oA).attr("order") < $(oB).attr("order")) $(oA).insertAfter($(oB)); 
 				}
 			}) 
-		}) 
-
-	})
-	 
-	  
+		})  
+	});  
+	if ( $("th.order.asc").length + $("th.order.desc").length == 0) $("th.order:first").click(); 
+	function orderValue(str) {
+		if (!isNaN(str)) {
+			str = "0000000000000000" + str; 
+			return str.substring(str.length - 16); 
+		}
+		return str.toUpperCase();
+	}
+	
 	$(document).on('click', "div.subscribe a.subscribe", function(event){ // "schrijf in"-knoppen
 		$(this).parent().load($(this).attr("href") + "&ajax=1");
 		return false; 
