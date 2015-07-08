@@ -1,53 +1,8 @@
 <div class="modal fade modalpassword" id="changepass">
   <div class="modal-dialog">
-	<script>
-      
-        $(document).ready(function() { 
-            $(".save-form").click(function() {
-                $("div.foutmelding").remove(); 
-                bValidated = true; 
-                arMeldingen = {}; 
-                
-                strOld = $(this).parentsUntil("form").find(".passwordold").val(); 
-                strPW1 = $(this).parentsUntil("form").find(".password1").val(); 
-                strPW2 = $(this).parentsUntil("form").find(".password2").val(); 
-                if (strOld == "") arMeldingen[".passwordold"] = "Geef je oud paswoord in";
-                if (strPW1 == "") arMeldingen[".password1"] = "Geef een nieuw paswoord in";
-				if (strPW1 != strPW2) arMeldingen[".password2"] = "Wachtwoord komt niet overeen";
-				
-                for (var strKey in arMeldingen){ 
-                    $(strKey).after($("<div />").addClass("foutmelding alert alert-dismissable alert-danger").html(arMeldingen[strKey]));  
-                }
-				  
-				if (Object.keys(arMeldingen).length == 0) {
-					$(this).parentsUntil("form").find(".btn").addClass("disabled"); 
-					$(this).parentsUntil("form").find(".save-form").html("bezig..."); 
-					$.ajax({
-						type: "POST",
-						url: "[currentfile]",
-						data: {"old": strOld, "new": strPW1},
-						success: function(strReturn){
-							switch(strReturn) {
-								case "ok": 
-									$('.modalpassword').modal('hide'); 
-									break; 
-								default: 
-									$(".modalpassword .btn").removeClass("disabled"); 
-									$(".modalpassword .save-form").html("aanpassen"); 
-									$(".passwordold").after($("<div />").addClass("foutmelding alert alert-dismissable alert-danger").html(strReturn));  
-									break; 	
-							} 
-						}, 
-					}); 
-				} 
-				 
-                return false; 
-            })
-        })
-         
-    </script>
-  
-    <form class="formchangepass" action="[currentfile]">   
+	 
+    <form class="formchangepass" action="[currentfile]">
+        <input type="hidden" name="redirect" value="[redirect]" /> 
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">Adres instellen</h4>
@@ -56,25 +11,25 @@
           	<p>Vul je profiel aan met een thuisadres om deze functie te kunnen gebruiken. </p>
             
             
-    
+    <fieldset>
 
-                <div class="form-group">
-                    <label for="location" class="control-label col-lg-2">Adres:</label>
-                    <div class="col-lg-10">
-                        <textarea  name="location" id="location" class="location form-control" placeholder="Uw adres" ></textarea> 
-                    </div> 
+                <div class="form-group">  
+					<textarea  name="location" id="location" class="location form-control" placeholder="Uw adres" ></textarea>
                 </div>
-               
-                <div class="form-group">
-                    <label for="location" class="control-label col-lg-2">Zichtbaarheid:</label>
-                    <div class="col-lg-10">
-                        xxx
-                    </div> 
+                <div class="form-group">  
+                  <select class="form-control" name="showlocation">
+                      <option value="0">Verborgen</option>
+                      <option value="1">Zichtbaar voor iedereen</option>
+                      <option value="2">Enkel zichtbaar voor vrienden</option>
+                  </select>  
+ 
                 </div>
+                
+                </fieldset>
                
           </div>
           <div class="modal-footer"> 
-                <button type="button" class="btn btn-success save-form"  data-dismiss="modal">OK</button>
+                <button type="button" class="btn btn-success save-form"  data-dismiss="modal">opslaan</button>
                 <button type="button" class="btn btn-cancel later-form" data-dismiss="modal">annuleren</button> 
           </div>
         </div><!-- /.modal-content -->

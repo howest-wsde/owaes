@@ -17,7 +17,7 @@
 	$oMe = user(me()); 
 	$oMe->expBijAanmelding(); 
 	
-  
+	
 	$oActions = new actions(me());  
 	
 	 
@@ -138,7 +138,7 @@
                                          
                     <div class="btn-group">
                             <button type="button" href="index.php" class="btn btn-default" onclick="location.href='<? echo fixPath("index.php?" . qry(array("d"=>($bDesc?0:1)))); ?>';"><span class="icon icon-order-<? echo ($bDesc?"desc":"asc"); ?>"></span><span class="title"><? echo $strOrder; ?></span></button>
-                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 17px 10px 18px; ">
                             <span class="caret"></span>
                             <span class="sr-only">Toggle Dropdown</span>
                             </button>
@@ -148,7 +148,7 @@
                         <li><a href="<? echo fixPath("index.php?" . qry(array("order"=>"task"), array("d"))); ?>">Datum uitvoering</a></li>
                         <?
                             if ($oMe->latitude() * $oMe->longitude() == 0) {
-                                echo ("<li><a href=\"" . fixPath("modal.adres.php") . "\" class=\"domodal\">Afstand</a></li>"); 
+                                echo ("<li><a href=\"" . fixPath("modal.adres.php?r=" . urlencode(fixPath("index.php?" . qry(array("order"=>"distance"), array("d"))))) . "\" class=\"domodal\">Afstand</a></li>"); 
                             } else {
                                 echo ("<li><a href=\"" . fixPath("index.php?" . qry(array("order"=>"distance"), array("d"))) . "\">Afstand</a></li>"); 
                             }

@@ -214,7 +214,7 @@
 							" . implode(" ", array_values($this->arSQLjoin)) . " 
 							where (" . implode(") and (", array_values($this->arSQLwhere)) . ")
 							order by " . implode(",", $this->arOrder) . " 
-							limit " . $this->offset() . ", " . $this->limit() . "; "; 
+							limit " . $this->offset() . ", " . $this->limit() . "; ";  
 				$oOWAES = new database($strSQL, true); 
 			 
 				 
@@ -314,13 +314,12 @@
 						$iKM = "3956 * 2 * ASIN(
 								SQRT( POWER(SIN((m.location_lat - abs($iLatitude)) * pi()/180 / 2), 2) 
 								+ COS(m.location_long * pi()/180 ) * COS(abs($iLatitude) * pi()/180)  
-								* POWER(SIN((m.location_long - $iLongitude) * pi()/180 / 2), 2) )) * (m.location_long/(m.location_long+0.0001))";  
-						$this->arSQLselect["afstand"] = "((100-(-2*(50-$iKM)))/2) as afstand";  
+								* POWER(SIN((m.location_long - $iLongitude) * pi()/180 / 2), 2) ))";   
 					} else { // gebruiker heeft GEEN thuislocatie ingesteld
-						$iKM = "100 * (m.location_long/(m.location_long+0.0001))";  
-						$this->arSQLselect["afstand"] = "((100-(-2*(50-$iKM)))/2) as afstand"; 
-					}				
-					 $this->arOrder[] = "afstand " . ($bDesc?"desc":"asc"); 
+						$iKM = "(m.location_long/(m.location_long+0.0001))";  
+					}	
+					$this->arSQLselect["afstand"] = "($iKM) as afstand"; 			
+					$this->arOrder[] = "afstand " . ($bDesc?"desc":"asc"); 
 					
 					
 				//	$this->enkalkuli("distance", );  
