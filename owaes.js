@@ -160,7 +160,11 @@ $(document).ready(function() {
 			}) 
 		})  
 	});  
-	if ( $("th.order.asc").length + $("th.order.desc").length == 0) $("th.order:first").click(); 
+	if ( $("th.order.asc").length + $("th.order.desc").length == 0) {
+		$("th.order:first").click(); 
+	} else {
+		$("th.order.desc,th.order.asc").click().click();
+	}
 	function orderValue(str) {
 		if (!isNaN(str)) {
 			str = "0000000000000000" + str; 

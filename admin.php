@@ -77,7 +77,9 @@
 							echo ("<tr>"); 
 							echo ("<th class='order'>Naam </th>");  
 							foreach ($arFields as $strField=>$arField) {
-								echo ("<th class='order'>" . $arField[0] . "</th>"); 
+								$arClasses = array("order"); 
+								if ($strField == "score") $arClasses[] = "asc"; 
+								echo ("<th class='" . implode(" ", $arClasses) . "'>" . $arField[0] . "</th>"); 
 							}
 							echo ("<th class='order'>updated</th>");  
 							echo ("<th>actie</th>");  
