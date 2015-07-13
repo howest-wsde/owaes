@@ -2,15 +2,19 @@
 	include "inc.default.php"; // should be included in EVERY file 
 	$oSecurity = new security(TRUE); 
 	$oMe = user(me()); 
-	 
+	
 	$oPage->addJS("https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=true");
-	$oPage->addJS("script/owaesadd.js?v2");  
+	$oPage->addJS("script/owaesadd.js?v3");
+	//$oPage->addJS("ckeditor/ckeditor.js");
+	//$oPage->addJS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.js"); 
+	//$oPage->addCSS("http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"); 
+	//$oPage->addCSS("script/mugifly-jquery-simple-datetimepicker-702f729/jquery.simple-dtpicker.css"); 
 	
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
 	$iID = isset($_GET["edit"])?intval($_GET["edit"]):0;
 	$oOwaesItem = owaesitem($iID);
-	 
+	
 	$arPossiblePosters = array();  
 	$arOwaesTypes = owaesType()->getAllTypes();
 	foreach($arOwaesTypes as $strKey=>$strTitle) {
@@ -42,7 +46,7 @@
 		$oOwaesItem->type($strType); 
 		$bNEW = TRUE; 
 	}  
-	
+	 
 	$iMaxCredits = ((owaesType($strType)->direction()==DIRECTION_EARN) ? 
 						min(settings("startvalues", "credits"), $oMe->credits()) :  // verdienen
 						min(settings("startvalues", "credits"), settings("credits", "max") - $oMe->credits())); // uitgeven 
@@ -79,7 +83,7 @@
 		$oOwaesItem->body($_POST["description"]); 
 		$oOwaesItem->details("verzekeringen", (isset($_POST["verzekering"])?$_POST["verzekering"]:array())); 
 		$oOwaesItem->location($_POST["locationfixed"], $_POST["locationlat"], $_POST["locationlong"]); 
-
+		
 		foreach ($oOwaesItem->data() as $iDate) {
 			$oOwaesItem->removeMoment($iDate);
 		}  
@@ -110,7 +114,7 @@
 					break; 
 			} 
 		} 
-		 
+			
 		foreach ($oOwaesItem->files() as $strFile) {
 			if (!in_array($strFile, isset($_POST["existingfile"])?$_POST["existingfile"]:array())) $oOwaesItem->files($strFile, FALSE); // remove file
 		}
@@ -119,7 +123,7 @@
 			if (move_uploaded_file($_FILES["file"]["tmp_name"][$i], "upload/market/" . md5($strTempFN))) $oOwaesItem->addFile($strTempFN); 
 		} 
 		$oOwaesItem->update(); 
-		
+
 		
 		if ($bNEW) {
 			$oMe = user(me()); 
@@ -183,7 +187,7 @@
 				})
 				$("select#person").change(function(){
 					setTypes(); 
-				})  
+				}) 
 				$("a.delfileinput").click(function(){ // for existing files
 					$(this).parent().remove(); 
 					return false; 	
@@ -227,8 +231,8 @@
 				}
 			}
 
-		</script>  
-          <style>
+		</script> 
+        <style> 
 .invalidtime {border: 1px solid red; }								
 .invoer {
   display: block;
@@ -269,7 +273,7 @@ input.fileupload {float: left; clear: both; }
 a.delfileinput {display: block; padding: 3px; }
 div.existingfile {padding: 2px; }
 div.existingfile a.delfileinput {display: inline; }
- 
+  
   
 								</style>
     </head>
@@ -279,7 +283,7 @@ div.existingfile a.delfileinput {display: inline; }
         	
             	<div class="row">
 					<?php 
-						echo $oSecurity->me()->html("user.html");
+                    echo $oSecurity->me()->html("user.html");
                     ?>
                 </div>
                 <div class="container sidecenterright"> 
