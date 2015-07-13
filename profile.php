@@ -8,9 +8,10 @@
 	
 	$strKey = isset($_GET["alias"]) 
 		? $_GET["alias"]
-		: ( isset($_GET["id"]) ? intval($_GET["id"]) : me() ); 
+		: ( isset($_GET["id"]) ? intval($_GET["id"]) : 0 ); 
 	 
 	$oProfile = new user($strKey); // NEW user, want user-functie werkt niet met key
+	if ($oProfile->id() == 0) redirect(user(me())->url()); 
 	if ($oProfile->id() == me()) $oProfile->savePostData(); 
 	
     $oPage->tab("account");

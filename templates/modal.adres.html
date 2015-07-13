@@ -1,0 +1,38 @@
+<div class="modal fade modalpassword" id="changepass">
+  <div class="modal-dialog">
+	 
+    <form class="formchangepass" action="[currentfile]">
+        <input type="hidden" name="redirect" value="[redirect]" /> 
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Adres instellen</h4>
+          </div>  
+          <div class="modal-body">   
+          	<p>Vul je profiel aan met een thuisadres om deze functie te kunnen gebruiken. </p>
+            
+            
+    <fieldset>
+
+                <div class="form-group">  
+					<textarea  name="location" id="location" class="location form-control" placeholder="Uw adres" ></textarea>
+                </div>
+                <div class="form-group">  
+                  <select class="form-control" name="showlocation">
+                      <option value="0">Verborgen</option>
+                      <option value="1">Zichtbaar voor iedereen</option>
+                      <option value="2">Enkel zichtbaar voor vrienden</option>
+                  </select>  
+ 
+                </div>
+                
+                </fieldset>
+               
+          </div>
+          <div class="modal-footer"> 
+                <button type="button" class="btn btn-success save-form"  data-dismiss="modal">opslaan</button>
+                <button type="button" class="btn btn-cancel later-form" data-dismiss="modal">annuleren</button> 
+          </div>
+        </div><!-- /.modal-content -->
+    </form>
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

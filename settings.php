@@ -14,11 +14,13 @@
 	if (isset($_POST["profile"])) {
 		$oProfile->firstname($_POST["firstname"]); 
 		$oProfile->lastname($_POST["lastname"]);  
-		if ($oProfile->changeEmail($_POST["email"])){
-			$oProfile->changeEmail($_POST["email"], TRUE); 
-			$arErrors["email"] = "Er werd een validatiemail gestuurd naar uw nieuw mailadres. Uw aanpassing gaat van kracht vanaf deze bevestigd wordt. ";  
-		} else {
-			$arErrors["email"] = "Het opgegeven e-mailadres bestaat reeds in het systeem en kan dus niet gebruikt worden voor deze account";  
+		if ($_POST["email"] != $oProfile->email()) {
+			if ($oProfile->changeEmail($_POST["email"])){
+				$oProfile->changeEmail($_POST["email"], TRUE); 
+				$arErrors["email"] = "Er werd een validatiemail gestuurd naar uw nieuw mailadres. Uw aanpassing gaat van kracht vanaf deze bevestigd wordt. ";  
+			} else {
+				$arErrors["email"] = "Het opgegeven e-mailadres bestaat reeds in het systeem en kan dus niet gebruikt worden voor deze account";  
+			}
 		}
 		$oProfile->alias($_POST["alias"], TRUE); 
 		if (!$oProfile->login($_POST["username"])) $arErrors["username"] = "De opgegeven gebruikersnaam bestond al. Er werd een nieuwe gegenereerd"; 

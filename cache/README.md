@@ -1,3 +1,3 @@
-* Folder: cache
+* Folder 
 
-this folder has to be write-enabled 
+This folder contains user-uploaded material
