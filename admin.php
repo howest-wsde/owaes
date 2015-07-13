@@ -75,11 +75,13 @@
 							$oDB->execute("select * from tblUsers order by status desc; "); 
 							echo ("<table class=\"database\">"); 
 							echo ("<tr>"); 
-							echo ("<th>Naam </th>");  
+							echo ("<th class='order'>Naam </th>");  
 							foreach ($arFields as $strField=>$arField) {
-								echo ("<th>" . $arField[0] . "</th>"); 
+								$arClasses = array("order"); 
+								if ($strField == "score") $arClasses[] = "asc"; 
+								echo ("<th class='" . implode(" ", $arClasses) . "'>" . $arField[0] . "</th>"); 
 							}
-							echo ("<th>updated</th>");  
+							echo ("<th class='order'>updated</th>");  
 							echo ("<th>actie</th>");  
 
 							echo ("</tr>");  
