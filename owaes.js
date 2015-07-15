@@ -146,7 +146,7 @@ $(document).ready(function() {
 		iCol = $(this).index();
 		oTable = $(this).parentsUntil("table").parent();  
 		$(oTable).find("tr").each(function(){ 
-			$(this).attr("order", orderValue($(this).find("td:eq(" + iCol + ")").text()));
+			$(this).attr("order", orderValue($(this).find("td:eq(" + iCol + ")")));
 		}) 
 		$(oTable).find("tr:not(:eq(0))").each(function(){
 			oA = $(this); 
@@ -164,8 +164,9 @@ $(document).ready(function() {
 		$("th.order:first").click(); 
 	} else {
 		$("th.order.desc,th.order.asc").click().click();
-	}
-	function orderValue(str) {
+	} 
+	function orderValue(oTD) { 
+		str = (oTD.attr("value")) ? oTD.attr("value") : oTD.text();  
 		if (!isNaN(str)) {
 			str = "0000000000000000" + str; 
 			return str.substring(str.length - 16); 
