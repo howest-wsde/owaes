@@ -192,26 +192,36 @@
  						
 						if (settings("facebook", "loginapp", "id")) {
 							// FACEBOOK: 
-							$facebook = new Facebook(array(
-								'appId'  => settings("facebook", "loginapp", "id"),
-								'secret' => settings("facebook", "loginapp", "secret"),
-							)); 
-							$strHTML .= "<li><a class=\"login\" href=\"" . $facebook->getLoginUrl(array(
-								'scope' => 'email', 
-								'redirect_uri'=>$strReturnURL
-							)) . "\" rel=\"1020,575\"><img src=\"img/facebook.png\" alt=\"Facebook\"/></a></li>"; 
+							try {
+							
+								$facebook = new Facebook(array(
+									'appId'  => settings("facebook", "loginapp", "id"),
+									'secret' => settings("facebook", "loginapp", "secret"),
+								)); 
+								$strHTML .= "<li><a class=\"login\" href=\"" . $facebook->getLoginUrl(array(
+									'scope' => 'email', 
+									'redirect_uri'=>$strReturnURL
+								)) . "\" rel=\"1020,575\"><img src=\"img/facebook.png\" alt=\"Facebook\"/></a></li>"; 
+							} catch (Exception $e) {
+							
+							}
 						}
 						
-						// GOOGLE:  
-						$oOpenid = new LightOpenID($strID); 
-						$oOpenid->identity = 'https://www.google.com/accounts/o8/id';
-						$oOpenid->required = array(
-							'namePerson/first',
-							'namePerson/last',
-							'contact/email',
-						);
-						$oOpenid->returnUrl = $strReturnURL;   
-						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/google.png\" alt=\"Google\"/></a></li>";  
+						try {
+							// GOOGLE:  
+							$oOpenid = new LightOpenID($strID); 
+							$oOpenid->identity = 'https://www.google.com/accounts/o8/id';
+							$oOpenid->required = array(
+								'namePerson/first',
+								'namePerson/last',
+								'contact/email',
+							);
+							$oOpenid->returnUrl = $strReturnURL;   
+							$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/google.png\" alt=\"Google\"/></a></li>";  
+
+						} catch (Exception $e) {
+						
+						}
 						
  /*
 						// OWAES:  
@@ -226,17 +236,23 @@
 						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/owaes.png\" alt=\"OWAES\"/></a></li>";  
 */ 					
 						
-						// YAHOO:  
-						$oOpenid = new LightOpenID($strID); 
-						$oOpenid->identity = 'https://me.yahoo.com';
-						$oOpenid->required = array(
-							'namePerson/first',
-							'namePerson/last',
-							'contact/email',
-						);
-						$oOpenid->returnUrl = $strReturnURL;   
-						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"570,535\"><img src=\"img/yahoo.png\" alt=\"Yahoo\"/></a></li>";  
+						try {
+							
+							// YAHOO:  
+							$oOpenid = new LightOpenID($strID); 
+							$oOpenid->identity = 'https://me.yahoo.com';
+							$oOpenid->required = array(
+								'namePerson/first',
+								'namePerson/last',
+								'contact/email',
+							);
+							$oOpenid->returnUrl = $strReturnURL;   
+							$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"570,535\"><img src=\"img/yahoo.png\" alt=\"Yahoo\"/></a></li>";  
+							
+
+						} catch (Exception $e) {
 						
+						}
 						$strHTML .= "</ul>";
 						
 						echo $strHTML;  
