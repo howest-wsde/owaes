@@ -354,13 +354,11 @@
 		$.plot("#indicatorenMeter", <?php echo json_encode($arShow); ?>, optionsIndi);  
 	});
 									</script> 
-                                    <div id="expMeter" style="width: 350px; height: 205px;display: block; "></div>
-                                    <img class="size" src="img/expMeter.png" alt="" style="display: none; " />
+                                    <div id="expMeter" style="width: 350px; height: 205px;display: block; "></div> 
                                 </div>
                                 <div class="col-md-4">
                                     <h3>Indicatoren</h3>
-                                    <div id="indicatorenMeter" style="width: 350px; height: 205px;display: block; "></div> 
-                                    <img class="size" src="img/graphIndicatoren.png" alt="" style="display: none; " />
+                                    <div id="indicatorenMeter" style="width: 350px; height: 205px;display: block; "></div>  
                                 </div>
                                 <div class="col-md-4 creditmeter">
                                     <h3><?php echo ucfirst(settings("credits", "name", "x")); ?></h3>
@@ -374,6 +372,16 @@
                     
             </div>
        </div>
+       
+       
+<div class="col-md-4">
+    <h3>Indicatoren</h3>
+    <div id="indicatorenRef" style="width: 350px; height: 205px;display: block; "></div> 
+    <script>
+	
+	</script> 
+</div>       
+       
        <!-- Map -->  
         <div class="homepage map col-md-12 border layoutBlocks" style="z-index: 990;">
              <div id="map-info">
