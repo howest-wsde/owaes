@@ -73,7 +73,7 @@
 			$oUser->data("stagemarkt", $oDB->lastInsertID()); 
 			$oUser->update(); 
  
-			redirect($strRedirect); 
+			redirect("stagemarkt.inschrijving.php"); 
 			exit(); 
 		}
 	}
