@@ -290,12 +290,12 @@
 				
 				$this->arStatus["indictatorensom"] = $this->social() + $this->physical() + $this->mental() + $this->emotional(); 
 				
-				$this->arStatus["credits"] = abs($this->credits()-settings("startvalues", "credits")); 
+				$this->arStatus["credits"] = ($this->credits()-settings("startvalues", "credits")); 
 				
 				$this->arStatus["waarderingen"] = $this->stars();
 
 			//	$oDB->execute("select sum(if(market=0,1,0)) as straffen, count(id) as aantalwaarderingen, sum(stars) as waardering from tblStars where receiver = " . $this->id() . "; "); 
-				$this->arStatus["score"] = $this->arStatus["diversiteit"] * ((settings("startvalues", "credits")-$this->arStatus["credits"]) + 10*($this->social()+$this->physical()+$this->mental()+$this->emotional())) - $this->arStatus["schenkingen"]; 
+				$this->arStatus["score"] = $this->arStatus["diversiteit"] * (abs($this->arStatus["credits"]) + 10*($this->social()+$this->physical()+$this->mental()+$this->emotional())) - $this->arStatus["schenkingen"]; 
 				
 			//	$this->arStatus["straffen"] = $oDB->get("straffen"); 
 			//	$this->arStatus["waarderingen"] = $oDB->get("aantalwaarderingen"); 
@@ -307,7 +307,7 @@
 					
 					if ($this->arStatus["schenkingen"] >= $arTresholds["schenkingen"]) $arWarnings[$iStatus][] = "schenkingen"; 
 					if ($this->arStatus["diversiteit"] <= $arTresholds["transactiediversiteit"] ) $arWarnings[$iStatus][] = "diversiteit"; 
-					if ($this->arStatus["credits"] > $arTresholds["credits"]  ) $arWarnings[$iStatus][] = "credits"; 
+					if (abs($this->arStatus["credits"]) > $arTresholds["credits"]  ) $arWarnings[$iStatus][] = "credits"; 
 					if ($this->stars()>0 && $this->stars() <= $arTresholds["waardering"] ) $arWarnings[$iStatus][] = "waardering"; 
 					if ($this->social() <= $arTresholds["social"] ) $arWarnings[$iStatus][] = "indicatoren.social"; 
 					if ($this->physical() <= $arTresholds["physical"] ) $arWarnings[$iStatus][] = "indicatoren.physical"; 
@@ -421,6 +421,7 @@
 				 
 				$oDB->execute("update tblUsers set statusinfo = '" . $oDB->escape(json_encode($this->arStatus)) . "', status = '$iStatus', statusdate = '" . owaestime() . "' where id = '" . $this->id() . "'; ");   
 			} 
+			
 			return $this->iStatus; 
 		}
 		

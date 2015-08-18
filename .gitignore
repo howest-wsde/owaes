@@ -6,6 +6,6 @@
 inc.config.db.php
 *.old
 *.new
-/upload
 /settings/crons.json
+/upload
 *.orig

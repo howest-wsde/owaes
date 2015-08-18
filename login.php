@@ -162,7 +162,7 @@
                     <div class="form-group">
                             <!-- <label for="username" class="col-lg-3 control-label">Gebruikersnaam</label> -->
                             <div class="col-lg-12">
-                                <input type="text" name="username" class="username form-control" id="username" placeholder="Gebruikersnaam of e-mailadres" autofocus value="<?php echo inputfield($strLogin); ?>" />
+                                <input type="text" name="username" class="username form-control" id="username" placeholder="E-mailadres of gebruikersnaam" autofocus value="<?php echo inputfield($strLogin); ?>" />
                             </div>
                         </div>
                     <div class="form-group">
