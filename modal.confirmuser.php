@@ -36,6 +36,7 @@
 					$oGroep->admin($oUser->id());
 					$oGroep->update();   
 					$oGroep->addUser($oUser->id()); 
+					if ($oDB->get("logo")!="") createGroupPicture($oDB->get("logo"), $oGroep->id()); 
 				}
 				
 				$oAction->done(TRUE);

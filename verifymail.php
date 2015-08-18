@@ -32,6 +32,7 @@
 					$strMailBody = str_replace("[groepsnaam]", $oDB->get("groepsnaam"), $strMailBody);  
 					$strMailBody = str_replace("[groepsdescription]", $oDB->get("description"), $strMailBody);  
 					$strMailBody = str_replace("[interesse]", $oDB->get("interesse"), $strMailBody);  
+					$strMailBody = str_replace("[logo]", (($oDB->get("logo")!="")?"<a href='" . fixpath($oDB->get("logo"), TRUE) . "' target='_blank'>bekijk hier</a>":"niet toegevoegd"), $strMailBody);  
 				} else {
 					$strMailBody = $oUser->HTML("mail.clientingeschreven.html"); 
 					$strMailBody = str_replace("[dienstverlener]", $oUser->dienstverlener()->naam(), $strMailBody); 

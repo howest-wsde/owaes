@@ -49,7 +49,7 @@
 		if ($_POST["pass"] == "") $arErrors["password"] = "Wachtwoord is verplicht"; 
 		if ($_POST["pass"] != $_POST["pass-repeat"]) $arErrors["pass-repeat"] = "Wachtwoord komt niet overeen";  
 		 
-		if (count($arErrors) == 0)  {
+		if (count($arErrors) == 0)  { 
 			$oUser->update();  
 			me($oUser->id()); // SET me 
 			$oUser->changeEmail($_POST["email"], TRUE); 
@@ -62,10 +62,14 @@
 												"postvalues" => $_POST, 
 											)); 
 			$bResult = $oSecurity->doLogin($oUser->login(), $_POST["pass"]); 
- 
-  
+			 
+			if ($_FILES["logo"]["error"] == 0){  
+				$strLogo = "upload/tmp/" . time() . "." . $_FILES["logo"]["name"]; 
+				move_uploaded_file($_FILES["logo"]["tmp_name"], $strLogo); 
+			} else $strLogo = ""; 
+						
  			$oDB = new database(); 
-			$oDB->execute("insert into tblStagemarkt (user, groepsnaam, description, interesse, logo) values ('" . $oUser->id() . "', '" . $oDB->escape($_POST["bedrijf"]) . "', '" . $oDB->escape($_POST["bedrijfsinfo"]) . "', '" . $oDB->escape($_POST["bedrijfsdoel"]) . "', 'logo'); "); 
+			$oDB->execute("insert into tblStagemarkt (user, groepsnaam, description, interesse, logo) values ('" . $oUser->id() . "', '" . $oDB->escape($_POST["bedrijf"]) . "', '" . $oDB->escape($_POST["bedrijfsinfo"]) . "', '" . $oDB->escape($_POST["bedrijfsdoel"]) . "', '" . $oDB->escape($strLogo) . "'); "); 
 			
 			$oUser->data("stagemarkt", $oDB->lastInsertID()); 
 			$oUser->update(); 
@@ -118,7 +122,7 @@
             <div class="row"> 
             <div class="signup col-lg-12">
             <div class="well">
-            <form method="post" class="form-horizontal">
+            <form method="post" class="form-horizontal" enctype="multipart/form-data">
                 	<fieldset>
                         <legend>Inschrijven voor Werkplekleren- en Stagemarktevent 16 september 2015</legend>
                     <input type="hidden" name="from" id="from" value="index.php" />
@@ -180,6 +184,14 @@
                         <div class="col-lg-9">
                             <textarea name="bedrijfsdoel" class="bedrijfsdoel form-control" id="bedrijfsdoel" placeholder="Naar wie is uw bedrijf op zoek?"></textarea> 
                         </div>
+                    </div>
+                
+                
+                    <div class="form-group">
+                        <label for="logo" class="control-label col-lg-3">Logo:</label>
+                        <div class="col-lg-9">
+                            <input type="file" name="logo" ext="jpg,jpeg,gif,bmp,png" class="img image form-control" id="logo" placeholder="" value="" /> 
+                        </div> 
                     </div>
              
                     <input type="hidden" name="dienstverlener" value="<? echo $iStagemarkt; ?>" />  
