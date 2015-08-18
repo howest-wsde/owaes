@@ -862,28 +862,36 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$arFlow[20]["class"][] = "done"; 
 						break; 
 					default: 
-						$arFlow[20]["title"] = "Inschrijven"; 
-						$arFlow[20]["class"][] = "current";  
-					
-						if (!user(me())->mailVerified()) { 
-							$arFlow[20]["href"] = "modal.mailnotverified.php"; 
-							$arFlow[20]["class"][] = "domodal";  
-						} else if (!user(me())->algemenevoorwaarden()) { 
-							$arFlow[20]["href"] = "modal.voorwaarden.php"; 
-							$arFlow[20]["class"][] = "domodal";  
-						} else {
-							if ($this->subscriptionLink()) {
-								//$arFlow[20]["href"] = $this->subscriptionLink();  
-								$bCredits = ($this->task()) ? TRUE : (user(me())->credits() >= $this->credits()); 
-								if ($bCredits) {
-									$arFlow[20]["href"] = "modal.subscribe.php?m=" . $this->id();  
-									$arFlow[20]["class"][] = "domodal"; 
-								} else {
-									$arFlow[20]["href"] = "modal.alert.php?t=" . urlencode("Onvoldoende credits") . "&a=" . urlencode("U heeft niet voldoende credits om in te schrijven voor dit item. ");  
+						$arFlow[20]["title"] = "Inschrijven";  
+						switch($this->state()) {
+							case STATE_SELECTED: 
+							case STATE_FINISHED: 
+								// inschrijven niet meer mogelijk
+								unset($arFlow[20]["href"]); 
+								break;
+							default: // STATE_RECRUTE
+								$arFlow[20]["class"][] = "current";  
+								if (!user(me())->mailVerified()) { 
+									$arFlow[20]["href"] = "modal.mailnotverified.php"; 
 									$arFlow[20]["class"][] = "domodal";  
+								} else if (!user(me())->algemenevoorwaarden()) { 
+									$arFlow[20]["href"] = "modal.voorwaarden.php"; 
+									$arFlow[20]["class"][] = "domodal";  
+								} else {
+									if ($this->subscriptionLink()) {
+										//$arFlow[20]["href"] = $this->subscriptionLink();  
+										$bCredits = ($this->task()) ? TRUE : (user(me())->credits() >= $this->credits()); 
+										if ($bCredits) {
+											$arFlow[20]["href"] = "modal.subscribe.php?m=" . $this->id();  
+											$arFlow[20]["class"][] = "domodal"; 
+										} else {
+											$arFlow[20]["href"] = "modal.alert.php?t=" . urlencode("Onvoldoende credits") . "&a=" . urlencode("U heeft niet voldoende credits om in te schrijven voor dit item. ");  
+											$arFlow[20]["class"][] = "domodal";  
+										}
+									}
 								}
-							}
 						}
+					
 						break;  
 				}
 				

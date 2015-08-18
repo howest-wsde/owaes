@@ -25,7 +25,7 @@
             $this->addCSS("//code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css");
 			$this->addCSS("style/owaes.css"); 
 			// $this->addCSS("style/min1100.css", "only screen and (max-width: 1100px)"); 
-            $this->addCSS("style/style.css");
+            $this->addCSS("style/style.css?v2");
             // $this->addCSS("style/style2.css");
 			$this->addCSS("//fonts.googleapis.com/css?family=Titillium+Web:400,700"); 
 			$this->addJS("//code.jquery.com/jquery-1.9.1.js");  
