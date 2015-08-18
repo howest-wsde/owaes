@@ -22,6 +22,10 @@
 					"sleutel" => "mailalert", 
 					"refresh" => 5*60, // check elke 5 minuten 
 				),
+				array(
+					"sleutel" => "experience-stats", 
+					"refresh" => 24*60*60 // check elke dag
+				), 
 				/*array(
 					"sleutel" => "reminder", 
 					"refresh" => 1, //120*60, // check elke 2 uur
@@ -43,6 +47,9 @@
 							break; 
 						case "mailalert": 
 							$this->checkMails();
+							break; 
+						case "experience-stats": 
+							$this->experienceStats();
 							break; 
 						//case "reminder": 
 						//	$this->checkReminders();
@@ -210,5 +217,10 @@
 			}
 		}
 		*/
+		
+		public function experienceStats() {
+			$oDB = new database(); 
+			$oDB->sql("select "); 
+		}
 	}
 	

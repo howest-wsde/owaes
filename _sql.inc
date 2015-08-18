@@ -183,13 +183,24 @@ CREATE TABLE IF NOT EXISTS `tblMailalerts` (
 	</sql> 
 	<sql name="tblUserEmailVerify" tag="16">  
 		CREATE TABLE IF NOT EXISTS `tblUserEmailVerify` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `email` varchar(255) NOT NULL,
-  `sleutel` varchar(255) NOT NULL,
-  `verified` int(11) NOT NULL DEFAULT '0',
-  `datum` bigint(20) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+		  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+		  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
+		  `email` varchar(255) NOT NULL,
+		  `sleutel` varchar(255) NOT NULL,
+		  `verified` int(11) NOT NULL DEFAULT '0',
+		  `datum` bigint(20) unsigned NOT NULL DEFAULT '0',
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+	</sql> 
+	<sql name="tblStagemarkt" tag="17">
+		CREATE TABLE IF NOT EXISTS `tblStagemarkt` (
+		  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+		  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
+		  `groepsnaam` text NOT NULL,
+		  `description` text NOT NULL,
+		  `interesse` text NOT NULL,
+		  `logo` text NOT NULL,
+		  PRIMARY KEY (`id`)
+		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; 
 	</sql> 
 </queries>

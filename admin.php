@@ -63,7 +63,7 @@
 										//	"straffen" => array("Straffen", ""), 
 											"waarderingen" => array("Sterren", "waardering"), 
 										//	"sterren" => array("Sterren", ""), 
-											"credits" => array(settings("credits", "name", "x"), "credits"), 
+											"credits" => array("Saldo", "credits"), 
 											"social" => array("Social", "indicatoren.social"), 
 											"physical" => array("Physical", "indicatoren.physical"), 
 											"mental" => array("Mental", "indicatoren.mental"), 
@@ -101,7 +101,8 @@
 									}
 									echo ("<td class=\"status$iWarning\">" . (isset($arStatus[$strField])?round($arStatus[$strField]*100)/100:"") . "</td>"); 
 								}
-								echo ("<td>" . str_date($oDB->get("statusdate"), "shortago") . "</td>");
+								//echo ("<td>" . (4800-user($oDB->get("id"))->credits()) . "</td>");
+								echo ("<td value=\"" . $oDB->get("statusdate") . "\">" . str_date($oDB->get("statusdate"), "shortago") . "</td>");
 								//echo ("<td>"); 
 								//var_dump($arStatus["warnings"]); 
 								//echo ("<td>"); 
