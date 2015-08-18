@@ -10,7 +10,7 @@
 	$oUser->validateEmail($strKey); 
 	
 	if (!$oUser->algemenevoorwaarden()) {
-		if ($oUser->dienstverlener()->id() > 0) { // dienstverlener geselecteerd
+		if (($oUser->dienstverlener()->id() > 0) && (intval($oUser->data("stagemarkt")) == 0)) { // dienstverlener geselecteerd
 		// ER 	echo "dwel diensteverlernerne"; 
 			$oDienstverlener = $oUser->dienstverlener()->admin();  
 			$oAction = new action($oDienstverlener->id()); 
@@ -25,18 +25,10 @@
 				$oDienstverlener->unlocked(FALSE); 
 				$oMail->template("mailtemplate.html"); 
 				
-				if (intval($oUser->data("stagemarkt")) > 0) {
-					$strMailBody = $oUser->HTML("mail.stagemarkt.html"); 
-					$oDB = new database(); 
-					$oDB->execute("select * from tblStagemarkt where id = " . intval($oUser->data("stagemarkt")) . ";"); 
-					$strMailBody = str_replace("[groepsnaam]", $oDB->get("groepsnaam"), $strMailBody);  
-					$strMailBody = str_replace("[groepsdescription]", $oDB->get("description"), $strMailBody);  
-					$strMailBody = str_replace("[interesse]", $oDB->get("interesse"), $strMailBody);  
-					$strMailBody = str_replace("[logo]", (($oDB->get("logo")!="")?"<a href='" . fixpath($oDB->get("logo"), TRUE) . "' target='_blank'>bekijk hier</a>":"niet toegevoegd"), $strMailBody);  
-				} else {
-					$strMailBody = $oUser->HTML("mail.clientingeschreven.html"); 
-					$strMailBody = str_replace("[dienstverlener]", $oUser->dienstverlener()->naam(), $strMailBody); 
-				} 
+			
+				$strMailBody = $oUser->HTML("mail.clientingeschreven.html"); 
+				$strMailBody = str_replace("[dienstverlener]", $oUser->dienstverlener()->naam(), $strMailBody); 
+		 
 				
 				$oMail->setBody($strMailBody);   
 				$oMail->setSubject("nieuwe OWAES inschrijving via " . $oUser->dienstverlener()->naam()); 
@@ -51,7 +43,31 @@
 				$oAction->data("user", $iUser); 
 				$oAction->tododate(owaestime()); 
 				$oAction->update();  
+				
+				
+				if (intval($oUser->data("stagemarkt")) > 0) {
+				
+					$oMail = new email(); 
+						$oAdmin->unlocked(TRUE); 
+						$oMail->setTo($oAdmin->email(), $oAdmin->getName());
+						$oAdmin->unlocked(FALSE); 
+						$oMail->template("mailtemplate.html"); 
+						 
+						$strMailBody = $oUser->HTML("mail.stagemarkt.html"); 
+						$oDB = new database(); 
+						$oDB->execute("select * from tblStagemarkt where id = " . intval($oUser->data("stagemarkt")) . ";"); 
+						$strMailBody = str_replace("[groepsnaam]", $oDB->get("groepsnaam"), $strMailBody);  
+						$strMailBody = str_replace("[groepsdescription]", $oDB->get("description"), $strMailBody);  
+						$strMailBody = str_replace("[interesse]", $oDB->get("interesse"), $strMailBody);  
+						$strMailBody = str_replace("[logo]", (($oDB->get("logo")!="")?"<a href='" . fixpath($oDB->get("logo"), TRUE) . "' target='_blank'>bekijk hier</a>":"niet toegevoegd"), $strMailBody);  
+						
+						$oMail->setBody($strMailBody);   
+						$oMail->setSubject("nieuwe inschrijving stagemarkt"); 
+					$oMail->send(); 
+				}  
 			} 
+			
+			
 		}
 	}
 	
