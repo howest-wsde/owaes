@@ -33,6 +33,7 @@
 					$oGroep = new group(); 
 					$oGroep->naam($oDB->get("groepsnaam"));
 					$oGroep->info($oDB->get("description"));
+					$oGroep->website($oDB->get("website"));
 					$oGroep->admin($oUser->id());
 					$oGroep->update();   
 					$oGroep->addUser($oUser->id()); 
