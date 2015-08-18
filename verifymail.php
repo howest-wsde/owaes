@@ -72,4 +72,6 @@
 		}
 	}
 	
+	if (intval($oUser->data("stagemarkt")) > 0) redirect("stagemarkt.verified.php"); 
+	
 	redirect("index.php"); 
