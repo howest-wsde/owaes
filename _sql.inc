@@ -203,4 +203,7 @@ CREATE TABLE IF NOT EXISTS `tblMailalerts` (
 		  PRIMARY KEY (`id`)
 		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; 
 	</sql> 
+	<sql name="StagemarktWebsite" tag="17">
+		ALTER TABLE `tblStagemarkt` ADD `website` TEXT NOT NULL ;
+	</sql> 
 </queries>

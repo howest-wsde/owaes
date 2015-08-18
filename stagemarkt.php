@@ -68,7 +68,7 @@
 			} else $strLogo = ""; 
 						
  			$oDB = new database(); 
-			$oDB->execute("insert into tblStagemarkt (user, groepsnaam, description, interesse, logo) values ('" . $oUser->id() . "', '" . $oDB->escape($_POST["bedrijf"]) . "', '" . $oDB->escape($_POST["bedrijfsinfo"]) . "', '" . $oDB->escape($_POST["bedrijfsdoel"]) . "', '" . $oDB->escape($strLogo) . "'); "); 
+			$oDB->execute("insert into tblStagemarkt (user, groepsnaam, description, interesse, logo, website) values ('" . $oUser->id() . "', '" . $oDB->escape($_POST["bedrijf"]) . "', '" . $oDB->escape($_POST["bedrijfsinfo"]) . "', '" . $oDB->escape($_POST["bedrijfsdoel"]) . "', '" . $oDB->escape($strLogo) . "', '" . $oDB->escape($_POST["website"]) . "'); "); 
 			
 			$oUser->data("stagemarkt", $oDB->lastInsertID()); 
 			$oUser->update(); 
@@ -191,6 +191,12 @@
                         <div class="col-lg-9">
                             <input type="file" name="logo" ext="jpg,jpeg,gif,bmp,png" class="img image form-control" id="logo" placeholder="" value="" /> 
                         </div> 
+                    </div>
+                    <div class="form-group">
+                        <label for="website" class="control-label col-lg-3">Website:</label>
+                        <div class="col-lg-9">
+                            <input type="text" name="website" class="website form-control" id="website" placeholder="http://www.uwbedrijf.be" value="<? echo (isset($_POST["website"])?$_POST["website"]:""); ?>" />
+                        </div>
                     </div>
               
                     <div class="form-group">
