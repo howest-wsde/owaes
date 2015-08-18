@@ -1,7 +1,6 @@
 <?php
 	include "inc.default.php"; // should be included in EVERY file 
-	
-	$iStagemarkt = 21; // 32; // ID van de groep "stagemarkt"
+	 
 	
 	$oSecurity = new security(FALSE); 
 	$oSecurity->doLogout(FALSE);  
@@ -129,7 +128,7 @@
                     <div class="form-group">
                         <label for="bedrijf" class="control-label col-lg-3">Bedrijfsnaam:</label>
                         <div class="col-lg-9">
-                            <input type="text" name="bedrijf" class="bedrijf form-control" id="bedrijf" placeholder="Bedrijfsnaam" value="" />
+                            <input type="text" name="bedrijf" class="bedrijf form-control" id="bedrijf" placeholder="Bedrijfsnaam" value="<? echo (isset($_POST["bedrijf"])?$_POST["bedrijf"]:""); ?>" />
                         </div>
                     </div> 
                     <div class="form-group">
@@ -175,14 +174,14 @@
                     <div class="form-group">
                         <label for="bedrijfsinfo" class="control-label col-lg-3">Bedrijfsinfo:</label>
                         <div class="col-lg-9">
-                            <textarea name="bedrijfsinfo" class="bedrijfsinfo form-control" id="bedrijfsinfo" placeholder="Geef meer informatie over uw bedrijf"></textarea> 
+                            <textarea name="bedrijfsinfo" class="bedrijfsinfo form-control" id="bedrijfsinfo" placeholder="Geef meer informatie over uw bedrijf"><? echo (isset($_POST["bedrijfsinfo"])?$_POST["bedrijfsinfo"]:""); ?></textarea> 
                         </div>
                     </div>
              
                     <div class="form-group">
                         <label for="bedrijfsdoel" class="control-label col-lg-3">Interesse:</label>
                         <div class="col-lg-9">
-                            <textarea name="bedrijfsdoel" class="bedrijfsdoel form-control" id="bedrijfsdoel" placeholder="Naar wie is uw bedrijf op zoek?"></textarea> 
+                            <textarea name="bedrijfsdoel" class="bedrijfsdoel form-control" id="bedrijfsdoel" placeholder="Naar wie is uw bedrijf op zoek?"><? echo (isset($_POST["bedrijfsdoel"])?$_POST["bedrijfsdoel"]:""); ?></textarea> 
                         </div>
                     </div>
                 
@@ -193,9 +192,7 @@
                             <input type="file" name="logo" ext="jpg,jpeg,gif,bmp,png" class="img image form-control" id="logo" placeholder="" value="" /> 
                         </div> 
                     </div>
-             
-                    <input type="hidden" name="dienstverlener" value="<? echo $iStagemarkt; ?>" />  
-                    
+              
                     <div class="form-group">
                              <div class="col-lg-3"></div>
                              <div class="col-lg-6"><a href="modal.voorwaarden.php" class="domodal">gebruikersvoorwaarden</a></div>
