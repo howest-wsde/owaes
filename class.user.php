@@ -1380,7 +1380,7 @@
 		
 		public function getName() { // returns firstname lastname 
 			if ($this->id() == 0) return "Owaes sitebeheerders"; 
-			if (!user(me())->mailVerified()) if ($this->id() != me()) return rubbish($this->firstname() . " " . $this->lastname()); 
+			if (!user(me())->mailVerified()) if ($this->id() != me()) if (!$this->unlocked()) return rubbish($this->firstname() . " " . $this->lastname()); 
 			if ($this->visible4me("firstname") && $this->visible4me("lastname")) {
 				return $this->firstname() . " " . $this->lastname();
 			} else if ($this->visible4me("firstname")) {
