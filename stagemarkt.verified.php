@@ -32,7 +32,7 @@
                 <div class="signup col-lg-12">
                     <div class="well"> 
                         <p>Bedankt, uw e-mailadres werd gevalideerd en uw inschrijving correct ontvangen. </p>
-                        <p>Wenst u meer informatie, contacteer dan Dany Cottyn via <a href="mailto:dany.cottyn@howest.be">dany.cottyn@howest.be</a> of op 0484 85 13 36</p>
+                        <p>Wenst u meer informatie, contacteer dan Dany Cottyn via <a href="mailto:dany.cottyn@howest.be">dany.cottyn@howest.be</a> of op 0484 85 13 36.</p>
                     </div>
                 </div>
             </div> 
