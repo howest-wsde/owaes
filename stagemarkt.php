@@ -1,6 +1,8 @@
 <?php
 	include "inc.default.php"; // should be included in EVERY file 
 	
+	$iStagemarkt = 21; // 32; // ID van de groep "stagemarkt"
+	
 	$oSecurity = new security(FALSE); 
 	$oSecurity->doLogout(FALSE);  
 	
@@ -46,6 +48,7 @@
 		
 		if ($_POST["pass"] == "") $arErrors["password"] = "Wachtwoord is verplicht"; 
 		if ($_POST["pass"] != $_POST["pass-repeat"]) $arErrors["pass-repeat"] = "Wachtwoord komt niet overeen";  
+		 
 		if (count($arErrors) == 0)  {
 			$oUser->update();  
 			me($oUser->id()); // SET me 
@@ -59,6 +62,13 @@
 												"postvalues" => $_POST, 
 											)); 
 			$bResult = $oSecurity->doLogin($oUser->login(), $_POST["pass"]); 
+ 
+  
+ 			$oDB = new database(); 
+			$oDB->execute("insert into tblStagemarkt (user, groepsnaam, description, interesse, logo) values ('" . $oUser->id() . "', '" . $oDB->escape($_POST["bedrijf"]) . "', '" . $oDB->escape($_POST["bedrijfsinfo"]) . "', '" . $oDB->escape($_POST["bedrijfsdoel"]) . "', 'logo'); "); 
+			
+			$oUser->data("stagemarkt", $oDB->lastInsertID()); 
+			$oUser->update(); 
  
 			redirect($strRedirect); 
 			exit(); 
@@ -83,34 +93,7 @@
 		?>
         <script>
             $(document).ready(function () { 
-				$("a.pass-recover").click(function(){
-					$("#paswoordvergeten").modal({
-						show: true,
-						backdrop: "true",
-						keyboard: true
-					});
-				})
-				
-				$("form.form-recoverpw").submit(function(){ 
-					strVal = $("#mailpaswoordlost").val(); 
-					arFields = {}
-					$(this).find(":input").each(function() { 
-						arFields[this.name] = $(this).val();
-					});
-					$("#requestwachtwoordbody div.modal-body").html("<p>bezig met verzenden...</p>"); 
-					$("#requestwachtwoordbody").load("recover.php", arFields); 
-					return false; 	
-				})
-				
-				<?php if (isset($_GET["recover"])) { ?>
-					$("#paswoordvergeten").modal({
-						show: true,
-						backdrop: "static",
-						keyboard: true
-					});
-					$("#requestwachtwoordbody div.modal-body").html("<p>bezig met laden...</p>"); 
-					$("#requestwachtwoordbody").load("recover.php", {"code": "<?php echo $_GET["recover"]; ?>"}); 
-				<?php } ?>
+			 
 			});
 		</script>
     </head>
@@ -132,163 +115,31 @@
     </nav>
     
     	<div class="body container content content-login">
-        <div class="row">
-            <div class="login col-lg-5">
-            <div class="well">
-            
-            <?php
-				if (isset($_POST["dologin"])) {
-					$strLogin = $_POST["username"]; 
-		            $bResult = $oSecurity->doLogin($_POST["username"], $_POST["pass"]); 
-		            if ($bResult == TRUE) {
-			            redirect($strRedirect); 
-			            exit(); 
-		            } else {
-                        $strErrorLogin = "<div class=\"alert alert-dismissable alert-danger\">";
-                        $strErrorLogin .= "<button type=\"button\" class=\"close\" data-dismiss=\"alert\">x</button>";
-                        $strErrorLogin .= "<strong>Aanmelden mislukt: </strong>" . $oSecurity->errorMessage();
-			            $strErrorLogin .= "</div>"; 
-                        
-                        echo $strErrorLogin;  
-		            }
-	            }
-            
-            ?>
-            
-                <form method="post" class="form-horizontal">
-                	<fieldset>
-                        <legend>Aanmelden</legend>
-                    <input type="hidden" name="from" id="from" value="<?php echo $strRedirect; ?>" />
-                    <div class="form-group">
-                            <!-- <label for="username" class="col-lg-3 control-label">Gebruikersnaam</label> -->
-                            <div class="col-lg-12">
-                                <input type="text" name="username" class="username form-control" id="username" placeholder="E-mailadres of gebruikersnaam" autofocus value="<?php echo inputfield($strLogin); ?>" />
-                            </div>
-                        </div>
-                    <div class="form-group">
-                            <!-- <label for="pass" class="col-lg-3 control-label">Wachtwoord</label> -->
-                            <div class="col-lg-12">
-                                <input type="password" name="pass" class="pass form-control" id="pass" placeholder="Wachtwoord" /> 
-                            </div>
-                        </div>
-                    <div class="form-group">
-                            <div class="col-lg-12"> <!-- col-lg-offset-3 -->
-                            <a class="pass-recover" href="#wachtwoord">Wachtwoord vergeten?</a>
-                                <button type="submit" name="dologin" class="btn btn-default btn-login pull-right">Aanmelden</button>
-                            </div>
-                        </div>
-                    
-                    </fieldset>
-                </form>  
-                <div class="openid">
-                    <?php
-			
-						$strURL = fixPath("login.php", TRUE);
-						$strReturnURL = fixPath("loggedin.php", TRUE);
-						$strID = settings("domain", "name"); 
-						session_start();
-					
-						$strHTML = "<ul class=\"socialmedia\">"; 
- 						
-						if (settings("facebook", "loginapp", "id")) {
-							// FACEBOOK: 
-							try {
-							
-								$facebook = new Facebook(array(
-									'appId'  => settings("facebook", "loginapp", "id"),
-									'secret' => settings("facebook", "loginapp", "secret"),
-								)); 
-								$strHTML .= "<li><a class=\"login\" href=\"" . $facebook->getLoginUrl(array(
-									'scope' => 'email', 
-									'redirect_uri'=>$strReturnURL
-								)) . "\" rel=\"1020,575\"><img src=\"img/facebook.png\" alt=\"Facebook\"/></a></li>"; 
-							} catch (Exception $e) {
-							
-							}
-						}
-						
-						try {
-							// GOOGLE:  
-							$oOpenid = new LightOpenID($strID); 
-							$oOpenid->identity = 'https://www.google.com/accounts/o8/id';
-							$oOpenid->required = array(
-								'namePerson/first',
-								'namePerson/last',
-								'contact/email',
-							);
-							$oOpenid->returnUrl = $strReturnURL;   
-							$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/google.png\" alt=\"Google\"/></a></li>";  
-
-						} catch (Exception $e) {
-						
-						}
-						
- /*
-						// OWAES:  
-						$oOpenid = new LightOpenID($strID); 
-						$oOpenid->identity = 'https://info.owaes.org/';
-						$oOpenid->required = array(
-							'namePerson/first',
-							'namePerson/last',
-							'contact/email',
-						);
-						$oOpenid->returnUrl = $strReturnURL;   
-						$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"400,560\"><img src=\"img/owaes.png\" alt=\"OWAES\"/></a></li>";  
-*/ 					
-						
-						try {
-							
-							// YAHOO:  
-							$oOpenid = new LightOpenID($strID); 
-							$oOpenid->identity = 'https://me.yahoo.com';
-							$oOpenid->required = array(
-								'namePerson/first',
-								'namePerson/last',
-								'contact/email',
-							);
-							$oOpenid->returnUrl = $strReturnURL;   
-							$strHTML .= "<li><a class=\"login\" href=\"" . $oOpenid->authUrl() . "\" rel=\"570,535\"><img src=\"img/yahoo.png\" alt=\"Yahoo\"/></a></li>";  
-							
-
-						} catch (Exception $e) {
-						
-						}
-						$strHTML .= "</ul>";
-						
-						echo $strHTML;  
-                    ?>
-                </div>
-                </div>
-            </div> 
-            <div class="signup col-lg-7">
+            <div class="row"> 
+            <div class="signup col-lg-12">
             <div class="well">
             <form method="post" class="form-horizontal">
                 	<fieldset>
-                        <legend>Registreren (nieuw bij OWAES)</legend>
+                        <legend>Inschrijven voor Werkplekleren- en Stagemarktevent 16 september 2015</legend>
                     <input type="hidden" name="from" id="from" value="index.php" />
                     <div class="form-group">
-                        <label for="firstname" class="control-label col-lg-3">Voornaam:</label>
+                        <label for="bedrijf" class="control-label col-lg-3">Bedrijfsnaam:</label>
+                        <div class="col-lg-9">
+                            <input type="text" name="bedrijf" class="bedrijf form-control" id="bedrijf" placeholder="Bedrijfsnaam" value="" />
+                        </div>
+                    </div> 
+                    <div class="form-group">
+                        <label for="firstname" class="control-label col-lg-3">Uw voornaam:</label>
                         <div class="col-lg-9">
                             <input type="text" name="firstname" class="firstname form-control" id="firstname" placeholder="Voornaam" value="<?php echo inputfield($oUser->firstname()); ?>" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="lastname" class="control-label col-lg-3">Familienaam:</label>
+                        <label for="lastname" class="control-label col-lg-3">Uw familienaam:</label>
                         <div class="col-lg-9">
                             <input type="text" name="lastname" class="lastname form-control" id="lastname" placeholder="Familienaam" value="<?php echo inputfield($oUser->lastname()); ?>" />
                         </div>
-                    </div>
-                    <?php /*
-                    <div class="form-group">
-                        <label for="username" class="control-label col-lg-3">Loginnaam:</label>
-                        <div class="col-lg-9">
-                            <input type="text" name="username" class="username form-control" id="username" placeholder="Loginnaam" value="<?php echo ((isset($_POST["dosignup"])) ? inputfield($oUser->login()) : ""); ?>" />
-                            <?php
-                        	    if (isset($arErrors["username"])) echo ("<strong class=\"text-danger\">" . $arErrors["username"] . "</strong>"); 
-						    ?>
-                        </div>
-                    </div>
-                    */ ?>
+                    </div> 
                     <div class="form-group">
                         <label for="email" class="control-label col-lg-3">E-mailadres:</label>
                         <div class="col-lg-9">
@@ -308,7 +159,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pass-repeat" class="control-label longlabel col-lg-3">Wachtwoord herhalen:</label>
+                        <label for="pass-repeat" class="control-label col-lg-3">Wachtwoord herhalen:</label>
                         <div class="col-lg-9">
                             <input type="password" name="pass-repeat" class="pass-repeat form-control" id="pass-repeat" placeholder="Wachtwoord herhalen" />
                             <?php
@@ -316,22 +167,22 @@
 						    ?>
                         </div>
                     </div> 
+                    
                     <div class="form-group">
-                        <label for="pass-repeat" class="control-label longlabel col-lg-3">Ik ken OWAES via:</label>
+                        <label for="bedrijfsinfo" class="control-label col-lg-3">Bedrijfsinfo:</label>
                         <div class="col-lg-9">
-                            <select name="dienstverlener" class="form-control">
-                            	<option value="0"></option>
-								<?
-                                    $oDienstverleners = new grouplist(); 
-                                    $oDienstverleners->filterByDienstverlener(TRUE); 
-                                //	var_dump($oDienstverleners->getList()); 
-                                    foreach ($oDienstverleners->getList() as $oDienstverlener) {
-                                        echo ("<option value=\"" . $oDienstverlener->id() . "\">" . $oDienstverlener->naam() . "</option>"); 
-                                    }
-                                ?> 
-                            </select>
+                            <textarea name="bedrijfsinfo" class="bedrijfsinfo form-control" id="bedrijfsinfo" placeholder="Geef meer informatie over uw bedrijf"></textarea> 
                         </div>
-                    </div>  
+                    </div>
+             
+                    <div class="form-group">
+                        <label for="bedrijfsdoel" class="control-label col-lg-3">Interesse:</label>
+                        <div class="col-lg-9">
+                            <textarea name="bedrijfsdoel" class="bedrijfsdoel form-control" id="bedrijfsdoel" placeholder="Naar wie is uw bedrijf op zoek?"></textarea> 
+                        </div>
+                    </div>
+             
+                    <input type="hidden" name="dienstverlener" value="<? echo $iStagemarkt; ?>" />  
                     
                     <div class="form-group">
                              <div class="col-lg-3"></div>

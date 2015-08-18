@@ -26,6 +26,18 @@
 			case "confirm": 
 				$oUser->algemenevoorwaarden(1); 
 				$oUser->update(); 
+				
+				if (intval($oUser->data("stagemarkt")) > 0) {
+					$oDB = new database(); 
+					$oDB->execute("select * from tblStagemarkt where id = " . intval($oUser->data("stagemarkt")) . ";");  
+					$oGroep = new group(); 
+					$oGroep->naam($oDB->get("groepsnaam"));
+					$oGroep->info($oDB->get("description"));
+					$oGroep->admin($oUser->id());
+					$oGroep->update();   
+					$oGroep->addUser($oUser->id()); 
+				}
+				
 				$oAction->done(TRUE);
 				$oAction->update();  
 				break; 
