@@ -123,7 +123,7 @@
             <div class="well">
             <form method="post" class="form-horizontal" enctype="multipart/form-data">
                 	<fieldset>
-                        <legend>Inschrijven voor Werkplekleren- en Stagemarktevent 16 september 2015</legend>
+                        <legend>Inschrijven voor Werkplekleren- en Stagemarktevent woensdag 16 september 2015</legend>
                     <input type="hidden" name="from" id="from" value="index.php" />
                     <div class="form-group">
                         <label for="bedrijf" class="control-label col-lg-3">Bedrijfsnaam:</label>
