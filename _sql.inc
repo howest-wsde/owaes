@@ -583,4 +583,7 @@ CREATE TABLE `tblUsers` (
 	('domain.root', NULL),
 	('domain.absroot', NULL);
 	</sql>   
+	<sql name="deleted_field_users" tag="18">
+		ALTER TABLE `tblUsers` CHANGE `deleted` `deleted` INT( 1 ) NOT NULL DEFAULT '0';
+	</sql>  
 </queries>
