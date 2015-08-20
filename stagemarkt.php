@@ -32,7 +32,7 @@
 		$oUser->login(""); 
 		$oUser->firstname($_POST["firstname"]); 
 		$oUser->lastname($_POST["lastname"]); 
-		$oUser->dienstverlener($_POST["dienstverlener"]); 
+		//$oUser->dienstverlener($_POST["dienstverlener"]); 
 		if ($_POST["email"] == "") {
 			$arErrors["email"] = "E-mailadres is verplicht"; 
 		} else if (!validEmail($_POST["email"])) {
