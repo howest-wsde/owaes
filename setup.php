@@ -139,6 +139,15 @@ $arConfig["database"] = array(
                         </fieldset>
                     <?php } else if (!(settings("domain", "name") && settings("domain", "root") && settings("domain", "absroot"))) { ?> 
                         <fieldset>
+                            <legend>Login</legend>
+                            <div class="col-lg-22"></div> 
+                            <div class="form-group col-lg-10">
+                            	<p>Er werd automatisch een eerste gebruiker / administrator gemaakt met login = "owaes", paswoord = "owaes". </p>
+                                <p><strong>Let op!</strong> Wijzig deze login en paswoord om misbruik te voorkomen. </p>
+                            </div>   
+						</fieldset>
+                        
+                        <fieldset>
                             <legend>Domeinnaam</legend>
                             <div class="form-group">
                                 <label for="alias" class="control-label col-lg-2">Domain name:</label>
@@ -164,6 +173,7 @@ $arConfig["database"] = array(
                                 </div>
                             </div> 
                         </fieldset> 
+                        
                     <?php } ?> 
                 </form>
             </div>  
