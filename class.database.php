@@ -61,18 +61,22 @@
 				$arSQL = explode(" ", $strSQL); 
 				switch(strtolower($arSQL[0])) {
 					case "select": 
-						foreach($dbPDO->query($strSQL) as $oRow) {
-							$arRow = array(); 
-							if (count($arFieldNames)==0) {
-								foreach ($oRow as $strCol=>$strVal) {
-									if (!is_numeric($strCol)) $arFieldNames[] = $strCol; 
+					case "show": 
+						$qResult = $dbPDO->query($strSQL); 
+						if ($qResult) {
+							foreach($qResult as $oRow) {
+								$arRow = array(); 
+								if (count($arFieldNames)==0) {
+									foreach ($oRow as $strCol=>$strVal) {
+										if (!is_numeric($strCol)) $arFieldNames[] = $strCol; 
+									}
+									$this->arFieldNames = $arFieldNames; 
 								}
-								$this->arFieldNames = $arFieldNames; 
+								foreach ($oRow as $strCol=>$strVal) {
+									$arRow[$strCol] = $strVal; 
+								}
+								$this->arResult[] = $arRow; 
 							}
-							foreach ($oRow as $strCol=>$strVal) {
-								$arRow[$strCol] = $strVal; 
-							}
-							$this->arResult[] = $arRow; 
 						}
 						$this->iLength = count($this->arResult); 
 						break; 

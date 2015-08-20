@@ -1,17 +1,493 @@
 <queries>
-	<sql name="createDB" tag="0"> 
-	</sql>
-	<sql name="Create_tblConfig" tag="0">
-		CREATE TABLE IF NOT EXISTS `tblConfig` (
-	`id` bigint(20) NOT NULL AUTO_INCREMENT,
-	`key` varchar(255) NOT NULL,
-	`value` varchar(255) DEFAULT NULL,
-	PRIMARY KEY (`id`)
-	) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=80 ;
+	<sql name="createDB" tag="0">  
+CREATE TABLE `tblAbuse` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `created` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `reason` varchar(50) NOT NULL,
+  `reporter` bigint(20) unsigned NOT NULL,
+  `user` bigint(20) NOT NULL DEFAULT '0',
+  `market` bigint(20) NOT NULL DEFAULT '0',
+  `data` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblActions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) NOT NULL DEFAULT '0',
+  `created` bigint(20) NOT NULL DEFAULT '0',
+  `tododate` bigint(20) NOT NULL DEFAULT '0',
+  `completed` bigint(20) NOT NULL DEFAULT '0',
+  `actie` varchar(50) NOT NULL,
+  `data` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblBadges` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `mkey` varchar(30) NOT NULL,
+  `img` varchar(30) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `info` text NOT NULL,
+  `zichtbaar` smallint(2) NOT NULL DEFAULT '0',
+  `beloning` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=latin1; 
+
+INSERT INTO tblBadges VALUES('1', 'car', 'car.png', '', '', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('2', 'cupcake', 'cupcake.png', '', '', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('3', 'earlybird', 'earlybird.png', '', '', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('4', 'photo', 'photo.png', 'Profielfoto', 'Deze gebruiker heeft een profielfoto ingesteld. Way to go! ', '1', '{"emotional":1, "physical": 1}'); 
+INSERT INTO tblBadges VALUES('5', 'play', 'play.png', '', '', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('6', 'power', 'power.png', '', '', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('7', 'tie', 'tie.png', '', '', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('17', '25transactions', 'trans25.png', '', '', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('16', '10transactions', 'trans10.png', '10 Transacties', 'Deze persoon heeft 10 transacties uitgevoerd. Goed bezig! ', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('15', '1transaction', 'trans1.png', '1e Transactie', 'Een eerste transactie is gebeurd. Deze persoon is goed gestart. ', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('18', '50transactions', 'trans50.png', '', '', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('19', 'heyhallo', 'heyhallo.png', 'Hey Hallo ', 'Stuur een privÃ©bericht naar 1 persoon', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('20', '1friend', '1friend.png', '1 vriend', '', '1', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('21', '10friends', '10friends.png', '10 vrienden', '', '1', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('22', 'ervaring', 'ervaring.png', 'ervaring toegevoegd', '', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('23', 'opleiding', 'opleiding.png', 'opleiding toegevoegd', '', '0', '{"emotional":1, "mental": 1}'); 
+INSERT INTO tblBadges VALUES('24', 'infra', 'infra.png', 'infrastructuur toegevoegd', '', '0', '{"emotional":1, "physical": 1}'); 
+INSERT INTO tblBadges VALUES('25', 'done-ervaring', 'ervaring.png', 'ervaring opgedaan', '', '1', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('26', 'done-infra', 'infra.png', 'infrastructuur gehuurd', '', '1', '{"emotional":1, "physical": 1}'); 
+INSERT INTO tblBadges VALUES('27', 'done-opleiding', 'opleiding.png', 'opleiding genoten', '', '1', '{"emotional":1, "mental": 1}'); 
+INSERT INTO tblBadges VALUES('28', 'follower', 'follower.png', 'Volger', 'Je volgt minimum Ã©Ã©n persoon', '0', '{"emotional":1, "social": 1}'); 
+INSERT INTO tblBadges VALUES('29', 'profile', 'profile.png', 'Volledig profiel', 'Je profiel is volledig aangevuld', '1', '{"emotional":1, "social": 1}'); 
+
+CREATE TABLE `tblCertificates` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `mkey` varchar(30) NOT NULL,
+  `img` varchar(30) NOT NULL,
+  `title` varchar(100) NOT NULL,
+  `info` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=latin1; 
+
+INSERT INTO tblCertificates VALUES('1', 'redcross', 'redcross.png', 'EHBO-certificaat', 'Deze persoon heeft een EHBO-cursus gevolgd. '); 
+
+CREATE TABLE `tblConfig` (
+  `sleutel` varchar(255) NOT NULL,
+  `waarde` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`sleutel`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
+
+CREATE TABLE `tblConversations` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `sender` bigint(20) NOT NULL,
+  `receiver` bigint(20) NOT NULL,
+  `subject` text NOT NULL,
+  `market` bigint(20) NOT NULL DEFAULT '0',
+  `message` text NOT NULL,
+  `sentdate` bigint(20) NOT NULL DEFAULT '0',
+  `readdate` bigint(20) NOT NULL DEFAULT '0',
+  `isread` int(11) NOT NULL DEFAULT '0',
+  `data` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=320 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblDbChanges` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `date` datetime NOT NULL,
+  `tag` varchar(255) NOT NULL,
+  `action` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblExperience` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `idk` varchar(30) NOT NULL,
+  `user` bigint(20) unsigned NOT NULL,
+  `experience` int(11) NOT NULL DEFAULT '0',
+  `datum` bigint(20) NOT NULL DEFAULT '0',
+  `confirmed` int(11) NOT NULL DEFAULT '0',
+  `details` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6987 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblFeedback` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `transaction` bigint(20) unsigned NOT NULL,
+  `from` bigint(20) NOT NULL,
+  `to` bigint(20) NOT NULL,
+  `stars` int(11) NOT NULL,
+  `public` text NOT NULL,
+  `private` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblFollowers` (
+  `user` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `followed` bigint(20) unsigned NOT NULL,
+  `startdate` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user`,`followed`)
+) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblFriends` (
+  `user` bigint(20) unsigned NOT NULL COMMENT 't',
+  `friend` bigint(20) unsigned NOT NULL,
+  `datum` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `confirmed` int(2) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`user`,`friend`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblGroupUsers` (
+  `groep` bigint(20) unsigned NOT NULL,
+  `user` bigint(20) unsigned NOT NULL,
+  `invitedby` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `useradd` int(11) NOT NULL DEFAULT '0',
+  `userdel` int(11) NOT NULL DEFAULT '0',
+  `userrights` int(11) NOT NULL DEFAULT '0',
+  `owaesadd` int(11) NOT NULL DEFAULT '0',
+  `owaesedit` int(11) NOT NULL DEFAULT '0',
+  `owaesdel` int(11) NOT NULL DEFAULT '0',
+  `owaesselect` int(11) NOT NULL DEFAULT '0',
+  `owaespay` int(11) NOT NULL DEFAULT '0',
+  `groupinfo` int(11) NOT NULL DEFAULT '0',
+  `confirmed` int(2) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`groep`,`user`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblGroups` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `naam` varchar(150) NOT NULL,
+  `website` varchar(255) NOT NULL,
+  `alias` varchar(120) NOT NULL,
+  `info` text NOT NULL,
+  `img` varchar(255) NOT NULL,
+  `isdienstverlener` int(1) unsigned NOT NULL DEFAULT '0',
+  `admin` bigint(20) NOT NULL,
+  `deleted` int(11) NOT NULL DEFAULT '0',
+  `lastupdate` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblIndicators` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) NOT NULL,
+  `datum` bigint(20) NOT NULL,
+  `physical` int(11) NOT NULL DEFAULT '0',
+  `mental` int(11) NOT NULL DEFAULT '0',
+  `emotional` int(11) NOT NULL DEFAULT '0',
+  `social` int(11) NOT NULL DEFAULT '0',
+  `reason` int(11) NOT NULL,
+  `link` bigint(11) NOT NULL,
+  `actief` tinyint(4) NOT NULL DEFAULT '1',
+  `tmp` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=9860 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblLog` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `datum` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `info` text NOT NULL,
+  `data` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7441 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblMailalerts` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) unsigned NOT NULL,
+  `sleutel` varchar(25) NOT NULL DEFAULT '',
+  `link` varchar(150) NOT NULL,
+  `message` text NOT NULL,
+  `deadline` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `sent` bigint(20) unsigned DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblMarket` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `author` bigint(20) NOT NULL,
+  `groep` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `createdby` bigint(20) NOT NULL DEFAULT '0',
+  `mtype` int(11) DEFAULT '0',
+  `title` varchar(125) NOT NULL,
+  `body` text NOT NULL,
+  `date` bigint(20) NOT NULL,
+  `lastupdate` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `files` text NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `location_lat` double NOT NULL,
+  `location_long` double NOT NULL,
+  `timingtype` varchar(10) NOT NULL,
+  `timing` bigint(20) NOT NULL,
+  `credits` bigint(20) NOT NULL,
+  `details` text NOT NULL,
+  `keyid` varchar(256) NOT NULL,
+  `physical` bigint(20) NOT NULL DEFAULT '0',
+  `mental` bigint(20) NOT NULL DEFAULT '0',
+  `emotional` bigint(20) NOT NULL DEFAULT '0',
+  `social` bigint(20) NOT NULL DEFAULT '0',
+  `state` tinyint(1) NOT NULL DEFAULT '0',
+  `deleted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=178 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblMarketDates` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `market` bigint(20) unsigned NOT NULL,
+  `datum` bigint(20) NOT NULL,
+  `start` bigint(20) unsigned NOT NULL,
+  `tijd` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=650 DEFAULT CHARSET=utf8; 
+
+
+CREATE TABLE `tblMarketSubscriptions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) NOT NULL,
+  `doneby` bigint(20) NOT NULL,
+  `market` bigint(20) NOT NULL,
+  `status` bigint(20) NOT NULL,
+  `overruled` tinyint(1) NOT NULL DEFAULT '0',
+  `clickdate` bigint(20) NOT NULL,
+  `snap` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=104 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblMarketTags` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `market` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `tag` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=299 DEFAULT CHARSET=latin1; 
+
+CREATE TABLE `tblMarketTypes` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `sleutel` varchar(10) NOT NULL,
+  `title` varchar(250) NOT NULL,
+  `direction` int(5) NOT NULL COMMENT '0 = costs credits / 1 = will generate credits',
+  `volgorde` int(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1; 
+
+INSERT INTO tblMarketTypes VALUES('1', 'ervaring', 'werkervaring', '0', '1'); 
+INSERT INTO tblMarketTypes VALUES('2', 'opleiding', 'opleidingen', '1', '2'); 
+INSERT INTO tblMarketTypes VALUES('3', 'infra', 'infrastructuur', '1', '3'); 
+
+CREATE TABLE `tblNotifications` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `sleutel` varchar(30) NOT NULL,
+  `readdate` bigint(20) NOT NULL DEFAULT '0',
+  `message` varchar(300) NOT NULL,
+  `link` varchar(150) NOT NULL,
+  `author` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `receiver` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `datum` bigint(20) unsigned NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=386 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblPayments` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `datum` bigint(20) NOT NULL DEFAULT '0',
+  `initiator` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `sender` bigint(20) NOT NULL DEFAULT '0',
+  `receiver` bigint(20) NOT NULL DEFAULT '0',
+  `credits` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `reason` bigint(20) NOT NULL DEFAULT '0',
+  `link` bigint(20) NOT NULL DEFAULT '0',
+  `market` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `actief` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblQuests` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `volgorde` bigint(20) NOT NULL DEFAULT '0',
+  `titel` varchar(250) NOT NULL,
+  `trigger` text NOT NULL,
+  `todos` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblStagemarkt` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `groepsnaam` text NOT NULL,
+  `description` text NOT NULL,
+  `interesse` text NOT NULL,
+  `logo` text NOT NULL,
+  `website` text NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblStars` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `datum` bigint(20) NOT NULL DEFAULT '0',
+  `receiver` bigint(20) NOT NULL DEFAULT '0',
+  `sender` bigint(20) NOT NULL DEFAULT '0',
+  `market` bigint(20) NOT NULL DEFAULT '0',
+  `stars` int(11) NOT NULL DEFAULT '0',
+  `comment` text NOT NULL,
+  `actief` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblTransactions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `date` bigint(20) NOT NULL,
+  `initiator` bigint(20) NOT NULL,
+  `sender` bigint(20) NOT NULL,
+  `scoresender` int(11) NOT NULL,
+  `receiver` bigint(20) NOT NULL,
+  `scorereceiver` int(11) NOT NULL,
+  `sendersigned` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `receiversigned` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `number` bigint(20) NOT NULL,
+  `physical` int(11) NOT NULL,
+  `mental` int(11) NOT NULL,
+  `emotional` int(11) NOT NULL,
+  `social` int(11) NOT NULL,
+  `status` bigint(20) NOT NULL,
+  `info` varchar(150) NOT NULL,
+  `publicfeedbacktosender` text NOT NULL,
+  `privatefeedbacktosender` text NOT NULL,
+  `publicfeedbacktoreceiver` text NOT NULL,
+  `privatefeedbacktoreceiver` text NOT NULL,
+  `market` bigint(20) NOT NULL,
+  `code` varchar(130) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblUserBadges` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) NOT NULL,
+  `badge` bigint(20) NOT NULL,
+  `date` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `id` (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblUserCertificates` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) NOT NULL,
+  `certificate` bigint(20) NOT NULL,
+  `date` bigint(20) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblUserEmailVerify` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `email` varchar(255) NOT NULL,
+  `sleutel` varchar(255) NOT NULL,
+  `verified` int(11) NOT NULL DEFAULT '0',
+  `datum` bigint(20) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblUserMailSettings` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) unsigned NOT NULL,
+  `sleutel` varchar(20) NOT NULL,
+  `timing` bigint(20) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblUserRecover` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) NOT NULL,
+  `timeasked` bigint(20) NOT NULL,
+  `timeexpires` bigint(20) NOT NULL,
+  `ipasked` varchar(25) NOT NULL,
+  `conf` text NOT NULL,
+  `passcode` varchar(200) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblUserSessions` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user` bigint(20) NOT NULL,
+  `start` bigint(20) NOT NULL,
+  `stop` bigint(20) NOT NULL,
+  `sessionpass` varchar(128) NOT NULL,
+  `active` decimal(10,0) NOT NULL,
+  `ip` varchar(20) NOT NULL,
+  `conf` varchar(256) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=328 DEFAULT CHARSET=latin1; 
+
+
+CREATE TABLE `tblUsers` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `alias` varchar(32) NOT NULL,
+  `login` varchar(125) NOT NULL,
+  `pass` varchar(256) NOT NULL,
+  `firstname` varchar(125) NOT NULL,
+  `lastname` varchar(125) NOT NULL,
+  `mail` varchar(125) NOT NULL,
+  `mailverified` int(11) NOT NULL DEFAULT '0',
+  `description` text NOT NULL,
+  `img` varchar(128) NOT NULL,
+  `gender` varchar(10) NOT NULL DEFAULT '',
+  `birthdate` double NOT NULL DEFAULT '0',
+  `telephone` varchar(30) NOT NULL,
+  `physical` bigint(20) NOT NULL DEFAULT '0',
+  `mental` bigint(20) NOT NULL DEFAULT '0',
+  `emotional` bigint(20) NOT NULL DEFAULT '0',
+  `social` bigint(20) NOT NULL DEFAULT '0',
+  `visible` tinyint(4) NOT NULL DEFAULT '1',
+  `lastupdate` bigint(20) NOT NULL,
+  `admin` int(11) NOT NULL DEFAULT '0',
+  `status` int(11) NOT NULL DEFAULT '0',
+  `statusinfo` text NOT NULL,
+  `statusdate` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `bestanden` text NOT NULL,
+  `location` text NOT NULL,
+  `location_lat` double NOT NULL DEFAULT '0',
+  `location_long` double NOT NULL DEFAULT '0',
+  `showfirstname` int(2) NOT NULL DEFAULT '1',
+  `showlastname` int(2) NOT NULL DEFAULT '1',
+  `showemail` int(2) NOT NULL DEFAULT '0',
+  `showdescription` int(2) NOT NULL DEFAULT '1',
+  `showimg` int(2) NOT NULL DEFAULT '1',
+  `showlocation` int(2) NOT NULL DEFAULT '1',
+  `showbirthdate` int(2) NOT NULL DEFAULT '1',
+  `showgender` int(2) NOT NULL DEFAULT '1',
+  `showtelephone` int(2) NOT NULL DEFAULT '0',
+  `data` text NOT NULL,
+  `mailalerts` text NOT NULL,
+  `dienstverlener` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `deleted` bit(1) NOT NULL DEFAULT b'0',
+  `actief` int(2) NOT NULL DEFAULT '1',
+  `demo` int(11) NOT NULL DEFAULT '0',
+  `algemenevoorwaarden` smallint(12) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=227 DEFAULT CHARSET=latin1;  
 	</sql>
 	<sql name="Insert_tblConfig" tag="0">
-		INSERT INTO `tblConfig` (`key`, `value`) VALUES
-	('domain.templatefolder', 'templates/'),
+		INSERT INTO `tblConfig` (`sleutel`, `waarde`) VALUES
+	('domain.templatefolder', '"templates/"'),
 	('startvalues.credits', '4800'),
 	('startvalues.physical', '60'),
 	('startvalues.social', '60'),
@@ -74,136 +550,37 @@
 	('crons.x', NULL),
 	('date.speed', '1'),
 	('date.start', '1395100800'),
-	('date.timezone', 'Europe/Brussels'),
+	('date.timezone', '"Europe/Brussels"'),
 	('geo.latitude', '50.8305303'),
 	('geo.longitude', '3.2644603'),
 	('debugging.showwarnings', 'TRUE'),
 	('debugging.demo', 'FALSE'),
 	('credits.min', '0'),
 	('credits.max', '9600'),
-	('credits.name.1', 'owa'),
-	('credits.name.x', 'owa'),
-	('credits.name.overdracht', 'owa-overdracht'),
-	('verzekeringen.1', 'Schade aan derden verzekerd'),
-	('verzekeringen.2', 'Arbeidsongevallen-verzekering afgesloten'),
+	('credits.name.1', '"owa"'),
+	('credits.name.x', '"owa"'),
+	('credits.name.overdracht', '"owa-overdracht"'),
+	('verzekeringen.1', '"Schade aan derden verzekerd"'),
+	('verzekeringen.2', '"Arbeidsongevallen-verzekering afgesloten"'),
 	('analytics', NULL),
 	('indicatoren.multiplier', '10'),
 	('indicatoren.owaesadd', '5'),
-	('mail.smtp', 'FALSE');
-	</sql>
-	<sql name="insert-smtpConfs_tblConfig" tag="1">
-		INSERT INTO `tblConfig` (`key`, `value`) VALUES
-	('mail.Host', NULL), ('mail.SMTPAuth', 'FALSE'), ('mail.SMTPSecure', 'ssl'),
-	('mail.Port', NULL), ('mail.Username', NULL), ('mail.Password', NULL);
-	</sql>
-	<sql name="insert-fbLogin_tblConfig" tag="2">
-		INSERT INTO `tblConfig` (`key`, `value`) VALUES
-	('facebook.loginapp.id', NULL), ('facebook.loginapp.secret', NULL);
-	</sql>
-	<sql name="update-status-inschrijvingen-stap1" tag="3">
-		CREATE TABLE tmpToUpdate AS (select s.id from tblMarketSubscriptions s inner join tblPayments p on s.market = p.market and p.actief = 1 and (s.user = p.receiver or s.user = p.sender) and s.overruled = 0 and s.status = 2);
-	</sql>
-	<sql name="update-status-inschrijvingen-stap2" tag="4">
-		update tblMarketSubscriptions set status = 5 where id in (select id from tmpToUpdate); 
-	</sql>
-	<sql name="update-status-inschrijvingen-stap3" tag="5">
-		DROP TABLE tmpToUpdate;
-	</sql>
-	<sql name="update-cronsIndicators_tblConfig" tag="6">
-		UPDATE `tblConfig` SET `value` = '86400' WHERE `key` LIKE `crons.indicators';
-	</sql> 
-	<sql name="append-to-tblConfig" tag="7">
-		INSERT INTO `tblConfig` (`key`, `value`) VALUES  
-			('domain.name', 'localhost'),
-			('domain.root', '/owaes/'),
-			('domain.absroot', 'http://localhost/owaes/');
-	</sql>
-	<sql name="mailalerts" tag="8">
-		ALTER TABLE `tblUsers` ADD `mailalerts` TEXT NOT NULL AFTER `data` ;
-	</sql>
-	<sql name="tblconfig-domainsetup-name" tag="9">
-		update `tblConfig` set value = NULL where `key` = 'domain.name' and `value` = 'localhost'; 
-	</sql>
-	<sql name="tblconfig-domainsetup-root" tag="9">
-		update `tblConfig` set value = NULL where `key` = 'domain.root' and `value` = '/owaes/'; 
-	</sql>
-	<sql name="tblconfig-domainsetup-absroot" tag="9">
-		update `tblConfig` set value = NULL where `key` = 'domain.absroot' and `value` = 'http://localhost/owaes/'; 
-	</sql> 
-	<sql name="defaults-mailalerts-a" tag="10">
-		INSERT INTO `tblConfig` (`key`, `value`) VALUES  
-			('mailalert.newmessage', 86400),
-			('mailalert.newsubscription', 86400),
-			('mailalert.platform', 1),
-			('mailalert.reminderunread', 259200),
-			('mailalert.remindersubscription', 259200);
-	</sql> 
-	<sql name="tblConfig-to-json" tag="10">
-		update tblConfig set `value` = concat('"', `value`, '"') where `key` in ('domain.templatefolder', 'date.timezone', 'credits.name.1', 'credits.name.x', 'credits.name.overdracht', 'verzekeringen.1', 'verzekeringen.2', 'mail.Host', 'mail.SMTPAuth', 'mail.SMTPSecure', 'domain.name', 'domain.root', 'domain.absroot') and not (`value` is null)
-	</sql>
-	<sql name="tblConfig-fix" tag="10">
-		update tblConfig set `value` = '86400' where `value` = '24*60*60' and `key` = 'crons.indicators'; 
-	</sql> 
-	<sql name="tblMailalerts" tag="11"> 
-CREATE TABLE IF NOT EXISTS `tblMailalerts` (
-  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `user` bigint(20) unsigned NOT NULL,
-  `link` varchar(150) NOT NULL,
-  `message` text NOT NULL,
-  `deadline` bigint(20) unsigned NOT NULL DEFAULT '0',
-  `sent` bigint(20) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; 
-	</sql> 
-	<sql name="tblConfig-change" tag="12">  
-		ALTER TABLE `tblConfig` DROP `id`;
-		ALTER TABLE `tblConfig` ADD PRIMARY KEY(`key`);
-	</sql> 
-	<sql name="tblMailalerts-key" tag="13">  
-		ALTER TABLE `tblMailalerts` ADD `sleutel` VARCHAR( 25 ) NOT NULL DEFAULT '' AFTER `user` ;
-		ALTER TABLE `tblMailalerts` CHANGE `sent` `sent` BIGINT( 20 ) UNSIGNED NULL DEFAULT NULL ;
-	</sql>  
-	<sql name="market-attachments" tag="14">  
-		ALTER TABLE `tblMarket` CHANGE `img` `files` TEXT CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
-		update tblMarket set files = '{}' where files = 'img'; 
-	</sql> 
-	<sql name="tblMarket-sleutel" tag="15">  
-		ALTER TABLE `tblConfig` CHANGE `key` `sleutel` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
-		ALTER TABLE `tblConfig` CHANGE `value` `waarde` VARCHAR( 255 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL ;
-	</sql>  
-	<sql name="dienstverleners" tag="16">  
-		ALTER TABLE `tblUsers` ADD `dienstverlener` BIGINT UNSIGNED NOT NULL DEFAULT '0' AFTER `mailalerts` ;
-		ALTER TABLE `tblGroups` ADD `isdienstverlener` INT( 1 ) UNSIGNED NOT NULL DEFAULT '0' AFTER `img` ;
-	</sql> 
-	<sql name="mailverified" tag="16">  
-		ALTER TABLE `tblUsers` ADD `mailverified` INT NOT NULL DEFAULT '0' AFTER `mail` ; 
-	</sql> 
-	<sql name="mailverifiedSet" tag="16">   
-		update tblUsers set mailverified = 1; 
-	</sql> 
-	<sql name="tblUserEmailVerify" tag="16">  
-		CREATE TABLE IF NOT EXISTS `tblUserEmailVerify` (
-		  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-		  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
-		  `email` varchar(255) NOT NULL,
-		  `sleutel` varchar(255) NOT NULL,
-		  `verified` int(11) NOT NULL DEFAULT '0',
-		  `datum` bigint(20) unsigned NOT NULL DEFAULT '0',
-		  PRIMARY KEY (`id`)
-		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
-	</sql> 
-	<sql name="tblStagemarkt" tag="17">
-		CREATE TABLE IF NOT EXISTS `tblStagemarkt` (
-		  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-		  `user` bigint(20) unsigned NOT NULL DEFAULT '0',
-		  `groepsnaam` text NOT NULL,
-		  `description` text NOT NULL,
-		  `interesse` text NOT NULL,
-		  `logo` text NOT NULL,
-		  PRIMARY KEY (`id`)
-		) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; 
-	</sql> 
-	<sql name="StagemarktWebsite" tag="17">
-		ALTER TABLE `tblStagemarkt` ADD `website` TEXT NOT NULL ;
-	</sql> 
+	('mail.smtp', 'FALSE'),
+	('mail.Host', NULL), 
+	('mail.SMTPAuth', 'FALSE'), 
+	('mail.SMTPSecure', '"ssl"'),
+	('mail.Port', NULL), 
+	('mail.Username', NULL), 
+	('mail.Password', NULL),
+	('mailalert.newmessage', 86400),
+	('mailalert.newsubscription', 86400),
+	('mailalert.platform', 1),
+	('mailalert.reminderunread', 259200),
+	('mailalert.remindersubscription', 259200),
+	('facebook.loginapp.id', NULL), 
+	('facebook.loginapp.secret', NULL),
+	('domain.name', NULL),
+	('domain.root', NULL),
+	('domain.absroot', NULL);
+	</sql>   
 </queries>
