@@ -102,9 +102,10 @@ $arConfig["database"] = array(
 						} 
 						 
 					?>
-                	<?php if (!file_exists("inc.config.db.php") || !settings("database", "loaded")) { ?>
+                	<?php if (!file_exists("inc.config.db.php") || !settings("database", "loaded")) { ?> 
                         <fieldset>
                             <legend>Database</legend>
+                            <p>Please create a mySQL-database and enter your settings: </p>
                             <div class="form-group">
                                 <label for="alias" class="control-label col-lg-2">Database host:</label>
                                 <div class="col-lg-10">
