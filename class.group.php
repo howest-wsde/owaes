@@ -23,7 +23,7 @@
 		private $iLastUpdate = NULL; 
 		private $arUserRights = array(); 
 		private $bDeleted = FALSE; 
-		private $bIsDienstverlener = FALSE; 
+		private $bIsDienstverlener = NULL; 
 		 
 		public function group($strKey=NULL) { // $strKey = ID or ALIAS // when not defined: create new user  
 			if (!is_null($strKey)) {

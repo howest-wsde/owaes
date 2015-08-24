@@ -58,7 +58,7 @@
 				$this->iInsertedID = 0; 
 				$this->iLength = 0; 
 				
-				$arSQL = explode(" ", $strSQL); 
+				$arSQL = explode(" ", trim($strSQL)); 
 				switch(strtolower($arSQL[0])) {
 					case "select": 
 					case "show": 
