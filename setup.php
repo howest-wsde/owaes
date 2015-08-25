@@ -100,6 +100,13 @@ $arConfig["database"] = array(
 									<p>Please make folder(s) <strong>" . implode("</strong>, <strong>", $arNotOK) . "</strong> write enabled</p>
 								</fieldset>"); 
 						} 
+						
+						if (ini_get("short_open_tag") == "Off") {
+							echo ("<fieldset>
+									<legend>php.ini</legend> 
+									<p>Please change the value of 'short_open_tag' to 'On'</p>
+								</fieldset>"); 	
+						}
 						 
 					?>
                 	<?php if (!file_exists("inc.config.db.php") || !settings("database", "loaded")) { ?> 
