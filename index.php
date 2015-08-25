@@ -100,12 +100,12 @@
                                         <a href="modal.levelneeded.php?l=<?php echo $oNew->type()->minimumlevel(); ?>" class="domodal btn btn-default">
                                             <span class="icon icon-plus"></span><span class="title">Aanbod toevoegen</span>
                                         </a>
-                                    <?	
+                                    <?php
                                     break;  
                             }  
                         }
                     ?>
-                    <? 
+                    <?php 
 							$oOwaesList = new owaeslist();  
 							$oOwaesList->filterByType($strType); 
 							$oOwaesList->filterByState(STATE_RECRUTE); 
@@ -134,16 +134,16 @@
 					?>
                                          
                     <div class="btn-group">
-                            <button type="button" href="index.php" class="btn btn-default" onclick="location.href='<? echo fixPath("index.php?" . qry(array("d"=>($bDesc?0:1)))); ?>';"><span class="icon icon-order-<? echo ($bDesc?"desc":"asc"); ?>"></span><span class="title"><? echo $strOrder; ?></span></button>
+                            <button type="button" href="index.php" class="btn btn-default" onclick="location.href='<?php echo fixPath("index.php?" . qry(array("d"=>($bDesc?0:1)))); ?>';"><span class="icon icon-order-<?php echo ($bDesc?"desc":"asc"); ?>"></span><span class="title"><?php echo $strOrder; ?></span></button>
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="padding: 17px 10px 18px; ">
                             <span class="caret"></span>
                             <span class="sr-only">Toggle Dropdown</span>
                             </button>
                       <ul class="dropdown-menu">
-                        <li><a href="<? echo fixPath("index.php?" . qry(array(), array("order", "d"))); ?>">Profielopbouw</a></li>
-                        <li><a href="<? echo fixPath("index.php?" . qry(array("order"=>"creation", "d"=>1))); ?>">Datum creatie</a></li>
-                        <li><a href="<? echo fixPath("index.php?" . qry(array("order"=>"task"), array("d"))); ?>">Datum uitvoering</a></li>
-                        <?
+                        <li><a href="<?php echo fixPath("index.php?" . qry(array(), array("order", "d"))); ?>">Profielopbouw</a></li>
+                        <li><a href="<?php echo fixPath("index.php?" . qry(array("order"=>"creation", "d"=>1))); ?>">Datum creatie</a></li>
+                        <li><a href="<?php echo fixPath("index.php?" . qry(array("order"=>"task"), array("d"))); ?>">Datum uitvoering</a></li>
+                        <?php
                             if ($oMe->latitude() * $oMe->longitude() == 0) {
                                 echo ("<li><a href=\"" . fixPath("modal.adres.php?r=" . urlencode(fixPath("index.php?" . qry(array("order"=>"distance"), array("d"))))) . "\" class=\"domodal\">Afstand</a></li>"); 
                             } else {
