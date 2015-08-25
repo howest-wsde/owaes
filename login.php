@@ -191,9 +191,10 @@
 						$strHTML = "<ul class=\"socialmedia\">"; 
  						
 						if (settings("facebook", "loginapp", "id")) {
+							 
 							// FACEBOOK: 
 							try {
-							
+								require_once 'fb/facebook.php'; 
 								$facebook = new Facebook(array(
 									'appId'  => settings("facebook", "loginapp", "id"),
 									'secret' => settings("facebook", "loginapp", "secret"),
@@ -203,7 +204,7 @@
 									'redirect_uri'=>$strReturnURL
 								)) . "\" rel=\"1020,575\"><img src=\"img/facebook.png\" alt=\"Facebook\"/></a></li>"; 
 							} catch (Exception $e) {
-							
+								
 							}
 						}
 						

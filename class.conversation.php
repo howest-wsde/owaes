@@ -214,6 +214,7 @@
 
 					if (user($this->iReceiver)->mailalert("newmessage")) {
 						$oAlert = new mailalert(); 
+						$oAlert->cancel("conversation." . $this->iReceiver . "." . $this->iSender);   // bestaande messages met zelfde key wissen
 						$oAlert->user($this->iReceiver); 
 						$oAlert->link("conversation", $this->iSender); 
 						$oAlert->sleutel("conversation." . $this->iReceiver . "." . $this->iSender); 

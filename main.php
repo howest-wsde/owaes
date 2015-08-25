@@ -10,6 +10,7 @@
 	$oPage->addJS("script/flot/jquery.flot.js"); 
 	$oPage->addJS("script/flot/jquery.flot.time.js"); 
     $oPage->addJS("script/flot/jquery.flot.symbol.js");
+    $oPage->addJS("script/flot/jquery.flot.categories.js"); 
     
     $oPage->tab("home");
 	
@@ -160,6 +161,157 @@
 			} 
 			
 		</script>
+        
+<script>
+		$(function() { 
+			/* EXPERIENCE: START */ 
+			<?
+				$oDB = new database(); 
+				$oDB->execute("select min(datum) as d from tblExperience where user = " . me() . ";"); 
+				$iStartTijd = $oDB->get("d"); 
+				$iLopende = owaestime() - $iStartTijd;  
+			   // $oDB->sql("select user, sum(experience) as exp, min(datum) as start from tblExperience where datum >= $iStartTijd group by user having start <= $iStartTijd ");   
+				$oDB->sql("
+					select tX1.user, sum(tX1.experience) as exp  
+					from tblExperience tX1 inner join (
+							select user, min(datum) as start from tblExperience group by user having start <= $iStartTijd
+					) tX2 on tX1.user = tX2.user 
+					where tX1.datum < tX2.start+$iLopende
+					group by tX1.user
+				
+				"); 
+				$oDB->execute();  
+				$iMax = 0; $iIk = 0; $iAVG = 0; 
+				while ($oDB->nextRecord()) {
+					$iThis = $oDB->get("exp"); 
+					$iAVG += $iThis; 
+					if ($iThis > $iMax) $iMax = $iThis; 
+					if ($oDB->get("user") == me()) $iIk = $iThis; 
+				} 
+				$iAVG /= $oDB->length();  
+			?>
+				
+			var data = [ ["GEM", <? echo $iAVG; ?>], ["JIJ", <? echo $iIk; ?>], ["MAX", <? echo $iMax; ?>] ];
+	
+			$.plot("#indicatorenRef", [ data ], {
+				series: {
+					bars: {
+						show: true, 
+						align: "center"
+					}
+				},
+				xaxis: {
+					mode: "categories",
+					tickLength: 0
+				}
+			});
+			
+			/* EXPERIENCE: STOP */ 
+	
+<? /*
+		
+		/* VOORUITGANG: START */
+		/*
+		<?php 
+			$oExp = $oMe->experience(); 
+			$arExp = $oExp->timeline(); // / SLOW 
+			foreach ($arExp as $i=>$arV) $arExp[$i][0]*=1000;  
+			$arLevels = array();  
+			foreach (settings("levels") as $iLevel=>$arSettings) { 
+				if ($iLevel <= $oExp->level()+1) $arLevels[] = $arSettings["threshold"]; 
+			}  
+			$arLevelBounds = array(
+				"from"=> $arLevels[count($arLevels)-2], 
+				"to"=> $arLevels[count($arLevels)-1],  
+				"color"=> "#fceeb4",  
+			);  
+			$arTicks = array(); 
+			$arTicks[] = array($arLevels[count($arLevels)-2], "level " . (count($arLevels)-2)); 
+			$arTicks[] = array($arLevels[count($arLevels)-1], "level " . (count($arLevels)-1));  
+		?> 
+		
+		var dataExp = <?php echo json_encode($arExp); ?>; 
+		var optionsExp = {
+			xaxis: {
+				mode: "time",
+				tickLength: 5, 
+			},
+			series: {
+                lines: { show: true, lineWidth: 3 },
+                shadowSize: 0
+            }, 
+			grid: {
+				backgroundColor: "#ffffff", 
+				markings:  [{ yaxis: <?php echo json_encode($arLevelBounds); ?> } ],  
+			},
+			yaxis: {
+				min: 0,
+				max: <?php echo round($arLevels[count($arLevels)-1]*1.1);  ?>,
+				color:"#e3e3e3",  
+				ticks: <?php echo json_encode($arTicks); ?>, 
+			},
+		};
+		
+		$.plot("#expMeter", [ dataExp ], optionsExp);  
+		
+		
+		/* VOORUITGANG: STOP */ 
+			?>
+			
+		/* TIMELINE: START */ 
+			
+		<?php
+			$arIndicatoren = $oMe->indicatorenTimeline();  
+			$arShow = array(
+						array(
+							"label" => "&nbsp;Sociaal",
+							"data" => $arIndicatoren["social"]["data"], 
+							"color" => "#8dc63f",
+						), 
+						array(
+							"label" => "&nbsp;Fysiek",
+							"data" => $arIndicatoren["physical"]["data"], 
+							"color" => "#ff3131",
+						),  
+						array(
+							"label" => "&nbsp;Kennis",
+							"data" => $arIndicatoren["mental"]["data"], 
+							"color" => "#0072bc",
+						), 
+						array(
+							"label" => "&nbsp;Welzijn",
+							"data" => $arIndicatoren["emotional"]["data"], 
+							"color" => "#ffcc00",
+						), 
+					); 
+			foreach ($arShow as $strKey=>$arData) foreach ($arData["data"] as $i=>$arVal) $arShow[$strKey]["data"][$i][0]*=1000; 
+		?>
+		var optionsIndi = {
+			xaxis: {
+				mode: "time",
+				tickLength: 5
+			},
+			yaxis: {
+				min: 0,
+				max: 100,
+				color:"#e3e3e3",   
+			}, 
+			series: {
+                lines: { show: true, lineWidth: 3 },
+                shadowSize: 0
+            },
+			grid: {
+				backgroundColor: "#ffffff",  
+			},
+		}; 
+		
+		$.plot("#indicatorenMeter", <?php echo json_encode($arShow); ?>, optionsIndi);  
+		/* TIMELINE: START */ 
+		
+		
+	});
+	</script> 
+    
     </head>
     <body id="index">
         <?php echo $oPage->startTabs(); ?> 
@@ -257,110 +409,27 @@
                  </div>
                     <div id="collapseGraph" class="panel-collapse collapse">
                          <div class="panel-body">
+                         
+                         
                             <div class="row grafiekenHome">
-                            <h2>Vooruitgang:</h2>
+                       		 <h2>Vooruitgang:</h2>
+                                                             
                                 <div class="col-md-4">
                                     <h3>Ervaring</h3>
-                                    <?php 
-										$oExp = $oMe->experience(); 
-										$arExp = $oExp->timeline(); // / SLOW 
-										foreach ($arExp as $i=>$arV) $arExp[$i][0]*=1000;  
-										$arLevels = array();  
-										foreach (settings("levels") as $iLevel=>$arSettings) { 
-											if ($iLevel <= $oExp->level()+1) $arLevels[] = $arSettings["threshold"]; 
-										}  
-										$arLevelBounds = array(
-											"from"=> $arLevels[count($arLevels)-2], 
-											"to"=> $arLevels[count($arLevels)-1],  
-											"color"=> "#fceeb4",  
-										);  
-										$arTicks = array(); 
-										$arTicks[] = array($arLevels[count($arLevels)-2], "level " . (count($arLevels)-2)); 
-										$arTicks[] = array($arLevels[count($arLevels)-1], "level " . (count($arLevels)-1));  
-									?> 
-                                    <script>
-	$(function() {
-		
-		var dataExp = <?php echo json_encode($arExp); ?>; 
-		var optionsExp = {
-			xaxis: {
-				mode: "time",
-				tickLength: 5, 
-			},
-			series: {
-                lines: { show: true, lineWidth: 3 },
-                shadowSize: 0
-            }, 
-			grid: {
-				backgroundColor: "#ffffff", 
-				markings:  [{ yaxis: <?php echo json_encode($arLevelBounds); ?> } ],  
-			},
-			yaxis: {
-				min: 0,
-				max: <?php echo round($arLevels[count($arLevels)-1]*1.1);  ?>,
-				color:"#e3e3e3",  
-				ticks: <?php echo json_encode($arTicks); ?>, 
-			},
-		};
-		
-		$.plot("#expMeter", [ dataExp ], optionsExp);  
-		
-		var optionsIndi = {
-			xaxis: {
-				mode: "time",
-				tickLength: 5
-			},
-			yaxis: {
-				min: 0,
-				max: 100,
-				color:"#e3e3e3",   
-			}, 
-			series: {
-                lines: { show: true, lineWidth: 3 },
-                shadowSize: 0
-            },
-			grid: {
-				backgroundColor: "#ffffff",  
-			},
-		};
-		
-		<?php
-			$arIndicatoren = $oMe->indicatorenTimeline(); 
-			$arShow = array(
-						array(
-							"label" => "&nbsp;Sociaal",
-							"data" => $arIndicatoren["social"]["data"], 
-							"color" => "#8dc63f",
-						), 
-						array(
-							"label" => "&nbsp;Fysiek",
-							"data" => $arIndicatoren["physical"]["data"], 
-							"color" => "#ff3131",
-						),  
-						array(
-							"label" => "&nbsp;Kennis",
-							"data" => $arIndicatoren["mental"]["data"], 
-							"color" => "#0072bc",
-						), 
-						array(
-							"label" => "&nbsp;Welzijn",
-							"data" => $arIndicatoren["emotional"]["data"], 
-							"color" => "#ffcc00",
-						), 
-					); 
-			foreach ($arShow as $strKey=>$arData) foreach ($arData["data"] as $i=>$arVal) $arShow[$strKey]["data"][$i][0]*=1000; 
-		?>
-		
-		$.plot("#indicatorenMeter", <?php echo json_encode($arShow); ?>, optionsIndi);  
-	});
-									</script> 
-                                    <div id="expMeter" style="width: 350px; height: 205px;display: block; "></div>
-                                    <img class="size" src="img/expMeter.png" alt="" style="display: none; " />
+                                    <div id="indicatorenRef" style="width: 350px; height: 205px;display: block; "></div>  
+                                </div> 
+
+	<!-- 
+                                <div class="col-md-4">
+                                    <h3>Ervaring</h3>
+                                    
+                                   
+                                    <div id="expMeter" style="width: 350px; height: 205px;display: block; "></div> 
                                 </div>
+									 -->
                                 <div class="col-md-4">
                                     <h3>Indicatoren</h3>
-                                    <div id="indicatorenMeter" style="width: 350px; height: 205px;display: block; "></div> 
-                                    <img class="size" src="img/graphIndicatoren.png" alt="" style="display: none; " />
+                                    <div id="indicatorenMeter" style="width: 350px; height: 205px;display: block; "></div>  
                                 </div>
                                 <div class="col-md-4 creditmeter">
                                     <h3><?php echo ucfirst(settings("credits", "name", "x")); ?></h3>
@@ -374,6 +443,9 @@
                     
             </div>
        </div>
+       
+             
+       
        <!-- Map -->  
         <div class="homepage map col-md-12 border layoutBlocks" style="z-index: 990;">
              <div id="map-info">

@@ -1,6 +1,6 @@
 <queries>
 	<sql name="createDB" tag="0">  
-CREATE TABLE `tblAbuse` (
+CREATE TABLE IF NOT EXISTS `tblAbuse` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `created` bigint(20) unsigned NOT NULL DEFAULT '0',
   `reason` varchar(50) NOT NULL,
@@ -12,7 +12,7 @@ CREATE TABLE `tblAbuse` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblActions` (
+CREATE TABLE IF NOT EXISTS `tblActions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user` bigint(20) NOT NULL DEFAULT '0',
   `created` bigint(20) NOT NULL DEFAULT '0',
@@ -24,7 +24,7 @@ CREATE TABLE `tblActions` (
 ) ENGINE=InnoDB AUTO_INCREMENT=192 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblBadges` (
+CREATE TABLE IF NOT EXISTS `tblBadges` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `mkey` varchar(30) NOT NULL,
   `img` varchar(30) NOT NULL,
@@ -58,7 +58,7 @@ INSERT INTO tblBadges VALUES('27', 'done-opleiding', 'opleiding.png', 'opleiding
 INSERT INTO tblBadges VALUES('28', 'follower', 'follower.png', 'Volger', 'Je volgt minimum Ã©Ã©n persoon', '0', '{"emotional":1, "social": 1}'); 
 INSERT INTO tblBadges VALUES('29', 'profile', 'profile.png', 'Volledig profiel', 'Je profiel is volledig aangevuld', '1', '{"emotional":1, "social": 1}'); 
 
-CREATE TABLE `tblCertificates` (
+CREATE TABLE IF NOT EXISTS `tblCertificates` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `mkey` varchar(30) NOT NULL,
   `img` varchar(30) NOT NULL,
@@ -69,13 +69,13 @@ CREATE TABLE `tblCertificates` (
 
 INSERT INTO tblCertificates VALUES('1', 'redcross', 'redcross.png', 'EHBO-certificaat', 'Deze persoon heeft een EHBO-cursus gevolgd. '); 
 
-CREATE TABLE `tblConfig` (
+CREATE TABLE IF NOT EXISTS `tblConfig` (
   `sleutel` varchar(255) NOT NULL,
   `waarde` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`sleutel`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
 
-CREATE TABLE `tblConversations` (
+CREATE TABLE IF NOT EXISTS `tblConversations` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `sender` bigint(20) NOT NULL,
   `receiver` bigint(20) NOT NULL,
@@ -90,7 +90,7 @@ CREATE TABLE `tblConversations` (
 ) ENGINE=MyISAM AUTO_INCREMENT=320 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblDbChanges` (
+CREATE TABLE IF NOT EXISTS `tblDbChanges` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` datetime NOT NULL,
   `tag` varchar(255) NOT NULL,
@@ -99,7 +99,7 @@ CREATE TABLE `tblDbChanges` (
 ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblExperience` (
+CREATE TABLE IF NOT EXISTS `tblExperience` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `idk` varchar(30) NOT NULL,
   `user` bigint(20) unsigned NOT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE `tblExperience` (
 ) ENGINE=InnoDB AUTO_INCREMENT=6987 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblFeedback` (
+CREATE TABLE IF NOT EXISTS `tblFeedback` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `transaction` bigint(20) unsigned NOT NULL,
   `from` bigint(20) NOT NULL,
@@ -123,7 +123,7 @@ CREATE TABLE `tblFeedback` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblFollowers` (
+CREATE TABLE IF NOT EXISTS `tblFollowers` (
   `user` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `followed` bigint(20) unsigned NOT NULL,
   `startdate` bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -131,7 +131,7 @@ CREATE TABLE `tblFollowers` (
 ) ENGINE=InnoDB AUTO_INCREMENT=115 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblFriends` (
+CREATE TABLE IF NOT EXISTS `tblFriends` (
   `user` bigint(20) unsigned NOT NULL COMMENT 't',
   `friend` bigint(20) unsigned NOT NULL,
   `datum` bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -140,7 +140,7 @@ CREATE TABLE `tblFriends` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblGroupUsers` (
+CREATE TABLE IF NOT EXISTS `tblGroupUsers` (
   `groep` bigint(20) unsigned NOT NULL,
   `user` bigint(20) unsigned NOT NULL,
   `invitedby` bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -158,7 +158,7 @@ CREATE TABLE `tblGroupUsers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblGroups` (
+CREATE TABLE IF NOT EXISTS `tblGroups` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `naam` varchar(150) NOT NULL,
   `website` varchar(255) NOT NULL,
@@ -173,7 +173,7 @@ CREATE TABLE `tblGroups` (
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblIndicators` (
+CREATE TABLE IF NOT EXISTS `tblIndicators` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user` bigint(20) NOT NULL,
   `datum` bigint(20) NOT NULL,
@@ -189,7 +189,7 @@ CREATE TABLE `tblIndicators` (
 ) ENGINE=InnoDB AUTO_INCREMENT=9860 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblLog` (
+CREATE TABLE IF NOT EXISTS `tblLog` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user` bigint(20) unsigned NOT NULL DEFAULT '0',
   `datum` bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -199,7 +199,7 @@ CREATE TABLE `tblLog` (
 ) ENGINE=InnoDB AUTO_INCREMENT=7441 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblMailalerts` (
+CREATE TABLE IF NOT EXISTS `tblMailalerts` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user` bigint(20) unsigned NOT NULL,
   `sleutel` varchar(25) NOT NULL DEFAULT '',
@@ -211,7 +211,7 @@ CREATE TABLE `tblMailalerts` (
 ) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblMarket` (
+CREATE TABLE IF NOT EXISTS `tblMarket` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `author` bigint(20) NOT NULL,
   `groep` bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -240,7 +240,7 @@ CREATE TABLE `tblMarket` (
 ) ENGINE=MyISAM AUTO_INCREMENT=178 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblMarketDates` (
+CREATE TABLE IF NOT EXISTS `tblMarketDates` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `market` bigint(20) unsigned NOT NULL,
   `datum` bigint(20) NOT NULL,
@@ -250,7 +250,7 @@ CREATE TABLE `tblMarketDates` (
 ) ENGINE=MyISAM AUTO_INCREMENT=650 DEFAULT CHARSET=utf8; 
 
 
-CREATE TABLE `tblMarketSubscriptions` (
+CREATE TABLE IF NOT EXISTS `tblMarketSubscriptions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user` bigint(20) NOT NULL,
   `doneby` bigint(20) NOT NULL,
@@ -263,14 +263,14 @@ CREATE TABLE `tblMarketSubscriptions` (
 ) ENGINE=MyISAM AUTO_INCREMENT=104 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblMarketTags` (
+CREATE TABLE IF NOT EXISTS `tblMarketTags` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `market` bigint(20) unsigned NOT NULL DEFAULT '0',
   `tag` varchar(100) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=299 DEFAULT CHARSET=latin1; 
 
-CREATE TABLE `tblMarketTypes` (
+CREATE TABLE IF NOT EXISTS `tblMarketTypes` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sleutel` varchar(10) NOT NULL,
   `title` varchar(250) NOT NULL,
@@ -283,7 +283,7 @@ INSERT INTO tblMarketTypes VALUES('1', 'ervaring', 'werkervaring', '0', '1');
 INSERT INTO tblMarketTypes VALUES('2', 'opleiding', 'opleidingen', '1', '2'); 
 INSERT INTO tblMarketTypes VALUES('3', 'infra', 'infrastructuur', '1', '3'); 
 
-CREATE TABLE `tblNotifications` (
+CREATE TABLE IF NOT EXISTS `tblNotifications` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `sleutel` varchar(30) NOT NULL,
   `readdate` bigint(20) NOT NULL DEFAULT '0',
@@ -296,7 +296,7 @@ CREATE TABLE `tblNotifications` (
 ) ENGINE=InnoDB AUTO_INCREMENT=386 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblPayments` (
+CREATE TABLE IF NOT EXISTS `tblPayments` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `datum` bigint(20) NOT NULL DEFAULT '0',
   `initiator` bigint(20) unsigned NOT NULL DEFAULT '0',
@@ -311,7 +311,7 @@ CREATE TABLE `tblPayments` (
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblQuests` (
+CREATE TABLE IF NOT EXISTS `tblQuests` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `volgorde` bigint(20) NOT NULL DEFAULT '0',
   `titel` varchar(250) NOT NULL,
@@ -321,7 +321,7 @@ CREATE TABLE `tblQuests` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblStagemarkt` (
+CREATE TABLE IF NOT EXISTS `tblStagemarkt` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user` bigint(20) unsigned NOT NULL DEFAULT '0',
   `groepsnaam` text NOT NULL,
@@ -333,7 +333,7 @@ CREATE TABLE `tblStagemarkt` (
 ) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblStars` (
+CREATE TABLE IF NOT EXISTS `tblStars` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `datum` bigint(20) NOT NULL DEFAULT '0',
   `receiver` bigint(20) NOT NULL DEFAULT '0',
@@ -346,7 +346,7 @@ CREATE TABLE `tblStars` (
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblTransactions` (
+CREATE TABLE IF NOT EXISTS `tblTransactions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `date` bigint(20) NOT NULL,
   `initiator` bigint(20) NOT NULL,
@@ -373,7 +373,7 @@ CREATE TABLE `tblTransactions` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblUserBadges` (
+CREATE TABLE IF NOT EXISTS `tblUserBadges` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user` bigint(20) NOT NULL,
   `badge` bigint(20) NOT NULL,
@@ -383,7 +383,7 @@ CREATE TABLE `tblUserBadges` (
 ) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblUserCertificates` (
+CREATE TABLE IF NOT EXISTS `tblUserCertificates` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user` bigint(20) NOT NULL,
   `certificate` bigint(20) NOT NULL,
@@ -392,7 +392,7 @@ CREATE TABLE `tblUserCertificates` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblUserEmailVerify` (
+CREATE TABLE IF NOT EXISTS `tblUserEmailVerify` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user` bigint(20) unsigned NOT NULL DEFAULT '0',
   `email` varchar(255) NOT NULL,
@@ -403,7 +403,7 @@ CREATE TABLE `tblUserEmailVerify` (
 ) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblUserMailSettings` (
+CREATE TABLE IF NOT EXISTS `tblUserMailSettings` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `user` bigint(20) unsigned NOT NULL,
   `sleutel` varchar(20) NOT NULL,
@@ -412,7 +412,7 @@ CREATE TABLE `tblUserMailSettings` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblUserRecover` (
+CREATE TABLE IF NOT EXISTS `tblUserRecover` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user` bigint(20) NOT NULL,
   `timeasked` bigint(20) NOT NULL,
@@ -425,7 +425,7 @@ CREATE TABLE `tblUserRecover` (
 ) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblUserSessions` (
+CREATE TABLE IF NOT EXISTS `tblUserSessions` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `user` bigint(20) NOT NULL,
   `start` bigint(20) NOT NULL,
@@ -438,7 +438,7 @@ CREATE TABLE `tblUserSessions` (
 ) ENGINE=MyISAM AUTO_INCREMENT=328 DEFAULT CHARSET=latin1; 
 
 
-CREATE TABLE `tblUsers` (
+CREATE TABLE IF NOT EXISTS `tblUsers` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `alias` varchar(32) NOT NULL,
   `login` varchar(125) NOT NULL,
@@ -585,5 +585,8 @@ CREATE TABLE `tblUsers` (
 	</sql>   
 	<sql name="deleted_field_users" tag="18">
 		ALTER TABLE `tblUsers` CHANGE `deleted` `deleted` INT( 1 ) NOT NULL DEFAULT '0';
+	</sql>  
+	<sql name="firstUser" tag="19">
+		insert into tblUsers (login, firstname, lastname, alias, mail, mailverified, actief, algemenevoorwaarden, visible, pass, admin) values ('owaes', 'Owaes', 'Owaes', 'owaes', 'changeme@owaes.org', '1', '1', 1, 0,  'e6f86f6ef61a21d693b73bcc92a247c2', 1);
 	</sql>  
 </queries>
