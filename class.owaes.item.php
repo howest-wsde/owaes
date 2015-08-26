@@ -978,11 +978,11 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						switch(strtolower($arTag[1])) { 
 							case "short": 
 								return nl2br(shorten(html($this->body(), array("p", "a", "strong", "em", "br")), 250, TRUE));  
-								break; 
+								break;  
 							default: 
 								return nl2br(html($this->body(), array("p", "a", "strong", "em", "br")));  
 						}
-					} else return nl2br(html($this->body()));   
+					} else return nl2br(html($this->body(), array("p", "a", "strong", "em", "br")));  
 				case "link": 
 				case "url": 
 					return $this->getLink(); 
