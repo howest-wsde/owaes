@@ -24,7 +24,7 @@
 		}
 		$oProfile->alias($_POST["alias"], TRUE); 
 		if (!$oProfile->login($_POST["username"])) $arErrors["username"] = "De opgegeven gebruikersnaam bestond al. Er werd een nieuwe gegenereerd"; 
-		$oProfile->location($_POST["location"], $_POST["locationlat"], $_POST["locationlong"] ); 
+		$oProfile->location($_POST["location"], $_POST["locationlat"], $_POST["locationlong"], TRUE); 
 		$oProfile->description($_POST["description"]); 
 		$oProfile->gender($_POST["gender"]); 
 		$oProfile->visible(isset($_POST["visible"])); 

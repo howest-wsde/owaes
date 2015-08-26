@@ -592,4 +592,7 @@ CREATE TABLE IF NOT EXISTS `tblUsers` (
 	<sql name="actie-locatie-invullen" tag="20">
 		insert into tblActions (user, actie) (select id, 'location' from tblUsers where id not in (select user from tblActions where actie = 'location')); 
 	</sql> 
+	<sql name="actie-locatie-badge" tag="20">
+INSERT INTO `quq_owaes`.`tblBadges` (`id` , `mkey` ,`img` ,`title` ,`info` ,`zichtbaar` ,`beloning`)VALUES (NULL , 'location', 'location.png', 'Locatie ingevuld', 'Deze gebruiker heeft zijn profiel aangevuld met zijn woonplaats. ', '1', '{"emotional":1, "mental": 1}');
+	</sql> 
 </queries>
