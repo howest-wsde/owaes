@@ -175,7 +175,7 @@
 				if ($oSecurity->admin()) {
 					$arTabs["lijsten"]["sub"]["Admin"] = array("admin.php", "admin");
 					$arTabs["lijsten"]["sub"]["Reports"] = array("meldingen.php", "meldingen");
-					$arTabs["lijsten"]["sub"]["Groepen"] = array("admin.groepen.php", "groups");
+					$arTabs["lijsten"]["sub"]["Groepen beheren"] = array("admin.groepen.php", "groups");
 				}
                 
                 $arTabs["account"] = array (

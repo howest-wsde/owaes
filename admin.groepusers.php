@@ -159,7 +159,7 @@
                                 <div class="form-group">
                                     <label for="dienstverlener" class="control-label col-lg-2">Dienstverlener:</label>
                                     <div class="col-lg-10"><div class="checkbox-control form-control">
-                                        <input type="checkbox" name="isdienstverlener" id="isdienstverlener" value="1"   <? if ($oGroep->isDienstverlener()) echo ('checked="checked"');  ?> />
+                                        <input type="checkbox" name="isdienstverlener" id="isdienstverlener" value="1" <? if ($oGroep->isDienstverlener()) echo ('checked="checked"');  ?> />
                                         <label for="isdienstverlener">Deze groep vertegenwoordigt een dienstverlener</label>
                                     </div></div>
                                 </div>
