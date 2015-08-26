@@ -49,7 +49,7 @@
 		if ($oMijnRechten->groupinfo()) {
 			$oGroep->naam($_POST["groepsnaam"]); 
 			$oGroep->website($_POST["groepsurl"]); 
-			$oGroep->isDienstverlener(isset($_POST["isdienstverlener"])); 
+			if (user(me())->admin()) $oGroep->isDienstverlener(isset($_POST["isdienstverlener"])); 
 			$oGroep->info($_POST["info"]); 	 	
 			if ($_FILES["img"]["error"] == 0){  
 				$strTmp = "upload/tmp/" . $_FILES["img"]["name"];  
@@ -156,13 +156,15 @@
                                         <?php echo $oGroep->getImage(); ?>
                                     </div> 
                                 </div>
-                                <div class="form-group">
-                                    <label for="dienstverlener" class="control-label col-lg-2">Dienstverlener:</label>
-                                    <div class="col-lg-10"><div class="checkbox-control form-control">
-                                        <input type="checkbox" name="isdienstverlener" id="isdienstverlener" value="1" <? if ($oGroep->isDienstverlener()) echo ('checked="checked"');  ?> />
-                                        <label for="isdienstverlener">Deze groep vertegenwoordigt een dienstverlener</label>
-                                    </div></div>
-                                </div>
+                                <?php if (user(me())->admin()) { ?>
+                                    <div class="form-group">
+                                        <label for="dienstverlener" class="control-label col-lg-2">Dienstverlener:</label>
+                                        <div class="col-lg-10"><div class="checkbox-control form-control">
+                                            <input type="checkbox" name="isdienstverlener" id="isdienstverlener" value="1" <? if ($oGroep->isDienstverlener()) echo ('checked="checked"');  ?> />
+                                            <label for="isdienstverlener">Deze groep vertegenwoordigt een dienstverlener</label>
+                                        </div></div>
+                                    </div>
+                                <?php }  ?> 
  
                     
                                 <div class="form-group">
