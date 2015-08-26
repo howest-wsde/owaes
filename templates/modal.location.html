@@ -1,0 +1,20 @@
+<div class="modal fade modallocation" id="location-modal">
+  <div class="modal-dialog">
+    <form action="[currentfile]">  
+        <input type="hidden" id="actionfield" name="action" value="later" />
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Optimaliseer uw profiel</h4>
+          </div>
+          <div class="modal-body">
+            <p>We merken dat uw profiel nog niet volledig ingevuld werd. </p>
+            <p>Vul uw woonplaats in om betere resultaten te krijgen. </p> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-success save-form" value="confirm" onclick="document.location.href='[target]';" data-dismiss="modal">ok</button>
+            <button type="button" class="btn btn-cancel later-form" onclick="document.getElementById('actionfield').value='later';" data-dismiss="modal">niet nu</button>
+          </div>
+        </div><!-- /.modal-content -->
+    </form>
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
