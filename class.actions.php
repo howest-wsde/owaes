@@ -50,7 +50,7 @@
 			if (is_null($this->arModals)) {
 				$arModalURLs = array();  
 				foreach ($this->getList() as $oAction) {
-					switch($oAction->type()) {
+					switch($oAction->type()) { 
 						case "transaction": 
 							$arModalURLs[] = "modal.transaction.php?m=" . $oAction->data("market") . "&u=" . $oAction->data("user"); 
 							break; 
@@ -79,6 +79,14 @@
 								$arQRY = array("u=" . $oAction->data("user"));  
 								if ($oAction->data("declinedby")) $arQRY[] = "d=" . $oAction->data("declinedby"); 
 								$arModalURLs[] = "modal.confirmuser.php?" . implode("&", $arQRY);  
+							}
+							break; 
+						case "location":  
+							if (user(me())->latitude() * user(me())->longitude() == 0) {
+								$arModalURLs[] = "modal.location.php";  
+							} else {
+								$oAction->done(owaestime()); 
+								$oAction->update();  
 							}
 							break; 
 						case "experience":  

@@ -107,12 +107,14 @@
 							$this->lastname($strVal); 
 							break; 	
 						case "email": 
-							if ($strVal != $this->email()) $this->changeEmail($strVal, TRUE);  
-							$oAlert = new action($this->id()); 
-							$oAlert->type("alert"); 
-							$oAlert->data("title", "E-mail validatie"); 
-							$oAlert->data("text", "Er werd een validatiemail gestuurd naar uw nieuw e-mailadres. De aanpassing wordt geldig vanaf deze bevestigd werd.");  
-							$oAlert->update();  
+							if ($strVal != $this->email())  {
+								$this->changeEmail($strVal, TRUE);  
+								$oAlert = new action($this->id()); 
+								$oAlert->type("alert"); 
+								$oAlert->data("title", "E-mail validatie"); 
+								$oAlert->data("text", "Er werd een validatiemail gestuurd naar uw nieuw e-mailadres. De aanpassing wordt geldig vanaf deze bevestigd werd.");  
+								$oAlert->update();  
+							}
 							//$this->email($strVal); 
 							break; 	
 						case "description": 
@@ -133,7 +135,7 @@
 							} else {
 								$arLoc = array("latitude"=>0, "longitude"=>0); 
 							}
-							$this->location($strVal, $arLoc["latitude"], $arLoc["longitude"]); 
+							$this->location($strVal, $arLoc["latitude"], $arLoc["longitude"], TRUE); 
 							break; 	
 						case "showlocation": 
 							$this->visible("location", $_POST["showlocation"]);
@@ -464,7 +466,7 @@
 		} 
 		 
 
-		public function location($strLocation = NULL, $iLocationLat = NULL, $iLocationLong = NULL) { /* get / set location
+		public function location($strLocation = NULL, $iLocationLat = NULL, $iLocationLong = NULL, $bBadge = FALSE) { /* get / set location
 			set : strlocation en lat + long doorgeven
 			get: returns strLocation (voor lat + long: LatLong())
 		*/
@@ -472,6 +474,7 @@
 			if (!is_null($iLocationLat)) $this->iLocationLat = $iLocationLat;
 			if (!is_null($iLocationLong)) $this->iLocationLong = $iLocationLong; 
 			if (is_null($this->strLocation)) $this->load();
+			if ($bBadge) if ($iLocationLat*$iLocationLong!=0) $this->addBadge("location"); 
 			return $this->visible4me("location") ? $this->strLocation : ""; 
 		} 
 		public function LatLong() { // returns arra(iLat, iLong)
@@ -1351,6 +1354,11 @@
 					$strSQL = "insert into tblUsers (" . implode(", ", $arVeldKeys) . ") values (" . implode(", ", $arWaarden) . ");"; 
 					$oUser->execute($strSQL);  
 					$this->id($oUser->lastInsertID()); 
+					 
+					$oAction = new action($this->id());   
+					$oAction->type("location"); 
+					$oAction->tododate(owaestime() + (7*24*60*60)); 
+					$oAction->update(); 
 				} else {
 					if (settings("debugging", "demouser") != $this->id()) {
 						$arUpdates = array(); 

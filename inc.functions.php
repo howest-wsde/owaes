@@ -294,6 +294,7 @@
 			"domeinsettings" => settings("domain", "name") && settings("domain", "root") && settings("domain", "absroot"), 
 			"writable folders" => is_writable("upload") && is_writable("cache") && is_writable("settings"), 
 			"update.php" => TRUE, 
+			(ini_get("short_open_tag")), 
 		);  
 		$bCheck = TRUE; 
 		foreach (array_values($arChecks) as $bVal) if (!$bVal) $bCheck = FALSE; 
