@@ -104,7 +104,7 @@ $arConfig["database"] = array(
 						if (!ini_get("short_open_tag")) {
 							echo ("<fieldset>
 									<legend>php.ini</legend> 
-									<p>Please change the value of 'short_open_tag' to 'On'</p>
+									<p>Please change the value of 'short_open_tag' to 'On' and restart your webserver. </p>
 								</fieldset>"); 	
 						}
 						 

@@ -589,4 +589,7 @@ CREATE TABLE IF NOT EXISTS `tblUsers` (
 	<sql name="firstUser" tag="19">
 		insert into tblUsers (login, firstname, lastname, alias, mail, mailverified, actief, algemenevoorwaarden, visible, pass, admin) values ('owaes', 'Owaes', 'Owaes', 'owaes', 'changeme@owaes.org', '1', '1', 1, 0,  'e6f86f6ef61a21d693b73bcc92a247c2', 1);
 	</sql>  
+	<sql name="actie-locatie-invullen" tag="20">
+		insert into tblActions (user, actie) select id, 'location' from tblUsers; 
+	</sql> 
 </queries>

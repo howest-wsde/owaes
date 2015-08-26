@@ -1351,6 +1351,11 @@
 					$strSQL = "insert into tblUsers (" . implode(", ", $arVeldKeys) . ") values (" . implode(", ", $arWaarden) . ");"; 
 					$oUser->execute($strSQL);  
 					$this->id($oUser->lastInsertID()); 
+					 
+					$oAction = new action($this->id());   
+					$oAction->type("location"); 
+					$oAction->tododate(owaestime() + (7*24*60*60)); 
+					$oAction->update(); 
 				} else {
 					if (settings("debugging", "demouser") != $this->id()) {
 						$arUpdates = array(); 
