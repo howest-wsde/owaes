@@ -20,7 +20,8 @@
 			));  
 		if ($oAction) { 
 			$iPostPone = isset($_POST["postpone"]) ? intval($_POST["postpone"]) : 2; 
-			echo $iPostPone; 
+			if ($iPostPone == 0) $iPostPone = 1/24/60*2; // 2 minuten
+			//echo $iPostPone; 
 			$oAction->tododate(owaestime() + ($iPostPone*24*60*60)); // x dagen
 			$oAction->update();   
 		}
