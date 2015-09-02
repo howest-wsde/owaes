@@ -12,7 +12,7 @@
           <div class="modal-body">
             <h3>[title]</h3> 
             <p>Draag <input type="number" min="1" max="[max]" name="credits" value="[credits]" pattern="[1-9][0-9]*" title="Draag minimum 1 [[credit]] over" placeholder="[[credits]]" class="credits" onchange="testTransaction(this);" /> [[credits]] over naar [firstname]. </p>  
-            <p><input type="checkbox" name="complete" id="completeamount" value="1" checked="checked" /> <label for="completeamount">Dit is het volledige bedrag</label></p>
+            <!--<p><input type="checkbox" name="complete" id="completeamount" value="1" checked="checked" /> <label for="completeamount">Dit is het volledige bedrag</label></p>-->
             <div class="alert alert-danger transactionerror" style="display: none; "></div>
 			<script>
                 function testTransaction(oEl) {
@@ -34,7 +34,16 @@
             </script> 
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-success save-form" data-dismiss="modal">versturen</button> 
+           <div class="btn-group">
+          	<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+               versturen <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu voorschot" style="text-align: left; ">
+                <li><a href="#" rel="all" class="voorschot-form" data-dismiss="modal">dit is het volledige bedrag</a></li>
+                <li><a href="#" rel="part" class="voorschot-form" data-dismiss="modal">dit is een voorschot</a></li> 
+              </ul> 
+              </div>
+           <!-- <button type="button" class="btn btn-success save-form" data-dismiss="modal">versturen</button> -->
             <div class="btn-group">
               <button type="button" class="btn btn-cancel dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 niet nu <span class="caret"></span>

@@ -7,6 +7,9 @@
         
 	$oDB = new database(); 
 	
+	$oDB->execute("select count(student) as aantal from tblStagemarktStudInschrijvingen where student = " . me() . ";"); 
+	if ($oDB->get("aantal") > 0) redirect ("stagemarktkeuze.ok.php"); 
+	
 	if (isset($_POST["save"])) {
 		
 		$arSave = array(); 
@@ -45,9 +48,6 @@
 		} else echo ("Uw inschrijving is niet gelukt. Refresh de pagina om opnieuw te proberen"); 
 		exit(); 
 	} 
-	
-	$oDB->execute("select count(student) as aantal from tblStagemarktStudInschrijvingen where student = " . me() . ";"); 
-	if ($oDB->get("aantal") > 0) redirect ("stagemarktkeuze.ok.php"); 
 	
 	
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
