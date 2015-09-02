@@ -45,8 +45,7 @@
 									echo "<li>Tijdslot " . $oDB->get("slot") . ": " . user($oDB->get("student"))->getName() . "<li>"; 	
 								} 
 							}
-						}
-						 
+						} 
                     ?> 
                     </ul>
                 </div>

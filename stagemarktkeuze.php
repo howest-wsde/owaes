@@ -40,11 +40,11 @@
 			foreach ($arOK as $iSlot=>$iBedrijf) {
 				$oDB->execute("insert into tblStagemarktDates (bedrijf, student, slot) values(" . $iBedrijf . ", " . me() . ", " . $iSlot . "); "); 
 			} 
-			echo "Uw inschrijving werd opgeslaan. Voorlopig werden onderstaande afspraken vastgelegd: ";
+			echo "Uw inschrijving werd opgeslaan. Onderstaande afspraken werden vastgelegd: ";
 			foreach ($arOK as $iSlot=>$iBedrijf) {
 				echo "<br />- Tijdslot $iSlot: " . group($iBedrijf)->naam(); 	
 			}
-			echo "<br />Let op: afhankelijk van het aantal inschrijvingen kunnen deze afspraken wijzigen of kunnen extra afspraken toegevoegd worden. De uiteindelijke planning wordt gemaild."; 
+			echo "<br />Let op: afhankelijk van het aantal inschrijvingen kunnen extra afspraken toegevoegd worden. De uiteindelijke planning kun je vinden op <a href=\"http://start.owaes.org/stagemarkt-info.php\">start.owaes.org/stagemarkt-info.php</a>"; 
 		} else echo ("Uw inschrijving is niet gelukt. Refresh de pagina om opnieuw te proberen"); 
 		exit(); 
 	} 
@@ -178,7 +178,7 @@
                     <h4 class="modal-title">Stagemarkt inschrijving</h4>
                   </div>
                   <div class="modal-body">
-                    <p>Bedankt, uw keuze wordt opgeslaan. </p> 
+                    <p>Bedankt, uw keuze wordt opgeslagen. </p> 
                   </div>
                   <div class="modal-footer"> 
                   	<a href="main.php" class="btn btn-default">OK</a>
