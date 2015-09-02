@@ -418,7 +418,8 @@
 		}
 		
 		public function HTMLvalue($strTag, $strTemplate = NULL) {
-			switch($strTag) { 
+			$arTag = explode(":", $strTag); 
+			switch($arTag[0]) { 
 				case "id": 
 					return $this->id(); 
 				case "naam":  
@@ -429,12 +430,23 @@
 				case "link": 
 					return $this->getURL(); 
 				case "description": 
-					return html($this->info(), array("p", "a", "em", "strong", "br"));  // html($this->info()) . "<hr>" . 
-				case "description:short": 
-					return shorten(html($this->info())); 
-				case "members:count": 
+					if (isset($arTag[1])) {
+						switch ($arTag[1]) {
+							case "short": 
+								return shorten(html($this->info())); 
+							default: 
+								if (is_numeric($arTag[1])) {
+									return shorten(html($this->info()), intval($arTag[1])); 
+								} else {
+									return  html($this->info(), array("p", "a", "em", "strong", "br"));  
+								}
+						}
+					} else return html($this->info(), array("p", "a", "em", "strong", "br"));  // html($this->info()) . "<hr>" .  
+				case "members": 
+					//:count
 					return count($this->users());
-				case "market:count": 
+				case "market": 
+					// :count
 					$oOwaesList = new owaeslist();   
 					$oOwaesList->filterByGroup($this->id()); 
 					return count($oOwaesList->getList()); 
@@ -445,8 +457,15 @@
 					return implode("", $arActions); 
 				case "editlink": 
 					return fixPath("admin.groepusers.php?group=" . $this->id()); 
-				case "if:rights:editpage": 
-					return $this->userrights()->editpage() ? $strTemplate : ""; 
+				case "if": 
+					switch (isset($arTag[1])?$arTag[1]:"") {
+						case "rights": 
+							switch (isset($arTag[2])?$arTag[2]:"") {
+								case "editpage": 
+									return $this->userrights()->editpage() ? $strTemplate : ""; 
+							}			
+					} 
+					break; 
 				case "admin":  
 					return $this->admin()->html($strTemplate);  
 			}

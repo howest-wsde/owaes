@@ -5,6 +5,8 @@
    
 	$iID = intval($_GET["owaes"]); 
 	$oOwaesItem = owaesitem($iID);   
+	$oOwaesItem->load();  
+	if ($oOwaesItem->id() == 0) redirect("main.php"); 
 	
 	$oNotification = new notification(); 
 	$oNotification->read("subscription." . $iID );  

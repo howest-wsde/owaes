@@ -107,7 +107,7 @@
 							$this->lastname($strVal); 
 							break; 	
 						case "email": 
-							if ($strVal != $this->email())  {
+							if ($strVal != $this->email()) {
 								$this->changeEmail($strVal, TRUE);  
 								$oAlert = new action($this->id()); 
 								$oAlert->type("alert"); 
