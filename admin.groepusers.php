@@ -51,6 +51,7 @@
 			$oGroep->website($_POST["groepsurl"]); 
 			if (user(me())->admin()) $oGroep->isDienstverlener(isset($_POST["isdienstverlener"])); 
 			$oGroep->info($_POST["info"]); 	 	
+			$oGroep->wijzoeken($_POST["wijzoeken"]); 	 	
 			if ($_FILES["img"]["error"] == 0){  
 				$strTmp = "upload/tmp/" . $_FILES["img"]["name"];  
 				move_uploaded_file($_FILES["img"]["tmp_name"], $strTmp);
@@ -147,6 +148,12 @@
                                     <label for="description" class="control-label col-lg-2">Omschrijving:</label>
                                     <div class="col-lg-10">
                                         <textarea name="info" id="info" class="form-control wysiwyg" placeholder="Vertel ons iets over deze groep..."><?php echo textarea($oGroep->info()); ?></textarea>
+                                    </div> 
+                                </div>
+                                <div class="form-group">
+                                    <label for="wijzoeken" class="control-label col-lg-2">Wij zoeken:</label>
+                                    <div class="col-lg-10">
+                                        <textarea name="wijzoeken" id="wijzoeken" class="form-control wysiwyg" placeholder="Naar wie is uw bedrijf op zoek?"><?php echo textarea($oGroep->wijzoeken()); ?></textarea>
                                     </div> 
                                 </div>
                                 <div class="form-group">
