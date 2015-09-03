@@ -75,7 +75,8 @@
 							$oDB->execute("select * from tblUsers order by status desc; "); 
 							echo ("<table class=\"database\">"); 
 							echo ("<tr>"); 
-							echo ("<th class='order'>Naam </th>");  
+							echo ("<th class='order'>Voornaam</th>");  
+							echo ("<th class='order'>Naam</th>");  
 							foreach ($arFields as $strField=>$arField) {
 								$arClasses = array("order"); 
 								if ($strField == "score") $arClasses[] = "asc"; 
@@ -92,7 +93,8 @@
 								//  title='"); 
 								//if (isset($arStatus["warnings"])) var_dump($arStatus["warnings"]); 
 								//echo ("'
-								echo ("<td class=\"status" . (isset($arStatus["status"])?$arStatus["status"]:"") . "\">" . $oDB->get("firstname") . " " . $oDB->get("lastname") . "</td>");
+								echo ("<td class=\"status" . (isset($arStatus["status"])?$arStatus["status"]:"") . "\">" . $oDB->get("firstname") . "</td>");
+								echo ("<td class=\"status" . (isset($arStatus["status"])?$arStatus["status"]:"") . "\">" . $oDB->get("lastname") . "</td>");
 								foreach ($arFields as $strField=>$arField) {
 									$iWarning = 0; 
 									foreach ($arStatus["warnings"] as $iSeverity=>$arWarning) {
