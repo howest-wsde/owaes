@@ -613,5 +613,11 @@ CREATE TABLE IF NOT EXISTS `tblStagemarktDates` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; 
 	</sql> 
+	<sql name="tblGroups-wijzoeken" tag="23"> 
+ALTER TABLE `tblGroups` ADD `wijzoeken` TEXT NOT NULL ;
+	</sql> 
+	<sql name="tblPayments-complete" tag="24"> 
+ALTER TABLE `tblPayments` ADD `voorschot` BIGINT NOT NULL DEFAULT '0' AFTER `market` ;
+	</sql> 
 	
 </queries>

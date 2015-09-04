@@ -759,7 +759,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 			if ($this->author()->id() == me()) { // MIJN item
 				if (count($arSubScriptions) > 0) { 
 					$arFlow[20]["class"][] = "done"; 
-					$arFlow[30]["href"] = $this->getLink(); 
+					//$arFlow[30]["href"] = $this->getLink(); 
 					if (count($this->subscriptions(array("state"=>SUBSCRIBE_SUBSCRIBE))) == 0) { // niemand "gewoon ingeschreven" (excl. bevestigd / geweigerd)
 						$arConfirmedUsers = $this->subscriptions(array("state"=>SUBSCRIBE_CONFIRMED));  
 						if (count($arConfirmedUsers) > 0) { // minimum 1 persoon confirmed
@@ -847,7 +847,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						}  
 					} else { // minimum één persoon staat nog gewoon "ingeschreven" zonder bevesigd of afgewezen te zijn
 						$arFlow[30]["class"][] = "current";  
-						$arFlow[30]["href"] = $this->getLink(); 
+						$arFlow[30]["href"] = $this->getLink();  
 					}
 				} else $arFlow[20]["class"][] = "current";  // nog geen reactie's op item (geen inschrijvingen)
 			} else {   // item van iemand anders

@@ -2,13 +2,15 @@
 	include "inc.default.php"; // should be included in EVERY file  
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
+	
+	$iFixed = 3; // er worden direct x slots vastgelegd per student
 	 
 	$oList = new grouplist(); 
         
 	$oDB = new database(); 
 	
 	$oDB->execute("select count(student) as aantal from tblStagemarktStudInschrijvingen where student = " . me() . ";"); 
-	if ($oDB->get("aantal") > 0) redirect ("stagemarktkeuze.ok.php"); 
+	if ($oDB->get("aantal") > 0) redirect ("stagemarkt-info.php"); 
 	
 	if (isset($_POST["save"])) {
 		
@@ -19,7 +21,7 @@
 		$iCheck = 1;  
 		
 		for ($iCheck = 1; $iCheck <=5; $iCheck++) {
-			if (count($arOK) < 2){
+			if (count($arOK) < $iFixed){
 				$iKeuze = $arSave["k" . $iCheck];
 				$arSlots = array(1,2,3,4,5,6,7,8);
 				$oDB->execute("select slot from tblStagemarktDates where bedrijf = $iKeuze; "); 
@@ -35,16 +37,16 @@
 		}
 
 		$arSave["student"] = me();     
-		if (count(array_keys($arOK)) == 2) {
+		if (count(array_keys($arOK)) >= 1) {
 			$oDB->execute("insert into tblStagemarktStudInschrijvingen (" . implode(",", array_keys($arSave)) . ") values (" . implode(",", array_values($arSave)) . "); ");
 			foreach ($arOK as $iSlot=>$iBedrijf) {
 				$oDB->execute("insert into tblStagemarktDates (bedrijf, student, slot) values(" . $iBedrijf . ", " . me() . ", " . $iSlot . "); "); 
 			} 
-			echo "Uw inschrijving werd opgeslaan. Voorlopig werden onderstaande afspraken vastgelegd: ";
+			echo "Uw inschrijving werd opgeslaan. Onderstaande afspraken werden vastgelegd: ";
 			foreach ($arOK as $iSlot=>$iBedrijf) {
 				echo "<br />- Tijdslot $iSlot: " . group($iBedrijf)->naam(); 	
 			}
-			echo "<br />Let op: afhankelijk van het aantal inschrijvingen kunnen deze afspraken wijzigen of kunnen extra afspraken toegevoegd worden. De uiteindelijke planning wordt gemaild."; 
+			echo "<br />Let op: afhankelijk van het aantal inschrijvingen kunnen extra afspraken toegevoegd worden. De uiteindelijke planning kun je vinden op <a href=\"http://start.owaes.org/stagemarkt-info.php\">start.owaes.org/stagemarkt-info.php</a>"; 
 		} else echo ("Uw inschrijving is niet gelukt. Refresh de pagina om opnieuw te proberen"); 
 		exit(); 
 	} 
@@ -178,7 +180,7 @@
                     <h4 class="modal-title">Stagemarkt inschrijving</h4>
                   </div>
                   <div class="modal-body">
-                    <p>Bedankt, uw keuze wordt opgeslaan. </p> 
+                    <p>Bedankt, uw keuze wordt opgeslagen. </p> 
                   </div>
                   <div class="modal-footer"> 
                   	<a href="main.php" class="btn btn-default">OK</a>

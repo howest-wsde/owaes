@@ -29,7 +29,7 @@
 						$oDB = new database(); 
 						$oDB->execute("select * from tblStagemarktDates where student = " . me() . " order by slot;"); 
 						while ($oDB->nextRecord()){
-							echo "<li>Tijdslot " . $oDB->get("slot") . ": " . group($oDB->get("bedrijf"))->naam() . "<li>"; 	
+							echo "<li>Tijdslot " . $oDB->get("slot") . ": " . group($oDB->get("bedrijf"))->getLink() . "<li>"; 	
 						} 
 						
 						$arGroupen = user(me())->groups(); 
@@ -37,16 +37,16 @@
 							$oGroupen = new grouplist(); 
 							$arGroupen = $oGroupen->getList(); 
 						}
+						
 						foreach($arGroupen as $oGroup) {
 							$oDB->execute("select * from tblStagemarktDates where bedrijf = " . $oGroup->id() . " order by slot;"); 
 							if ($oDB->length() > 0) {
 								echo "<h3>" . $oGroup->naam() . "</h3>"; 	
 								while ($oDB->nextRecord()){
-									echo "<li>Tijdslot " . $oDB->get("slot") . ": " . user($oDB->get("student"))->getName() . "<li>"; 	
+									echo "<li>Tijdslot " . $oDB->get("slot") . ": " . user($oDB->get("student"))->getLink() . "<li>"; 	
 								} 
 							}
-						}
-						 
+						} 
                     ?> 
                     </ul>
                 </div>

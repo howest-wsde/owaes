@@ -34,17 +34,20 @@
 				$oPayment = $oSubscription->payment(); 
 				if ($oPayment->sender() == me()) {
 					if ($oPayment->receiver() == $iUser) {
-						$oPayment->reason(1); 
-						$oPayment->credits($iCredits); 
-						$oPayment->signed(TRUE); 
-						
+ 
 						switch($_POST["voorschot"]) {
-							case "voorschot": 
+							case "part": 
+								$oPayment->voorschot(TRUE); 
 								break; 
 							default: 
 								$oSubscription->state(SUBSCRIBE_FINISHED);
 								$oSubscription->save(); 
 						}
+												
+						$oPayment->reason(1); 
+						$oPayment->credits($iCredits); 
+						$oPayment->signed(TRUE); 
+						
 						 
 						$iExperience = 100; 
 						
