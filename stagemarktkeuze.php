@@ -2,6 +2,8 @@
 	include "inc.default.php"; // should be included in EVERY file  
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
+	
+	$iFixed = 3; // er worden direct x slots vastgelegd per student
 	 
 	$oList = new grouplist(); 
         
@@ -19,7 +21,7 @@
 		$iCheck = 1;  
 		
 		for ($iCheck = 1; $iCheck <=5; $iCheck++) {
-			if (count($arOK) < 2){
+			if (count($arOK) < $iFixed){
 				$iKeuze = $arSave["k" . $iCheck];
 				$arSlots = array(1,2,3,4,5,6,7,8);
 				$oDB->execute("select slot from tblStagemarktDates where bedrijf = $iKeuze; "); 
@@ -35,7 +37,7 @@
 		}
 
 		$arSave["student"] = me();     
-		if (count(array_keys($arOK)) == 2) {
+		if (count(array_keys($arOK)) >= 1) {
 			$oDB->execute("insert into tblStagemarktStudInschrijvingen (" . implode(",", array_keys($arSave)) . ") values (" . implode(",", array_values($arSave)) . "); ");
 			foreach ($arOK as $iSlot=>$iBedrijf) {
 				$oDB->execute("insert into tblStagemarktDates (bedrijf, student, slot) values(" . $iBedrijf . ", " . me() . ", " . $iSlot . "); "); 
