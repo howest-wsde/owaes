@@ -17,6 +17,7 @@
 		private $strAlias = NULL;  
 		private $strWebsite = NULL;  
 		private $strInfo = NULL;  
+		private $strWijZoeken = NULL;  
 		private $iAdmin = NULL;  
 		private $arUsers = NULL;  
 		private $strImage = NULL;
@@ -75,6 +76,11 @@
 		public function info($strInfo = NULL) {
 			if (!is_null($strInfo)) $this->strInfo = $strInfo; 
 			return $this->strInfo; 
+		}
+		
+		public function wijzoeken($strWijZoeken = NULL) {
+			if (!is_null($strWijZoeken)) $this->strWijZoeken = $strWijZoeken; 
+			return $this->strWijZoeken; 
 		}
 		
 		public function image($strImage = NULL) {
@@ -208,6 +214,7 @@
 					if (is_null($this->strWebsite)) $this->website($oDB->get("website")); 
 					if (is_null($this->strAlias)) $this->alias($oDB->get("alias")); 
 					if (is_null($this->strInfo)) $this->info($oDB->get("info")); 
+					if (is_null($this->strWijZoeken)) $this->wijzoeken($oDB->get("wijzoeken")); 
 					if (is_null($this->iAdmin)) $this->admin($oDB->get("admin")); 
 					if (is_null($this->strImage)) $this->image($oDB->get("img")); 
 					if (is_null($this->bIsDienstverlener)) $this->isDienstverlener($oDB->get("isdienstverlener")==1); 
@@ -217,6 +224,7 @@
 					if (is_null($this->strNaam)) $this->website(""); 
 					if (is_null($this->strAlias)) $this->alias(""); 
 					if (is_null($this->strInfo)) $this->info(""); 
+					if (is_null($this->strWijZoeken)) $this->wijzoeken(""); 
 					if (is_null($this->iAdmin)) $this->admin("");
 					if (is_null($this->strImage)) $this->image("");
 					if (is_null($this->bIsDienstverlener)) $this->isDienstverlener(FALSE);
@@ -240,6 +248,7 @@
 			if (!is_null($this->strWebsite)) $arVelden["website"] = $this->strWebsite; 
 			if (!is_null($this->strAlias)) $arVelden["alias"] = $this->strAlias; 
 			if (!is_null($this->strInfo)) $arVelden["info"] = $this->strInfo; 
+			if (!is_null($this->strWijZoeken)) $arVelden["wijzoeken"] = $this->strWijZoeken; 
 			if (!is_null($this->iAdmin)) $arVelden["admin"] = $this->iAdmin; 
 			if (!is_null($this->strImage)) $arVelden["img"] = $this->strImage; 
 			if (!is_null($this->bIsDienstverlener)) $arVelden["isdienstverlener"] = $this->bIsDienstverlener ? 1 : 0; 
@@ -418,7 +427,8 @@
 		}
 		
 		public function HTMLvalue($strTag, $strTemplate = NULL) {
-			switch($strTag) { 
+			$arTag = explode(":", $strTag); 
+			switch($arTag[0]) { 
 				case "id": 
 					return $this->id(); 
 				case "naam":  
@@ -429,12 +439,37 @@
 				case "link": 
 					return $this->getURL(); 
 				case "description": 
-					return html($this->info(), array("p", "a", "em", "strong", "br"));  // html($this->info()) . "<hr>" . 
-				case "description:short": 
-					return shorten(html($this->info())); 
-				case "members:count": 
+					if (isset($arTag[1])) {
+						switch ($arTag[1]) {
+							case "short": 
+								return shorten(html($this->info())); 
+							default: 
+								if (is_numeric($arTag[1])) {
+									return shorten(html($this->info()), intval($arTag[1])); 
+								} else {
+									return  html($this->info(), array("p", "a", "em", "strong", "br"));  
+								}
+						}
+					} else return html($this->info(), array("p", "a", "em", "strong", "br"));  // html($this->info()) . "<hr>" .  
+
+				case "wijzoeken": 
+					if (isset($arTag[1])) {
+						switch ($arTag[1]) {
+							case "short": 
+								return shorten(html($this->wijzoeken())); 
+							default: 
+								if (is_numeric($arTag[1])) {
+									return shorten(html($this->wijzoeken()), intval($arTag[1])); 
+								} else {
+									return  html($this->wijzoeken(), array("p", "a", "em", "strong", "br"));  
+								}
+						}
+					} else return html($this->wijzoeken(), array("p", "a", "em", "strong", "br")); 
+				case "members": 
+					//:count
 					return count($this->users());
-				case "market:count": 
+				case "market": 
+					// :count
 					$oOwaesList = new owaeslist();   
 					$oOwaesList->filterByGroup($this->id()); 
 					return count($oOwaesList->getList()); 
@@ -445,8 +480,15 @@
 					return implode("", $arActions); 
 				case "editlink": 
 					return fixPath("admin.groepusers.php?group=" . $this->id()); 
-				case "if:rights:editpage": 
-					return $this->userrights()->editpage() ? $strTemplate : ""; 
+				case "if": 
+					switch (isset($arTag[1])?$arTag[1]:"") {
+						case "rights": 
+							switch (isset($arTag[2])?$arTag[2]:"") {
+								case "editpage": 
+									return $this->userrights()->editpage() ? $strTemplate : ""; 
+							}			
+					} 
+					break; 
 				case "admin":  
 					return $this->admin()->html($strTemplate);  
 			}

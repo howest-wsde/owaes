@@ -191,18 +191,23 @@
 				$iAVG /= $oDB->length();  
 			?>
 				
-			var data = [ ["GEM", <? echo $iAVG; ?>], ["JIJ", <? echo $iIk; ?>], ["MAX", <? echo $iMax; ?>] ];
-	
-			$.plot("#indicatorenRef", [ data ], {
+				
+			var data = [{data: [[0,<? echo $iAVG; ?>]], color: "#edc54f"},  {data: [[1,<? echo $iIk; ?>]], color: "#ffcc00"}, {data: [[2,<? echo $iMax; ?>]], color: "#edc54f"}];
+ 
+			$.plot("#indicatorenRef",data, {
 				series: {
 					bars: {
-						show: true, 
-						align: "center"
+						show: true,
+						//barWidth: 0.3,
+						align: "center",
+						lineWidth: 0,
+						fill:.75
 					}
 				},
 				xaxis: {
-					mode: "categories",
-					tickLength: 0
+					// drop the categories plugin and label the ticks yourself
+					// you'll thank me in the long run
+					ticks: [[0,"GEM"],[1,"JIJ"],[2,"MAX"]]
 				}
 			});
 			

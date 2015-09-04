@@ -20,28 +20,13 @@
 			));  
 		if ($oAction) { 
 			$iPostPone = isset($_POST["postpone"]) ? intval($_POST["postpone"]) : 2; 
-			echo $iPostPone; 
+			if ($iPostPone == 0) $iPostPone = 1/24/60*2; // 2 minuten
+			//echo $iPostPone; 
 			$oAction->tododate(owaestime() + ($iPostPone*24*60*60)); // x dagen
 			$oAction->update();   
 		}
 		exit(); 
 	} else if (isset($_POST["market"])) {  
-	/*
-		$iStars = intval(isset($_POST["score"]) ? $_POST["score"] : $_GET["score"]);  
-		$iMarket = intval(isset($_POST["market"]) ? $_POST["market"] : $_GET["market"]);  
-		$iReceiver = intval(isset($_POST["receiver"]) ? $_POST["receiver"] : $_GET["receiver"]);  
-		$strComment = isset($_POST["comment"]) ? $_POST["comment"] : (isset($_GET["comment"]) ? $_GET["comment"] : "");  
-	 
-		$oRating = new rating(array(
-							"market" => $iMarket, 
-							"sender" => me(), 
-							"receiver" => $iReceiver,
-						)); 
-		$oRating->stars($iStars); 
-		$oRating->comment($strComment); 
-		$oRating->rated(TRUE);  
-		 
-		 */
 		$iCredits = intval($_POST["credits"]); 
 		if ($iCredits > 0) {
 			if ($iCredits > $iMax) $iCredits = $iMax; 
@@ -49,15 +34,21 @@
 				$oPayment = $oSubscription->payment(); 
 				if ($oPayment->sender() == me()) {
 					if ($oPayment->receiver() == $iUser) {
+ 
+						switch($_POST["voorschot"]) {
+							case "part": 
+								$oPayment->voorschot(TRUE); 
+								break; 
+							default: 
+								$oSubscription->state(SUBSCRIBE_FINISHED);
+								$oSubscription->save(); 
+						}
+												
 						$oPayment->reason(1); 
 						$oPayment->credits($iCredits); 
 						$oPayment->signed(TRUE); 
 						
-						$oSubscription->state(SUBSCRIBE_FINISHED);
-						$oSubscription->save(); 
-						
-						//$iExperience = $oMarket->timing()*600; 
-						//if ($iExperience == 0) $iExperience = $oPayment->credits()*10;
+						 
 						$iExperience = 100; 
 						
 						$oExpSender = new experience($oPayment->sender());

@@ -8,6 +8,7 @@
 		private $iReason = 0;  
 		private $iID = NULL;  
 		private $bSigned = NULL; 
+		private $bVoorschot = FALSE; 
 		
 		public function payment($arArguments = array()) {  // payment(array("sender"=>$x, "receiver"=>$y, "market"=>$z))
 			foreach ($arArguments as $strKey=>$oValue) {
@@ -64,6 +65,11 @@
 			return $this->iID; 	
 		}
 		
+		public function voorschot($bValue = NULL){
+			if (!is_null($bValue)) $this->bVoorschot = $bValue; 
+			return $this->bVoorschot; 	
+		}
+		
 		public function market($iMarket = NULL){
 			if (!is_null($iMarket)) $this->iMarket = $iMarket; 
 			return $this->iMarket; 	
@@ -112,9 +118,11 @@
 				return $this->bSigned; 
 			} else { 
 				if ($this->signed() != $bValue) {
+					$iMarket = $this->voorschot() ? 0 : $this->market(); 
+					$iVoorschot = $this->voorschot() ? $this->market() : 0;  
 					if ($this->id() == 0) {
 						if ($bValue) {
-							$oDB = new database("insert into tblPayments (datum, sender, receiver, initiator, credits, reason, link, market, actief) values (" . owaesTime() . ", " . $this->sender() . ", " . $this->receiver() . ", " . $this->initiator() . ", " . $this->credits() . ", " . $this->reason() . ", 0, " . $this->market() . ", 1);" , TRUE); 
+							$oDB = new database("insert into tblPayments (datum, sender, receiver, initiator, credits, reason, link, market, actief, voorschot) values (" . owaesTime() . ", " . $this->sender() . ", " . $this->receiver() . ", " . $this->initiator() . ", " . $this->credits() . ", " . $this->reason() . ", 0, " . $iMarket . ", 1, " . $iVoorschot . ");" , TRUE); 
 							$oConversation = new conversation($this->receiver()); 
 							$oConversation->add("Er werden " . $this->credits() . " " . settings("credits", "name", "x") . " overgedragen", $this->market());  
 						}

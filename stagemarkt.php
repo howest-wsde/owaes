@@ -20,11 +20,11 @@
 	}
 
 	if (isset($_POST["dosignup"])) {
-		$bResult = $oSecurity->doLogin($_POST["email"], $_POST["pass"]); 
-		if ($bResult == TRUE) { 
-			redirect($strRedirect); 
-			exit(); 
-		}
+	//	$bResult = $oSecurity->doLogin($_POST["email"], $_POST["pass"]); 
+	//	if ($bResult == TRUE) { 
+	//		//redirect($strRedirect); 
+	//		//exit(); 
+	//	}
 		
 		$arErrors = array();  
 		
