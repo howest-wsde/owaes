@@ -277,12 +277,12 @@
 				$this->arStatus["updated"] = owaestime(); 
 				
 				$oDB = new database(); 
-				$oDB->execute("select count(distinct vPartners.pB) as partnercount, count(vPartners.pB) as transcount from ((select id, receiver as pA, sender as pB from tblPayments) union (select id, sender as pA, receiver as pB from tblPayments)) as vPartners where vPartners.pA = " . $this->id()); 
+				$oDB->execute("select count(distinct vPartners.pB) as partnercount, count(vPartners.pB) as transcount from ((select id, receiver as pA, sender as pB from tblPayments) union (select id, sender as pA, receiver as pB from tblPayments where voorschot = 0 and actief = 1)) as vPartners where vPartners.pA = " . $this->id()); 
 				$this->arStatus["partnercount"] = $oDB->get("partnercount"); 
 				$this->arStatus["transactiecount"] = $oDB->get("transcount"); 
 				$this->arStatus["diversiteit"] = ($this->arStatus["transactiecount"]==0) ? 1 : ($this->arStatus["partnercount"] / $this->arStatus["transactiecount"]); 
 
-				$oDB->execute("select count(id) as schenkingen from tblPayments where sender = " . $this->id() . " and market = 0 and datum > " . (owaestime()-60*24*60*60) . "; "); 
+				$oDB->execute("select count(id) as schenkingen from tblPayments where sender = " . $this->id() . " and market = 0 and voorschcot = 0 and actief = 1 and datum > " . (owaestime()-60*24*60*60) . "; "); 
 				$this->arStatus["schenkingen"] = $oDB->get("schenkingen"); 
 
 				$this->arStatus["social"] = $this->social(); 
