@@ -22,7 +22,7 @@
                 </div>
                 <div class="usersfromlist row sidecenterright"> 
                 	<div class="info">
-                    	<h2>Stagemarkt inschrijvingen</h2> 
+                  		<h2>Stagemarkt Roeselare 16 september 9 - 16u</h2> 
                     </div>
                     <ul>
 					<?php  
