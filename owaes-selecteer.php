@@ -5,6 +5,8 @@
    
 	$iID = intval($_GET["owaes"]); 
 	$oOwaesItem = owaesitem($iID);   
+	$oOwaesItem->load();  
+	if ($oOwaesItem->id() == 0) redirect("main.php"); 
 	
 	$oNotification = new notification(); 
 	$oNotification->read("subscription." . $iID );  
@@ -173,7 +175,7 @@
                                                             echo ("<div id='user" . $oUser->id() . "'>");  
                                                             echo ($oUser->html("userid.html")); 
                                                              
-                                                            echo '<button data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle pull-right" type="button">
+                                                            echo '<div class="btn-group pull-right" style="background: none; "><button data-toggle="dropdown" class="btn btn-default btn-sm dropdown-toggle" type="button">
                                                                 Acties <span class="caret"></span>
                                                                 </button>
                                                                 <ul role="menu" class="dropdown-menu pull-right">';  
@@ -188,7 +190,8 @@
                                                             echo $oUser->html("[actions:noicon]"); 
                                                             //echo ("<li><a href=\"#\">Toevoegen aan groep</a></li>"); 
                                                             //echo ("<li><a href=\"#\">Vriend worden</a></li>"); 
-                                                            echo '</ul> ' ; 
+                                                            echo '</ul></div>' ; 
+															echo ("</div>");  
                                                             break;  
                                                     }
                                                 } 

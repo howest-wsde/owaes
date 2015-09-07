@@ -594,5 +594,30 @@ CREATE TABLE IF NOT EXISTS `tblUsers` (
 	</sql> 
 	<sql name="actie-locatie-badge" tag="21">
 INSERT INTO tblBadges (`id` , `mkey` ,`img` ,`title` ,`info` ,`zichtbaar` ,`beloning`)VALUES (NULL , 'location', 'location.png', 'Locatie ingevuld', 'Deze gebruiker heeft zijn profiel aangevuld met zijn woonplaats. ', '1', '{"emotional":1, "mental": 1}');
+	</sql>  
+	<sql name="tblStagemarktStudenten" tag="22">
+		CREATE TABLE IF NOT EXISTS `tblStagemarktStudInschrijvingen` (`student` bigint(20) unsigned NOT NULL, `k1` bigint(20) NOT NULL, `k2` bigint(20) NOT NULL, `k3` bigint(20) NOT NULL, `k4` bigint(20) NOT NULL,`k5` bigint(20) NOT NULL, PRIMARY KEY (`student`)) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
 	</sql> 
+	<sql name="tblStagemarktBedrijvenVolzet" tag="22"> 
+CREATE TABLE IF NOT EXISTS `tblStagemarktVolzet` (
+  `bedrijfsid` bigint(20) NOT NULL,
+  PRIMARY KEY (`bedrijfsid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1; 
+	</sql> 
+	<sql name="tblStagemarktDates" tag="22"> 
+CREATE TABLE IF NOT EXISTS `tblStagemarktDates` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `bedrijf` bigint(20) NOT NULL DEFAULT '0',
+  `student` bigint(20) NOT NULL DEFAULT '0',
+  `slot` int(11) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ; 
+	</sql> 
+	<sql name="tblGroups-wijzoeken" tag="23"> 
+ALTER TABLE `tblGroups` ADD `wijzoeken` TEXT NOT NULL ;
+	</sql> 
+	<sql name="tblPayments-complete" tag="24"> 
+ALTER TABLE `tblPayments` ADD `voorschot` BIGINT NOT NULL DEFAULT '0' AFTER `market` ;
+	</sql> 
+	
 </queries>
