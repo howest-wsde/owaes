@@ -1534,7 +1534,9 @@
 						"receiver" => $oDB->get("receiver"), 
 						"market" => $oDB->get("market"), 	
 						"id" => $oDB->get("id"), 	
+						"voorschot" => ($oDB->get("voorschot")!=0), 
 					));  
+					if ($oPayment->voorschot()) $oPayment->market($oDB->get("voorschot")); 
 					$arPayments["all"][] = $oPayment; 
 					if ($oDB->get("sender") == $this->id()) $arPayments["sent"][] = $oPayment;
 					if ($oDB->get("receiver") == $this->id()) $arPayments["received"][] = $oPayment;
