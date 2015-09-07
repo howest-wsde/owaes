@@ -150,7 +150,7 @@
                 </div>
                 <div class="usersfromlist row sidecenterright"> 
                 	<div class="info">
-                    	<h2>Inschrijving Stagemarkt</h2>
+                    	<h2>Inschrijving Stagemarkt Roeselare 16 september 9 - 16u</h2>
                         <a href="#save" class="btn btn-default disabled opslaan">opslaan</a>
                     	<p>Selecteer 5 bedrijven voor een persoonlijk gesprek (in volgorde van voorkeur).</p>
                     </div>
