@@ -304,8 +304,10 @@ function printDates() {
 							$("<input />").attr("name", "tijd-" + strKey).addClass("time").addClass("tijdsduur").attr("type", "text").attr("min", 1).attr("max", 8).val(arDatums[strDate].tijd)
 						)
 					).append(
-						$("<div />").addClass("col-lg-1").html("uur")
-					) 
+						$("<div />").addClass("col-lg-1").html("uur").append(
+							$("<a />").attr("href", "#").addClass("deletebutton").html("verwijder")
+						) 
+					)
 				) 
 			);
 			

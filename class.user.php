@@ -953,10 +953,12 @@
 		}
 		
 		public function validateEmail($strKey) {
+			$bDone = FALSE; 
 			$oDB = new database(); 
 			$oDB->execute("select * from tblUserEmailVerify where user = " . $this->id() . ";"); 	
 			while ($oDB->nextRecord()) {
 				if ($oDB->get("sleutel") == $strKey) {
+					$bDone = TRUE; 
 					$this->unlocked(TRUE); 
 					$this->email($oDB->get("email")); 
 					$this->mailVerified(TRUE); 
@@ -968,6 +970,7 @@
 					$oAlert->update();  
 				}
 			} 
+			return $bDone; 
 		}
 				
 		public function mailVerified($bMailVerified = NULL) {
