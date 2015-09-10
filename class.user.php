@@ -2266,13 +2266,29 @@
 					return implode("", $arActions);  
 
 				default: 
-					$arTag = explode(":", $strTag, 2); 
+					$arTag = explode(":", $strTag); 
 					switch($arTag[0]) {
 						case "user": 
 							return $this->htmlValue($arTag[1]); 
 							break; 
 						case "data": 
-							if (count($arTag)==2) return $this->data($arTag[1]); 
+							if (count($arTag)>=2){
+								switch(isset($arTag[2])?$arTag[2]:"") {
+									case "url": 
+										return htmlspecialchars($this->data($arTag[1]), ENT_QUOTES);
+										//(filter_var($this->data($arTag[1]), FILTER_VALIDATE_URL) === FALSE) ? "#" :  $this->data($arTag[1]); 
+										//(filter_var($this->data($arTag[1]), FILTER_VALIDATE_URL)) ? $this->data($arTag[1]) : "#"; 
+										break; 
+									case "html": 
+										return html($this->data($arTag[1]), array("p", "a", "strong", "em", "br")); 
+										break; 
+									case "input": 
+										return str_replace(array('"', "'"), array('&quot;', "&#39;"), $this->data($arTag[1])); 
+										break; 
+									default: 
+										return $this->data($arTag[1]); 	
+								}
+							}
 							break; 
 						case "profileimg": 
 							return $this->getImage($arTag[1], FALSE); 	
