@@ -162,7 +162,7 @@
 							$this->visible("img", $_POST["showimg"]);
 							break; 	
 						case "files": 
-							foreach ($strVal as $strSubVal) {
+							foreach ($strVal as $strSubVal) { 
 								$arInputs = explode(",", $strSubVal);
 								$strFolder = "upload/userfiles/" . $this->id(); 
 								if (!file_exists($strFolder)) mkdir($strFolder); 
@@ -257,12 +257,14 @@
 			if (is_null($this->arBestanden)) $this->load(); 
 			if (is_null($strKey)) $strKey = md5($strLoc . time()); 
 			if ($strFilename != "") {
-				$this->arBestanden[$strKey] = array(
-					"title" => $strTitel, 
-					"filename" => $strFilename, 
-					"location" => $strLoc, 
-					"visible" => intval($iPrivacy), 
-				); 
+				if (in_array(pathinfo($strFilename, PATHINFO_EXTENSION), array("pdf", "doc", "docx", "txt", "jpg", "jpeg", "gif", "bmp", "png", "xls", "xlsx", "md", "ppt", "pps", "odt", "ods", "odp", "csv", "svg"))) {
+						$this->arBestanden[$strKey] = array(
+							"title" => $strTitel, 
+							"filename" => $strFilename, 
+							"location" => $strLoc, 
+							"visible" => intval($iPrivacy), 
+						);  
+				}
 			} 
 		}
 		
