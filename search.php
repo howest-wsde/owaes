@@ -3,7 +3,6 @@
 
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
-	 
 	
 	$strSearch = $_GET["q"]; 
 
