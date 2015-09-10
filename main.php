@@ -723,6 +723,7 @@
                                     <!-- Recent aangemaakte activiteiten --> 
                                      <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
                                         <div class="layoutBlocks border">
+                                            <div class="pull-right filterowaeslist"></div>
                                             <h2>Openstaande items</h2>
             
                                             <div class="list-group">
@@ -749,6 +750,7 @@
                                     <!-- Recent aangemaakte activiteiten --> 
                                      <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
                                         <div class="layoutBlocks border">
+                                            <div class="pull-right filterowaeslist"></div>
                                             <h2>Nog te ontvangen</h2>
             
                                             <div class="list-group">
@@ -771,6 +773,7 @@
                                     <!-- Recent aangemaakte activiteiten --> 
                                      <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
                                         <div class="layoutBlocks border">
+                                            <div class="pull-right filterowaeslist"></div>
                                             <h2>Nog te betalen</h2>
             
                                             <div class="list-group">
@@ -797,6 +800,7 @@
                                     <!-- Recent aangemaakte activiteiten --> 
                                      <div class="col-md-6 clearfix masonrybox" style="z-index: 950;">
                                         <div class="layoutBlocks border">
+                                            <div class="pull-right filterowaeslist"></div>
                                             <h2>Wachtend op bevestiging:</h2>
             
                                             <div class="list-group">

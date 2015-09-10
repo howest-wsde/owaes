@@ -2187,7 +2187,7 @@
 				case "emotional": 
 					return $this->emotional(); 
 				case "location": 
-					return $this->location(); 
+					return html($this->location(), array("p", "a", "strong", "em", "br")); 
 				case "latitude": 
 					return $this->latitude(); 
 				case "longitude": 
