@@ -31,6 +31,9 @@
 					case "initiator": 
 						$this->initiator($oValue); 
 						break; 
+					case "voorschot": 
+						$this->voorschot($oValue); 
+						break; 
 					default: 
 						error("class.payment : $strKey is ongeldig argument"); 
 				}	
@@ -102,6 +105,10 @@
 				$this->credits($oDB->get("credits"));
 				$this->initiator($oDB->get("initiator"));
 				$this->market($oDB->get("market"));
+				if ($oDB->get("voorschot")>0) {
+					$this->market($oDB->get("voorschot"));
+					$this->voorschot(TRUE); 
+				}
 			} else {
 				$this->bSigned = FALSE; 
 				$this->id(0); 
@@ -152,7 +159,7 @@
 							<input type=\"hidden\" name=\"score\" value=\"\" />
 						<fieldset>
 										<dl class=>";
-						$strHTML .= "<dt>XXXDraag " . $this->credits() . " " . settings("credits", "name", "x") . " over naar " . user($this->receiver())->getName() . " voor dit item</dt>";    
+						$strHTML .= "<dt>Draag " . $this->credits() . " " . settings("credits", "name", "x") . " over naar " . user($this->receiver())->getName() . " voor dit item</dt>";    
 						$strHTML .= "</dl>
 										</fieldset> 
 								"; 
@@ -186,7 +193,7 @@
 						return owaesitem($this->market())->title();  
 					}
 				case "owaes:url": 
-					if ($this->market() == 0) {
+					if (($this->market() == 0) && (!$this->voorschot())) {
 						return "#";  
 					} else {
 						return owaesitem($this->market())->url(); 

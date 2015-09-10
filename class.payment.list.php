@@ -41,7 +41,7 @@
 		public function getList(){
 			if (is_null($this->arList)) {
 				$arWhere = array(); 
-				if (!is_null($iMarket)) $arWhere[] = "market = " . $iMarket; 
+				if (!is_null($iMarket)) $arWhere[] = "(market = " . $iMarket . " or voorschot = " . $iMarket . ")"; 
 				if (!is_null($iSender)) $arWhere[] = "sender = " . $iSender; 
 				if (!is_null($iReceiver)) $arWhere[] = "receiver = " . $iReceiver; 
 				$this->arList = array(); 
@@ -53,7 +53,9 @@
 						"receiver" => $oDB->get("receiver"), 
 						"initiator" => $oDB->get("initiator"), 
 						"market" => $oDB->get("market"), 
+						"voorschot" => ($oDB->get("voorschot")!=0), 
 					)); 
+					if ($oPayment->voorschot()) $oPayment->market($oDB->get("market")); 
 					$this->arList[] = $oPayment; 
 				}
 			}

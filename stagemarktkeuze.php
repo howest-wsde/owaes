@@ -30,9 +30,8 @@
 				}
 				foreach ($arOK as $iSlot=>$iBedrijf) if(($iKey = array_search($iSlot, $arSlots)) !== false) array_splice ($arSlots, $iKey, 1); 
 
-				if (count($arSlots)>0) {
-					 $arOK[$arSlots[0]] = $iKeuze;
-				}
+				if (count($arSlots)>0)  $arOK[$arSlots[0]] = $iKeuze;  
+				if (count($arSlots)<=1) $oDB->execute("insert ignore into tblStagemarktVolzet (bedrijfsid) values($iKeuze); ");  
 			}
 		}
 

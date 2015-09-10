@@ -22,9 +22,9 @@ $(document).ready(function () {
 		monthNames: ["Jan.","Feb.","Maart","April","Mei","Juni","Juli", "Aug.", "Sept.", "Okt.", "Nov.", "Dec." ],  
 		dayNamesShort: ['zo','ma','di','wo','do','vr','za'],
         dayClick: function (date, jsEvent, view) { 
-            if (date < moment().subtract("days", 1)) return; // geen click op items in 't verleden 
-			
 			strDate = date.format('DD/MM/YYYY'); 
+            if (date < moment().subtract("days", 1)) if (!arDatums[strDate]) return; // geen click op items in 't verleden 
+			
 			if (arDatums[strDate]) {
 				delete arDatums[strDate]; 
 				$(this).removeClass("selected");
@@ -36,7 +36,7 @@ $(document).ready(function () {
 				$(this).addClass("selected");
 				if (arDatums[""]) delete arDatums[""]; 
 			}
-			console.log(arDatums); 
+			//console.log(arDatums); 
 			
 			printDates();  
         }, 
@@ -288,7 +288,7 @@ function printDates() {
 					).append(
 						$("<input />").attr("name", "datum-" + strKey).attr("type", "hidden").val(strDate)
 					).append(
-						$("<div />").addClass("col-lg-3").append( 
+						$("<div />").addClass("col-lg-2").append( 
 							$("<label />").addClass("date").html((strDate == "")?"willekeurige datum": strDate)
 						)
 					).append(
@@ -304,8 +304,8 @@ function printDates() {
 							$("<input />").attr("name", "tijd-" + strKey).addClass("time").addClass("tijdsduur").attr("type", "text").attr("min", 1).attr("max", 8).val(arDatums[strDate].tijd)
 						)
 					).append(
-						$("<div />").addClass("col-lg-1").html("uur")
-					) 
+						$("<div />").addClass("col-lg-2").html("uur")
+					)
 				) 
 			);
 			
@@ -327,7 +327,7 @@ function compareDates(a, b) {
 }
 function dateval(strDate) {
 	arDate = strDate.split("/"); 
-	console.log(arDate + " - " + ((arDate[2]-2000)*400 + arDate[1]*40 + arDate[0])); 
+	//console.log(arDate + " - " + ((arDate[2]-2000)*400 + arDate[1]*40 + arDate[0])); 
 	return arDate[2]*1000 + arDate[1]*40 + arDate[0]; 
 }
 
@@ -467,7 +467,7 @@ $(document).ready(function() {
 function geozoek() {
 	clearTimeout(iTimerZoek); 
 	strVal = $("input#location").val(); 
-	console.log("geozoek: " + strVal); 
+	//console.log("geozoek: " + strVal); 
 	if (strVal == "") {
 		$("input#locationlong").val(0);
 		$("input#locationlat").val(0);
