@@ -13,10 +13,10 @@
                     <h3 class="level-stars"><span class="level">Level [level]</span><span class="stars">[stars]</span></h3>
 
                     <ul class="socialmedia">
-                        [if:data:facebook]<li><a href="[data:facebook]" target="_blank"><span class="icon-facebook"></span></a></li>[/if:data:facebook] 
-                        [if:data:twitter]<li><a href="[data:twitter]" target="_blank"><span class="icon-twitter"></span></a></li>[/if:data:twitter] 
-                        [if:data:linkedin]<li><a href="[data:linkedin]" target="_blank"><span class="icon-linkedin"></span></a></li>[/if:data:linkedin] 
-                        [if:data:plus]<li><a href="[data:plus]" target="_blank"><span class="icon-googleplus"></span></a></li>[/if:data:plus] 
+                        [if:data:facebook]<li><a href="[data:facebook:url]" target="_blank"><span class="icon-facebook"></span></a></li>[/if:data:facebook] 
+                        [if:data:twitter]<li><a href="[data:twitter:url]" target="_blank"><span class="icon-twitter"></span></a></li>[/if:data:twitter] 
+                        [if:data:linkedin]<li><a href="[data:linkedin:url]" target="_blank"><span class="icon-linkedin"></span></a></li>[/if:data:linkedin] 
+                        [if:data:plus]<li><a href="[data:plus:url]" target="_blank"><span class="icon-googleplus"></span></a></li>[/if:data:plus] 
                     </ul>
                 </div>
                 [if:notme]
@@ -221,7 +221,7 @@
                                 <div class="col-lg-6">
                                     <div class="input-group">
                                         <span class="input-group-addon icon icon-facebook"></span>
-                                        <input type="text" id="facebook" name="facebook" value="[data:facebook]" class="form-control">
+                                        <input type="text" id="facebook" name="facebook" value="[data:facebook:input]" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -233,7 +233,7 @@
                                 <div class="col-lg-6">
                                     <div class="input-group">
                                         <span class="input-group-addon icon icon-twitter"></span>
-                                        <input type="text" id="twitter" name="twitter" value="[data:twitter]" class="form-control">
+                                        <input type="text" id="twitter" name="twitter" value="[data:twitter:input]" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -245,7 +245,7 @@
                                 <div class="col-lg-6">
                                     <div class="input-group">
                                         <span class="input-group-addon icon icon-linkedin"></span>
-                                        <input type="text" id="linkedin" name="linkedin" value="[data:linkedin]" class="form-control">
+                                        <input type="text" id="linkedin" name="linkedin" value="[data:linkedin:input]" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -257,7 +257,7 @@
                                 <div class="col-lg-6">
                                     <div class="input-group">
                                         <span class="input-group-addon icon icon-googleplus"></span>
-                                        <input type="text" id="plus" name="plus" value="[data:plus]" class="form-control">
+                                        <input type="text" id="plus" name="plus" value="[data:plus:input]" class="form-control">
                                     </div>
                                 </div>
                                 <div class="col-lg-4">

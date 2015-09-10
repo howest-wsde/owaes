@@ -162,7 +162,7 @@
 							$this->visible("img", $_POST["showimg"]);
 							break; 	
 						case "files": 
-							foreach ($strVal as $strSubVal) {
+							foreach ($strVal as $strSubVal) { 
 								$arInputs = explode(",", $strSubVal);
 								$strFolder = "upload/userfiles/" . $this->id(); 
 								if (!file_exists($strFolder)) mkdir($strFolder); 
@@ -257,12 +257,14 @@
 			if (is_null($this->arBestanden)) $this->load(); 
 			if (is_null($strKey)) $strKey = md5($strLoc . time()); 
 			if ($strFilename != "") {
-				$this->arBestanden[$strKey] = array(
-					"title" => $strTitel, 
-					"filename" => $strFilename, 
-					"location" => $strLoc, 
-					"visible" => intval($iPrivacy), 
-				); 
+				if (in_array(pathinfo($strFilename, PATHINFO_EXTENSION), array("pdf", "doc", "docx", "txt", "jpg", "jpeg", "gif", "bmp", "png", "xls", "xlsx", "md", "ppt", "pps", "odt", "ods", "odp", "csv", "svg"))) {
+						$this->arBestanden[$strKey] = array(
+							"title" => $strTitel, 
+							"filename" => $strFilename, 
+							"location" => $strLoc, 
+							"visible" => intval($iPrivacy), 
+						);  
+				}
 			} 
 		}
 		
@@ -277,12 +279,12 @@
 				$this->arStatus["updated"] = owaestime(); 
 				
 				$oDB = new database(); 
-				$oDB->execute("select count(distinct vPartners.pB) as partnercount, count(vPartners.pB) as transcount from ((select id, receiver as pA, sender as pB from tblPayments) union (select id, sender as pA, receiver as pB from tblPayments)) as vPartners where vPartners.pA = " . $this->id()); 
+				$oDB->execute("select count(distinct vPartners.pB) as partnercount, count(vPartners.pB) as transcount from ((select id, receiver as pA, sender as pB from tblPayments) union (select id, sender as pA, receiver as pB from tblPayments where voorschot = 0 and actief = 1)) as vPartners where vPartners.pA = " . $this->id()); 
 				$this->arStatus["partnercount"] = $oDB->get("partnercount"); 
 				$this->arStatus["transactiecount"] = $oDB->get("transcount"); 
 				$this->arStatus["diversiteit"] = ($this->arStatus["transactiecount"]==0) ? 1 : ($this->arStatus["partnercount"] / $this->arStatus["transactiecount"]); 
 
-				$oDB->execute("select count(id) as schenkingen from tblPayments where sender = " . $this->id() . " and market = 0 and datum > " . (owaestime()-60*24*60*60) . "; "); 
+				$oDB->execute("select count(id) as schenkingen from tblPayments where sender = " . $this->id() . " and market = 0 and voorschcot = 0 and actief = 1 and datum > " . (owaestime()-60*24*60*60) . "; "); 
 				$this->arStatus["schenkingen"] = $oDB->get("schenkingen"); 
 
 				$this->arStatus["social"] = $this->social(); 
@@ -953,10 +955,12 @@
 		}
 		
 		public function validateEmail($strKey) {
+			$bDone = FALSE; 
 			$oDB = new database(); 
 			$oDB->execute("select * from tblUserEmailVerify where user = " . $this->id() . ";"); 	
 			while ($oDB->nextRecord()) {
 				if ($oDB->get("sleutel") == $strKey) {
+					$bDone = TRUE; 
 					$this->unlocked(TRUE); 
 					$this->email($oDB->get("email")); 
 					$this->mailVerified(TRUE); 
@@ -968,6 +972,7 @@
 					$oAlert->update();  
 				}
 			} 
+			return $bDone; 
 		}
 				
 		public function mailVerified($bMailVerified = NULL) {
@@ -1534,7 +1539,9 @@
 						"receiver" => $oDB->get("receiver"), 
 						"market" => $oDB->get("market"), 	
 						"id" => $oDB->get("id"), 	
+						"voorschot" => ($oDB->get("voorschot")!=0), 
 					));  
+					if ($oPayment->voorschot()) $oPayment->market($oDB->get("voorschot")); 
 					$arPayments["all"][] = $oPayment; 
 					if ($oDB->get("sender") == $this->id()) $arPayments["sent"][] = $oPayment;
 					if ($oDB->get("receiver") == $this->id()) $arPayments["received"][] = $oPayment;
@@ -2182,7 +2189,7 @@
 				case "emotional": 
 					return $this->emotional(); 
 				case "location": 
-					return $this->location(); 
+					return html($this->location(), array("p", "a", "strong", "em", "br")); 
 				case "latitude": 
 					return $this->latitude(); 
 				case "longitude": 
@@ -2261,13 +2268,29 @@
 					return implode("", $arActions);  
 
 				default: 
-					$arTag = explode(":", $strTag, 2); 
+					$arTag = explode(":", $strTag); 
 					switch($arTag[0]) {
 						case "user": 
 							return $this->htmlValue($arTag[1]); 
 							break; 
 						case "data": 
-							if (count($arTag)==2) return $this->data($arTag[1]); 
+							if (count($arTag)>=2){
+								switch(isset($arTag[2])?$arTag[2]:"") {
+									case "url": 
+										return htmlspecialchars($this->data($arTag[1]), ENT_QUOTES);
+										//(filter_var($this->data($arTag[1]), FILTER_VALIDATE_URL) === FALSE) ? "#" :  $this->data($arTag[1]); 
+										//(filter_var($this->data($arTag[1]), FILTER_VALIDATE_URL)) ? $this->data($arTag[1]) : "#"; 
+										break; 
+									case "html": 
+										return html($this->data($arTag[1]), array("p", "a", "strong", "em", "br")); 
+										break; 
+									case "input": 
+										return str_replace(array('"', "'"), array('&quot;', "&#39;"), $this->data($arTag[1])); 
+										break; 
+									default: 
+										return $this->data($arTag[1]); 	
+								}
+							}
 							break; 
 						case "profileimg": 
 							return $this->getImage($arTag[1], FALSE); 	
