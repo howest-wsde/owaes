@@ -27,20 +27,32 @@ $(document).ready(function () {
 		return false; 
 	}); 
 	/* END FEEDBACK STARS */
-	/*
+	
 	$(".filterowaeslist").each(function(){
 		arCheck = ["ervaring", "opleiding", "infra"]; 
 		oSelector = this; 
 		oList = $(this).parent().find(".list-group"); 
-		//$(oSelector).html("[] [] []");
+		arTypes = Array(); 
 		for (i=0; i<arCheck.length; i++) {
 			if ($(oList).find("." + arCheck[i]).length > 0) {
-				$(oSelector).append(
-					$("<span />").addClass("filter").addClass(arCheck[i]).html(arCheck[i]) 
-				)
+				arTypes[arTypes.length] = arCheck[i]; 
 			}
 		}
-	})*/
+		if (arTypes.length > 1) for (i=0; i<arTypes.length; i++) {
+			$(oSelector).append(
+				$("<span />").addClass("filter").addClass(arTypes[i]).addClass("on").attr("title", arTypes[i]).attr("rel", arTypes[i]).html(arTypes[i]).click(function(){
+					strKeuze = $(this).attr("rel");  
+					if ($(this).hasClass("on")) {
+						$(this).removeClass("on").addClass("off");
+						$(this).parentsUntil(".layoutBlocks").parent().addClass("geen-" + strKeuze); 
+					} else {
+						$(this).removeClass("off").addClass("on");
+						$(this).parentsUntil(".layoutBlocks").parent().removeClass("geen-" + strKeuze); 
+					}
+				})
+			)
+		}
+	}) 
 });
 
 jQuery.removeFromArray = function (value, arr) {
