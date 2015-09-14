@@ -1323,9 +1323,19 @@ input[type="number"] {
 			border: 1px solid white; 
             border-width: 0 15px 0 5px; 
         }
+		
+		.geen-ervaring .list-group-item.ervaring {display: none;  }
+		.geen-opleiding .list-group-item.opleiding  {display: none; }
+		.geen-infra .list-group-item.infra {display: none; }
 		.list-group-item.ervaring {background-color: #e4e8d7; border-color: #7dc057; }
-		.list-group-item.infra {background-color: #ecdfd8; border-color: #c15656; }
 		.list-group-item.opleiding  {background-color: #ece4d7; border-color: #c4864d; }
+		.list-group-item.infra {background-color: #ecdfd8; border-color: #c15656; }
+		.filter.ervaring, .filter.opleiding, .filter.infra {display: inline-block; width: 17px; height: 17px; overflow: auto; cursor: pointer; background: white; border: 8px solid red; color: rgba(0,0,0,0); margin-left: 5px; } 
+		.filter.ervaring {border-color: #7dc057; }
+		.filter.opleiding {border-color: #c4864d; }
+		.filter.infra {border-color: #c15656; }
+		.filter.ervaring.off, .filter.opleiding.off, .filter.infra.off {border-width: 2px;  }
+		
 
         .meer {
             float: right;
