@@ -156,6 +156,14 @@ $arConfig["database"] = array(
 						</fieldset>
                         
                         <fieldset>
+                            <legend>Crons</legend>
+                            <div class="col-lg-22"></div> 
+                            <div class="form-group col-lg-10">
+                            	<p>Laat een cronjob het bestand "crons.php" regelmatig laden (bv elke 5 minuten)</p>
+                            </div>   
+						</fieldset>
+                        
+                        <fieldset>
                             <legend>Domeinnaam</legend>
                             <div class="form-group">
                                 <label for="alias" class="control-label col-lg-2">Domain name:</label>
