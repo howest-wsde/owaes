@@ -1,9 +1,4 @@
-# PHP5
-<FilesMatch "\.(inc|php)$">
-AddHandler x-httpd-php5 .inc .php
-</FilesMatch>
-
-
+ 
 Options -Indexes
 Options -Multiviews 
 Options +FollowSymLinks 
