@@ -29,7 +29,7 @@
 						$oDB = new database(); 
 						$oDB->execute("select * from tblStagemarktDates where student = " . me() . " order by slot;"); 
 						while ($oDB->nextRecord()){
-							echo "<li>Tijdslot " . $oDB->get("slot") . ": " . group($oDB->get("bedrijf"))->getLink() . "<li>"; 	
+							echo "<li>Tijdslot " . $oDB->get("slot") . "" . slot($oDB->get("slot")) . ": " . group($oDB->get("bedrijf"))->getLink() . "<li>"; 	
 						} 
 						
 						$arGroupen = user(me())->groups(); 
@@ -43,10 +43,25 @@
 							if ($oDB->length() > 0) {
 								echo "<h3>" . $oGroup->naam() . "</h3>"; 	
 								while ($oDB->nextRecord()){
-									echo "<li>Tijdslot " . $oDB->get("slot") . ": " . user($oDB->get("student"))->getLink() . "<li>"; 	
+									echo "<li>Tijdslot " . $oDB->get("slot") . "" . slot($oDB->get("slot")) . ": " . user($oDB->get("student"))->getLink() . "<li>"; 	
 								} 
 							}
 						} 
+						
+						function slot($i) {
+							switch($i) {
+								case 1: return " (13u30 - 13u45)"; 
+								case 2: return " (13u45 - 14u00)";  
+								case 3: return " (14u00 - 14u15)";  
+								case 4: return " (14u15 - 14u30)"; 
+								case 5: return " (15u00 - 15u15)";  
+								case 6: return " (15u15 - 15u30)"; 
+								case 7: return " (15u30 - 15u45)"; 
+								case 8: return " (15u45 - 16u00)";  
+										
+							}
+							return ""; 
+						}
                     ?> 
                     </ul>
                 </div>

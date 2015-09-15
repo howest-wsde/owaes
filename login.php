@@ -50,13 +50,16 @@
 			$oUser->update();  
 			me($oUser->id()); // SET me 
 			$oUser->changeEmail($_POST["email"], TRUE); 
-
+			$arPost = $_POST; 
+			unset ($arPost["pass"]); 
+			unset ($arPost["pass-repeat"]);
+			
 			$oLog = new log("user aangemaakt", array(
 												"id" => $oUser->id(),  
 												"naam" => $oUser->login(), 
 												"login" => $oUser->getName(),  
 												"email" => $oUser->email(),  
-												"postvalues" => $_POST, 
+												"postvalues" => $arPost, 
 											)); 
 			$bResult = $oSecurity->doLogin($oUser->login(), $_POST["pass"]); 
  

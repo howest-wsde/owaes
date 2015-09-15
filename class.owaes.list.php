@@ -264,7 +264,7 @@
 		
 		public function filterByType($strType) {
 			$this->arSQLjoin["type"] = " inner join tblMarketTypes mtypes on m.mtype = mtypes.id "; 
-			$this->arSQLwhere["type"] = "mtypes.key = '" . $strType . "' ";  
+			$this->arSQLwhere["type"] = "mtypes.sleutel = '" . $strType . "' ";  
 			/*
 			switch(strtolower($strType)) {
 				case "market": 
