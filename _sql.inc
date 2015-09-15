@@ -619,5 +619,11 @@ ALTER TABLE `tblGroups` ADD `wijzoeken` TEXT NOT NULL ;
 	<sql name="tblPayments-complete" tag="24"> 
 ALTER TABLE `tblPayments` ADD `voorschot` BIGINT NOT NULL DEFAULT '0' AFTER `market` ;
 	</sql> 
-	
+	<sql name="tblPayments-groups" tag="25"> 
+		ALTER TABLE `tblPayments` ADD `sendergroup` BIGINT UNSIGNED NOT NULL DEFAULT '0' AFTER `sender` ;
+		ALTER TABLE `tblPayments` ADD `receivergroup` BIGINT UNSIGNED NOT NULL DEFAULT '0' AFTER `receiver` ;
+	</sql>  
+	<sql name="tblMarketTypes-sleutel" tag="26"> 
+		ALTER TABLE `tblMarketTypes` CHANGE `key` `sleutel` VARCHAR( 10 ) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL ;
+	</sql> 
 </queries>

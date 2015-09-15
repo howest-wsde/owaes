@@ -3,7 +3,7 @@
 	$oSecurity = new security(TRUE); 
 	$oLog = new log("page visit", array("url" => $oPage->filename())); 
 	
-	$iFixed = 3; // er worden direct x slots vastgelegd per student
+	$iFixed = 5; // er worden direct x slots vastgelegd per student
 	 
 	$oList = new grouplist(); 
         
