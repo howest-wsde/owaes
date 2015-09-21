@@ -4,6 +4,8 @@
 		private $iSender = NULL; 
 		private $iReceiver = NULL; 
 		private $iMarket = NULL; 
+
+
 		
 		public function paymentlist($arArguments) {
 			foreach ($arArguments as $strKey=>$oValue) {
@@ -51,6 +53,8 @@
 						"id" => $oDB->get("id"), 
 						"sender" => $oDB->get("sender"), 
 						"receiver" => $oDB->get("receiver"), 
+						"sendergroup" => $oDB->get("sendergroup"), 
+						"receivergroup" => $oDB->get("receivergroup"), 
 						"initiator" => $oDB->get("initiator"), 
 						"market" => $oDB->get("market"), 
 						"voorschot" => ($oDB->get("voorschot")!=0), 

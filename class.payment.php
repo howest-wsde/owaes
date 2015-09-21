@@ -3,7 +3,9 @@
 		private $iMarket = NULL;
 		private $iInitiator = NULL;
 		private $iSender = NULL;
-		private $iReceiver = NULL;   
+		private $iReceiver = NULL;
+		private $iSenderGroup = NULL;
+		private $iReceiverGroup = NULL;   
 		private $iCredits = NULL;  
 		private $iReason = 0;  
 		private $iID = NULL;  
@@ -18,6 +20,12 @@
 						break; 
 					case "receiver": 
 						$this->receiver($oValue); 
+						break; 
+					case "sendergroup": 
+						$this->sender(NULL, $oValue); 
+						break; 
+					case "receivergroup": 
+						$this->receiver(NULL, $oValue); 
 						break; 
 					case "market": 
 						$this->market($oValue); 
@@ -40,8 +48,9 @@
 			} 
 		}
 		
-		public function sender($iSender = NULL){
+		public function sender($iSender = NULL, $iSenderGroup = NULL){
 			if (!is_null($iSender)) $this->iSender = $iSender; 
+			if (!is_null($iSenderGroup)) $this->iSenderGroup = $iSenderGroup; 
 			if (is_null($this->iSender)) $this->iSender = me(); 
 			return $this->iSender; 	
 		}
@@ -52,9 +61,10 @@
 			return $this->iInitiator; 	
 		}
 		
-		public function receiver($iReceiver = NULL){
+		public function receiver($iReceiver = NULL, $iReceiverGroup = NULL){
 			if (!is_null($iReceiver)) $this->iReceiver = $iReceiver; 
-			return $this->iReceiver; 	
+			if (!is_null($iReceiverGroup)) $this->iReceiverGroup = $iReceiverGroup; 
+			return $this->iReceiver; 
 		}
 		
 		public function credits($iCredits = NULL){
