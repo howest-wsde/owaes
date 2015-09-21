@@ -3,7 +3,7 @@
   <div class="modal-dialog">
     <form action="[currentfile]"> 
         <input type="hidden" name="user" value="[user:id]" />
-        <input type="hidden" id="actionfield" name="action" value="later" />
+        <input type="hidden" id="actionfield[user:id]" name="action" value="later" />
         <div class="modal-content">
           <div class="modal-header">
             <h4 class="modal-title">Nieuwe gebruiker valideren</h4>
@@ -18,9 +18,9 @@
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-success save-form" value="confirm" onclick="document.getElementById('actionfield').value='confirm';" data-dismiss="modal">bevestigen</button>
-            <button type="button" class="btn btn-danger save-form" value="decline" onclick="document.getElementById('actionfield').value='decline';" data-dismiss="modal">weigeren</button>
-            <button type="button" class="btn btn-cancel later-form" onclick="document.getElementById('actionfield').value='later';" data-dismiss="modal">niet nu</button>
+            <button type="button" class="btn btn-success save-form" value="confirm" onclick="document.getElementById('actionfield[user:id]').value='confirm';" data-dismiss="modal">bevestigen</button>
+            <button type="button" class="btn btn-danger save-form" value="decline" onclick="document.getElementById('actionfield[user:id]').value='decline';" data-dismiss="modal">weigeren</button>
+            <button type="button" class="btn btn-cancel later-form" onclick="document.getElementById('actionfield[user:id]').value='later';" data-dismiss="modal">niet nu</button>
           </div>
         </div><!-- /.modal-content -->
     </form>
