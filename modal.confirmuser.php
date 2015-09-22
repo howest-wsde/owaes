@@ -1,107 +1,87 @@
 <?php
 	include "inc.default.php"; // should be included in EVERY file 
-	$oSecurity = new security(TRUE);  
-	
-	$iMarket = intval($_GET["m"]); 
-	$oMarket = owaesitem($iMarket); 
+	$oSecurity = new security(TRUE);   
 	
 	$iUser = intval($_GET["u"]); 
-	$oUser = user($iUser); 
-	
-	$oMe = user(me()); 
-	$iMax = $oMe->credits();  
+	$oUser = user($iUser);  
 	
 	if (isset($_POST["cancel"])) { 
-		$oActions = new actions(me()); 
+		$oActions = new actions(me());  
 		$oAction = $oActions->search(array(
-				"type" => "transaction", 
+				"type" => "validateuser", 
 				"user" => $iUser, 
-				"market" => $iMarket, 
 			));  
-		if ($oAction) { 
-			$iPostPone = isset($_POST["postpone"]) ? intval($_POST["postpone"]) : 2; 
-			if ($iPostPone == 0) $iPostPone = 1/24/60*2; // 2 minuten
-			$oAction->tododate(owaestime() + ($iPostPone*24*60*60)); // x dagen
-			$oAction->update();   
+		if ($oAction) {
+			$oAction->tododate(owaestime() + (60*60)); // 1 uur
+			$oAction->update();  
 		}
 		exit(); 
-	} else if (isset($_POST["market"])) {  
-		$iCredits = intval($_POST["credits"]); 
-		if ($iCredits > 0) {
-			if ($iCredits > $iMax) $iCredits = $iMax; 
-			foreach ($oMarket->subscriptions(array("state"=>SUBSCRIBE_CONFIRMED)) as $iParty=>$oSubscription) {
-				$oPayment = $oSubscription->payment(); 
-				if ($oPayment->sender() == me()) {
-					if ($oPayment->receiver() == $iUser) {
- 
-						switch($_POST["voorschot"]) {
-							case "part": 
-								$oPayment->voorschot(TRUE); 
-								break; 
-							default: 
-								$oSubscription->state(SUBSCRIBE_FINISHED);
-								$oSubscription->save(); 
-						}
-												
-						$oPayment->reason(1); 
-						$oPayment->credits($iCredits); 
-						$oPayment->signed(TRUE); 
-						
-						 
-						$iExperience = 100; 
-						
-						$oExpSender = new experience($oPayment->sender());
-						$oExpSender->sleutel("owaes." . $oMarket->id());
-						$oExpSender->detail("reason", "overdracht credits");
-						$oExpSender->detail("receiver", $oPayment->receiver());
-						$oExpSender->detail("receiver name", user($oPayment->receiver())->getName());
-						$oExpSender->add($iExperience);  
-						 
-						$oExpReceiver = new experience($oPayment->receiver());
-						$oExpReceiver->sleutel("owaes." . $oMarket->id());
-						$oExpReceiver->detail("reason", "overdracht credits");
-						$oExpReceiver->detail("sender", $oPayment->sender());
-						$oExpReceiver->detail("sender name", user($oPayment->sender())->getName());
-						$oExpReceiver->add($iExperience);  
-						
-						$oAction = new action($iUser);
-						$oAction->type("feedback");   
-						$oAction->data("market", $iMarket); 
-						$oAction->data("user", me()); 
-						$oAction->tododate(owaestime() + (3*24*60*60));  
-						$oAction->update(); 
-						
-						$oAction = new action(me());
-						$oAction->type("feedback");   
-						$oAction->data("market", $iMarket); 
+	} else if (isset($_POST["action"])) {   
+		$oActions = new actions(me()); 
+		$oAction = $oActions->search(array(
+				"type" => "validateuser", 
+				"user" => $iUser,  
+			));  
+		switch($_POST["action"]) {
+			case "confirm": 
+				$oUser->algemenevoorwaarden(1); 
+				$oUser->update(); 
+				
+				if (intval($oUser->data("stagemarkt")) > 0) {
+					$oDB = new database(); 
+					$oDB->execute("select * from tblStagemarkt where id = " . intval($oUser->data("stagemarkt")) . ";");  
+					$oGroep = new group(); 
+					$oGroep->naam($oDB->get("groepsnaam"));
+					$oGroep->info($oDB->get("description"));
+					$oGroep->website($oDB->get("website"));
+					$oGroep->admin($oUser->id());
+					$oGroep->update();   
+					$oGroep->addUser($oUser->id()); 
+					if ($oDB->get("logo")!="") createGroupPicture($oDB->get("logo"), $oGroep->id()); 
+				}
+				
+				$oAction->done(TRUE);
+				$oAction->update();  
+				break; 
+			case "decline": 
+				if (user(me())->admin()) {
+					$oUser->delete(TRUE);  
+				} else {
+					$oUser->dienstverlener(0); 
+					$oUser->update(); 
+					
+					$arAdmins = new userlist(); 
+					$arAdmins->filter("admin"); 
+					foreach ($arAdmins->getList() as $oAdmin) {
+						$oAction = new action($oAdmin->id()); 
+						$oAction->type("validateuser");  
 						$oAction->data("user", $iUser); 
-						$oAction->tododate(owaestime() + (3*24*60*60));  
-						$oAction->update(); 
-						 
-						user($iParty)->addbadge("done-" . $oMarket->type()->key()); 
-							  
+						$oAction->data("declinedby", me()); 
+						$oAction->tododate(owaestime()); 
+						$oAction->update();  
 					} 
 				}
-			} 		 
-			 
-			$oActions = new actions(me()); 
-			$oAction = $oActions->search(array(
-					"type" => "transaction", 
-					"user" => $iUser, 
-					"market" => $iMarket, 
-				));  
-			if ($oAction) {
-				$oAction->done(owaestime()); 
-				$oAction->update();  
-			}
-		}
-		exit();  
+				$oAction->done(TRUE);
+				$oAction->update();   
+				break; 	
+		}  
+		exit();   
 	} 
 	
-	$oTemplate = template("modal.transaction.html"); 
-	$oTemplate->tag("max", $iMax); 
+	$oTemplate = template("modal.confirmuser.html"); 
+	if (isset($_GET["d"])) {
+		$oTemplate->tag("gegevens", "<dt>Naam: </dt><dd>[firstname] [lastname]</dd><dt>Doorgestuurd door: </dt><dd>" . user($_GET["d"])->getName() . "</dd>"); 
+	} else {
+		$oTemplate->tag("gegevens", "<dt>Naam: </dt><dd>[firstname] [lastname]</dd>"); 
+	}
+	if ($oUser->dienstverlener()->id() > 0){
+		$oTemplate->tag("dienstverlener", $oUser->dienstverlener()->naam()); 
+	} else {
+		$oTemplate->tag("dienstverlener", "OWAES"); 
+	}
+	//$oTemplate->tag("max", $iMax); 
 	$strHTML = $oTemplate->html(); 
-	$strHTML = $oMarket->html($strHTML);
+//$strHTML = $oMarket->html($strHTML);
 	$strHTML = $oUser->html($strHTML); 
 	
 //	$strHTML = str_replace("[credit]", 1515515151, $strHTML); 
