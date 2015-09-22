@@ -4,8 +4,8 @@
 		private $iInitiator = NULL;
 		private $iSender = NULL;
 		private $iReceiver = NULL;
-		private $iSenderGroup = NULL;
-		private $iReceiverGroup = NULL;   
+		private $iSenderGroup = 0;
+		private $iReceiverGroup = 0;   
 		private $iCredits = NULL;  
 		private $iReason = 0;  
 		private $iID = NULL;  
@@ -139,7 +139,15 @@
 					$iVoorschot = $this->voorschot() ? $this->market() : 0;  
 					if ($this->id() == 0) {
 						if ($bValue) {
-							$oDB = new database("insert into tblPayments (datum, sender, receiver, initiator, credits, reason, link, market, actief, voorschot) values (" . owaesTime() . ", " . $this->sender() . ", " . $this->receiver() . ", " . $this->initiator() . ", " . $this->credits() . ", " . $this->reason() . ", 0, " . $iMarket . ", 1, " . $iVoorschot . ");" , TRUE); 
+							$oDB = new database("insert into tblPayments 
+									(datum, sender, receiver, sendergroup, receivergroup, initiator, credits, reason, link, 
+										market, actief, voorschot) 
+									values (" . owaesTime() . ", " . $this->sender() . ", 
+										" . $this->receiver() . ", " . $this->iSenderGroup . ", 
+										" . $this->iReceiverGroup . ", " . $this->initiator() . ", 
+										" . $this->credits() . ", " . $this->reason() . ", 0, 
+										" . $iMarket . ", 1, " . $iVoorschot . ");"
+								, TRUE); 
 							$oConversation = new conversation($this->receiver()); 
 							$oConversation->add("Er werden " . $this->credits() . " " . settings("credits", "name", "x") . " overgedragen", $this->market());  
 						}
@@ -216,4 +224,7 @@
 		}
 		
 	}
+	
+
+
 	
