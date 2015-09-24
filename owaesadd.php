@@ -338,9 +338,9 @@ div.existingfile a.delfileinput {display: inline; }
 											if (count($arPosters["groups"])+count($arPosters["users"]) > 1) echo "<optgroup label=\"Groepen\">";  
 											foreach ($arPosters["groups"] as $iGroup => $oGroup) {
 												if ($oOwaesItem->group() && $oOwaesItem->group()->id()==$iGroup) { 
-													echo ("<option selected=\"selected\" value=\"g." . $iGroup . "\">" . $oGroup->naam() . "</option>"); 
+													echo ("<option selected=\"selected\" value=\"g." . $iGroup . "\">" . $oGroup->naam() . " (" . $oGroup->credits() . " " . settings("credits", "name", "x") . ")</option>"); 
 												} else {
-													echo ("<option value=\"g." . $iGroup . "\">" . $oGroup->naam() . "</option>"); 
+													echo ("<option value=\"g." . $iGroup . "\">" . $oGroup->naam() . " (" . $oGroup->credits() . " " . settings("credits", "name", "x") . ")</option>"); 
 												}
 											} 
 											if (count($arPosters["groups"])+count($arPosters["users"]) > 1) echo "</optgroup>"; 

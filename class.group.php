@@ -25,6 +25,8 @@
 		private $arUserRights = array(); 
 		private $bDeleted = FALSE; 
 		private $bIsDienstverlener = NULL; 
+		private $arPayments = NULL; 
+		private $iCredits = NULL; 
 		 
 		public function group($strKey=NULL) { // $strKey = ID or ALIAS // when not defined: create new user  
 			if (!is_null($strKey)) {
@@ -203,6 +205,62 @@
 		public function getLink($bHTML = TRUE) { // link to article details  
 			return "<a href=\"" . $this->getURL() . "\">" . $this->naam() . "</a>"; 
 		}
+
+		public function payments($strType = NULL) {
+			if (is_null($this->arPayments)) {
+				$arPayments = array(
+					"all" => array(), 
+					"sent" => array(), 
+					"received" => array(), 
+				); 
+				$oDB = new database();
+				$oDB->sql("select * from tblPayments where (sendergroup = " . $this->id() . " or receivergroup = " . $this->id() . ") and actief = 1 order by id desc; "); 
+				$oDB->execute(); 
+				while ($oDB->nextRecord()) {
+					$oPayment = new payment(array(
+						"sender" => $oDB->get("sender"), 
+						"credits" => $oDB->get("credits"), 
+						"receiver" => $oDB->get("receiver"), 
+						"market" => $oDB->get("market"), 	
+						"id" => $oDB->get("id"), 
+						"voorschot" => ($oDB->get("voorschot")!=0), 
+					));  
+					$oPayment->refGroup($this->id());
+					if ($oPayment->voorschot()) $oPayment->market($oDB->get("voorschot")); 
+					$arPayments["all"][] = $oPayment; 
+					if ($oDB->get("sender") == $this->id()) $arPayments["sent"][] = $oPayment;
+					if ($oDB->get("receiver") == $this->id()) $arPayments["received"][] = $oPayment;
+				}
+				$this->arPayments = $arPayments; 
+			}
+
+			switch(strtolower($strType)) {
+				case "all": 
+				case "sent": 
+				case "received":
+					return $this->arPayments[strtolower($strType)]; 
+					break; 	
+				default:
+					return $this->arPayments; 
+					break; 	
+			} 
+		} 
+
+
+		public function credits() {
+			if (is_null($this->iCredits)) { 
+				$iCredits = settings("startvalues", "credits"); 
+				$oDB = new database(); 
+				$oDB->sql("select * from tblPayments where sendergroup = '" . $this->id() . "' or receivergroup='" . $this->id() . "' and actief = 1; "); 	
+				$oDB->execute(); 
+				while ($oDB->nextRecord()) {
+					if ($oDB->get("receivergroup") == $this->id()) $iCredits += $oDB->get("credits"); 
+					if ($oDB->get("sendergroup") == $this->id()) $iCredits -= $oDB->get("credits"); 
+				}
+				$this->iCredits = $iCredits; 
+			}	
+			return $this->iCredits; 
+		}
 		
 		
 		public function load() {
@@ -277,7 +335,27 @@
 		}
 		
 		public function html($strTemplate = "") {
-			$strHTML = template($strTemplate);
+			$oHTML = template($strTemplate);
+
+			foreach ($oHTML->loops() as $strTag=>$arLoops) {
+				switch($strTag) {
+					case "payments":  
+						$arList = $this->payments("all");
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$arResults[$strSubHTML][] = $oItem->html( $strSubHTML);
+							}
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("payments", $strSubHTML, $strResult); 
+						}
+						break;  
+				}
+			}
+
+			$strHTML = $oHTML->html(); 
 			
 	/* START LUSSEN [friends]xxx[/friends] */ 
 			$arLoopStrings = array("members", "market");
@@ -434,6 +512,8 @@
 				case "naam":  
 				case "name": 
 					return html($this->naam()); 
+				case "credits": 
+					return $this->credits(); 
 				case "website": 
 					return $this->website(); 
 				case "link": 

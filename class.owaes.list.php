@@ -31,7 +31,7 @@
 												and tt" . $iUser . ".market = m.id 
 												and tt" . $iUser . ".overruled = 0 
 												and tt" . $iUser . ".status = " . SUBSCRIBE_CONFIRMED . " " ; 
-						$this->arSQLwhere["payment" . $iUser] = " m.id in (select market from tblPayments where sender = " . $iUser . " or receiver = " . $iUser . ")" ;  
+						$this->arSQLwhere["payment" . $iUser] = " m.id in (select market from tblPayments where (sender = " . $iUser . " and sendergroup=0) or (receiver = " . $iUser . " and receivergroup = 0)" ;  
 
 					break; 
 				//case 0: 
@@ -42,7 +42,7 @@
 												and tt" . $iUser . ".market = m.id 
 												and tt" . $iUser . ".overruled = 0 
 												and tt" . $iUser . ".status = " . SUBSCRIBE_CONFIRMED . ""; 
-						$this->arSQLwhere["payment" . $iUser] = " m.id not in (select market from tblPayments where sender = " . $iUser . " or receiver = " . $iUser . ")" ;  
+						$this->arSQLwhere["payment" . $iUser] = " m.id not in (select market from tblPayments where (sender = " . $iUser . " and sendergroup=0) or (receiver = " . $iUser . " and receivergroup = 0))" ;  
 					break; 
 				case "tobepayed": // user moet betaling ontvangen  
 						$this->arSQLjoin["payment" . $iUser] = " inner join tblMarketSubscriptions tt" . $iUser . " 
@@ -53,7 +53,7 @@
 												and tt" . $iUser . ".market = m.id 
 												and tt" . $iUser . ".overruled = 0 
 												and tt" . $iUser . ".status = " . SUBSCRIBE_CONFIRMED . ""; 
-						$this->arSQLwhere["payment" . $iUser] = " m.id not in (select market from tblPayments where sender = " . $iUser . " or receiver = " . $iUser . ")" ;  
+						$this->arSQLwhere["payment" . $iUser] = " m.id not in (select market from tblPayments where (sender = " . $iUser . " and sendergroup=0) or (receiver = " . $iUser . " and receivergroup = 0))" ;  
 					break; 
 				case "topay": // user moet betaling ontvangen  
 						$this->arSQLjoin["payment" . $iUser] = " inner join tblMarketSubscriptions tt" . $iUser . " 
@@ -64,7 +64,7 @@
 												and tt" . $iUser . ".market = m.id 
 												and tt" . $iUser . ".overruled = 0 
 												and tt" . $iUser . ".status = " . SUBSCRIBE_CONFIRMED . ""; 
-						$this->arSQLwhere["payment" . $iUser] = " m.id not in (select market from tblPayments where sender = " . $iUser . " or receiver = " . $iUser . ")" ;  
+						$this->arSQLwhere["payment" . $iUser] = " m.id not in (select market from tblPayments where (sender = " . $iUser . " and sendergroup=0) or (receiver = " . $iUser . " and receivergroup = 0))" ;  
 					break; 
 				default: 
 					echo "test"; 

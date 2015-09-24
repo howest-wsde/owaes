@@ -11,6 +11,8 @@
 		private $iID = NULL;  
 		private $bSigned = NULL; 
 		private $bVoorschot = FALSE; 
+		private $iRefUser = NULL; // bij bekijken van transacties wordt deze gebruiker als reference gebruikt om te weten of het inkomsten of uitgaven zijn
+		private $iRefGroup = NULL; 
 		
 		public function payment($arArguments = array()) {  // payment(array("sender"=>$x, "receiver"=>$y, "market"=>$z))
 			foreach ($arArguments as $strKey=>$oValue) {
@@ -65,6 +67,16 @@
 			if (!is_null($iReceiver)) $this->iReceiver = $iReceiver; 
 			if (!is_null($iReceiverGroup)) $this->iReceiverGroup = $iReceiverGroup; 
 			return $this->iReceiver; 
+		}
+
+		public function refUser($iRefUser = NULL){
+			if (!is_null($iRefUser)) $this->iRefUser = $iRefUser;  
+			return $this->iRefUser; 
+		}
+
+		public function refGroup($iRefGroup = NULL){
+			if (!is_null($iRefGroup)) $this->iRefGroup = $iRefGroup;  
+			return $this->iRefGroup; 
 		}
 		
 		public function credits($iCredits = NULL){
@@ -195,15 +207,24 @@
 				return $strHTML; 	
 			}
 		}
+
+		public function inout() {
+			if (!is_null($this->iRefUser)) {
+				return ($this->sender() == $this->iRefUser) ? "out" : "in";  
+			} else if (!is_null($this->iRefUser)) {
+ 				return ($this->iSenderGroup == $this->iRefGroup) ? "out" : "in";  
+			} else  return ($this->sender() == me()) ? "out" : "in";  
+
+		}
 		
 		private function HTMLvalue($strTag) {
 			switch($strTag) { 
 				case "id": 
 					return $this->id();  
 				case "credits": 
-					return ($this->sender() == me() ? "-":"") . $this->credits();  
+					return ($this->inout() == "out" ? "-":"") . $this->credits();  
 				case "in-out": 
-					return ($this->sender() == me()) ? "out" : "in";  
+					return $this->inout(); // ($this->sender() == me()) ? "out" : "in";  
 				case "owaes": 
 					if ($this->market() == 0) {
 						return "schenking";  
