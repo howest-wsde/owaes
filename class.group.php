@@ -512,6 +512,7 @@
 				case "naam":  
 				case "name": 
 					return html($this->naam()); 
+				case "#credits": 
 				case "credits": 
 					return $this->credits(); 
 				case "website": 
@@ -566,7 +567,9 @@
 							switch (isset($arTag[2])?$arTag[2]:"") {
 								case "editpage": 
 									return $this->userrights()->editpage() ? $strTemplate : ""; 
-							}			
+							}	
+						case "ingroup": 
+							return 	($this->users(me())) ? $strTemplate : ""; 	
 					} 
 					break; 
 				case "admin":  
