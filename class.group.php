@@ -247,6 +247,9 @@
 		} 
 
 
+
+
+
 		public function credits() {
 			if (is_null($this->iCredits)) { 
 				$iCredits = settings("startvalues", "credits"); 
@@ -258,11 +261,14 @@
 					if ($oDB->get("sendergroup") == $this->id()) $iCredits -= $oDB->get("credits"); 
 				}
 				$this->iCredits = $iCredits; 
-			}	
+			}		
 			return $this->iCredits; 
 		}
 		
-		
+		public function availableCredits() {
+			return settings("startvalues", "credits") * (count($this->users())+1); 
+		}
+
 		public function load() {
 			if ($this->id()	!= 0) {
 				$strSQL = "select * from tblGroups where id = " . $this->id() . "; "; 
