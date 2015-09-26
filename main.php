@@ -188,7 +188,7 @@
 					if ($iThis > $iMax) $iMax = $iThis; 
 					if ($oDB->get("user") == me()) $iIk = $iThis; 
 				} 
-				$iAVG /= $oDB->length();  
+				$iAVG /= (($oDB->length()==0)?1:$oDB->length());  
 			?>
 				
 				

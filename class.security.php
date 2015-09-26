@@ -131,8 +131,9 @@
 						$iStart = owaesTime(); 
 						$iStop = owaesTime() + 60*60*24*14; // session valid for 2 weeks 
 						$strIP = $_SERVER['REMOTE_ADDR']; 
-						$strConf = mysql_escape_string($_SERVER['HTTP_USER_AGENT']); 
-						$oDBinsert = new database("insert into tblUserSessions (user, start, stop, sessionpass, active, ip, conf) values ($iUser, $iStart, $iStop, '$strSession', 1, '$strIP', '$strConf'); ", true); 
+						$oDBinsert = new database();
+						$strConf = $oDBinsert->escape($_SERVER['HTTP_USER_AGENT']); 
+						$oDBinsert->execute("insert into tblUserSessions (user, start, stop, sessionpass, active, ip, conf) values ($iUser, $iStart, $iStop, '$strSession', 1, '$strIP', '$strConf'); "); 
 						$this->setLoggedIn(TRUE); 
 						setcookie("user", $iUser, $iStop);
 						setcookie("session", $strSession, $iStop);
