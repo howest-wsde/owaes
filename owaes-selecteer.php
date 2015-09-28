@@ -56,7 +56,8 @@
 					);	
 					sameHeight();
                     if (iCredits * $(".nieuwgoedgekeurd").length > iCreditsMax) {
-                        $(".exceedcredits").show(); 
+                        $(".exceedcredits").show();
+                        $("#savestep1").addClass("disabled"); 
                     }; 
 					return false; 
 				})
@@ -70,6 +71,7 @@
 					);
                     if (iCredits * $(".nieuwgoedgekeurd").length <= iCreditsMax) {
                         $(".exceedcredits").hide(); 
+                        $("#savestep1").removeClass("disabled");
                     };
 					sameHeight();
 					return false; 
