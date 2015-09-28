@@ -97,7 +97,7 @@
 				           // $lastLogin = $oDB->get("lastlogin");
                             //echo(vardump($arrGebruiker));
                             
-							$oDB = new database("select * from tblPayments where (sender = $iUser or receiver = $iUser) and actief = 1 order by datum; ", TRUE);  
+							$oDB = new database("select * from tblPayments where ((sender = $iUser and sendergroup=0) or (receiver = $iUser and receivergroup = 0) and actief = 1 order by datum; ", TRUE);  
 							while ($oDB->nextRecord()) {
 								$iVal = $arChart["Credits"]["current"] += (($oDB->get("sender") == $iUser)?-1:1) * $oDB->get("credits"); 
 								$arChart["Credits"]["data"][] = array(javatime($oDB->get("datum")), $iVal); 

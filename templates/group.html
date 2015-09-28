@@ -9,7 +9,8 @@
                     <h2 class="naam">
                     	[naam] 
                     	[if:rights:editpage]<a href="[editlink]"><span class="icon icon-settings"></span></a>[/if:rights:editpage]
-                    </h2>
+                    </h2> 
+                    [if:ingroup]<p class="credits" title="Deze groep heeft [credits] [[credits]]"><span class="icon icon-credits icon-credits-orange"></span> <span class="title">[credits]</span></p>[/if:ingroup]
                     [if:website]<p>Website: [showurls][website][/showurls]</p>[/if:website]
                     <p>[description]</p> 
                     [if:wijzoeken]<h3>Wij zoeken:</h3><p>[wijzoeken]</p>[/if:wijzoeken]
@@ -34,33 +35,18 @@
                 [/if:members>3]
             </div>
 		[/if:members]
-    	 
-         <!--
-        <div class="well well-volgers">
-            <h3>Volgers <span class="badge">xx</span></h3>
-
-            <div class="list-group">
-                <a href="#" class="list-group-item">
-                    <div class="media">
-                        <img class="media-object pull-left" src="upload/profiles/janne.jpg">
-                        <div class="media-body">
-                            <h4 class="media-heading">Moniek Hoenders</h4>level 2
-                        </div>
-                    </div>
-                </a>
-                <a href="#" class="list-group-item">
-                    <div class="media">
-                        <img class="media-object pull-left" src="upload/profiles/fa33f5eb68e16912f13c885923c987d6.jpg">
-                        <div class="media-body">
-                            <h4 class="media-heading">Donald Hinderiks</h4>level 3
-                        </div>
-                    </div>
-                </a>
+    	  
+        [if:payments]
+            <div class="well well-transacties">
+                <h3>Transactie's <span class="badge">[payments:count]</span></h3>
+    
+                <div class="list-group">
+                    [for:payments:5][include:userprofile.payments.html][/for:payments:5] 
+                    <a name="morepayments"></a>
+                </div> 
+                [if:payments>5]<p class="meer"><a href="#morepayments" class="loadmore" user="[id]" start="6" list="payments" count="5" template="userprofile.payments.html">meer...</a></p>[/if:payments>5] 
             </div>
-
-            <p class="meer"><a href="#">meer...</a></p>
-        </div>
-        -->
+        [/if:payments]
         
     </div>
     <div class="col-md-8"> 
