@@ -25,6 +25,7 @@
 		switch($_POST["action"]) {
 			case "confirm": 
 				$oUser->algemenevoorwaarden(1); 
+				$oUser->unlocked(TRUE); 
 				$oUser->update(); 
 				
 				if (intval($oUser->data("stagemarkt")) > 0) {
