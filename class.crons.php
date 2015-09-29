@@ -36,7 +36,7 @@
 			foreach ($ar2DO as $arCron) {
 				if (!isset($arCrons[$arCron["sleutel"]])) $arCrons[$arCron["sleutel"]] = 0; 
 				if (owaesTime() - $arCrons[$arCron["sleutel"]] > $arCron["refresh"]) { // ) { // check elke 30 minuten 
-					$this->indicators();  
+					//$this->indicators();  
 					$arCrons[$arCron["sleutel"]] = owaesTime(); 
 					switch($arCron["sleutel"]) {
 						case "indicators": 
@@ -65,6 +65,7 @@
 			$oDB = new database(); 
 			$oInsertDB = new database();  
 			$iRefreshTijd = settings("crons", "indicators"); 
+			$iLevelFactor = settings("crons", "levelfactor"); 
 			
 			$strLastUserrecordsSQL = "select user, max(datum) as datum, reason, link from tblIndicators where actief = 1 group by user";
 			/*$strSQL = "select u.id as user, i.datum, i.reason, i.link 
@@ -83,17 +84,19 @@
 			  
 			$oDB->sql($strSQL);  
 			$oDB->execute(); 
-			echo $oDB->table(); 
+			//echo $oDB->table(); 
 			while ($oDB->nextRecord()) {
 				// echo $oDB->get("user") . "<br>"; 
 				$iNewTime = (is_null($oDB->get("datum"))) ? owaesTime() : ($oDB->get("datum") + $iRefreshTijd);
+				$oUser = user($oDB->get("id")); 
+				$iMin = 0 - (1 / ($oUser->level()^$iLevelFactor));  
 				switch($oDB->get("reason")) { // vorige reason
 					case TIMEOUT_CLICKED:  // wordt geset in class.subscription: wanneer een user zich inschrijft wordt er meteen een record toegevoegd met reason = TIMEOUT_CLICKED
 						$oOwaesItem = owaesitem($oDB->get("link"));
-						$arChange["physical"] = ($oOwaesItem->physical()>0) ? 0 : -1; 
-						$arChange["emotional"] = ($oOwaesItem->emotional()>0) ? 0 : -1; 
-						$arChange["mental"] = ($oOwaesItem->mental()>0) ? 0 : -1; 
-						$arChange["social"] = ($oOwaesItem->social()>0) ? 0 : -1; 
+						$arChange["physical"] = ($oOwaesItem->physical()>0) ? 0 : $iMin; 
+						$arChange["emotional"] = ($oOwaesItem->emotional()>0) ? 0 : $iMin; 
+						$arChange["mental"] = ($oOwaesItem->mental()>0) ? 0 : $iMin; 
+						$arChange["social"] = ($oOwaesItem->social()>0) ? 0 : $iMin; 
 						$arChange["reason"] = TIMEOUT_WAITING;  
 						$arChange["link"] = $oDB->get("link");  
 						// enkel 0 voor indicatoren waar op gewerkt wordt
@@ -133,10 +136,10 @@
 						break; 
 					case TIMEOUT_WAITING:  
 					default:  
-						$arChange["physical"] = -1; 
-						$arChange["emotional"] = -1; 
-						$arChange["mental"] = -1; 
-						$arChange["social"] = -1; 
+						$arChange["physical"] = $iMin; 
+						$arChange["emotional"] = $iMin; 
+						$arChange["mental"] = $iMin; 
+						$arChange["social"] = $iMin; 
 						$arChange["reason"] = TIMEOUT_DEFAULT;  
 						$arChange["link"] = 0;  
 				}
