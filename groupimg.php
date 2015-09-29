@@ -28,11 +28,28 @@
 		$iX = 0;
 		$iY = 0; 
 	}
-	 
-	
-	
+	  
+
+
 	imagecopyresampled($oThumb, $oSource, $iX, $iY, 0, 0, $iW, $iH, imagesx($oSource), imagesy($oSource));
 	
+
+	if (isset($_GET["u"])){ 
+		$strUserIMG = "upload/profiles/id/" . intval($_GET["u"]) . ".png"; 
+		if (file_exists($strUserIMG)) {
+			$oUser = imagecreatefrompng($strUserIMG); 
+			imagecopyresampled($oThumb, $oUser, round($iW/30), round($iW/30), 0, 0, round($iW/3), round($iH/3), imagesx($oUser), imagesy($oUser));
+
+			/*// bool imagecopyresampled ( resource $dst_image , resource $src_image , int $dst_x , int $dst_y , int $src_x , int $src_y , int $dst_w , int $dst_h ,
+			int $src_w , int $src_h )
+
+			imagecopyresampled( 			$oThumb, 					$oUser, 		0, 				0, 			0, 				0,		 $iW, 		$iH, 
+				imagesx($oUser), imagesy($oUser));
+*/
+		}
+
+	}
+
 	header('Content-Type: image/png');
 	imagepng($oThumb); 
 	

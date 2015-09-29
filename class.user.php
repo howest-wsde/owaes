@@ -1490,6 +1490,7 @@
 				return $strIMG ; 
 			} 
 		}
+ 
 		
 		private function userbadge() {
 			return "<div class=\"userbadge\">
