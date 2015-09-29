@@ -1266,10 +1266,10 @@
 				$oDB->execute("select sum(emotional) as emotional, sum(social) as social, sum(physical) as physical, sum(mental) as mental from tblIndicators where user = " . $this->iID . " and actief = 1; "); 
 				if ($oDB->length()>0) {
 					//var_dump($oDB->record()); 
-					if (is_null($this->iSocial)) $this->social(settings("startvalues", "social") + $oDB->get("social"));
-					if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional") + $oDB->get("emotional"));
-					if (is_null($this->iPhysical)) $this->physical(settings("startvalues", "physical") + $oDB->get("physical"));
-					if (is_null($this->iMental)) $this->mental(settings("startvalues", "mental") + $oDB->get("mental"));
+					if (is_null($this->iSocial)) $this->social(settings("startvalues", "social") + round($oDB->get("social")));
+					if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional") + round($oDB->get("emotional")));
+					if (is_null($this->iPhysical)) $this->physical(settings("startvalues", "physical") + round($oDB->get("physical")));
+					if (is_null($this->iMental)) $this->mental(settings("startvalues", "mental") + round($oDB->get("mental")));
 				} else {
 					if (is_null($this->iSocial)) $this->social(settings("startvalues", "social"));
 					if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional"));
@@ -1490,6 +1490,7 @@
 				return $strIMG ; 
 			} 
 		}
+ 
 		
 		private function userbadge() {
 			return "<div class=\"userbadge\">

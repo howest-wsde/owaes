@@ -89,6 +89,8 @@
 
 			prepareAndExecuteStmt("crons.indicators", $result);
 		}
+		
+		if (isset($_POST["txtIndicatorCronLevel"])) prepareAndExecuteStmt("crons.levelfactor", doubleval($_POST["txtIndicatorCronLevel"])); 
 
 		if (isset($_POST["txtHTWFD"])) prepareAndExecuteStmt("crons.hourstoworkfordelay", doubleval($_POST["txtHTWFD"])); 
 
@@ -261,12 +263,17 @@
 									<input type="radio" name="rbWhen" id="rbDay" value="day" <? echo getPeriod(settings("crons", "indicators"), "day"); ?>/><label for="rbDay">Dag</label>&nbsp;&nbsp;&nbsp;&nbsp;
 									<input type="radio" name="rbWhen" id="rbWeek" value="week" <? echo getPeriod(settings("crons", "indicators"), "week"); ?>/><label for="rbWeek">Week</label><br/>
 									<input type="number" class="form-control" name="txtCronsIndicators" id="txtCronsIndicators" min="0" value="<? echo getCronsIndicator(settings("crons", "indicators")); ?>"/>
-                                    <small>(Elke X tijd zakken de indicatoren 1 in waarde)</small>
+                                    <small>(Elke X tijd zakken de indicatoren in waarde)</small>
 								</p>
+								<p class="">
+									<label for="txtIndicatorCronLevel">Indicatoren-verlaagwaaarde / level:</label><br/>
+									<input type="number" class="form-control" name="txtIndicatorCronLevel" id="txtIndicatorCronLevel" value="<? echo settings("crons", "levelfactor"); ?>"/>
+                                    <small>(Een indicator wordt 1 / (level^X) verlaagd)</small>
+								</p> 
 								<p class="">
 									<label for="txtHTWFD">Aantal uren werken voor delay:</label><br/>
 									<input type="number" class="form-control" name="txtHTWFD" id="txtHTWFD" value="<? echo settings("crons", "hourstoworkfordelay"); ?>"/>
-                                    <small>(Wanneer een opdracht van bv. 100 uren duurtijd bevestigd wordt, zullen de indicatoren van de bevestigde gebruiker gedurende X * [indicatoren-verlagen-waarde] dagen niet zakken)</small>
+                                    <small>(Wanneer een opdracht bevestigd wordt, zullen de indicatoren van de bevestigde gebruiker gedurende X dagen niet zakken)</small>
 								</p> 
 							</fieldset>
                              

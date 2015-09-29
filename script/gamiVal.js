@@ -4,9 +4,9 @@ $(document).ready(function() {
 		var valid = validateAddActivity(true);
 
 		if (valid) {
-			if (confirm("Wilt u deze instellingen opslaan?")) {
+			//if (confirm("Wilt u deze instellingen opslaan?")) {
 				return true;
-			}
+			//}
 		}
 
 		return false;
@@ -220,9 +220,9 @@ function validateAddActivity(bShowAlerts) {
 
 	var ddmmY = /^(((0[1-9]|[12][0-9]|3[01])[- -.](0[13578]|1[02])|(0[1-9]|[12][0-9]|30)[- -.](0[469]|11)|(0[1-9]|1\d|2[0-8])[- -.]02)[- -.]\d{4}|29[- -.]02[- -.](\d{2}(0[48]|[2468][048]|[13579][26])|([02468][048]|[1359][26])00))$/g;
 
-	if (!ddmmY.test($txtStartdate)) {
-		arFouten["txtStartdate"] = "Gelieve een geldig start datum mee te geven.";
-	}
+	//if (!ddmmY.test($txtStartdate)) {
+	//	arFouten["txtStartdate"] = "Gelieve een geldig start datum mee te geven.";
+	//}
 
 	if ($txtIndicatorMultiplier == "") {
 		arFouten["txtIndicatorMultiplier"] = "Gelieve een indicator vermenigvuldigingsfactor mee te geven.";
