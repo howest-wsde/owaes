@@ -55,6 +55,10 @@
 						$("<input />").attr("name", "goedgekeurd[]").attr("type", "hidden").attr("id", strID).addClass("unsaved").addClass("nieuwgoedgekeurd").val(iUser)
 					);	
 					sameHeight();
+                    if (iCredits * $(".nieuwgoedgekeurd").length > iCreditsMax) {
+                        $(".exceedcredits").show();
+                        $("#savestep1").addClass("disabled"); 
+                    }; 
 					return false; 
 				})
 				$("div.bucket a.afkeuren").click(function() {
@@ -64,7 +68,11 @@
 					$("input[id=" + strID + "]").remove(); 
 					$("form.selecteerform").append( 
 						$("<input />").attr("name", "afgekeurd[]").attr("type", "hidden").attr("id", strID).addClass("unsaved").addClass("nieuwafgekeurd").val(iUser)
-					);	
+					);
+                    if (iCredits * $(".nieuwgoedgekeurd").length <= iCreditsMax) {
+                        $(".exceedcredits").hide(); 
+                        $("#savestep1").removeClass("disabled");
+                    };
 					sameHeight();
 					return false; 
 				})
@@ -79,6 +87,7 @@
 					$(this).find(".nieuwafgekeurd").each(function(){
 						arAfgekeurd[arAfgekeurd.length] = $(this).val(); 
 					})
+                    if (iCredits*arGoedgekeurd.length > iCreditsMax) return false; 
 					if (arGoedgekeurd.length > 0) arModals[arModals.length] = "modal.mailconfirm.php?m=<?php echo $iID; ?>&s=1&u=" + arGoedgekeurd.join(","); 
 					if (arAfgekeurd.length > 0) arModals[arModals.length] = "modal.mailconfirm.php?m=<?php echo $iID; ?>&s=0&u=" + arAfgekeurd.join(","); 
 					if (arModals.length > 0) {
@@ -107,6 +116,24 @@
                     <?php if ($oOwaesItem->state() == STATE_DELETED) { ?>
 						<p>Dit item werd verwijderd</p>
 					<?php } else { ?>
+                        <div class="alert alert-danger exceedcredits" style="display: none; ">
+                            Creditsaldo ontoereikend!
+                        </div>
+                        <script><?
+                            if ($oOwaesItem->group()) {
+                                $iCreditsNow = $oOwaesItem->group()->credits();
+                                $iCreditsMax = $oOwaesItem->group()->availableCredits(); 
+                            } else {
+                                $iCreditsNow = $oOwaesItem->author()->credits();
+                                $iCreditsMax = settings("startvalues", "credits")*2; 
+                            }  
+                            if ($oOwaesItem->task()) { 
+                                echo "\niCreditsMax = $iCreditsNow; "; // user moet betalen: max credits = saldo
+                            } else {
+                                echo "\niCreditsMax = " . ($iCreditsMax-$iCreditsNow) . "; ";  // user wordt betaald: max credits = plafond - saldo
+                            }
+                            echo "\niCredits = " . $oOwaesItem->credits() . ";"; 
+                        ?></script>
                         <form method="post" class="selecteerform"> 
                             <div class="row">
                                 <div class="col-md-6 nieuwInschrijvingen">

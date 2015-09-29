@@ -25,6 +25,8 @@
 		private $arUserRights = array(); 
 		private $bDeleted = FALSE; 
 		private $bIsDienstverlener = NULL; 
+		private $arPayments = NULL; 
+		private $iCredits = NULL; 
 		 
 		public function group($strKey=NULL) { // $strKey = ID or ALIAS // when not defined: create new user  
 			if (!is_null($strKey)) {
@@ -88,7 +90,7 @@
 			if (is_null($this->strImage)) $this->load();
 			return $this->strImage; 
 		}
-		
+  
 		public function isDienstverlener($bIsDienstverlener = NULL) {
 			if (!is_null($bIsDienstverlener)) $this->bIsDienstverlener = $bIsDienstverlener; 
 			if (is_null($this->bIsDienstverlener)) $this->load();
@@ -99,7 +101,7 @@
 			if (!is_null($bValue)) if (user(me())->admin()) $this->bDeleted = $bValue; 
 		}
 
-		public function getImage($strSize="100x100", $bHTML = TRUE) {  
+		public function getImage($strSize="100x100", $bHTML = TRUE, $iUser = NULL) {  
 			$iWidth = 100; 
 			$iHeight = 100; 
 			$arSize = explode("x", $strSize);
@@ -116,6 +118,7 @@
 					break;  
 			}
 			$strIMG = fixpath("groupimg.php?id=" . $this->id() . "&w=" . $iWidth . "&h=" . $iHeight . "&v=" . ($this->lastupdate()%500));   
+			if (!is_null($iUser)) $strIMG .= "&u=" . $iUser;
 			if ($bHTML) {
 				return "<img src=\"$strIMG\" alt=\"" . $this->naam() . "\" width=\"" . $iWidth . "\" height=\"" . $iHeight . "\" />"; 	 
 			} else {
@@ -203,8 +206,70 @@
 		public function getLink($bHTML = TRUE) { // link to article details  
 			return "<a href=\"" . $this->getURL() . "\">" . $this->naam() . "</a>"; 
 		}
+
+		public function payments($strType = NULL) {
+			if (is_null($this->arPayments)) {
+				$arPayments = array(
+					"all" => array(), 
+					"sent" => array(), 
+					"received" => array(), 
+				); 
+				$oDB = new database();
+				$oDB->sql("select * from tblPayments where (sendergroup = " . $this->id() . " or receivergroup = " . $this->id() . ") and actief = 1 order by id desc; "); 
+				$oDB->execute(); 
+				while ($oDB->nextRecord()) {
+					$oPayment = new payment(array(
+						"sender" => $oDB->get("sender"), 
+						"credits" => $oDB->get("credits"), 
+						"receiver" => $oDB->get("receiver"), 
+						"market" => $oDB->get("market"), 	
+						"id" => $oDB->get("id"), 
+						"voorschot" => ($oDB->get("voorschot")!=0), 
+					));  
+					$oPayment->refGroup($this->id());
+					if ($oPayment->voorschot()) $oPayment->market($oDB->get("voorschot")); 
+					$arPayments["all"][] = $oPayment; 
+					if ($oDB->get("sender") == $this->id()) $arPayments["sent"][] = $oPayment;
+					if ($oDB->get("receiver") == $this->id()) $arPayments["received"][] = $oPayment;
+				}
+				$this->arPayments = $arPayments; 
+			}
+
+			switch(strtolower($strType)) {
+				case "all": 
+				case "sent": 
+				case "received":
+					return $this->arPayments[strtolower($strType)]; 
+					break; 	
+				default:
+					return $this->arPayments; 
+					break; 	
+			} 
+		} 
+
+
+
+
+
+		public function credits() {
+			if (is_null($this->iCredits)) { 
+				$iCredits = settings("startvalues", "credits"); 
+				$oDB = new database(); 
+				$oDB->sql("select * from tblPayments where sendergroup = '" . $this->id() . "' or receivergroup='" . $this->id() . "' and actief = 1; "); 	
+				$oDB->execute(); 
+				while ($oDB->nextRecord()) {
+					if ($oDB->get("receivergroup") == $this->id()) $iCredits += $oDB->get("credits"); 
+					if ($oDB->get("sendergroup") == $this->id()) $iCredits -= $oDB->get("credits"); 
+				}
+				$this->iCredits = $iCredits; 
+			}		
+			return $this->iCredits; 
+		}
 		
-		
+		public function availableCredits() {
+			return settings("startvalues", "credits") * (count($this->users())+1); 
+		}
+
 		public function load() {
 			if ($this->id()	!= 0) {
 				$strSQL = "select * from tblGroups where id = " . $this->id() . "; "; 
@@ -277,7 +342,27 @@
 		}
 		
 		public function html($strTemplate = "") {
-			$strHTML = template($strTemplate);
+			$oHTML = template($strTemplate);
+
+			foreach ($oHTML->loops() as $strTag=>$arLoops) {
+				switch($strTag) {
+					case "payments":  
+						$arList = $this->payments("all");
+						$arResults = array();  
+						foreach ($arLoops as $strSubHTML) $arResults[$strSubHTML] = array(); 
+						foreach ($arList as $oItem) {  
+							foreach ($arResults as $strSubHTML=>$arDummy) {
+								$arResults[$strSubHTML][] = $oItem->html( $strSubHTML);
+							}
+						}
+						foreach ($arResults as $strSubHTML=>$strResult) {	
+							$oHTML->setLoop("payments", $strSubHTML, $strResult); 
+						}
+						break;  
+				}
+			}
+
+			$strHTML = $oHTML->html(); 
 			
 	/* START LUSSEN [friends]xxx[/friends] */ 
 			$arLoopStrings = array("members", "market");
@@ -356,53 +441,7 @@
 				}
 			}
 			/* EIND LUSSEN [friends]xxx[/friends] */  
-			
-			/* LEDEN - START 
-			preg_match_all("/\[if:members\]([\s\S]*?)\[\/if:members\]/", $strHTML, $arResult);   // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]   
-			for ($i=0;$i<count($arResult[0]);$i++) {
-				if (count($this->users())>0) {
-					$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
-				} else {
-					$strHTML = str_replace($arResult[0][$i], "", $strHTML);
-				} 
-			} 
-			preg_match_all("/\[members((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/members\\1\]/", $strHTML, $arResult);   // bv. [friends]loop[/friends] 
-			for ($i=0;$i<count($arResult[1]);$i++) { 
-				$strMembers = ""; 
-				$iTeller = 0; 
-				$iMax = intval($arResult[2][$i]); 
-				foreach ($this->users() as $oMember) {  
-					if ($iMax == 0 || ++$iTeller <= $iMax) $strMembers .= $oMember->html($arResult[3][$i], FALSE);
-				}
-				$strHTML = str_replace($arResult[0][$i], $strMembers, $strHTML); 
-			}  
-			/* LEDEN - END */
-			
-			
-			/* MARKET - START  
-			preg_match_all("/\[if:market\]([\s\S]*?)\[\/if:market\]/", $strHTML, $arResult);   // bv. [if:friends]<div><h1>Vrienden</h1><ul>....</ul></div>[/if:friends]   
-			for ($i=0;$i<count($arResult[0]);$i++) { 
-				$oOwaesList = new owaeslist();   
-				$oOwaesList->filterByGroup($this->id()); 
-				if (count($oOwaesList->getList())>0) {
-					$strHTML = str_replace($arResult[0][$i], $arResult[1][$i], $strHTML);
-				} else {
-					$strHTML = str_replace($arResult[0][$i], "", $strHTML);
-				} 
-			} 
-			preg_match_all("/\[market((?::([0-9]+)){0,1})\]([\s\S]*?)\[\/market\\1\]/", $strHTML, $arResult);   // bv. [friends]loop[/friends] 
-			for ($i=0;$i<count($arResult[1]);$i++) { 
-				$strMarket = ""; 
-				$iTeller = 0; 
-				$iMax = intval($arResult[2][$i]); 
-				$oOwaesList = new owaeslist();   
-				$oOwaesList->filterByGroup($this->id()); 
-				foreach ($oOwaesList->getList() as $oItem) {  
-					if ($iMax == 0 || ++$iTeller <= $iMax) $strMarket .= $oItem->html($arResult[3][$i], FALSE);
-				}
-				$strHTML = str_replace($arResult[0][$i], $strMarket, $strHTML); 
-			}  
-			/* MARKET - END */
+			 
 			 
 			preg_match_all("/\[([a-zA-Z0-9-_:#]+)\]([\s\S]*?)\[\/\\1\]/", $strHTML, $arResult); // [tag]...[/tag]
 			for ($i=0;$i<count($arResult[1]);$i++) { 
@@ -434,6 +473,9 @@
 				case "naam":  
 				case "name": 
 					return html($this->naam()); 
+				case "#credits": 
+				case "credits": 
+					return $this->credits(); 
 				case "website": 
 					return $this->website(); 
 				case "link": 
@@ -486,7 +528,9 @@
 							switch (isset($arTag[2])?$arTag[2]:"") {
 								case "editpage": 
 									return $this->userrights()->editpage() ? $strTemplate : ""; 
-							}			
+							}	
+						case "ingroup": 
+							return 	($this->users(me())) ? $strTemplate : ""; 	
 					} 
 					break; 
 				case "admin":  

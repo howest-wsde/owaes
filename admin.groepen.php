@@ -63,6 +63,7 @@
                                             <th class="order asc">naam</th>
                                             <th class="order">info</th>
                                             <th class="order">beheerder</th>
+                                            <th class="order">OWA</th>
                                             <th>...</th>
                                         </tr>
                                         <?php
@@ -72,6 +73,7 @@
                                                 echo "<td>" . $oGroep->naam() . "</td>"; 
                                                 echo "<td>" . shorten($oGroep->info()) . "</td>"; 
                                                 echo "<td>" . $oGroep->admin()->getName() . "</td>"; 
+                                                echo "<td>" . $oGroep->credits() . "/" . $oGroep->availableCredits() . "</td>"; 
                                                 echo "<td>
 														<a href=\"admin.groepusers.php?group=" . $oGroep->id() . "\">aanpassen</a> 
 														<button class=\"actiondelete\" value=\"" . $oGroep->id() . "\" onclick=\"return confirm('Weet je zeker?');\" name=\"delgroup\" />

@@ -990,9 +990,12 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 					return $this->type()->iconclass(); 
 				case "soorticon": 
 					return "<span class='" . $this->type()->iconclass() . "'></span>"; 
+				case "user": 
+					return $this->author()->HTMLvalue($arTag[1]); 
 				case "author": 
 					if (isset($arTag[1])) {
-						switch(strtolower($arTag[1])) { 
+						$arSub = explode(":", $arTag[1], 2); 
+						switch(strtolower($arSub[0])) { 
 							case "type": 
 								return ($this->group()) ? "group" : "user";  
 							case "url": 
@@ -1005,7 +1008,14 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 								} 	
 							case "box":
 								return $this->author()->userBox(); 
-							default:   
+							case "img": // [author:img:90x90]
+								if ($this->group()) {
+ 									//return $this->group()->userImage($arSub[1], $this->author()->id(), FALSE);
+ 									return $this->group()->getImage($arSub[1], FALSE, $this->author()->id()); 
+								} else {
+									return $this->author()->HTMLvalue($arTag[1]);
+								}
+							default: 
 								return ($this->group()) ? $this->group()->HTMLvalue($arTag[1]) : $this->author()->HTMLvalue($arTag[1]);  
 						}
 					} else return ($this->group()) ? $this->group()->getLink() : $this->author()->getLink();  
