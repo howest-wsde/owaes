@@ -90,7 +90,7 @@
 				$iNewTime = (is_null($oDB->get("datum"))) ? owaesTime() : ($oDB->get("datum") + $iRefreshTijd);
 				$oUser = user($oDB->get("user"));  
 		
-				if ($oUser->level()^$iLevelFactor == 0) {
+				if (($oUser->level()^$iLevelFactor) == 0) {
  					$iMin = -1;
 				} else $iMin = 0 - (1 / ($oUser->level()^$iLevelFactor));  
 				switch($oDB->get("reason")) { // vorige reason
