@@ -476,8 +476,16 @@
 				case "#credits": 
 				case "credits": 
 					return $this->credits(); 
-				case "website": 
-					return $this->website(); 
+				case "website":  
+					if (isset($arTag[1])) {
+						switch ($arTag[1]) {
+							case "link": 
+								return "<a href=\"" . $this->website() . "\" target=\"_blank\">" . $this->website() . "</a>"; 
+							default: 
+								return $this->website(); 
+						}
+					} 
+					
 				case "link": 
 					return $this->getURL(); 
 				case "description": 
