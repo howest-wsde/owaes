@@ -8,7 +8,7 @@
 	class crons {
 		public function crons() { // instellingen voor automatische gebeurtenissen: bv. automatische aftrek indicatoren
 			$arCrons = json("settings/crons.json");  
-			$bChanged = FALSE; 
+			$bChanged = FALSE;  
 			$ar2DO = array(
 				array(
 					"sleutel" => "indicators", 
@@ -88,8 +88,11 @@
 			while ($oDB->nextRecord()) {
 				// echo $oDB->get("user") . "<br>"; 
 				$iNewTime = (is_null($oDB->get("datum"))) ? owaesTime() : ($oDB->get("datum") + $iRefreshTijd);
-				$oUser = user($oDB->get("id")); 
-				$iMin = 0 - (1 / ($oUser->level()^$iLevelFactor));  
+				$oUser = user($oDB->get("user"));  
+		
+				if ($oUser->level()^$iLevelFactor == 0) {
+ 					$iMin = -1;
+				} else $iMin = 0 - (1 / ($oUser->level()^$iLevelFactor));  
 				switch($oDB->get("reason")) { // vorige reason
 					case TIMEOUT_CLICKED:  // wordt geset in class.subscription: wanneer een user zich inschrijft wordt er meteen een record toegevoegd met reason = TIMEOUT_CLICKED
 						$oOwaesItem = owaesitem($oDB->get("link"));
