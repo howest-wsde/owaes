@@ -38,12 +38,32 @@ class subscription {
 	
 	
 	public function payment() {
-		if (is_null($this->oPayment)) $this->oPayment = new payment(array(
-															"sender" => ($this->market()->task() ? $this->market()->author()->id() : $this->user()->id()), 
-															"receiver" => ($this->market()->task() ? $this->user()->id() : $this->market()->author()->id()),
-															"market" => $this->market()->id(),  
-															"credits" => $this->market()->credits(),  
-														)); 
+		if (is_null($this->oPayment)) { 
+			//$iSender = ($this->market()->task() ? $this->market()->author()->id() : $this->user()->id()); 
+			//$iReceiver = ($this->market()->task() ? $this->user()->id() : $this->market()->author()->id()); 
+			$iSenderGroup = 0; 
+			$iReceiverGroup = 0; 
+			if ($this->market()->task()) {
+				$iSender = $this->market()->author()->id(); 
+				if ($this->market()->group()) $iSenderGroup = $this->market()->group()->id();  
+				$iReceiverGroup = 0; 
+				$iReceiver = $this->user()->id();
+			} else {
+				$iSender = ($this->market()->task() ? $this->market()->author()->id() : $this->user()->id()); 
+				$iReceiver = ($this->market()->task() ? $this->user()->id() : $this->market()->author()->id()); 
+				if ($this->market()->group()) $iReceiverGroup = $this->market()->group()->id(); 
+			}
+			$iMarket = $this->market()->id(); 
+			$iCredits = $this->market()->credits(); 
+			$this->oPayment = new payment(array(
+									"sender" => $iSender, 
+									"receiver" => $iReceiver,
+									"sendergroup" => $iSenderGroup, 
+									"receivergroup" => $iReceiverGroup,
+									"market" => $iMarket,  
+									"credits" => $iCredits,  
+								)); 
+		}
 		return $this->oPayment; 
 	}
 	

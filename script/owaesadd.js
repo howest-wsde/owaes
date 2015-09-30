@@ -422,9 +422,11 @@ function validateAddActivity(bShowAlerts) {
 			$message += "</ul></div>" ; 
 			$(".content-market-add .errors").html($message);
 		} else $(".content-market-add .errors").empty(); 
+		$(".owaesadd").addClass("disabled");
 		return false; 
 	} else {
     	$(".content-market-add .errors").empty();
+		$(".owaesadd").removeClass("disabled");
 		return true; 
 	}  
 	 

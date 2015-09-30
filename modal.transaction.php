@@ -21,7 +21,6 @@
 		if ($oAction) { 
 			$iPostPone = isset($_POST["postpone"]) ? intval($_POST["postpone"]) : 2; 
 			if ($iPostPone == 0) $iPostPone = 1/24/60*2; // 2 minuten
-			//echo $iPostPone; 
 			$oAction->tododate(owaestime() + ($iPostPone*24*60*60)); // x dagen
 			$oAction->update();   
 		}
@@ -47,8 +46,7 @@
 						$oPayment->reason(1); 
 						$oPayment->credits($iCredits); 
 						$oPayment->signed(TRUE); 
-						
-						 
+												 
 						$iExperience = 100; 
 						
 						$oExpSender = new experience($oPayment->sender());
@@ -102,7 +100,7 @@
 	$oTemplate = template("modal.transaction.html"); 
 	$oTemplate->tag("max", $iMax); 
 	$strHTML = $oTemplate->html(); 
-	$strHTML = $oMarket->html($strHTML);
+	$strHTML = $oMarket->html($strHTML); 
 	$strHTML = $oUser->html($strHTML); 
 	
 //	$strHTML = str_replace("[credit]", 1515515151, $strHTML); 

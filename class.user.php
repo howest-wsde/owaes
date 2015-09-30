@@ -279,7 +279,10 @@
 				$this->arStatus["updated"] = owaestime(); 
 				
 				$oDB = new database(); 
-				$oDB->execute("select count(distinct vPartners.pB) as partnercount, count(vPartners.pB) as transcount from ((select id, receiver as pA, sender as pB from tblPayments) union (select id, sender as pA, receiver as pB from tblPayments where voorschot = 0 and actief = 1)) as vPartners where vPartners.pA = " . $this->id()); 
+				$oDB->execute("select count(distinct vPartners.pB) as partnercount, count(vPartners.pB) as transcount
+				 				from ((select id, receiver as pA, sender as pB from tblPayments where receivergroup = 0 and voorschot = 0 and actief = 1)
+				 				union (select id, sender as pA, receiver as pB from tblPayments where sendergroup = 0 and voorschot = 0 and actief = 1)) 
+								as vPartners where vPartners.pA = " . $this->id()); 
 				$this->arStatus["partnercount"] = $oDB->get("partnercount"); 
 				$this->arStatus["transactiecount"] = $oDB->get("transcount"); 
 				$this->arStatus["diversiteit"] = ($this->arStatus["transactiecount"]==0) ? 1 : ($this->arStatus["partnercount"] / $this->arStatus["transactiecount"]); 
@@ -1263,10 +1266,10 @@
 				$oDB->execute("select sum(emotional) as emotional, sum(social) as social, sum(physical) as physical, sum(mental) as mental from tblIndicators where user = " . $this->iID . " and actief = 1; "); 
 				if ($oDB->length()>0) {
 					//var_dump($oDB->record()); 
-					if (is_null($this->iSocial)) $this->social(settings("startvalues", "social") + $oDB->get("social"));
-					if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional") + $oDB->get("emotional"));
-					if (is_null($this->iPhysical)) $this->physical(settings("startvalues", "physical") + $oDB->get("physical"));
-					if (is_null($this->iMental)) $this->mental(settings("startvalues", "mental") + $oDB->get("mental"));
+					if (is_null($this->iSocial)) $this->social(settings("startvalues", "social") + round($oDB->get("social")));
+					if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional") + round($oDB->get("emotional")));
+					if (is_null($this->iPhysical)) $this->physical(settings("startvalues", "physical") + round($oDB->get("physical")));
+					if (is_null($this->iMental)) $this->mental(settings("startvalues", "mental") + round($oDB->get("mental")));
 				} else {
 					if (is_null($this->iSocial)) $this->social(settings("startvalues", "social"));
 					if (is_null($this->iEmotional)) $this->emotional(settings("startvalues", "emotional"));
@@ -1487,6 +1490,7 @@
 				return $strIMG ; 
 			} 
 		}
+ 
 		
 		private function userbadge() {
 			return "<div class=\"userbadge\">
@@ -1530,7 +1534,7 @@
 					"received" => array(), 
 				); 
 				$oDB = new database();
-				$oDB->sql("select * from tblPayments where (sender = '" . $this->id() . "' or receiver = '" . $this->id() . "') and actief = 1"); 
+				$oDB->sql("select * from tblPayments where ((sender = '" . $this->id() . "' and sendergroup = 0) or (receiver = '" . $this->id() . "' and receivergroup = 0)) and actief = 1 order by id desc; "); 
 				$oDB->execute(); 
 				while ($oDB->nextRecord()) {
 					$oPayment = new payment(array(
@@ -1541,6 +1545,7 @@
 						"id" => $oDB->get("id"), 	
 						"voorschot" => ($oDB->get("voorschot")!=0), 
 					));  
+					$oPayment->refUser($this->id());
 					if ($oPayment->voorschot()) $oPayment->market($oDB->get("voorschot")); 
 					$arPayments["all"][] = $oPayment; 
 					if ($oDB->get("sender") == $this->id()) $arPayments["sent"][] = $oPayment;
@@ -1548,6 +1553,7 @@
 				}
 				$this->arPayments = $arPayments; 
 			}
+
 			switch(strtolower($strType)) {
 				case "all": 
 				case "sent": 
@@ -1558,7 +1564,7 @@
 					return $this->arPayments; 
 					break; 	
 			} 
-		}
+		} 
 		 
 		public function getBadges() { // returns Array (key => details) met badges van deze gebruiker 
 			if (is_array($this->arBadges)) return $this->arBadges; 
@@ -1639,7 +1645,7 @@
 			if (is_null($this->iCredits)) { 
 				$iCredits = settings("startvalues", "credits"); 
 				$oDB = new database(); 
-				$oDB->sql("select * from tblPayments where sender = '" . $this->id() . "' or receiver = '" . $this->id() . "' and actief = 1; "); 	
+				$oDB->sql("select * from tblPayments where ((sender = '" . $this->id() . "' and sendergroup = 0) or (receiver = '" . $this->id() . "' and receivergroup=0)) and actief = 1; "); 	
 				$oDB->execute(); 
 				while ($oDB->nextRecord()) {
 					if ($oDB->get("receiver") == $this->id()) $iCredits += $oDB->get("credits"); 

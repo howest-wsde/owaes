@@ -3,12 +3,16 @@
 		private $iMarket = NULL;
 		private $iInitiator = NULL;
 		private $iSender = NULL;
-		private $iReceiver = NULL;   
+		private $iReceiver = NULL;
+		private $iSenderGroup = 0;
+		private $iReceiverGroup = 0;   
 		private $iCredits = NULL;  
 		private $iReason = 0;  
 		private $iID = NULL;  
 		private $bSigned = NULL; 
 		private $bVoorschot = FALSE; 
+		private $iRefUser = NULL; // bij bekijken van transacties wordt deze gebruiker als reference gebruikt om te weten of het inkomsten of uitgaven zijn
+		private $iRefGroup = NULL; 
 		
 		public function payment($arArguments = array()) {  // payment(array("sender"=>$x, "receiver"=>$y, "market"=>$z))
 			foreach ($arArguments as $strKey=>$oValue) {
@@ -18,6 +22,12 @@
 						break; 
 					case "receiver": 
 						$this->receiver($oValue); 
+						break; 
+					case "sendergroup": 
+						$this->sender(NULL, $oValue); 
+						break; 
+					case "receivergroup": 
+						$this->receiver(NULL, $oValue); 
 						break; 
 					case "market": 
 						$this->market($oValue); 
@@ -40,8 +50,9 @@
 			} 
 		}
 		
-		public function sender($iSender = NULL){
+		public function sender($iSender = NULL, $iSenderGroup = NULL){
 			if (!is_null($iSender)) $this->iSender = $iSender; 
+			if (!is_null($iSenderGroup)) $this->iSenderGroup = $iSenderGroup; 
 			if (is_null($this->iSender)) $this->iSender = me(); 
 			return $this->iSender; 	
 		}
@@ -52,9 +63,20 @@
 			return $this->iInitiator; 	
 		}
 		
-		public function receiver($iReceiver = NULL){
+		public function receiver($iReceiver = NULL, $iReceiverGroup = NULL){
 			if (!is_null($iReceiver)) $this->iReceiver = $iReceiver; 
-			return $this->iReceiver; 	
+			if (!is_null($iReceiverGroup)) $this->iReceiverGroup = $iReceiverGroup; 
+			return $this->iReceiver; 
+		}
+
+		public function refUser($iRefUser = NULL){
+			if (!is_null($iRefUser)) $this->iRefUser = $iRefUser;  
+			return $this->iRefUser; 
+		}
+
+		public function refGroup($iRefGroup = NULL){
+			if (!is_null($iRefGroup)) $this->iRefGroup = $iRefGroup;  
+			return $this->iRefGroup; 
 		}
 		
 		public function credits($iCredits = NULL){
@@ -129,7 +151,15 @@
 					$iVoorschot = $this->voorschot() ? $this->market() : 0;  
 					if ($this->id() == 0) {
 						if ($bValue) {
-							$oDB = new database("insert into tblPayments (datum, sender, receiver, initiator, credits, reason, link, market, actief, voorschot) values (" . owaesTime() . ", " . $this->sender() . ", " . $this->receiver() . ", " . $this->initiator() . ", " . $this->credits() . ", " . $this->reason() . ", 0, " . $iMarket . ", 1, " . $iVoorschot . ");" , TRUE); 
+							$oDB = new database("insert into tblPayments 
+									(datum, sender, receiver, sendergroup, receivergroup, initiator, credits, reason, link, 
+										market, actief, voorschot) 
+									values (" . owaesTime() . ", " . $this->sender() . ", 
+										" . $this->receiver() . ", " . $this->iSenderGroup . ", 
+										" . $this->iReceiverGroup . ", " . $this->initiator() . ", 
+										" . $this->credits() . ", " . $this->reason() . ", 0, 
+										" . $iMarket . ", 1, " . $iVoorschot . ");"
+								, TRUE); 
 							$oConversation = new conversation($this->receiver()); 
 							$oConversation->add("Er werden " . $this->credits() . " " . settings("credits", "name", "x") . " overgedragen", $this->market());  
 						}
@@ -177,15 +207,24 @@
 				return $strHTML; 	
 			}
 		}
+
+		public function inout() {
+			if (!is_null($this->iRefUser)) {
+				return ($this->sender() == $this->iRefUser) ? "out" : "in";  
+			} else if (!is_null($this->iRefUser)) {
+ 				return ($this->iSenderGroup == $this->iRefGroup) ? "out" : "in";  
+			} else  return ($this->sender() == me()) ? "out" : "in";  
+
+		}
 		
 		private function HTMLvalue($strTag) {
 			switch($strTag) { 
 				case "id": 
 					return $this->id();  
 				case "credits": 
-					return ($this->sender() == me() ? "-":"") . $this->credits();  
+					return ($this->inout() == "out" ? "-":"") . $this->credits();  
 				case "in-out": 
-					return ($this->sender() == me()) ? "out" : "in";  
+					return $this->inout(); // ($this->sender() == me()) ? "out" : "in";  
 				case "owaes": 
 					if ($this->market() == 0) {
 						return "schenking";  
@@ -206,4 +245,7 @@
 		}
 		
 	}
+	
+
+
 	

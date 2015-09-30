@@ -134,6 +134,7 @@
 		), 
 		"crons" => array( 
 			"indicators" => 86400,
+			"levelfactor" => 1.5,
 			"hourstoworkfordelay" => 4,
 			"x" => NULL
 		), 

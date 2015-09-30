@@ -41,9 +41,9 @@
 	if ($oOwaesItem->id() != 0) {
 		$strType = $oOwaesItem->type()->key();  
 		$bNEW = FALSE; 
-	} else {
-		$strType = (isset($_GET["t"]) ? $_GET["t"] : "");  
-		$oOwaesItem->type($strType); 
+	} else { 
+		$strType = (isset($_GET["t"])) ? $_GET["t"] : "ervaring";
+		$oOwaesItem->type($strType);  
 		$bNEW = TRUE; 
 	}  
 	 
@@ -338,9 +338,9 @@ div.existingfile a.delfileinput {display: inline; }
 											if (count($arPosters["groups"])+count($arPosters["users"]) > 1) echo "<optgroup label=\"Groepen\">";  
 											foreach ($arPosters["groups"] as $iGroup => $oGroup) {
 												if ($oOwaesItem->group() && $oOwaesItem->group()->id()==$iGroup) { 
-													echo ("<option selected=\"selected\" value=\"g." . $iGroup . "\">" . $oGroup->naam() . "</option>"); 
+													echo ("<option selected=\"selected\" value=\"g." . $iGroup . "\">" . $oGroup->naam() . " (" . $oGroup->credits() . " " . settings("credits", "name", "x") . ")</option>"); 
 												} else {
-													echo ("<option value=\"g." . $iGroup . "\">" . $oGroup->naam() . "</option>"); 
+													echo ("<option value=\"g." . $iGroup . "\">" . $oGroup->naam() . " (" . $oGroup->credits() . " " . settings("credits", "name", "x") . ")</option>"); 
 												}
 											} 
 											if (count($arPosters["groups"])+count($arPosters["users"]) > 1) echo "</optgroup>"; 
@@ -433,6 +433,7 @@ div.existingfile a.delfileinput {display: inline; }
                                 <div class="form-group"> 
                                     <div class="col-lg-12"> 
                                         <a href="#tijdlocatie" class="tabchange">volgende</a>  
+                                        <? if (!$bNEW){ echo ('<input type="submit" name="owaesadd" class="owaesadd auto border btn btn-default pull-right" value="opslaan" />'); } ?>  
                                     </div>
                                 </div>
                             </dl>
@@ -507,6 +508,7 @@ div.existingfile a.delfileinput {display: inline; }
                                 <div class="col-lg-12"> 
                                     <a href="#algemeen" class="tabchange">vorige</a>
                                     <a href="#compensatie" class="tabchange">volgende</a>  
+                                    <? if (!$bNEW){ echo ('<input type="submit" name="owaesadd" class="owaesadd auto border btn btn-default pull-right" value="opslaan" />'); } ?>  
                                 </div>
                             </div>
                              
@@ -582,10 +584,10 @@ div.existingfile a.delfileinput {display: inline; }
                                     <label for="voorwaarden" class="checkboxlabel">Ik bevestig dat dit aanbod conform de <a href="modal.voorwaarden.php" class="domodal">gebruiksvoorwaarden</a> is. </label>
                                 </div>
                                 <div class="form-group col-lg-1">
-                                    <input type="submit" name="owaesadd" id="owaesadd" class="auto border btn btn-default pull-right" value="opslaan" />
+                                    <input type="submit" name="owaesadd" id="owaesadd" class="owaesadd auto border btn btn-default pull-right" value="opslaan" />
                                 </div>
                             </div>
-                            
+                          
                             <div class="form-group"> 
                                 <div class="col-lg-12"> 
                                     <a href="#tijdlocatie" class="tabchange">vorige</a> 
