@@ -15,7 +15,7 @@
 		
 		public function cancel($strSleutel) { 
 			$oDB = new database();
-			$strSQL = "update tblMailalerts set sent = 0 where sent is NULL and sleutel = '" . $oDB->escape($strSleutel) . "'; "; 
+			$strSQL = "update tblMailalerts set sent = 0 where (sent is NULL or sent = 0) and sleutel = '" . $oDB->escape($strSleutel) . "'; "; 
 			$oDB->execute($strSQL);  
 		}
 		
