@@ -58,7 +58,6 @@
 			}
 			$strSQL = "insert into tblNotifications (" . implode(", ", $arKeys) . ") values (" . implode(", ", $arValues) . "); "; 
 			$oDB->execute($strSQL); 
-			 
 			return true; 
 		}
 		

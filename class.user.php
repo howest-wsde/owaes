@@ -2,7 +2,6 @@
 	define ("GETSET", 1); 
 	define ("ADD", 2); 
 	
-	
 	define ("VISIBILITY_HIDDEN", 0); 
 	define ("VISIBILITY_VISIBLE", 1); 
 	define ("VISIBILITY_FRIENDS", 2); 
