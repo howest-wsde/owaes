@@ -462,7 +462,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$oAlert->message(user($iUser)->getName() . " schreef zich in voor de opdracht \"" . $this->title() . "\"");  
 						$oAlert->update();  
 					} 
-					if ($this->author()->mailalert("remindersubscription")) {
+					if ($this->author()->mailalert("remindersubscription")) { 
 						$oAlert = new mailalert(); 
 						$oAlert->user($this->author()->id()); 
 						$oAlert->link("market", $this->id()); 
