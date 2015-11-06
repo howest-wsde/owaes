@@ -462,7 +462,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$oAlert->message(user($iUser)->getName() . " schreef zich in voor de opdracht \"" . $this->title() . "\"");  
 						$oAlert->update();  
 					} 
-					if ($this->author()->mailalert("remindersubscription")) {
+					// if ($this->author()->mailalert("remindersubscription")) {
 						$oAlert = new mailalert(); 
 						$oAlert->user($this->author()->id()); 
 						$oAlert->link("market", $this->id()); 
@@ -470,7 +470,7 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 						$oAlert->sleutel("market." . $this->id()); 
 						$oAlert->message("Herinnering: U reageerde nog niet op de inschrijving van " . user($iUser)->getName() . " voor de opdracht \"" . $this->title() . "\"");  
 						$oAlert->update();  
-					} 
+					// } 
 					
 					$oNotification->key("subscription." .  $this->id()); 
 					$oNotification->link(fixPath($this->getLink())); 
