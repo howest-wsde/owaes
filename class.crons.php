@@ -168,11 +168,11 @@
 			$oDB = new database(); 
 			$oDB2 = new database();
 			$iSent = 0;  
-			$oDB->execute("select distinct user as user from tblMailalerts where deadline <= " . owaestime() . " and sent is null; "); 
+			$oDB->execute("select distinct user as user from tblMailalerts where deadline <= " . owaestime() . " and (sent is null or sent = 0); "); 
 			while ($oDB->nextRecord()) {
 				$iUser = $oDB->get("user");
 				$arMail = array(); 
-				$oDB2->execute("select * from tblMailalerts where user = $iUser and sent is null; "); 
+				$oDB2->execute("select * from tblMailalerts where user = $iUser and deadline <= " . (owaestime()+24*60*60) . " and (sent is null or sent = 0); "); 
 				while ($oDB2->nextRecord()) {
 					$arLink = json_decode($oDB2->get("link"), TRUE);
 					switch($arLink["type"]) {
@@ -196,7 +196,7 @@
 				$oMail->send();  
 				$iSent ++; 
 				
-				$oDB2->execute("update tblMailalerts set sent = " . owaestime() . " where user = $iUser and sent is null; "); 
+				$oDB2->execute("update tblMailalerts set sent = " . owaestime() . " where user = $iUser and (sent is null or sent = 0); "); 
 			}
 			echo ("<li>cron mails done ($iSent mails)</li>"); 
 		}
