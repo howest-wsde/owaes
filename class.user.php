@@ -387,7 +387,7 @@
 								break; 
 							case 3: 
 								$arMails["owner"] = "Opgelet! we merken dat waarden kritisch laag staan. Zorg dat deze verhogen of de toegang tot OWAES kan geblokkeerd worden"; 
-								$arMails["owaes"] = $arMails["owner"]; 
+								$arMails["owaes"] = "We merken dat waarden van " . $this->getName() . " kritisch laag staan. De gebruiker werd hiervan op de hoogte gebracht via mail. "; 
 								break; 
 							case 4: 
 								// FREEZE
