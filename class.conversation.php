@@ -218,7 +218,7 @@
 						$oAlert->link("conversation", $this->iSender); 
 						$oAlert->sleutel("conversation." . $this->iReceiver . "." . $this->iSender); 
 						$oAlert->deadline(user($this->iReceiver)->mailalert("newmessage")); 
-						$oAlert->message($this->sender()->getName() . " stuurde een berichtje");  
+						$oAlert->message($this->sender()->getName() . " stuurde een berichtje. Klik hier om het te lezen.");  
 						$oAlert->update();  
 					} 
 				} 
