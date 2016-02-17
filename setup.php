@@ -112,6 +112,13 @@ $arConfig["database"] = array(
                 	<?php if (!file_exists("inc.config.db.php") || !settings("database", "loaded")) { ?> 
                         <fieldset>
                             <legend>Database</legend>
+                            <?
+                                if (!file_exists("inc.config.db.php")) {
+                                    echo ("<p>Our system could not find <i>inc.config.db.php</i>.</p>"); 
+                                } else if (!settings("database", "loaded")) {
+                                    echo ("<p>Our system could not connect to the given database. </i></p>"); 
+                                }
+                            ?>
                             <p>Please create a mySQL-database and enter your settings: </p>
                             <div class="form-group">
                                 <label for="alias" class="control-label col-lg-2">Database host:</label>

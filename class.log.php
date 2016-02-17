@@ -7,7 +7,7 @@
 		public function log($strTekst, $arData = array()) { 
 			$this->strTekst = $strTekst; 
 			$this->arData = $arData; 
-			$this->data("datum", date('m-d-Y h:i:s', time())); 
+			$this->data("datum", str_date('m-d-Y h:i:s', time())); 
 			$this->data("domein", settings("domain", "name")); 
 			$this->save(); 
 		}
