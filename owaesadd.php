@@ -231,51 +231,7 @@
 				}
 			}
 
-		</script> 
-        <style> 
-.invalidtime {border: 1px solid red; }								
-.invoer {
-  display: block;
-  width: 100%; 
-  padding: 10px 18px;
-  font-size: 15px;
-  line-height: 1.42857143;
-  color: #333333;
-  background-color: #ffffff;
-  background-image: none;
-  border: 1px solid #cccccc;
-  border-radius: 0;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
-}
-.invoer.actief {
-  outline: none;
-  border: 1px solid #f9f9f9;
-  box-shadow: 0 0 5px #ffcc00;
-  background: white; 
- } 
- .invoer input { outline: none;
-  border:none !important;
-  box-shadow:none !important; }
-  
-  div#tags span.tag {border: 1px solid #CCC; display: inline-block; margin-left: 10px; padding: 2px 5px; margin-bottom: 2px; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
-div#tags span.tag a {font-size: 10px; color: white; padding: 0 5px 2px 5px; vertical-align: top; font-weight: bold; background: #efefef; -webkit-border-radius: 10px; -moz-border-radius: 10px; border-radius: 10px; text-decoration: none; margin-left: 4px;  }
-div#tags span.tag a:hover {background: #333; }
-div#tags input {border: 0; display: inline; width: 400px; padding-left: 10px; }
-div#tags ul.tags {position: absolute; z-index: 999; background: white; border: 1px solid #efefef; width: 455px; max-height: 100px; overflow: auto; }
-div#tags ul.tags li {padding: 3px 10px; cursor: pointer; }
-div#tags ul.tags li:hover {background: #efefef; }
-input.time {width: 100%; display: block; }
-div.fileuploaddiv {overflow: auto; }
-input.fileupload {float: left; clear: both; }
-a.delfileinput {display: block; padding: 3px; }
-div.existingfile {padding: 2px; }
-div.existingfile a.delfileinput {display: inline; }
-  
-  
-								</style>
+		</script>  
     </head>
     <body id="owaesadd">               
         <?php echo $oPage->startTabs(); ?> 
