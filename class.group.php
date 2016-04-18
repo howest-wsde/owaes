@@ -160,6 +160,7 @@
 						$oNotification->message("Je werd toegevoegd aan de groep '" . $this->naam() . "'"); 
 						$oNotification->sender(me()); 
 						$oNotification->link($this->getURL()); 
+						$oNotification->mail(TRUE); 
 						$oNotification->send(); 
 						 
 						$oExperience = new experience($iUser);  
@@ -174,6 +175,7 @@
 						$oNotification = new notification($iUser, "group." . $this->id()); 
 						$oNotification->message(user(me())->getName() . " heeft je uitgenodigd lid te worden van de groep '" . $this->naam() . "'"); 
 						$oNotification->sender(me()); 
+						$oNotification->mail(TRUE); 
 						$oNotification->link($this->getURL()); 
 						$oNotification->send(); 
 					}
