@@ -69,10 +69,10 @@
 			$arVelden = array(
 				"id" => $this->iID, 
 				"user" => $this->iUser,  
-				"sleutel" => $this->strSleutel,  
+				"sleutel" => is_null($this->strSleutel) ? randomstring(20) : $this->strSleutel,  
 				"link" => json_encode($this->arLink), 
 				"message" => $this->strMessage, 
-				"deadline" => $this->iDeadline, 
+				"deadline" => is_null($this->iDeadline) ? $this->deadline(0) : $this->iDeadline, 
 				"sent" => $this->iSent,  
 			);   
 		 
@@ -93,7 +93,7 @@
 				}
 				$strSQL = "update tblMailalerts set " . implode(", ", $arUpdates) . " where id = " . $this->id() . ";"; 
 				$oDB->execute($strSQL);  
-			} 
+			}  
 		}
 		
 	}

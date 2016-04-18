@@ -5,6 +5,7 @@
 		private $strKey = NULL; 
 		private $strMessage = NULL; 
 		private $strLink = NULL;  
+		private $bDoMail = FALSE; 
 		 
 		public function notification($iUser = NULL, $strKey = NULL, $strMessage = NULL, $strLink = NULL) {  
 			if (is_null($iUser)) $iUser = me(); 
@@ -27,6 +28,11 @@
 		*/
 			if (!is_null($strKey)) $this->strKey = $strKey; 
 			return $this->strKey; 
+		}
+
+		public function mail($bValue = NULL) {
+			if (!is_null($bValue)) $this->bDoMail = $bValue; 
+			return $this->bDoMail; 
 		}
 		
 		public function message($strMessage = NULL) {
@@ -58,6 +64,16 @@
 			}
 			$strSQL = "insert into tblNotifications (" . implode(", ", $arKeys) . ") values (" . implode(", ", $arValues) . "); "; 
 			$oDB->execute($strSQL); 
+
+			if ($this->bDoMail) {
+				$oAlert = new mailalert(); 
+				$oAlert->user($this->iUser); 
+				//$oAlert->link("conversation", $this->iSender); 
+				//$oAlert->sleutel("conversation." . $this->iReceiver . "." . $this->iSender); 
+				$oAlert->deadline(0); 
+				$oAlert->message($this->strMessage);  
+				$oAlert->update();  
+			}
 			return true; 
 		}
 		
