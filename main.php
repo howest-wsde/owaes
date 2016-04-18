@@ -52,7 +52,8 @@
 					zoom: 12,
 					center: startpos,
 					disableDefaultUI: true,
-					mapTypeId: google.maps.MapTypeId.ROADMAP
+					mapTypeId: google.maps.MapTypeId.ROADMAP, 
+					zoomControl: true, 
 				};
 				map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 				
