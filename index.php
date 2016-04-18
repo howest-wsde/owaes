@@ -112,23 +112,24 @@
 							  
 							$oOwaesList->filterPassedDate(owaesTime()); 
 							$bDesc = isset($_GET["d"])?($_GET["d"]==1):FALSE; 
-							switch(isset($_GET["order"])?$_GET["order"]:"") {
+                            if (!isset($_GET["order"])) {
+                                $strQRYorder = "creation"; 
+                                $bDesc = TRUE; 
+                            } else $strQRYorder = $_GET["order"];
+							switch($strQRYorder) {
 								case "distance": 
 									$oOwaesList->order("distance", $bDesc); 
 									$strOrder = "Afstand";  
-									break; 
-								case "creation": 
-									$oOwaesList->order("creation", $bDesc);  
-									$strOrder = "Datum creatie";   
-									break; 
+									break;  
 								case "task": 
 									$oOwaesList->order("task", $bDesc);  
 									$strOrder = "Datum uitvoering";     
 									break; 
+                                case "creation": 
 								default: 
-									$oOwaesList->optiOrder($oMe); 
-									$strOrder = "Profielopbouw";  
-									$bDesc = FALSE; 
+                                    $oOwaesList->order("creation", $bDesc);  
+                                    $strOrder = "Datum creatie";   
+                                    break; 
 							}
 							
 					?>
@@ -139,8 +140,7 @@
                             <span class="caret"></span>
                             <span class="sr-only">Toggle Dropdown</span>
                             </button>
-                      <ul class="dropdown-menu">
-                        <li><a href="<?php echo fixPath("index.php?" . qry(array(), array("order", "d"))); ?>">Profielopbouw</a></li>
+                      <ul class="dropdown-menu"> 
                         <li><a href="<?php echo fixPath("index.php?" . qry(array("order"=>"creation", "d"=>1))); ?>">Datum creatie</a></li>
                         <li><a href="<?php echo fixPath("index.php?" . qry(array("order"=>"task"), array("d"))); ?>">Datum uitvoering</a></li>
                         <?php

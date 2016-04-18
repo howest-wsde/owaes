@@ -979,6 +979,9 @@ $iTypes: STATE_RECRUTE / STATE_SELECTED / STATE_FINISHED / STATE_DELETED
 							case "short": 
 								return nl2br(shorten(html($this->body(), array("p", "a", "strong", "em", "br")), 250, TRUE));  
 								break;  
+							case "mini": 
+								return (shorten(html($this->body(), array()), 40, FALSE));  
+								break;  
 							default: 
 								return nl2br(html($this->body(), array("p", "a", "strong", "em", "br")));  
 						}

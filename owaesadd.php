@@ -127,8 +127,6 @@
 		
 		if ($bNEW) {
 			$oMe = user(me()); 
-			$iAddValue = settings("indicatoren", "owaesadd") ? settings("indicatoren", "owaesadd") : 2; 
-			$oMe->addIndicators(array("physical"=>$iAddValue, "mental"=>$iAddValue, "emotional"=>$iAddValue, "social"=>$iAddValue, ), TIMEOUT_ADDEDNEW, $oOwaesItem->id()); 
 			$oMe->addbadge($_POST["type"]); 
 
 			$oExperience = new experience(me());  
@@ -482,38 +480,6 @@
                            </div>
                         </div>
                            
-                       
-                        <div class="form-group">
-                            <div class="row"><div class="col-lg-2"><h4>Indicatoren</h4></div></div> 
-                           
-                           <div class="row row-sociaal">
-                           <label for="social" class="col-lg-2">Sociaal</label>
-                           <div class="col-lg-10">
-                            <input type="range" min="0" max="100" name="social" id="socialslide" value="<?php echo $oOwaesItem->social(); ?>" class="development"  />
-                           </div>
-                           </div>
-                           
-                           <div class="row row-fysiek">
-                           <label for="physical" class="col-lg-2">Fysiek</label>
-                           <div class="col-lg-10">
-                            <input type="range" min="0" max="100" name="physical" id="physicalslide" value="<?php echo $oOwaesItem->physical(); ?>" class="development" />
-                           </div>
-                           </div>
-                           
-                           <div class="row row-kennis">
-                           <label for="mental" class="col-lg-2">Kennis</label>
-                           <div class="col-lg-10">
-                            <input type="range" min="0" max="100" name="mental" id="mentalslide" value="<?php echo $oOwaesItem->mental(); ?>" class="development"  />
-                           </div>
-                           </div>
-                           
-                           <div class="row row-welzijn">
-                           <label for="emotional" class="col-lg-2">Welzijn</label>
-                           <div class="col-lg-10">
-                            <input type="range" min="0" max="100" name="emotional" id="emotionalslide" value="<?php echo $oOwaesItem->emotional(); ?>" class="development"  />
-                           </div>
-                           </div>
-                       </div>
                        
                        
                         <div class="form-group">
