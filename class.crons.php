@@ -9,11 +9,7 @@
 		public function crons() { // instellingen voor automatische gebeurtenissen: bv. automatische aftrek indicatoren
 			$arCrons = json("settings/crons.json");  
 			$bChanged = FALSE;  
-			$ar2DO = array(
-				array(
-					"sleutel" => "indicators", 
-					"refresh" => 30*60 // check elke 30 minuten 
-				), 
+			$ar2DO = array( 
 				array(
 					"sleutel" => "status", 
 					"refresh" => 3*60 // check elke 3 minuten 

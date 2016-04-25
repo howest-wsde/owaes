@@ -632,5 +632,10 @@ ALTER TABLE `tblPayments` ADD `voorschot` BIGINT NOT NULL DEFAULT '0' AFTER `mar
     ALTER TABLE `tblIndicators` CHANGE `emotional` `emotional` FLOAT( 11 ) NOT NULL DEFAULT '0';
     ALTER TABLE `tblIndicators` CHANGE `social` `social` FLOAT( 11 ) NOT NULL DEFAULT '0';
   </sql> 
+  <sql name="ssettings-compensatieinfo" tag="28"> 
+    INSERT INTO `tblConfig` (`sleutel`, `waarde`) VALUES
+  ('credits.keuzes', '"bachelorproef;300
+stage;-500"');
+  </sql> 
 
 </queries>
