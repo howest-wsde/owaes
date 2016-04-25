@@ -130,10 +130,15 @@
 		prepareAndExecuteStmt("debugging.demo", $test);
 
 		/* ------------- */
-
 		/* Verzekeringen */
 		if (issetAndNotEmpty($_POST["txtV1"])) prepareAndExecuteStmt("verzekeringen.1", $_POST["txtV1"]);
 		if (issetAndNotEmpty($_POST["txtV2"])) prepareAndExecuteStmt("verzekeringen.2", $_POST["txtV2"]);
+
+
+		/* credits.keuzes */
+		if (issetAndNotEmpty($_POST["creditkeuzes"])) {
+			prepareAndExecuteStmt("credits.keuzes", implode("|", explode("\r\n", $_POST["creditkeuzes"]))); 
+		}
 
 		/* ------------- */
 
@@ -268,6 +273,12 @@
 								<p>
 									<input type="text" class="form-control" name="txtV2" id="txtV2" value="<? echo settings("verzekeringen", "2"); ?>"/>
 								</p>
+							</fieldset>
+							<fieldset>
+								<legend>Credits</legend>
+								<p>  
+									<textarea name="creditkeuzes" id="creditkeuzes"><? echo textarea(implode("\n", explode("|", settings("credits", "keuzes")))); ?></textarea>
+								</p> 
 							</fieldset>
 							<fieldset>
 								<legend>Tijdzone en lokatie</legend>

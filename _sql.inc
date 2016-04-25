@@ -634,8 +634,7 @@ ALTER TABLE `tblPayments` ADD `voorschot` BIGINT NOT NULL DEFAULT '0' AFTER `mar
   </sql> 
   <sql name="ssettings-compensatieinfo" tag="28"> 
     INSERT INTO `tblConfig` (`sleutel`, `waarde`) VALUES
-  ('credits.keuzes', '"bachelorproef;300
-stage;-500"');
+  ('credits.keuzes', '"bachelorproef;300|stage;-500"');
   </sql> 
 
 </queries>
