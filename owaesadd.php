@@ -472,8 +472,32 @@
                       
                         <div class="form-group">
                             <div class="row"><div class="col-lg-2"><h4><?php echo ucfirst(settings("credits", "name", "x")); ?></h4></div></div> 
-                            
-                           <div class="row row-credits"> 
+
+ 
+                           <div class="row"> 
+                               <div class="col-lg-10">
+	                               	<select name="creditchoices" id="creditchoices" class="<? echo $strType; ?> col-lg-12">
+	                               		<option value="0" style="border-bottom:1px solid #AAA;">- maak keuze -</option>
+	                               		<?
+	                               			$arPlusMinClasses = array(
+	                               				"plus" => array("c"), 
+	                               				"min" => array("c"), 
+	                               			);
+											foreach(owaesType()->getAllTypes() as $strKey=>$strTitle) {
+												$arPlusMinClasses[ (owaestype($strKey)->task()) ? "plus" : "min"][] = $strKey; 
+											}
+
+		                               		$arChoices = explode("|", settings("credits", "keuzes")); 
+		                               		foreach ($arChoices as $strChoice){
+		                               			list($strName, $iValue) = explode(";", $strChoice, 2);
+		                               			echo "<option class=\"" . implode(" ", $arPlusMinClasses[($iValue>0)?"plus":"min"]) . "\" value=\"" . abs($iValue) . "\">$strName (" . abs($iValue) . " " . ucfirst(settings("credits", "name", "x")) . ")</option>";
+		                               		} 
+	                               		?> 
+	                               		<option value="-1" style="border-top:1px solid #AAA;">Handmatig instellen</option>
+	                               	</select> 
+                               </div>
+                           </div> 
+                           <div class="row row-credits" id="creditvalue"> 
                                <div class="col-lg-10">
                                 <input type="text" min="0" max="<? echo $iMaxCredits; ?>" name="credits" id="creditsfield" class="auto border" value="<?php echo $oOwaesItem->credits(); ?>" />
                                </div>

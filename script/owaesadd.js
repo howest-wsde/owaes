@@ -36,8 +36,6 @@ $(document).ready(function () {
 				$(this).addClass("selected");
 				if (arDatums[""]) delete arDatums[""]; 
 			}
-			//console.log(arDatums); 
-			
 			printDates();  
         }, 
 		dayRender: function( date, cell ) { 
@@ -45,7 +43,24 @@ $(document).ready(function () {
 			if (arDatums[strDate]) $(cell).addClass("selected"); 
 		}
     });
+
+	/* OWA-CREDITS: DROPDOWN */
+	$("#creditvalue").hide();
+	$("select#creditchoices").change(function(){
+		switch($(this).val()*1) {
+			case 0: 
+				break; 
+			case -1: 
+				$("#creditvalue").show();
+				break; 
+			default: 
+				$("#creditsfield").val($(this).val());
+				$("#creditvalue").hide();
+				break;  
+		} 
+	}); 
 	
+	/* TIJD / DATUM */
 
 	$(document).on("focus", "input.startuur", function(e){
 		$(this).select();  
@@ -96,6 +111,8 @@ $(document).on( 'shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
 var arDev = Array(); 
 var arSliders = {}; 
 $(function() {  
+
+	aanbodAanpassen(); 
 	 
 	// setup master volume 
 	$("input.development").attr("type", "hidden").each(function(){  
@@ -340,6 +357,9 @@ function aanbodAanpassen() {
     var $aanbod = $("select.aanbod").val();
     var $legend = "Aanbod toevoegen: ";
     var $credits = "";
+
+    $("select#creditchoices option.c").hide();
+    $("select#creditchoices option." + $aanbod).show();
 
     switch ($aanbod) {
         case "ervaring":

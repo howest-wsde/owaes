@@ -277,7 +277,14 @@
 							<fieldset>
 								<legend>Credits</legend>
 								<p>  
-									<textarea name="creditkeuzes" id="creditkeuzes"><? echo textarea(implode("\n", explode("|", settings("credits", "keuzes")))); ?></textarea>
+									<textarea name="creditkeuzes" id="creditkeuzes" style="float: left; margin-right: 15px;"><? echo textarea(implode("\n", explode("|", settings("credits", "keuzes")))); ?></textarea>
+									<span>
+										<i>formaat:</i>
+										<br /><span style="background: #efefef; padding: 6px; display: inline-block; ">tekst;value
+										<br />andere tekst;value</span>
+										<br /><br /><i>Positieve value: uitvoerder verdient credits, 
+										<br />negatieve value: uitvoerder betaalt</i>
+									</span>
 								</p> 
 							</fieldset>
 							<fieldset>
