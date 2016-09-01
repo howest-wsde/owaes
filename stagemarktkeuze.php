@@ -2,7 +2,7 @@
 	include "inc.default.php"; // should be included in EVERY file
 	$oSecurity = new security(TRUE);
 	$oLog = new log("page visit", array("url" => $oPage->filename()));
-    $iDeadline = 1476921600;
+    $iDeadline = 147692160;
 
 	$iFixed = 5; // er worden direct x slots vastgelegd per student
 
