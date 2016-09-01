@@ -2,6 +2,7 @@
 	include "inc.default.php"; // should be included in EVERY file
 	$oSecurity = new security(TRUE);
 	$oLog = new log("page visit", array("url" => $oPage->filename()));
+    $iDeadline = 1476921600;
 
 	$iFixed = 5; // er worden direct x slots vastgelegd per student
 
@@ -49,6 +50,12 @@
 		} else echo ("Uw inschrijving is niet gelukt. Refresh de pagina om opnieuw te proberen");
 		exit();
 	}
+
+
+    if (owaestime() > $iDeadline) {
+        echo ("De deadline is verstreken");
+        exit();
+    }
 
 
 ?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
