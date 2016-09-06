@@ -32,7 +32,7 @@
                 <div class="signup col-lg-12">
                     <div class="well">
                         <p>Bedankt, uw e-mailadres werd gevalideerd en uw inschrijving correct ontvangen. </p>
-                        <p>Wenst u meer informatie, contacteer dan Rita Vanmeirhaeghe  via <a href="mailto:stage@howest.be">dany.cottyn@howest.be</a> of op 056/24 12 44.</p>
+                        <p>Wenst u meer informatie, contacteer dan Rita Vanmeirhaeghe  via <a href="mailto:stage@howest.be">stage@howest.be</a> of op 056/24 12 44.</p>
                     </div>
                 </div>
             </div>
