@@ -189,7 +189,7 @@
 
 						$oDB = new database();
 						$arLijstVolzet = array();
-						$oDB->execute("select bedrijfsid from tblStagemarktVolzet; ");
+						$oDB->execute("select bedrijfsid, status from tblStagemarktVolzet; ");
 						while ($oDB->nextRecord()) $arLijstVolzet[$oDB->get("bedrijfsid")] = $oDB->get("status");
 
                         foreach ($oList->getList() as $oGroep) {
