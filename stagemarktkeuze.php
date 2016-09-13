@@ -65,7 +65,7 @@
             ksort($arResultSloten);
             $strOutput .= implode("", array_values($arResultSloten));
 
-			$strOutput .= "<br /><br />Let op: afhankelijk van het aantal inschrijvingen kunnen extra afspraken toegevoegd worden. De uiteindelijke planning kun je vinden op <a href=\"http://howest.owaes.org/stagemarkt-info.php\">howest.owaes.org/stagemarkt-info.php</a>";
+			$strOutput .= "<br /><br />Let op: afhankelijk van het aantal inschrijvingen kunnen extra afspraken toegevoegd worden. De uiteindelijke planning kun je vinden op <a href=\"http://howest.owaes.org/stagemarkt-info.php\">howest.owaes.org/stagemarkt-info.php</a>. Met vragen of voor extra info kan je contact opnemen met <a href=\"mailto:stage@howest.be\">stage@howest.be</a>.";
             echo $strOutput;
 
             $oUser = user(me());
