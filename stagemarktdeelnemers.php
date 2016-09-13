@@ -157,8 +157,6 @@
                 <div class="usersfromlist row sidecenterright">
                 	<div class="info">
                     	<h2>Inschrijving Stagemarkt Roeselare 22 september 2016 9 - 16u</h2>
-                        <a href="#save" class="btn btn-default disabled opslaan">opslaan</a>
-                    	<p>Selecteer 5 bedrijven voor een persoonlijk gesprek (in volgorde van voorkeur).</p>
                     </div>
 					<?php
 
@@ -168,30 +166,13 @@
 						while ($oDB->nextRecord()) $arLijst[] = $oDB->get("bedrijfsid");
 
                         foreach ($oList->getList() as $oGroep) {
-							if (!in_array($oGroep->id(), $arLijst)) echo "<div id=\"group-" . $oGroep->id() . "\" class=\"bedrijf ok\" rel=\"" . $oGroep->id() . "\">" . $oGroep->HTML("group_stagemarktdeelnemer.html") . "</div>";
+							if (!in_array($oGroep->id(), $arLijst)) echo "<div id=\"group-" . $oGroep->id() . "\" rel=\"" . $oGroep->id() . "\">" . $oGroep->HTML("group_stagemarktdeelnemer.html") . "</div>";
                         }
                     ?>
                 </div>
         	<?php echo $oPage->endTabs(); ?>
         </div>
 
-		<div class="modal fade" id="ModalOpgeslaan">
-            <form method="post" class="form-horizontal">
-              <div class="modal-dialog">
-                <div class="modal-content">
-                  <div class="modal-header">
-                    <h4 class="modal-title">Stagemarkt inschrijving</h4>
-                  </div>
-                  <div class="modal-body">
-                    <p>Bedankt, uw keuze wordt opgeslagen. </p>
-                  </div>
-                  <div class="modal-footer">
-                  	<a href="main.php" class="btn btn-default">OK</a>
-                  </div>
-                </div><!-- /.modal-content -->
-              </div><!-- /.modal-dialog -->
-         </form>
-        </div><!-- /.modal -->
         <div class="footer">
         	<?php echo $oPage->footer(); ?>
         </div>
