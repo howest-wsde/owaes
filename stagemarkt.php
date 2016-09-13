@@ -124,6 +124,9 @@
             <form method="post" class="form-horizontal" enctype="multipart/form-data">
                 	<fieldset>
                         <legend>Inschrijven voor Werkplekleren- en Stagemarktevent donderdag 22 september 2016</legend>
+
+                        <p>Inschrijven is helaas niet meer mogelijk</p>
+<?php /*
                     <input type="hidden" name="from" id="from" value="index.php" />
                     <div class="form-group">
                         <label for="bedrijf" class="control-label col-lg-3">Bedrijfsnaam:</label>
@@ -206,7 +209,7 @@
                                 <button type="submit" name="dosignup" class="btn btn-default pull-right">Registreren</button>
                             </div>
                     </div>
-
+*/ ?>
 
                     </fieldset>
                 </form>
