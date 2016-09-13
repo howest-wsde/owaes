@@ -61,7 +61,7 @@
 			$strOutput .= "<br />Let op: afhankelijk van het aantal inschrijvingen kunnen extra afspraken toegevoegd worden. De uiteindelijke planning kun je vinden op <a href=\"http://howest.owaes.org/stagemarkt-info.php\">howest.owaes.org/stagemarkt-info.php</a>";
             echo $strOutput;
 
-            $oUser = me();
+            $oUser = user(me());
             $oMail = new email();
                 $oMail->setTo($oUser->email(), $oUser->getName());
                 $oMail->setBody($strOutput);
