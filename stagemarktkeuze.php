@@ -55,9 +55,16 @@
 				$oDB->execute("insert into tblStagemarktDates (bedrijf, student, slot) values(" . $iBedrijf . ", " . me() . ", " . $iSlot . "); ");
 			}
 			$strOutput .= "Uw inschrijving werd opgeslaan. Onderstaande afspraken werden vastgelegd: <br />";
-			foreach ($arOK as $iSlot=>$iBedrijf) {
-				$strOutput .= "<br />" . $arTijdsloten[$iSlot-1] . ": " . group($iBedrijf)->naam();
-			}
+			//foreach ($arOK as $iSlot=>$iBedrijf) {
+			//	$strOutput .= "<br />" . $arTijdsloten[$iSlot-1] . ": " . group($iBedrijf)->naam();
+			//}
+            $arResultSloten = array();
+            foreach ($arOK as $iSlot=>$iBedrijf) {
+                $arResultSloten[$iSlot] = "<br />" . $arTijdsloten[$iSlot-1] . ": " . group($iBedrijf)->naam();
+            }
+            ksort($arResultSloten);
+            $strOutput .= implode("", array_values($arResultSloten));
+
 			$strOutput .= "<br /><br />Let op: afhankelijk van het aantal inschrijvingen kunnen extra afspraken toegevoegd worden. De uiteindelijke planning kun je vinden op <a href=\"http://howest.owaes.org/stagemarkt-info.php\">howest.owaes.org/stagemarkt-info.php</a>";
             echo $strOutput;
 
