@@ -48,16 +48,27 @@
 		}
 
 		$arSave["student"] = me();
+        $strOutput = "";
 		if (count(array_keys($arOK)) >= 1) {
 			$oDB->execute("insert into tblStagemarktStudInschrijvingen (" . implode(",", array_keys($arSave)) . ") values (" . implode(",", array_values($arSave)) . "); ");
 			foreach ($arOK as $iSlot=>$iBedrijf) {
 				$oDB->execute("insert into tblStagemarktDates (bedrijf, student, slot) values(" . $iBedrijf . ", " . me() . ", " . $iSlot . "); ");
 			}
-			echo "Uw inschrijving werd opgeslaan. Onderstaande afspraken werden vastgelegd: ";
+			$strOutput .= "Uw inschrijving werd opgeslaan. Onderstaande afspraken werden vastgelegd: ";
 			foreach ($arOK as $iSlot=>$iBedrijf) {
-				echo "<br />" . $arTijdsloten[$iSlot-1] . ": " . group($iBedrijf)->naam();
+				$strOutput .= "<br />" . $arTijdsloten[$iSlot-1] . ": " . group($iBedrijf)->naam();
 			}
-			echo "<br />Let op: afhankelijk van het aantal inschrijvingen kunnen extra afspraken toegevoegd worden. De uiteindelijke planning kun je vinden op <a href=\"http://start.owaes.org/stagemarkt-info.php\">start.owaes.org/stagemarkt-info.php</a>";
+			$strOutput .= "<br />Let op: afhankelijk van het aantal inschrijvingen kunnen extra afspraken toegevoegd worden. De uiteindelijke planning kun je vinden op <a href=\"http://howest.owaes.org/stagemarkt-info.php\">howest.owaes.org/stagemarkt-info.php</a>";
+            echo $strOutput;
+
+            $oUser = me();
+            $oMail = new email();
+                $oMail->setTo($oUser->email(), $oUser->getName());
+                $oMail->setBody($strOutput);
+                $oMail->setSubject("Stagemarkt afspraken");
+            $oMail->send();
+
+
 		} else echo ("Uw inschrijving is niet gelukt. Refresh de pagina om opnieuw te proberen");
 		exit();
 	}
