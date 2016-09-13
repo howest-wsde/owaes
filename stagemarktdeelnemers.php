@@ -10,8 +10,8 @@
 
 	$oDB = new database();
 
-	$oDB->execute("select count(student) as aantal from tblStagemarktStudInschrijvingen where student = " . me() . ";");
-	if ($oDB->get("aantal") > 0) redirect ("stagemarkt-info.php");
+	//$oDB->execute("select count(student) as aantal from tblStagemarktStudInschrijvingen where student = " . me() . ";");
+	//if ($oDB->get("aantal") > 0) redirect ("stagemarkt-info.php");
 
 	if (isset($_POST["save"])) {
 
