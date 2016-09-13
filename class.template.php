@@ -121,7 +121,7 @@
 				$strTekst = str_replace("http://", "", $strTekst);
 				$strTekst = str_replace("https://", "", $strTekst);
 
-				$strHTML = str_replace($strLink, "<a href=\"$strLink\" target=\"_blank\">$strTekst</a>", $strHTML);
+				$strHTML = str_replace($arResult[0][$i], "<a href=\"$strLink\" target=\"_blank\">$strTekst</a>", $strHTML);
 			}
 
 			$strHTML = str_replace("[currentfile]", filename(TRUE), $strHTML);
