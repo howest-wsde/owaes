@@ -4,6 +4,17 @@
 	$oLog = new log("page visit", array("url" => $oPage->filename()));
     $iDeadline = 1476921600;
 
+    $arTijdsloten = array(
+            "Tijdslot 1 (13u30 - 13u45)",
+            "Tijdslot 2 (13u45 - 14u00)",
+            "Tijdslot 3 (14u00 - 14u15)",
+            "Tijdslot 4 (14u15 - 14u30)",
+            "Tijdslot 5 (14u45 - 15u00)",
+            "Tijdslot 6 (15u00 - 15u15)",
+            "Tijdslot 7 (15u15 - 15u30)",
+            "Tijdslot 8 (15u30 - 15u45)"
+        );
+
 	$iFixed = 5; // er worden direct x slots vastgelegd per student
 
 	$oList = new grouplist();
@@ -32,7 +43,7 @@
 				foreach ($arOK as $iSlot=>$iBedrijf) if(($iKey = array_search($iSlot, $arSlots)) !== false) array_splice ($arSlots, $iKey, 1);
 
 				if (count($arSlots)>0)  $arOK[$arSlots[0]] = $iKeuze;
-				if (count($arSlots)<=1) $oDB->execute("insert ignore into tblStagemarktVolzet (bedrijfsid) values($iKeuze); ");
+				if (count($arSlots)<=1) $oDB->execute("insert ignore into tblStagemarktVolzet (bedrijfsid, status) values($iKeuze, 'volzet 2016'); ");
 			}
 		}
 
@@ -44,7 +55,7 @@
 			}
 			echo "Uw inschrijving werd opgeslaan. Onderstaande afspraken werden vastgelegd: ";
 			foreach ($arOK as $iSlot=>$iBedrijf) {
-				echo "<br />- Tijdslot $iSlot: " . group($iBedrijf)->naam();
+				echo "<br />" . $arTijdsloten[$iSlot-1] . ": " . group($iBedrijf)->naam();
 			}
 			echo "<br />Let op: afhankelijk van het aantal inschrijvingen kunnen extra afspraken toegevoegd worden. De uiteindelijke planning kun je vinden op <a href=\"http://start.owaes.org/stagemarkt-info.php\">start.owaes.org/stagemarkt-info.php</a>";
 		} else echo ("Uw inschrijving is niet gelukt. Refresh de pagina om opnieuw te proberen");
@@ -166,12 +177,14 @@
                         }
 
 						$oDB = new database();
-						$arLijst = array();
+						$arLijstVolzet = array();
 						$oDB->execute("select bedrijfsid from tblStagemarktVolzet; ");
-						while ($oDB->nextRecord()) $arLijst[] = $oDB->get("bedrijfsid");
+						while ($oDB->nextRecord()) $arLijstVolzet[$oDB->get("bedrijfsid")] = $oDB->get("status");
 
                         foreach ($oList->getList() as $oGroep) {
-							if (!in_array($oGroep->id(), $arLijst)) echo "<div id=\"group-" . $oGroep->id() . "\" class=\"bedrijf ok\" rel=\"" . $oGroep->id() . "\">" . $oGroep->HTML("group_stagemarktkeuze.html") . "</div>";
+                            if (isset($arLijstVolzet[$oGroep->id()])) {
+                                if ($arLijstVolzet[$oGroep->id()] == "volzet 2016") echo "<div id=\"group-" . $oGroep->id() . "\" class=\"bedrijf ok\" rel=\"" . $oGroep->id() . "\">" . $oGroep->HTML("group_stagemarktkeuze.volzet.html") . "</div>";
+                            } else echo "<div id=\"group-" . $oGroep->id() . "\" class=\"bedrijf ok\" rel=\"" . $oGroep->id() . "\">" . $oGroep->HTML("group_stagemarktkeuze.html") . "</div>";
                         }
                     ?>
                 </div>
