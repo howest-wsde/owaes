@@ -201,7 +201,7 @@
 
                         foreach ($oList->getList() as $oGroep) {
                             if (isset($arLijstVolzet[$oGroep->id()])) {
-                                if ($arLijstVolzet[$oGroep->id()] == "volzet 2016") echo "<div id=\"group-" . $oGroep->id() . "\" class=\"bedrijf ok\" rel=\"" . $oGroep->id() . "\">" . $oGroep->HTML("group_stagemarktkeuze.volzet.html") . "</div>";
+                                if ($arLijstVolzet[$oGroep->id()] == "volzet 2016") echo "<div id=\"group-" . $oGroep->id() . "\" class=\"bedrijf nok\" rel=\"" . $oGroep->id() . "\">" . $oGroep->HTML("group_stagemarktkeuze.volzet.html") . "</div>";
                             } else echo "<div id=\"group-" . $oGroep->id() . "\" class=\"bedrijf ok\" rel=\"" . $oGroep->id() . "\">" . $oGroep->HTML("group_stagemarktkeuze.html") . "</div>";
                         }
                     ?>
