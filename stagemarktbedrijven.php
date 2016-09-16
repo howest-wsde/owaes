@@ -29,7 +29,7 @@
 			div.info {padding: 0 15px; display: block; overflow: auto; }
 			a.opslaan {float: right; }
 			a.opslaan.disabled {color: #aaa; }
-            .volzet {background: red; }
+            .volzet .well {background: rgba(255,0,0,0.1); }
 		</style>
     </head>
     <body id="users">
