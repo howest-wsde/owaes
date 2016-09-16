@@ -14,6 +14,7 @@
             "Tijdslot 7 (15u15 - 15u30)",
             "Tijdslot 8 (15u30 - 15u45)"
         );
+    $iBedrijfTijdslots = 8;
 
 	$iFixed = 5; // er worden direct x slots vastgelegd per student
 
@@ -32,8 +33,10 @@
 		$arOK = array();
 		$iCheck = 1;
 
+        $arCheckIfFull = array();
+
 		for ($iCheck = 1; $iCheck <=5; $iCheck++) {
-			if (count($arOK) < $iFixed){
+			//if (count($arOK) < $iFixed){ (overbodig, want alle slots worden nu opgeslaan)
 				$iKeuze = $arSave["k" . $iCheck];
 				$arSlots = array(1,2,3,4,5,6,7,8);
 				$oDB->execute("select slot from tblStagemarktDates where bedrijf = $iKeuze; ");
@@ -43,8 +46,8 @@
 				foreach ($arOK as $iSlot=>$iBedrijf) if(($iKey = array_search($iSlot, $arSlots)) !== false) array_splice ($arSlots, $iKey, 1);
 
 				if (count($arSlots)>0)  $arOK[$arSlots[0]] = $iKeuze;
-				if (count($arSlots)<=1) $oDB->execute("insert ignore into tblStagemarktVolzet (bedrijfsid, status) values($iKeuze, 'volzet 2016'); ");
-			}
+				if (count($arSlots)<=1) $arCheckIfFull[] = $iKeuze;
+			//}
 		}
 
 		$arSave["student"] = me();
@@ -77,6 +80,12 @@
 
 
 		} else echo ("Uw inschrijving is niet gelukt. Refresh de pagina om opnieuw te proberen");
+
+
+        foreach ($arCheckIfFull as $iBedrijf){
+            $oDB->execute("select count(id) as aantal from tblStagemarktDates where bedrijf = $iBedrijf; ");
+            if ($oDB->get("aantal") >= $iBedrijfTijdslots) $oDB->execute("insert ignore into tblStagemarktVolzet (bedrijfsid, status) values($iBedrijf, 'volzet 2016'); ");
+        }
 		exit();
 	}
 
