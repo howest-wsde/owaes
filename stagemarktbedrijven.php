@@ -29,71 +29,8 @@
 			div.info {padding: 0 15px; display: block; overflow: auto; }
 			a.opslaan {float: right; }
 			a.opslaan.disabled {color: #aaa; }
+            .volzet {background: red; }
 		</style>
-        <script>
-			$(document).ready(function(e) {
-                $(".bedrijf").mouseover(function(){
-					$(this).addClass("hover");
-				}).mouseout(function(){
-					$(this).removeClass("hover");
-				})
-				$(".bedrijf a.link").mouseover(function(){
-					$(this).parentsUntil(".bedrijf").parent().removeClass("ok");
-				}).mouseout(function(){
-					$(this).parentsUntil(".bedrijf").parent().addClass("ok");
-				})
-				$(".bedrijf.ok").click(function() {
-					iID = $(this).attr("rel");
-					if ($(this).hasClass("gekozen")) {
-						removeBedrijf(iID);
-					} else {
-						addBedrijf(iID);
-					}
-				})
-				$("a.opslaan").click(function(){
-					arQRY = {"save": 1};
-					$("div.keuze").each(function(){
-						arQRY["k" + $(this).attr("nr")] = $(this).attr("rel");
-					})
-					$("#ModalOpgeslaan").modal({
-						show: true,
-						keyboard: false
-					});
-					$("#ModalOpgeslaan .modal-body").load("stagemarktkeuze.php", arQRY);
-					return false;
-				})
-            });
-
-			function removeBedrijf(iID) {
-				oBedrijf = $("div#group-" + iID);
-				$(".keuze[rel=" + iID + "]").html("").removeClass("full");
-				$(oBedrijf).removeClass("gekozen");
-				$(oBedrijf).find(".addknop img").attr("src", "img/plus.png");
-				for (i=1; i<5; i++){
-					if (!$(".keuze:eq(" + (i-1) + ")").hasClass("full") && $(".keuze:eq(" + i + ")").hasClass("full")) {
-						$(".keuze:eq(" + (i-1) + ")").addClass("full").html($(".keuze:eq(" + i + ")").html()).attr("rel", $(".keuze:eq(" + i + ")").attr("rel"));
-						$(".keuze:eq(" + i + ")").removeClass("full").html(i+1);
-					}
-				}
-				$(".keuze:not(.full)").each(function(){$(this).html($(this).attr("nr"));});
-				$("a.opslaan").addClass("disabled");
-			}
-
-			function addBedrijf(iID) {
-				oBedrijf = $("div#group-" + iID);
-				oHTML = $("<div />").append($("<img />").attr("src", $(oBedrijf).find("img").attr("src")).attr("alt", $(oBedrijf).find("h2").text())).append($(oBedrijf).find("h2").text());
-				if ($("div.keuze:not(.full)").length > 0) {
-					$("div.keuze:not(.full):first").html(oHTML).addClass("full").attr("rel", iID);
-					$(oBedrijf).addClass("gekozen");
-					$(oBedrijf).find(".addknop img").attr("src", "img/min.png");
-				}
-
-				if ($("div.keuze:not(.full)").length == 0) {
-					$("a.opslaan").removeClass("disabled");
-				}
-
-			}
-		</script>
     </head>
     <body id="users">
         <?php echo $oPage->startTabs(); ?>
