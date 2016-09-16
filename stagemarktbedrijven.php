@@ -29,7 +29,8 @@
 			div.info {padding: 0 15px; display: block; overflow: auto; }
 			a.opslaan {float: right; }
 			a.opslaan.disabled {color: #aaa; }
-            .volzet .well {background: rgba(255,0,0,0.1); }
+            .volzet .well {background: rgba(50, 50, 50, 0.10); color: gray; }
+            .volzet .well a {color: gray; }
 		</style>
     </head>
     <body id="users">
