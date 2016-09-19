@@ -125,9 +125,10 @@
                 	<fieldset>
                         <legend>Inschrijven voor Werkplekleren- en Stagemarktevent donderdag 22 september 2016</legend>
 
-
-                     <p>Inschrijven is helaas niet meer mogelijk</p>
  <?php /*
+                     <p>Inschrijven is helaas niet meer mogelijk</p>
+
+                    */ ?>
 
                     <input type="hidden" name="from" id="from" value="index.php" />
                     <div class="form-group">
@@ -211,7 +212,6 @@
                                 <button type="submit" name="dosignup" class="btn btn-default pull-right">Registreren</button>
                             </div>
                     </div>
-                    */ ?>
                     </fieldset>
                 </form>
                 </div>
