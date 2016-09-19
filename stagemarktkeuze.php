@@ -27,6 +27,8 @@
 
 	if (isset($_POST["save"])) {
 
+        $arKeuzes = array();
+
 		$arSave = array();
 		for ($i=1; $i<=5; $i++) $arSave["k$i"] = isset($_POST["k$i"]) ? intval($_POST["k$i"]) : 0;
 
@@ -38,6 +40,7 @@
 		for ($iCheck = 1; $iCheck <=5; $iCheck++) {
 			//if (count($arOK) < $iFixed){ (overbodig, want alle slots worden nu opgeslaan)
 				$iKeuze = $arSave["k" . $iCheck];
+                $arKeuzes[$iKeuze] = $iKeuze;
 				$arSlots = array(1,2,3,4,5,6,7,8);
 				$oDB->execute("select slot from tblStagemarktDates where bedrijf = $iKeuze; ");
 				while ($oDB->nextRecord()) {
@@ -56,6 +59,7 @@
 			$oDB->execute("insert into tblStagemarktStudInschrijvingen (" . implode(",", array_keys($arSave)) . ") values (" . implode(",", array_values($arSave)) . "); ");
 			foreach ($arOK as $iSlot=>$iBedrijf) {
 				$oDB->execute("insert into tblStagemarktDates (bedrijf, student, slot) values(" . $iBedrijf . ", " . me() . ", " . $iSlot . "); ");
+                 unset ($arKeuzes[$iBedrijf]);
 			}
 			$strOutput .= "Uw inschrijving werd opgeslaan. Onderstaande afspraken werden vastgelegd: <br />";
 			//foreach ($arOK as $iSlot=>$iBedrijf) {
@@ -68,7 +72,9 @@
             ksort($arResultSloten);
             $strOutput .= implode("", array_values($arResultSloten));
 
-			$strOutput .= "<br /><br />Let op: afhankelijk van het aantal inschrijvingen kunnen afspraken aaangepast worden. De uiteindelijke planning kun je vinden op <a href=\"http://howest.owaes.org/stagemarkt-info.php\">howest.owaes.org/stagemarkt-info.php</a>. Met vragen of voor extra info kan je contact opnemen met <a href=\"mailto:stage@howest.be\">stage@howest.be</a>.";
+            $strOutput .= "<br /><br />Door beperkte beschikbaarheid van tijdslots is het mogelijk dat niet alle afspraken vastgelegd werden. Dit kan niet aangepast worden. ";
+
+            $strOutput .= "<br /><br />Let op: afhankelijk van het aantal inschrijvingen kunnen afspraken aangepast worden. De uiteindelijke planning kun je vinden op <a href=\"http://howest.owaes.org/stagemarkt-info.php\">howest.owaes.org/stagemarkt-info.php</a>. Met vragen of voor extra info kan je contact opnemen met <a href=\"mailto:stage@howest.be\">stage@howest.be</a>.";
             echo $strOutput;
 
             $oUser = user(me());
